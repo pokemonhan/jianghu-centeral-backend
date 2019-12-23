@@ -59,7 +59,7 @@
             updateNo: 页码改变 返回 (pageNo)
             updateSize: 每页条数改变 返回 (pageSize)
             pagesNum: 共有多少页,
-            pageCount: 显示多少个方块(跳转用)
+            pageCount: 显示多少个页面跳转的方块(<li>)
     */
     export default {
         name: 'Page',
@@ -74,7 +74,7 @@
             },
             pageSize: {
                 type: Number,
-                default: () => 10
+                default: () => 25
             },
             pageNo: {
                 type: Number,

@@ -36,7 +36,7 @@ const menuList = [
             },
             {
                 label: '游戏管理',
-                path: '/game/gamemanege'
+                path: '/game/gamemanage'
             }
         ]
     },

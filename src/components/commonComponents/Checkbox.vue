@@ -92,7 +92,7 @@ export default {
     user-select: none;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
     line-height: 1;
     margin: 0 5px;

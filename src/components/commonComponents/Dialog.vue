@@ -2,7 +2,8 @@
     <div v-if="show" class="dialog-mask">
         <transition name="dialog-animate">
             <div v-if="show" class="v-dialog">
-                <div class="dialog-header">
+               <div>
+                    <div class="dialog-header">
                     <!-- <i v-if="icon" :class="['iconfont', icon]"></i> -->
                     <span v-text="title"></span>
                     <i @click="close" class="iconfont iconcuowuguanbi-"></i>
@@ -10,6 +11,7 @@
                 <div class="dialog-body">
                     <slot></slot>
                 </div>
+               </div>
               
             </div>
         </transition>
@@ -59,17 +61,24 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 10;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: rgba(0, 0, 0, 0.6);
 }
 .v-dialog {
     /* min-width: 160px;
     min-height: 90px; */
-    position: absolute;
+    /* position: absolute;
     z-index: 2;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); */
+    /* width: 100%;
+    height: 100%; */
+    
     min-width: 400px;
     min-height: 220px;
     background-color: #fff;

@@ -127,7 +127,7 @@ export default {
         // console.log('aside');
         this.menu_list = window.all.menu_list
         const self = this
-        let { method, url, params } = this.$api.all_menu
+        // let { method, url, params } = this.$api.all_menu
         // function objToArr(obj) {
         //     let list = [];
         //     for (let key in obj) {

@@ -70,7 +70,10 @@ export default {
             this.regs[this.limit] && (this.val = this.val .toString() .replace(this.regs[this.limit], ""));
             this.$emit("keyup", this.val);
         }
-    }
+    },
+    mounted() {
+        this.val = this.value
+    },
 };
 </script>
 

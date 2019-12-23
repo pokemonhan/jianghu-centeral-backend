@@ -187,7 +187,7 @@ export default {
     background-color: #fff;
     overflow-y: scroll;
     display: none;
-    z-index: 1;
+    z-index: 2;
 }
 .bottom-upfold {
     bottom: -5px;

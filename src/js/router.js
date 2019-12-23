@@ -25,26 +25,27 @@ const routes = new Router({
             path: '/',
             component: Home
         },
-        // {
-        //     path: '/home',
-        //     component: Home
-        // },
-        // {
-        //     path: '/login',
-        //     component: Login
-        // },
+        {
+            path: '/home',
+            component: Home
+        },
+        {
+            path: '/login',
+            component: Login
+        },
     ]
 })
 routes.beforeEach((to, from, next) => {
     // console.log(to.path);
     // console.log(from.path);
-    if(to.path!==from.path){
+    if (to.path !== from.path) {
         next()
     }
 })
 let route_add = []
 
-let r = require.context('../components/views', true, /.vue$/, 'lazy')           //获取 /views所有文件路径 lazy加载
+//获取 /views所有文件路径 lazy加载
+let r = require.context('../components/views', true, /.vue$/, 'lazy')
 r.keys().forEach(file_name => {
     let path = file_name.slice(1).replace('.vue', '').toLowerCase()
 

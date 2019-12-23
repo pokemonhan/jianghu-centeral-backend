@@ -44,6 +44,20 @@ const Tool = {//工具汇总
         arr2.push(`0${date.getSeconds()}`.slice(-2))
         return `${arr1.join('-')} ${arr2.join(':')}`
     },
+    // 去除为param空的 属性 (不支持空对象。。)
+    rmEmpty(obj) {
+        let params = {}
+        for (const key in obj) {
+            if (Array.isArray(obj[key])) {
+                if (obj.length > 0) {
+                    params[key] = obj[key]
+                }
+            } else if (obj[key] !== '') {
+                params[key] = obj[key]
+            }
+        }
+        return params
+    },
 
 };
 export default Tool;

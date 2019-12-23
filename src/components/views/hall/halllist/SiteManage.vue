@@ -2,7 +2,7 @@
     <div class="cont">
         <div class="body">
             <div class="left">
-                <ul class="form">
+                <ul style="margin-top:-13px;" class="form">
                     <li>
                         <span>代理方式:</span>
                         <Checkbox label="PC" v-model="checked[0]" />

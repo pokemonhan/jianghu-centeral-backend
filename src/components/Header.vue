@@ -337,7 +337,9 @@ export default {
     background: rgb(235, 58, 58);
     border-radius: 10px;
 } */
-
+.account {
+    position: relative;
+}
 .account-inner {
     display: none;
     width: 100px;

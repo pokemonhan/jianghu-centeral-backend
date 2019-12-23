@@ -18,7 +18,8 @@ export default {
     props: {
         message: {
             type: String,
-            required: true
+            // required: 
+            default: ()=>'$toast is null'
         },
         type: {
             type: String,
@@ -45,8 +46,10 @@ export default {
 
 <style scoped>
 .toast-enter {
+    position: relative;
     opacity: 0;
     transform: translateY(-30px);
+    z-index: 100;
 }
 .toast-leave-to {
     margin-top: -55px;

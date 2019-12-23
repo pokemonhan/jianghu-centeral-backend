@@ -53,12 +53,12 @@
                             :class="['bold',row.a5==='1'?'orange':'gray']"
                         >{{row.a5==='1'?'维护中':'未维护'}}</span>
                     </td>
-                    <td>
+                    <td style="font-size:12px;padding:5px;">
                         <div>{{String(row.a6).split('~')[0]}}</div>
                         <div>~</div>
                         <div>{{String(row.a6).split('~')[1]}}</div>
                     </td>
-                    <td style="padding:5px 0;">
+                    <td style="font-size:12px;padding:5px;">
                         <div>{{String(row.a7).split('-')[0]}}</div>
                         <div>~</div>
                         <div>{{String(row.a7).split('-')[1]}}</div>
@@ -233,7 +233,7 @@ export default {
             // 是否启用 站点
             is_turnon: false,
             // dia 弹窗
-            dia_show: 'add', 
+            dia_show: '', 
             dia_title: '临时标题!!!!',
             // 维护 dialog
             maintain_dates: [],

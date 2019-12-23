@@ -6,6 +6,7 @@
                     <th class="center-box" v-if="hadCheckbox">
                         <!-- <input type="checkbox" class="checkbox" v-model="all_checked" @change="onChange(999999, $event)" /> -->
                         <Checkbox class="checkbox" v-model="all_checked" @update="onChange(999999, all_checked)" />
+
                     </th>
                     <th v-for="(col, index) in headers" :key="index">
                         <!-- <div v-if="col.label.split(',').length!==0"></div> -->
@@ -15,23 +16,20 @@
                         <template v-else>
                             <div v-for="(item, index) in col.split(',')" :key="index">{{item}}</div>                   
                         </template>
+                        
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(col_row, idx) in column" :key="idx">
-                    <!-- <slot name="item" :row="row"></slot> -->
+                    <!-- // 如果有checkbox -->
                     <td v-if="hadCheckbox">
-                        <!-- <input
-                            type="checkbox"
-                            class="checkbox"
-                            v-model="col_row.checked"
-                            @change="onChange(idx, $event)"
-                        /> -->
                         <Checkbox class="checkbox" v-model="col_row.checked" @update="onChange(idx, col_row.checked)" />
                     </td>
+                    <!-- td 内容 -->
                     <slot name="item" :row="col_row" :idx="idx"></slot>
                 </tr>
+                <!-- 如果直接用tr -->
                 <slot name="tr"></slot>
             </tbody>
         </table>
