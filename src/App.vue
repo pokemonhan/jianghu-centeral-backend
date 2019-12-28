@@ -108,7 +108,7 @@ export default {
     /* min-height: 130px; */
     border-radius: 4px;
     border: 1px solid #ddd;
-    /* font-size: 16px; */
+    font-size: 14px;
 }
 .container {
     padding: 20px 8px 20px 8px;
@@ -404,6 +404,7 @@ button:hover {
     margin-right: 4px;
 }
 
+/* 让page 居中,margin-top设置为25 */
 .table-page {
     margin-top: 25px;
     display: flex;

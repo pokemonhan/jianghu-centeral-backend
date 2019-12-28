@@ -1,5 +1,6 @@
 import axios from 'axios'
 import router from '../router'
+// import 
 
 const ERROR_MAP = {
    //MenuController
@@ -77,6 +78,7 @@ const ERROR_MAP = {
 
 
 const BASE_PATH = location.protocol + '//api.jianghu.local'
+// const BASE_PATH = '/api'
 
 let http = axios.create({
     baseURL: BASE_PATH,
@@ -114,20 +116,20 @@ http.interceptors.response.use(res =>{
     // console.log('resabc: ', res);
     let data = res.data
     if(res && res.data){
-    
         if(res.data.code!=='200'){
-            // 如果100401 被禁止则跳转到登录页
-            if(res.data.code==='100401'){
-                // window._Vue_.$router.push('login')
+            // 如果 401 跳到首页
+            if(res.status===401){
                 router.push('/login')
-                // alert('跳转中')
             }
+            
             if(res.data.message!==''){
                 alert(res.data.message)
             }
         }
     }else{
-        if(res) {console.log(res)}
+        if(res) {
+            console.log('错误信息', res)
+        }
     }
    
     return res.data

@@ -25,7 +25,7 @@
                     <td >
                         <span :class="[row.status===1?'green':'red']">{{row.status===1?'开启':'关闭'}}</span>
                     </td>
-                    <td>{{row.last_editor?row.laslast_editor:'---'}}</td>
+                    <td>{{row.last_editor?row.last_editor.name:'---'}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
                         <span class="a" @click="opera(row)">{{row.status=== 1 ?'启用':row.status=== 0 ?'禁用':row.status}}</span>

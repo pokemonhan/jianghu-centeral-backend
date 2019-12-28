@@ -27,7 +27,7 @@
                 <template v-slot:item="{row,idx}">
                     <!-- ['编号','游戏厂商','游戏名称','游戏分类','游戏状态','最后更新人','最后更新时间','操作'] -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
-                    <td>{{row.vendor&&row.vendor.name}}</td>
+                    <td>{{row.vendor?row.vendor.name:'--'}}</td>
                     <td>{{row.name}}</td>
                     <td>{{row.type&&row.type.name}}</td>
                     <td
@@ -173,7 +173,7 @@ export default {
         getSelectOpt() {
             let { url, method } = this.$api.dev_game_search_condition_get
             this.$http({ url, method }).then(res => {
-                console.log('下拉数据 ', res)
+                // console.log('下拉数据 ', res)
                 if (res && res.code === '200') {
                     this.select = res.data
                     this.vendor_opt = this.backToSelOpt(this.select.vendors)

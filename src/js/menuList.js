@@ -65,6 +65,10 @@ const menuList = [
             {
                 label: '收件箱',
                 path: '/email/receiveemail'
+            },
+            {
+                label: '已发邮件',
+                path: '/email/emailsent'
             }
         ]
     },
@@ -140,7 +144,7 @@ const menuList = [
         child: [
             {
                 label: '总控菜单管理',
-                path: '/dev/adminsort'
+                path: '/dev/totalmenu'
             },
             {
                 label: '厅主菜单管理',

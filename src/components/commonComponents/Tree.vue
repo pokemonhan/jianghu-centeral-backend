@@ -48,7 +48,7 @@ export default {
                         item.checked = bool
                     })
                 }
-                /* 二级 */
+                /* 二级  比如:1-1 就是二级*/
             } else if (idx_arr.length === 2) {
                 let lev1 = idx_arr[0]
                 list[lev1].checked = list[lev1].child.every(item=>item.checked)
@@ -98,9 +98,8 @@ export default {
         font-size: 12px;
         /* text-align: left; */
     }
-    .lev2 > li{
-        /* text-align: left; */
-    }
+    /* .lev2 > li{
+    } */
     .lev2 > li > span {
         display: inline-block;
         margin-top: 6px;
@@ -116,7 +115,6 @@ export default {
         /* margin-top: 10px; */
         padding: 5px 0;
     }
-    .lev2 .v-checkbox {
-        /* justify-content: start; */
-    }
+    /* .lev2 .v-checkbox {
+    } */
 </style>

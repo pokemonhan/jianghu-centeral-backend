@@ -8,41 +8,42 @@
                 </li>
                 <li>
                     <button class="btn-blue">查找</button>
-                    <button class="btn-blue">创建分组</button>
+                    <button class="btn-blue" @click="addsort">创建分组</button>
                 </li>
             </ul>
         </div>
         <div class="cont">
             <div class="cont-left">
                 <ul>
-                    <li v-for="n in 6" :key="n">
+                    <li v-for="(group,index) in group_list" :key="index">
                         <div class="li-left">
                             <p class="li-hd">
-                                <span>超级管理组</span>
+                                <span @click="check(group)">{{group.group_name}}</span>
                             </p>
-                            <span>{{'2019/11/09 19:30:45'}}</span>
+                            <span>{{group.id!==1?group.created_at:''}}</span>
                         </div>
 
                         <div class="li-right">
-                            <span v-show="n!==1" class="a">删除</span>
-                            <span class="a">编辑</span>
+                            <span v-show="group.id!==1" class="a">删除</span>
+                            <span class="a" @click="edit(group)">编辑</span>
                         </div>
                     </li>
                 </ul>
                 <div class="vertical-line"></div>
             </div>
-
+            <!-- 右边的 页面 -->
             <div class="cont-right">
-                <!-- 查看组 -->
-                <div></div>
-                <!-- 编辑组 -->
                 <div class="edit-form">
                     <div>
-                        <span class="cont-r-hd">编辑组</span>
+                        <span class="cont-r-hd">{{right_show==='add'?'创建组':right_show==='check'?'查看组':right_show==='edit'?'编辑组':right_show}}</span>
                     </div>
                     <div class="edit-name">
                         <p class="mb10">组名称:</p>
-                        <Input style="width:300px;" v-model="edit.name" />
+                        <Input
+                            style="width:300px;"
+                            :disabled="right_show==='check'"
+                            v-model="edit_form.name"
+                        />
                     </div>
                     <div class="edit-authority">
                         <p class="mb10">选择组权限:</p>
@@ -68,15 +69,29 @@
                     </div>
                     <div class="mt50 t-center">
                         <button class="btn-plain-large">取消</button>
-                        <button class="btn-blue-large ml30">确定创建</button>
+
+                        <button v-if="right_show==='add'"
+                            class="btn-blue-large ml30"
+                            @click="groupAddCfm"
+                        >确定创建</button>
+
+                        <button v-if="right_show==='set'"
+                            class="btn-blue-large ml30"
+                            @click="groupSetCfm"
+                        >确定修改</button>
+
+                        <button v-if="right_show==='check'"
+                            class="btn-blue-large ml30"
+                            @click="groupSetCfm"
+                        >确定</button>
                     </div>
                 </div>
-                <!-- 查看之下面内容 -->
-                <div class="mt20">
+                <!-- 查看check之下面内容 -->
+                <div v-if="right_show==='check'" class="mt20">
                     <div>
                         <span>成员列表：</span>
                         <span>
-                            <button class="btn-blue">添加成员</button>
+                            <button class="btn-blue" @click="addMember">添加成员</button>
                         </span>
                     </div>
                     <div class="table">
@@ -84,10 +99,15 @@
                             <template v-slot:item="{row,idx}">
                                 <td>{{row.a1}}</td>
                                 <td>{{row.a2}}</td>
-                                <td :class="[row.a3==='1'?'green':'red']">{{row.a3==='1'?'启用':row.a3==='0'?'禁用':'出错'}}</td>
+                                <td
+                                    :class="[row.a3==='1'?'green':'red']"
+                                >{{row.a3==='1'?'启用':row.a3==='0'?'禁用':'出错'}}</td>
                                 <td>
-                                    <span class="a">修改密码</span>
-                                    <span class="a">启用</span>
+                                    <span class="a" @click="editPwd(row)">修改密码</span>
+                                    <span
+                                        class="a"
+                                        @click="memberStatuUpd(row)"
+                                    >{{row.a3==='1'?'禁用':row.a3==='0'?'启用':'出错'}}</span>
                                 </td>
                             </template>
                         </Table>
@@ -100,11 +120,63 @@
                             @updateNo="updateNo"
                             @updateSize="updateSize"
                         />
-                     
                     </div>
                 </div>
             </div>
         </div>
+        <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
+            <div class="dia-inner">
+                <div v-if="dia_show==='add_member'">
+                    <ul class="form">
+                        <li>
+                            <span>账号:</span>
+                            <Input class="w250" v-model="add_member_form.acc" />
+                        </li>
+                        <li>
+                            <span>邮箱:</span>
+                            <Input class="w250" v-model="add_member_form.email" />
+                        </li>
+                        <li>
+                            <span>密码:</span>
+                            <Input class="w250" type="password" v-model="add_member_form.pwd" />
+                        </li>
+                        <li>
+                            <span>确认密码:</span>
+                            <Input class="w250" type="password" v-model="add_member_form.conf_pwd" />
+                        </li>
+                    </ul>
+                    <div class="add-member-btn">
+                        <button class="btn-plain-large" @click="dia_show=''">取消</button>
+                        <button class="btn-blue-large ml20" @click="addMemberCfm">确认</button>
+                    </div>
+                </div>
+                <div v-if="dia_show==='edit_pwd'">
+                    <ul class="form">
+                        <li>
+                            <span>密码:</span>
+                            <Input class="w250" type="password" v-model="edit_member_form.pwd" />
+                        </li>
+                        <li>
+                            <span>确认密码:</span>
+                            <Input
+                                class="w250"
+                                type="password"
+                                v-model="edit_member_form.conf_pwd"
+                            />
+                        </li>
+                    </ul>
+                    <div class="add-member-btn">
+                        <button
+                            v-if="right_show==='check'"
+                            class="btn-plain-large"
+                            @click="dia_show=''"
+                        >取消</button>
+                        <button v-else class="btn-blue-large ml20" @click="editMemberCfm">确认</button>
+                    </div>
+                </div>
+            </div>
+        </Dialog>
+        <Modal :show.sync="mod_show" :title="mod_title" :content="mod_cont" @confirm="modConf"></Modal>
     </div>
 </template> <script>
 import Tree from '../../commonComponents/Tree.vue'
@@ -114,17 +186,19 @@ export default {
     },
     data() {
         return {
+            right_show: 'add', // 默认为添加组
             filter: {
                 group: ''
             },
-            edit: {
+            group_list: [],
+            edit_form: {
                 name: ''
             },
-            tree_list: JSON.parse(JSON.stringify(window.all.menu_list)), // 拷贝
+            tree_list: [],
             authority_list: [],
             tree_show: false,
             // table
-            headers: ['名称','邮箱','状态','操作'],
+            headers: ['名称', '邮箱', '状态', '操作'],
             list: [
                 {
                     a1: 'admin',
@@ -143,13 +217,88 @@ export default {
             ],
             total: 0,
             pageNo: 1,
-            pageSize: 25
+            pageSize: 25,
+            dia_show: '',
+            dia_title: '',
+            /* 添加成员 */
+            add_member_form: {
+                acc: '',
+                email: '',
+                pwd: '',
+                cfm_pwd: ''
+            },
+            // 修改密码
+            edit_member_form: {
+                pwd: '',
+                cfm_pwd: ''
+            },
+            // 启用 禁用modal
+            mod_show: false,
+            mod_title: '',
+            mod_cont: ''
         }
     },
     computed: {},
     methods: {
+        addsort() {
+            this.right_show = 'add'
+        },
+        // 查看点击组
+        check() {
+            this.right_show = 'check'
+        },
+        edit(group) {
+            this.right_show = 'edit'
+        },
+        // 后台res 转化为 tree 数组
+        resToTree(list) {
+            return Object.keys(list).map(key => {
+                let item = {}
+
+                item.label = list[key].label
+                item.id = list[key].id
+                if (list[key].child) {
+                    item.child = this.resToTree(list[key].child)
+                }
+                return item
+            })
+        },
+        getTreeList() {
+            // this.tree_list = JSON.parse(JSON.stringify(window.all.menu_list))
+            // console.log('想要的tree_list: ', this.tree_list);
+            // this.tree_list.forEach((item, index) => {
+            //     item.id = index
+            // })
+            let self = this
+            let { url, method } = this.$api.menu_all_list
+            this.$http({
+                method: method,
+                url: url
+            }).then(res => {
+                // console.log('res👌: ', res);
+                if (res && res.code === '200') {
+                    self.total = res.data.total
+                    self.tree_list = this.resToTree(res.data)
+                } else {
+                    if (res && res.message !== '') {
+                        self.toast.error(res.message)
+                    }
+                }
+            })
+        },
         getAuthorityList() {
             let list = this.tree_list
+            // list.forEach(item=>{
+            //     item.checked = Boolean(item.checked)
+            //     if(item.child){
+            //         console.log('item child',item.child)
+            //         item.child.forEach(element => {
+            //             console.log('element元素: ', element);
+            //             element.checked = true
+            //         });
+            //     }
+            // })
+            console.log('list: ', list)
             let arr = []
             list.forEach(item => {
                 if (item.child) {
@@ -157,7 +306,7 @@ export default {
                         if (child_item.checked) {
                             arr.push({
                                 label: child_item.label,
-                                id: '5'
+                                id: child_item.id
                             })
                         }
                     })
@@ -165,7 +314,7 @@ export default {
                 if (item.path === '/home' && item.checked) {
                     arr.push({
                         label: item.label,
-                        id: '5'
+                        id: item.id
                     })
                 }
             })
@@ -177,19 +326,28 @@ export default {
             this.tree_show = false
         },
         treeUpd(bool, index, list) {
+            // console.log('外部获取里面反馈: ', list);
             // 重新赋值让其能检测到
             this.tree_list = list.map(item => item)
+            // console.log('外部tree_list更新: ', this.tree_list)
             this.getAuthorityList()
         },
-        // 子集全选则 父级选中  ,目前只二级菜单。。
+        // 子集全选则 父级选中  ,目前到二级菜单。。
         isChildSelAll(list) {
             list.forEach((lev1, lev1_idx) => {
                 if (lev1.child) {
-                    lev1.checked = lev1.child.every(item => item.checked)
+                    lev1.checked = lev1.child.every(item => {
+                        // if(item.child){
+                        //     item.checked = item.child.every(i => i.checked)
+                        // }
+                        return item.checked
+                    })
                 }
                 // return lev1
             })
+            this.list = this.list.concat()
         },
+        // 打开tree 下拉表
         openTree() {
             if (this.tree_show) {
                 // this.tree_show = false
@@ -197,13 +355,11 @@ export default {
                 let self = this
                 setTimeout(() => {
                     this.tree_show = true
-                    // this.$refs.tree
-                    console.log('this.$refs.tree: ', self.$refs)
                     $(this.$refs.tree).slideDown(200)
                 }, 0)
             }
         },
-        // 关闭 tab
+        // 关闭 tab 框(点击tab里那个叉叉时触发..)
         tabClose(sel_item) {
             this.tree_list = this.tree_list.map((item, index) => {
                 if (item.child) {
@@ -222,10 +378,72 @@ export default {
             this.getAuthorityList()
             this.isChildSelAll(this.tree_list)
         },
+        groupAddCfm() {
+            let para = {
+                name: this.filter.vendor,
+                status: this.filter.status,
+                pageSize: this.pageSize,
+                page: this.pageNo
+            }
+            let params = window.all.tool.rmEmpty(para)
+            let { url, method } = this.$api.admin_class_add
+            this.$http({
+                method: method,
+                url: url,
+                data: params
+            }).then(res => {
+                if (res && res.code === '200') {
+                    this.$toast.sucess(res.message)
+                } else {
+                    this.$toast.error(res.message)
+                }
+            })
+        },
+        groupSetCfm() {},
+        addMember() {
+            this.dia_show = 'add_member'
+        },
+        // 添加成员确认
+        addMemberCfm() {},
+        editPwd(row) {
+            this.dia_show = 'edit_pwd'
+        },
+        memberStatuUpd(row) {
+            let status = row.a3
+            if (status === '1') {
+                this.mod_title = '禁用'
+                this.mod_cont = '是否确认禁用该成员!'
+            } else if (status === '0') {
+                this.mod_title = '启用'
+                this.mod_cont = '是否确认启用该成员!'
+            }
+            this.mod_show = true
+        },
+        editMemberCfm() {},
+        // 确认禁用,或确认启用
+        modConf() {},
+        getGroupList() {
+            let para = {}
+            // let params = window.all.tool.rmEmpty(para)
+            let { url, method } = this.$api.admin_class_list
+            this.$http({
+                method: method,
+                url: url
+                // params:params
+            }).then(res => {
+                if (res && res.code === '200') {
+                    this.group_list = res.data
+                }
+            })
+        },
         updateNo(val) {},
-        updateSize(val) {},
+        updateSize(val) {}
     },
-    mounted() {}
+    mounted() {
+        this.getGroupList()
+        this.getAuthorityList()
+        this.getTreeList()
+    }
 }
 </script>
 <style scoped>
@@ -352,5 +570,26 @@ export default {
 /* table 内容*/
 .table {
     margin-top: 20px;
+}
+.form > li {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+.form > li span:first-child {
+    width: 70px;
+    text-align: right;
+    margin-right: 10px;
+}
+.w250 {
+    width: 250px;
+}
+.add-member-btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+.ml20 {
+    margin-left: 20px;
 }
 </style>

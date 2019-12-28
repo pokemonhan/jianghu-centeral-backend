@@ -34,78 +34,79 @@ export default {
 
 
     /*=========================== 3.游戏管理 ===========================--*/
-     /* 3.1 厂商管理   */
-     //----- 游戏厂商列表
-     game_vendor_list: {
+    /* 3.1 厂商管理   */
+    //----- 厂商管理 - 列表
+    game_vendor_list: {
         url: '/headquarters-api/game-vendor/opt-index-do',
         method: 'get'
     },
-    // 游戏厂商改变状态
+    // 厂商管理 - 改变状态
     game_vendor_status_set: {
         url: '/headquarters-api/game-vendor/opt-status-do',
         method: 'post'
     },
     /* 3.2 分类设置 --------- */
-    // 游戏分类列表
+    // 分类设置 - 列表
     game_sort_list: {
         url: '/headquarters-api/game-type/opt-index-do',
         method: 'get'
     },
-    // 游戏分类改变状态
+    // 分类设置 - 改变状态
     game_sort_status_set: {
         url: '/headquarters-api/game-type/opt-status-do',
         method: 'post'
     },
-   
-    // 3.3 游戏管理 游戏列表
+
+    // 3.3 游戏管理 - 列表
     game_list: {
         url: '/headquarters-api/game/opt-index-do',
         method: 'get'
     },
-    // 游戏改变状态
+    // 游戏管理 - 改变状态
     game_status_set: {
         url: '/headquarters-api/game/opt-status-do',
         method: 'post'
     },
-    // 编辑游戏
+    // 游戏管理 - 编辑
     game_set: {
         url: '/headquarters-api/game/opt-edit-do',
         method: 'post'
     },
 
     /*=========================== 金流管理 ===========================--*/
-    // 金流分类列表
-    finance_sort_list: {
-        url: '/headquarters-api/finance-type/opt-index-do',
-        method: 'get'
-    },
-    // 金流分类改变状态
-    finance_sort_set: {
-        url: '/headquarters-api/finance-type/opt-status-do',
-        method: 'post'
-    },
-    // 金流厂商列表
+
+    // 厂商管理
     finance_vendor_list: {
         url: '/headquarters-api/finance-vendor/opt-index-do',
         method: 'get'
     },
-    // 金流厂商改变状态
+    // 厂商管理 - 改变状态
     finance_vendor_status_set: {
         url: '/headquarters-api/finance-vendor/opt-status-do',
         method: 'post'
     },
-    //  金流通道列表
+    // 分类管理 - 列表
+    finance_sort_list: {
+        url: '/headquarters-api/finance-type/opt-index-do',
+        method: 'get'
+    },
+    // 分类管理 - 改变状态
+    finance_sort_set: {
+        url: '/headquarters-api/finance-type/opt-status-do',
+        method: 'post'
+    },
+    //  通道管理 - 列表
     finance_channel_list: {
         url: '/headquarters-api/finance-channel/opt-index-do',
         method: 'get'
     },
-    //  金流通道改变状态
+    //  通道管理 - 改变状态
     finance_channel_status_set: {
         url: '/headquarters-api/finance-channel/opt-status-do',
         method: 'post'
     },
 
-    //  金流通道编辑
+    //  通道管理 - 编辑
     finance_channel_set: {
         url: '/headquarters-api/finance-channel/opt-edit-do',
         method: 'post'
@@ -310,24 +311,49 @@ export default {
     },
 
     /*=========================== 管理员分组 ===========================--*/
-    //  管理员组-获取管理员组列表
+    //  管理员分组-获取管理员组列表
     admin_class_list: {
         url: '/headquarters-api/backend-admin-group/detail',
         method: 'get'
     },
-    // 管理员组-创建管理员组
-    admin_class_list: {
+    // 管理员分组-创建管理员组
+    admin_class_add: {
         url: '/headquarters-api/backend-admin-group/create',
         method: 'post'
     },
-    // 管理员组-编辑管理员组
+    // 管理员分组-编辑管理员组
     admin_class_set: {
         url: '/headquarters-api/backend-admin-group/edit',
         method: 'post'
     },
-    // 管理员组-删除管理员组
-    admin_class_set: {
+    // 管理员分组-删除管理员组
+    admin_class_del: {
         url: '/headquarters-api/backend-admin-group/delete-access-group',
+        method: 'post'
+    },
+    // 管理员分组-创建管理员用户
+    admin_user_add: {
+        url: '/headquarters-api/headquarters-admin-user/create',
+        method: 'post'
+    },
+    // 管理员分组 - 管理员更换组
+    admin_user_group_set: {
+        url: '/headquarters-api/headquarters-admin-user/update-admin-group',
+        method: 'post'
+    },
+    // 管理员分组 - 修改其他管理员密码
+    admin_user_other_pwd_set: {
+        url: '/headquarters-api/headquarters-admin-user/update-password',
+        method: 'post'
+    },
+    // 管理员分组 - 删除管理员
+    admin_user_del: {
+        url: '/headquarters-api/headquarters-admin-user/delete-admin',
+        method: 'post'
+    },
+    // 管理员分组 - 查找管理员
+    admin_user_list: {
+        url: '/headquarters-api/headquarters-admin-user/search-admin',
         method: 'post'
     },
 
@@ -343,7 +369,7 @@ export default {
         method: 'post'
     },
     //  菜单开发-菜单删除
-    menu_add: {
+    menu_del: {
         url: '/headquarters-api/menu/delete',
         method: 'post'
     },

@@ -1,18 +1,10 @@
 <template>
-    <div class="cont">
+    <div class="container">
         <div class="filter p10">
             <ul class="left">
-                 <li>
-                    <span>通道名称</span>
-                    <Select v-model="filter.channel" :options="channel_opt"></Select>
-                </li>
                 <li>
-                    <span>厂商名称</span>
-                    <Select v-model="filter.vendor" :options="vendor_opt"></Select>
-                </li>
-                <li>
-                    <span>分类名称</span>
-                    <Select v-model="filter.sort" :options="sort_opt" ></Select>
+                    <span>管理员</span>
+                    <Input class="w100" v-model="filter.admin" />
                 </li>
                 <li>
                     <span>日期选择</span>
@@ -28,9 +20,11 @@
         <div>
             <ul class="opera-list">
                 <li v-for="(item, index) in 5" :key="index">
-                    <span style="min-width:150px;text-align:right;">{{index=='1'?'1111小时50分前':'1小时前'}}</span>
+                    <span
+                        style="min-width:150px;text-align:right;"
+                    >{{index=='1'?'1111小时50分前':'1小时前'}}</span>
                     <div class="pic-cont">
-                        <img class="img" src="../../../assets/image/game/img (1).jpg" alt="图片丢失">
+                        <img class="img" src="../../../assets/image/game/img (1).jpg" alt="图片丢失" />
                         <div :class="[index!==4?'vertical-bar':'']"></div>
                     </div>
                     <div class="opera-cont">
@@ -50,7 +44,7 @@
         </div>
         <Dialog :show.sync="dia_show" title="操作详情">
             <div class="dia-inner">
-                <ul class="dia-cont">
+                <ul>
                     <li>
                         <div class="bold-blue">操作设置:</div>
                         <div class="mt8">修改抢红包金额</div>
@@ -60,6 +54,7 @@
                         <div class="bold-blue mt8">删除内容:</div>
                         <div class="mt8">删除14:30抢红包活动</div>
                     </li>
+                    
                 </ul>
             </div>
         </Dialog>
@@ -68,33 +63,10 @@
 export default {
     data() {
         return {
-             filter: {
-                vendor: '',
-                name: '',
-                sort: '',
+            filter: {
+                admin: '',
                 dates: []
-
             },
-            channel_opt: [
-                { label: '全部', value: '' },
-                { label: '红牛', value: '1' },
-                { label: '东鹏？', value: '2' }
-            ],
-            vendor_opt: [
-                { label: '全部', value: '0' },
-                { label: '抢庄牛牛', value: '1' },
-                { label: '百家乐', value: '2' }
-            ],
-            sort_opt: [
-                {
-                    label: '抢庄牛牛',
-                    value: '1'
-                },
-                {
-                    label: '百家乐',
-                    value: '2'
-                }
-            ],
             dia_show: false
         }
     },
@@ -105,7 +77,8 @@ export default {
     },
     mounted() {}
 }
-</script> <style scoped>
+</script>
+<style scoped>
 .cont {
     width: 1000px;
     max-height: 80vh;
@@ -145,14 +118,13 @@ export default {
 /* 竖线 */
 .opera-list > li .vertical-bar {
     position: absolute;
-    top:40px;
+    top: 40px;
     left: 50%;
     bottom: 0;
     width: 2px;
     height: 45px;
     background: #eee;
 }
-
 
 .opera-list > li .opera-cont {
     display: flex;
@@ -166,7 +138,7 @@ export default {
     border-radius: 5px;
 }
 .opera-list > li .cont-title {
-    font-weight:  bold;
+    font-weight: bold;
     color: #4c8bfd;
 }
 .mt8 {
@@ -176,7 +148,7 @@ export default {
     font-weight: bold;
     color: #4c8bfd;
 }
-.mt30{
+.mt30 {
     margin-top: 30px;
 }
 .dia-inner {

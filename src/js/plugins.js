@@ -14,13 +14,14 @@ import QuickQuery from '../components/commonComponents/QuickQuery.vue'
 import TwoTable from '../components/commonComponents/TwoTable.vue'
 
 import Toast from '../components/commonComponents/Toast.vue'
-
+// import DragTree from '../components/commonComponents/dragtree/index.js'
 
 // 指令
 import directives from './config/directive.js'
 
 //axios
 import $http from '../js/config/$http.js'
+// api 后端接口
 import $api from '../js/config/api.js'
 
 // websocket
@@ -40,7 +41,8 @@ const components = {
     Checkbox,
     Radio,
     QuickQuery,
-    TwoTable
+    TwoTable,
+    // DragTree
 }
 
 

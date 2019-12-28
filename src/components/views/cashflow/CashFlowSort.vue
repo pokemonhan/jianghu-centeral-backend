@@ -4,15 +4,15 @@
         <div class="filter p10">
             <ul class="left">
                 <li>
-                    <span>分类管理</span>
+                    <span>分类名称</span>
                     <Input class="w100" v-model="filter.name" />
                 </li>
                 <li>
                     <span>厂商状态</span>
-                    <Select v-model="filter.status" :options="status_opt" ></Select>
+                    <Select v-model="filter.status" :options="status_opt"></Select>
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                 </li>
             </ul>
         </div>
@@ -20,12 +20,12 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
+                    <td>{{row.name}}</td>
+                    <td>{{row.last_editor?row.last_editor.name:'--'}}</td>
+                    <td>{{row.updated_at}}</td>
+                    <td :class="[row.status===1?'green':'red']">{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td>
                     <td>
-                        <span class="a" @click="opera(row)">{{row.a2==='1'?'禁用':'启用'}}</span>
+                        <span class="a" @click="opera(row)">{{row.a2===1?'禁用':'启用'}}</span>
                     </td>
                 </template>
             </Table>
@@ -39,7 +39,13 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Modal :show.sync="mod_show" :title="mod_title" :content="mod_cont" @cancel="mod_show=false" @confirm="modConf"></Modal>
+        <Modal
+            :show.sync="mod_show"
+            :title="mod_title"
+            :content="mod_cont"
+            @cancel="mod_show=false"
+            @confirm="modConf"
+        ></Modal>
     </div>
 </template> <script>
 export default {
@@ -50,39 +56,31 @@ export default {
                 status: ''
             },
             status_opt: [
-                {label:'全部',value: ''},
-                {label:'开启',value: '1'},
-                {label:'关闭',value: '0'},
+                { label: '全部', value: '' },
+                { label: '开启', value: '1' },
+                { label: '关闭', value: '0' }
             ],
-            headers: ['编号','分类名称','最后更新人','最后跟新时间','状态','操作'],
-            list: [
-                {
-                    a1: '64646466',
-                    a2: '1',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                },
-                {
-                    a1: '64646466',
-                    a2: '0',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                }
+            headers: [
+                '编号',
+                '分类名称',
+                '最后更新人',
+                '最后跟新时间',
+                '状态',
+                '操作'
             ],
-            status_obj:{
+            list: [],
+            status_obj: {
                 '1': '禁用',
-                '0': '启用',
+                '0': '启用'
             },
             total: 0,
             pageNo: 1,
             pageSize: 25,
 
             mod_show: false,
-            mod_title: '',      
+            mod_title: '',
             mod_cont: '',
-            
+            curr_row: {}
         }
     },
     methods: {
@@ -90,19 +88,60 @@ export default {
         updateSize(val) {},
         opera(row) {
             this.mod_show = true
-            if(row.a2==='1'){
+            this.curr_row =row
+            if (row.a2 === '1') {
                 this.mod_title = '禁用'
                 this.mod_cont = '是否确认禁用该支付厂商!'
-            }else {
+            } else {
                 this.mod_title = '启用'
                 this.mod_cont = '是否确认启用该支付厂商!'
             }
         },
         modConf() {
-
+            let params = {}
+            params.status = this.curr_row.status === 1 ? 0 : 1
+            params.id = this.curr_row.id
+            let { url, method } = this.$api.finance_sort_set
+            this.$http({ method, url, params }).then(res => {
+                if (res && res.code === '200') {
+                    this.$toast.success(res.message)
+                    this.mod_show = false
+                    this.getList()
+                } else {
+                    res && this.$toast(res.message)
+                }
+            })
+        },
+        getList() {
+            let self = this
+            let para = {
+                name: this.filter.name,
+                status: this.filter.status,
+                pageSize: this.pageSize,
+                page: this.pageNo
+            }
+            let params = window.all.tool.rmEmpty(para)
+            let { url, method } = this.$api.finance_sort_list
+            this.$http({
+                method: method,
+                url: url,
+                params: params
+            }).then(res => {
+                console.log('res: ', res);
+                if (res && res.code === '200') {
+                    self.total = res.data.total
+                    this.list = res.data.data
+                } else {
+                    if (res && res.message !== '') {
+                        self.toast.error(res.message)
+                    }
+                }
+            })
         }
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script> <style scoped>
 .w100 {
