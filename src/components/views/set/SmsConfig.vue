@@ -1,6 +1,7 @@
 <template>
     <div class="container">
-        厅主列表
+        <!-- 短信配置 -->
+        
         <div class="filter p10">
             <ul class="left">
                 <li>
@@ -137,7 +138,7 @@ export default {
             pageNo: 1,
             pageSize: 25,
             /* table 编辑dialog内容 */
-            dia_show: true,
+            dia_show: false,
             form: {
                 name: '',
                 ident: '',
@@ -149,7 +150,7 @@ export default {
                 add: ''
             },
             // mod 确认框
-            mod_show: true,
+            mod_show: false,
             mod_title: '',
             mod_cont: '',
         }

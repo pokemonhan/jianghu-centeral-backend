@@ -1,5 +1,7 @@
 <template>
     <div class="container total-menu">
+        <!-- 总控菜单 -->
+        
         <div class="tol-left">
             <div class="head">编辑菜单</div>
             <div class="head-sub">
@@ -357,10 +359,10 @@ export default {
             console.log(e)
         },
         quoteMsg() {
-            alert('点击引用')
+            console.log('点击引用')
         },
         deleteMsg() {
-            alert('点击删除')
+            console.log('点击删除')
         },
         rightExpand(index) {
             let ele = this.$refs[index]
@@ -421,16 +423,14 @@ export default {
     transform: scale(0.7);
     /* transform: translateY(-10%); */
 }
-.lev1 .title {
-    /* cursor: pointer; */
-}
+/* .lev1 .title {
+} */
 .lev1 > li {
     margin-top: 10px;
 }
 
-.lev1 > li > .title > span {
-    /* font-weight: 600; */
-}
+/* .lev1 > li > .title > span { */
+/* } */
 .lev2 {
     margin-left: 10px;
     font-size: 12px;

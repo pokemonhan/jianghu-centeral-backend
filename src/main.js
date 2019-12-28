@@ -27,7 +27,7 @@ window.all = {
   wangeditor
 }
 /* eslint-disable no-new */
-new Vue({
+window.__vm__=new Vue({
   el: '#app',
   router,
   store,

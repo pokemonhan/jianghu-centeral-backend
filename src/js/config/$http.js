@@ -1,6 +1,5 @@
 import axios from 'axios'
 import router from '../router'
-// import 
 
 const ERROR_MAP = {
    //MenuController
@@ -78,13 +77,13 @@ const ERROR_MAP = {
 
 
 // const BASE_PATH = location.protocol + '//api.jianghu.local'
-const BASE_PATH = location.protocol + '//api.jianghu.ethan'
-// const BASE_PATH = '/api'
+// const BASE_PATH = location.protocol + '//api.jianghu.ethan'
+const BASE_PATH = '/api'
 
 let http = axios.create({
     baseURL: BASE_PATH,
     // timeout: 10000,
-    // retry: 3,
+    // retry: 2,
     // retryDelay: 1000,
     header:{
         'Content-Type': 'application/json; charset=utf-8',
@@ -123,8 +122,9 @@ http.interceptors.response.use(res =>{
                 router.push('/login')
             }
             
-            if(res.data.message!==''){
-                alert(res.data.message)
+            if(res.status!==200){
+                // alert('出现网络问题')
+                window.__vm__.$toast.error('出现网络问题,或被服务禁止。')
             }
         }
     }else{
