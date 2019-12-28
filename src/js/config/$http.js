@@ -76,9 +76,9 @@ const ERROR_MAP = {
 }
 
 
-// const BASE_PATH = location.protocol + '//api.jianghu.local'
-// const BASE_PATH = location.protocol + '//api.jianghu.ethan'
-const BASE_PATH = '/api'
+const BASE_PATH = location.protocol + '//api.jianghu.local'
+// const BASE_PATH = location.protocol + '//api.397017.com'
+// const BASE_PATH = '/api'
 
 let http = axios.create({
     baseURL: BASE_PATH,
