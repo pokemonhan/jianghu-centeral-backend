@@ -135,7 +135,7 @@ http.interceptors.response.use(res => {
             }
         }
     } else {
-      
+
         let message = res.message || res.data.message
         if (message) {
             window.__vm__.$toast.error(message)
@@ -148,10 +148,10 @@ http.interceptors.response.use(res => {
     }
 
     return res.data
-}, error => {
-    // window._Vue_.$toast(error.toString())
-    console.log(error)
-
 })
+// , error => {
+//     // window._Vue_.$toast(error.toString())
+//     // console.log(error)
 
+// } 
 export default http
