@@ -84,8 +84,13 @@ export default {
         }
     },
     methods: {
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo() {
+            this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            this.getList()
+        },
         opera(row) {
             this.mod_show = true
             this.curr_row =row
@@ -98,11 +103,11 @@ export default {
             }
         },
         modConf() {
-            let params = {}
-            params.status = this.curr_row.status === 1 ? 0 : 1
-            params.id = this.curr_row.id
+            let data = {}
+            data.status = this.curr_row.status === 1 ? 0 : 1
+            data.id = this.curr_row.id
             let { url, method } = this.$api.finance_sort_set
-            this.$http({ method, url, params }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
                     this.mod_show = false

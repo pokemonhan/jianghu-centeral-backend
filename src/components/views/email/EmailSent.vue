@@ -11,7 +11,7 @@
                     <Input class="w100" v-model="filter.sender" />
                 </li>
                 <li>
-                    <span>收件时间</span>
+                    <span>发件时间</span>
                     <Date v-model="filter.dates[0]" @update="timeUpdate()" />
                     <span style="margin: 0 5px;">~</span>
                     <Date v-model="filter.dates[1]" @update="timeUpdate()" />
@@ -53,9 +53,9 @@
             />
         </div>
         <!-- 详情 -->
-        <Dialog :show.sync="dia_show" title="收件箱详情">
+        <Dialog :show.sync="dia_show" title="已发邮件详情">
             <div class="dia-inner">
-                <Detail @close="dia_show=false" />
+                <Detail isSend @close="dia_show=false" />
             </div>
         </Dialog>
         <!-- 删除确认 -->

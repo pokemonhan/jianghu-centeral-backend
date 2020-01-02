@@ -7,7 +7,7 @@ Vue.use(Vuex);
 const state = {
     isShowLoading: false,
     showMask: false,
-    tab_nav_list: []         // 顶部导航菜单
+    tab_nav_list: []         // 顶部导航菜单 顶部导航菜单 顶部导航菜单 
 };
 const getters = {}
 const mutations = {};

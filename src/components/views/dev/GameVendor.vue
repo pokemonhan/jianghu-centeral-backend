@@ -83,7 +83,6 @@
                         <li class="center-box">
                             <button class="btn-plain-large" @click="dia_show=false">取消</button>
                             <button class="btn-blue-large ml50">确认</button>
-                            
                         </li>
                     </ul>
                 </div>
@@ -158,7 +157,6 @@ export default {
         }
     },
     methods: {
-        getList() {},
         add() {
             this.dia_show = true
             this.dia_title = '添加'
@@ -178,14 +176,39 @@ export default {
             this.mod_title = '删除'
             this.mod_cont = '是否确定删除该游戏产商！'
         },
-        modConf() {
-
+        modConf() {},
+        getList() {
+            let para = {
+                // name: this.filter.vendor,
+                // status: this.filter.status,
+                // pageSize: this.pageSize,
+                //     page: this.pageNo
+            }
+            let params = window.all.tool.rmEmpty(para)
+            let { url, method } = this.$api.xxxxxxxxx
+            this.$http({ method, url, params }).then(res => {
+                console.log('列表👌: ', res);
+                if (res && res.code === '200') {
+                    this.total = res.data.total
+                    this.list = res.data.data
+                    this.$toast.success(res && res.message)
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo() {
+            // this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            // this.getList()
+        },
     },
     mounted() {
-        this.getList()
+        // this.getList()
     }
 }
 </script> <style scoped>
@@ -231,5 +254,4 @@ export default {
     display: flex;
     justify-content: center;
 }
-
 </style>

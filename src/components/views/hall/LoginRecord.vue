@@ -73,8 +73,13 @@ export default {
         }
     },
     methods: {
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo() {
+            // this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            // this.getList()
+        },
     },
     mounted() {
         this.filter.acc = '你好世界'

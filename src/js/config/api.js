@@ -5,7 +5,7 @@ export default {
      * 增  add
      * 删  del
      * 改  set
-     * 查  list 或 search
+     * 查  list (或search)
      * 
     */
     // 登录
@@ -25,12 +25,36 @@ export default {
 
     /*=========================== 2.厅主列表 ===========================--*/
 
-    // 添加厅主
-    merchant_list_add: {
-        url: '/headquarters-api/merchant-admin-user/do-add',
+    // 厅主列表 - 列表
+    platform_list: {
+        url: '/headquarters-api/platform/detail',
+        method: 'get'
+    },
+    // 厅主列表-站点管理
+    platform_set: {
+        url: '/headquarters-api/platform/edit',
         method: 'post'
     },
-    // 
+    // 厅主列表 - 添加厅主
+    platform_add: {
+        url: '/headquarters-api/platform/do-add',
+        method: 'post'
+    },
+    // 厅主列表 -禁用启用
+    platform_switch_set: {
+        url: '/headquarters-api/platform/switch',
+        method: 'post'
+    },
+    // 厅主列表 -域名管理-列表
+    platform_domain_list: {
+        url: '/headquarters-api/platform/domain-detail',
+        method: 'post'
+    },
+    // 厅主列表 -域名管理-添加
+    platform_domain_list: {
+        url: '/headquarters-api/platform/domain-add',
+        method: 'post'
+    },
 
 
     /*=========================== 3.游戏管理 ===========================--*/
@@ -122,27 +146,27 @@ export default {
         method: 'post'
     },
     /*=========================== 开发管理 ===========================--*/
-    //  添加游戏种类  (注意前面有个 游戏分类 )
+    //  游戏分类配置-添加  (注意前面有个 游戏分类,不要混淆 )
     dev_game_type_add: {
         url: '/headquarters-api/game-type/add-do',
         method: 'post'
     },
-    //  编辑游戏种类
+    //  游戏分类配置 - 编辑
     dev_game_type_set: {
         url: '/headquarters-api/game-type/edit-do',
         method: 'post'
     },
-    //  游戏种类列表
+    //  游戏分类配置 - 列表
     dev_game_type_list: {
         url: '/headquarters-api/game-type/index-do',
         method: 'get'
     },
-    //  游戏种类删除
+    //  游戏种类配置 - 删除
     dev_game_type_del: {
         url: '/headquarters-api/game-type/del-do',
         method: 'post'
     },
-    //  游戏分类改变状态
+    //  游戏分类配置 -改变状态
     dev_game_sort_status_set: {
         url: '/headquarters-api/game-type/status-do',
         method: 'post'
@@ -184,7 +208,7 @@ export default {
         url: '/headquarters-api/game/edit-do',
         method: 'post'
     },
-    //  游戏列表
+    //  游戏管理配置 - 列表
     dev_game_list: {
         url: '/headquarters-api/game/index-do',
         method: 'get'
@@ -194,7 +218,7 @@ export default {
         url: '/headquarters-api/game/del-do',
         method: 'post'
     },
-    //  获取游戏列表的查询条件
+    //  游戏管理配置 - 获取游戏列表的查询条件
     dev_game_search_condition_get: {
         url: '/headquarters-api/game/get-search-condition',
         method: 'get'
@@ -229,7 +253,7 @@ export default {
         url: '/headquarters-api/finance-type/status-do',
         method: 'poat'
     },
-    //  金流厂商添加
+    //  金流厂商配置 - 添加
     dev_finance_vendor_add: {
         url: '/headquarters-api/finance-vendor/add-do',
         method: 'post'
@@ -239,7 +263,7 @@ export default {
         url: '/headquarters-api/finance-vendor/index-do',
         method: 'get'
     },
-    //  金流厂商编辑
+    //  金流厂商配置 - 编辑
     dev_finance_vendor_set: {
         url: '/headquarters-api/finance-vendor/edit-do',
         method: 'post'
@@ -354,6 +378,16 @@ export default {
     // 管理员分组 - 查找管理员
     admin_user_list: {
         url: '/headquarters-api/headquarters-admin-user/search-admin',
+        method: 'post'
+    },
+    //  获取组管理员角色 (管理员分组 - 获取各组成员table)
+    admin_group_user_list: {
+        url: '/headquarters-api/backend-admin-group/specific-group-users',
+        method: 'post'
+    },
+    //  修改管理员状态
+    admin_user_status_set: {
+        url: '/headquarters-api/headquarters-admin-user/switch-admin',
         method: 'post'
     },
 

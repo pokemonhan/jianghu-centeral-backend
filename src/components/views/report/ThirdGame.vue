@@ -92,8 +92,13 @@ export default {
             //同步快捷查询按钮状态
             this.quick_query = this.filter.dates
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo() {
+            // this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            // this.getList()
+        },
     },
     mounted() {}
 }

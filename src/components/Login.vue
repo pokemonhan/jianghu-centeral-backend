@@ -53,7 +53,7 @@
                                 <span class="pic-change">换一张</span>
                                 </div>
                                 <div v-show="verifyMsg" class="err-item">{{verifyMsg}}</div>
-                            </li> -->
+                            </li>-->
                             <li style="margin-top:40px;">
                                 <button class="login-btn" @click="login">登录</button>
                             </li>
@@ -73,11 +73,11 @@ export default {
             account: '',
             password: '',
             verifyCode: '',
-            unameReg: /^.{8,16}$/,
-            pwdReg: /^[0-9A-Za-z]{8,16}$/,
+            unameReg: /^.{8,32}$/,
+            pwdReg: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/,
             accMsg: '',
             pwdMsg: '',
-            verifyMsg: '',
+            verifyMsg: ''
         }
     },
     methods: {
@@ -97,7 +97,7 @@ export default {
             } else {
                 this.pwdMsg = this.pwdReg.test(this.password)
                     ? ''
-                    : '请输入8-16个字母及数字组合'
+                    : '请输入8-16个字母+数字组合'
             }
             // return this.pwdMsg ? false : true
             return true
@@ -118,30 +118,31 @@ export default {
                 email: this.account,
                 password: this.password
             }
-            let {url, method} = this.$api.login
+            let { url, method } = this.$api.login
             let self = this
             if (this.checkUname() && this.checkPwd()) {
-                // this.$http.post('/headquarters-api/login',params).then(res=>{
                 this.$http({
                     method: this.$api.login.method,
                     url: this.$api.login.url,
-                    data: params
+                    data: params // post 请求用data
                 })
-                .then(res => {
-                    if (res && res.code === '200') {
-                        window.all.tool.setLocal( 'expires_at', res.data.expires_at )
-                        window.all.tool.setLocal( 'Authorization', res.data.token_type + ' ' + res.data.access_token )
-                        self.$toast.success('登陆成功')
-                        self.$router.push('/')
-                    } else {
-                        console.log(res)
-                        // self.$toast.warning(res.message)
-                    }
-                })
-                .catch(err => {
-                    if(err.indexOf('403')){
-                    }
-                })
+                    .then(res => {
+                        if (res && res.code === '200') {
+                            let Authorization = res.data.token_type + ' ' + res.data.remember_token
+                            window.all.tool.setLocal('Authorization', Authorization)
+                            self.$toast.success('登陆成功')
+                            setTimeout(() => {
+                                self.$router.push('/')
+                            }, 200);
+                        } else {
+                            console.log(res)
+                            // self.$toast.warning(res.message)
+                        }
+                    })
+                    .catch(err => {
+                        if (err.indexOf('403')) {
+                        }
+                    })
             }
         }
     }

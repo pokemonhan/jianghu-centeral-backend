@@ -86,10 +86,10 @@
                 pagesNum: 0,
                 pageRange: [],
                 pageSizeList: [
-                //     {
-                //     value: 2,
-                //     label: '2 条/页'
-                // },
+                    {
+                    value: 2,
+                    label: '2 条/页'
+                },
                     {
                     value: 25,
                     label: '25 条/页'
@@ -177,7 +177,8 @@
             },
             
             pageJump() {
-                
+                if(isNaN(this.jumpNo)) return 
+             
                 if(this.jumpNo > this.pagesNum) {
                     this.jumpNo = undefined
                     this.$toast.warning('不能超过最大页')

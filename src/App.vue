@@ -95,6 +95,7 @@ export default {
     position: fixed;
     top: 10px;
     left: 50%;
+    z-index: 100;
 }
 </style>
 

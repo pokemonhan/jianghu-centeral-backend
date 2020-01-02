@@ -1,6 +1,7 @@
 <template>
     <span :class="['v-input', size]">
         <input
+            :class="[,disabled?'disabled':'']"
             :type="type==='password'? 'password':'text'"
             ref="input"
             :placeholder="placeholder"
@@ -10,6 +11,7 @@
             @keyup="keyup"
             :maxlength="maxlength"
             :disabled="disabled"
+            :autocomplete="autocomplete"
         />
         <i v-if="icon" :class="['iconfont', icon]"></i>
     </span>
@@ -35,7 +37,10 @@ export default {
         },
         placeholder: String,
         value: String,
-        maxlength: [Number,String]
+        maxlength: [Number,String],
+        autocomplete:{
+            type: String,
+        }
     },
     model: {
         prop: "value",
@@ -85,6 +90,9 @@ export default {
     /* min-height: 26px; */
     /* min-width: 100px; */
     /* background: #fff; */
+}
+.disabled {
+    cursor: not-allowed;
 }
 input::placeholder{
     color:#ccc;

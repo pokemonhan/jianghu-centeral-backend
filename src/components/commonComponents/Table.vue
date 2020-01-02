@@ -118,7 +118,7 @@ tr td {
     border: 1px solid #6fa2fe;
     font-size: 13px;
 }
-/* .checkbox {
-   
-} */
+.checkbox {
+    justify-content: center;
+}
 </style>

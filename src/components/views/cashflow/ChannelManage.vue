@@ -189,14 +189,19 @@ export default {
         detail() {
             this.dia_show = true
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo() {
+            this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            this.getList()
+        },
         modConf() {
-            let params = {}
-            params.status = this.curr_row.status === 1 ? 0 : 1
-            params.id = this.curr_row.id
+            let post = {}
+            post.status = this.curr_row.status === 1 ? 0 : 1
+            post.id = this.curr_row.id
             let { url, method } = this.$api.finance_channel_status_set
-            this.$http({ method, url, params }).then(res => {
+            this.$http({ method, url, post }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
                     this.mod_show = false

@@ -8,7 +8,7 @@
                 </li>
                 <li>
                     <span>活动状态</span>
-                    <Select v-model="filter.status" :options="status_opt" ></Select>
+                    <Select v-model="filter.status" :options="status_opt"></Select>
                 </li>
                 <li>
                     <button class="btn-blue">查找</button>
@@ -48,9 +48,9 @@ export default {
                 status: ''
             },
             status_opt: [
-                {label: '全部',value: ''},
-                {label: '启用',value: '1'},
-                {label: '禁用',value: '0'}
+                { label: '全部', value: '' },
+                { label: '启用', value: '1' },
+                { label: '禁用', value: '0' }
             ],
             headers: [
                 '编号',
@@ -82,8 +82,13 @@ export default {
         }
     },
     methods: {
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo() {
+            this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            this.getList()
+        }
     },
     mounted() {}
 }

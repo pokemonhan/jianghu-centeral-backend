@@ -5,15 +5,15 @@
             <ul class="left">
                 <li>
                     <span>游戏名称</span>
-                    <Select v-model="filter.name" :options="name_opt"></Select>
+                    <Select v-model="filter.game_id" :options="game_opt"></Select>
                 </li>
                 <li>
                     <span>游戏厂商</span>
-                    <Select v-model="filter.name" :options="name_opt"></Select>
+                    <Select v-model="filter.vendor_id" :options="vendor_opt"></Select>
                 </li>
                 <li>
                     <span>游戏分类</span>
-                    <Select v-model="filter.name" :options="name_opt"></Select>
+                    <Select v-model="filter.type_id" :options="type_opt"></Select>
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
@@ -60,11 +60,19 @@
                         <ul class="form">
                             <li>
                                 <span>厂商选择:</span>
-                                <Select style="width:250px;" v-model="form.sort" :options="sort_opt"></Select>
+                                <Select
+                                    style="width:250px;"
+                                    v-model="form.vendor_id"
+                                    :options="vendor_opt"
+                                ></Select>
                             </li>
                             <li>
                                 <span>游戏分类:</span>
-                                <Select style="width:250px;" v-model="form.sort" :options="sort_opt"></Select>
+                                <Select
+                                    style="width:250px;"
+                                    v-model="form.game_id"
+                                    :options="game_opt"
+                                ></Select>
                             </li>
                             <li>
                                 <span>商户秘钥:</span>
@@ -182,9 +190,13 @@ export default {
     data() {
         return {
             filter: {
-                name: ''
+                game_id: '',
+                vendor_id: '',
+                type_id: ''
             },
-            name_opt: [{ label: '测试账号', value: 0 }],
+            game_opt: [],
+            vendor_opt: [],
+            type_opt: [],
             headers: [
                 '编号',
                 '游戏厂商',
@@ -201,7 +213,7 @@ export default {
             ],
             list: [
                 {
-                    a1: '开元棋牌',
+                    a1: '开元棋牌??',
                     a2: '抢庄牛牛',
                     a3: '热门棋牌',
                     a4: 'ADB',
@@ -213,7 +225,7 @@ export default {
                     a10: '2019-02-02 21:30'
                 },
                 {
-                    a1: '开元棋牌',
+                    a1: '开元棋牌???',
                     a2: '抢庄牛牛',
                     a3: '热门棋牌',
                     a4: 'ADB',
@@ -269,13 +281,80 @@ export default {
             this.mod_title = '删除'
             this.mod_cont = '是否确定删除该游戏名称？'
         },
-        modConf() {
-
+        modConf() {},
+        updateNo() {
+            this.getList()
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateSize() {
+            this.pageNo = 1
+            this.getList()
+        },
+        toSelectOpt(arr) {
+            let array = [
+                {
+                    label:'全部',
+                    value: '',
+                }
+            ]
+            let opt = arr.map(item => {
+                return { label: item.name, value: item.id }
+            })
+            return array.concat(opt)
+        },
+        getSelectOpt() {
+            let { url, method } = this.$api.dev_game_search_condition_get
+
+            this.$http({ method, url }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    
+                    this.game_opt = this.toSelectOpt(res.data.games)
+                    this.vendor_opt = this.toSelectOpt(res.data.vendors)
+                    this.type_opt = this.toSelectOpt(res.data.types)
+                    //this.$toast.success(res && res.message)
+                    //this.mod_show=false
+                    //this.getList()
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
+        },
+        getList() {
+            let para = {
+                // name: this.filter.vendor,
+                // status: this.filter.status,
+                // pageSize: this.pageSize,
+                // page: this.pageNo
+            }
+            let params = window.all.tool.rmEmpty(para)
+
+            let { url, method } = this.$api.dev_game_list
+            this.$http({ method, url, params }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.total = res.data.total
+                    this.list = res.data.data
+
+                    //this.$toast.success(res && res.message)
+                    //this.mod_show=false
+                    //this.getList()
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
+        }
     },
-    mounted() {}
+    created() {
+        this.getSelectOpt()
+    },
+    mounted() {
+        // this.getList()
+        
+    }
 }
 </script> <style scoped>
 .w100 {

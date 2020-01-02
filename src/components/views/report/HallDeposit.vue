@@ -84,8 +84,13 @@ export default {
                 name: ''
             }
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo() {
+            // this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            // this.getList()
+        },
     },
     mounted() {}
 }

@@ -131,22 +131,7 @@ export default {
                 '最后更新时间',
                 '操作'
             ],
-            list: [
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                },
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -245,8 +230,8 @@ export default {
         },
         editConf() {
             let { url, method } = this.$api.game_set
-            let params = this.form
-            this.$http({ url, method, params }).then(res => {
+            let data = this.form
+            this.$http({ url, method, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
                     this.getList()
@@ -272,12 +257,12 @@ export default {
             }
         },
         modConf() {
-            let params = {
+            let data = {
                 id: this.curr_row.id,
                 status: this.curr_row.status === 1 ? 0 : 1 // 状态反转
             }
             let { url, method } = this.$api.game_status_set
-            this.$http({ url, method, params }).then(res => {
+            this.$http({ url, method, data }).then(res => {
                 if (res && res.code === '200') {
                     res.message && this.$toast.success(res.message)
                     this.mod_show = false
@@ -293,8 +278,13 @@ export default {
             this.dia_title = '编辑详情'
         },
 
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo() {
+            this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            this.getList()
+        },
         getList() {
             let par = {
                 vendor_id: this.filter.vendor_id,

@@ -116,41 +116,7 @@
         <!-- 右边 -->
         <div class="tol-right">
             <div class="head">路由设置</div>
-            <div class="center-box">
-                <ul class="lev1">
-                    <li v-for="(lv1,lv1_idx) in menu" :key="lv1_idx">
-                        <div class="title">
-                            <i
-                                :class="['iconfont iconup',lv1.children?'':'hide']"
-                                @click="rightExpand('r'+lv1_idx)"
-                            ></i>
-                            <span class="title-cont">{{lv1.label}}</span>
-                        </div>
-                        <ul v-if="lv1.children" class="lev2" :ref="'r'+lv1_idx">
-                            <li v-for="(lv2,lv2_idx) in lv1.children" :key="lv2_idx">
-                                <div class="title">
-                                    <i
-                                        :class="['iconfont iconup',lv2.children?'':'hide']"
-                                        @click="rightExpand('r'+lv1_idx+'-'+lv2_idx)"
-                                    ></i>
-                                    <span class="title-cont">{{lv2.label}}</span>
-                                </div>
-                                <ul v-if="lv2.children" class="lev3">
-                                    <li v-for="(lv3, lv3_idx) in lv2.children" :key="lv3_idx">
-                                        <div class="title">
-                                            <i
-                                                :class="['iconfont iconup',lv3.children?'':'hide']"
-                                                @click="rightExpand('r'+lv1_idx+'-'+lv2_idx+'-'+lv3_idx)"
-                                            ></i>
-                                            <span>{{lv3.label}}</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+            <RouteTree :menu="menu"/>
         </div>
 
         <!-- 添加一级菜单 -->
@@ -228,11 +194,13 @@
 // import DragTree from 'ant-design-vue/lib/tree' // 按需引入
 // import css from 'ant-design-vue/lib/tree/style/css' // 加载 ant CSS
 // import Vue from 'vue';
+import RouteTree from './TotaMenuDir/RouteTree'
 import { Tree } from 'element-ui'
 export default {
     // name: 'vue-draggable-tree-demo',
     components: {
-        [Tree.name]: Tree
+        [Tree.name]: Tree,
+        RouteTree: RouteTree
     },
     data() {
         return {
@@ -364,10 +332,10 @@ export default {
         deleteMsg() {
             console.log('点击删除')
         },
-        rightExpand(index) {
-            let ele = this.$refs[index]
-            $(ele).slideToggle(200)
-        }
+        // rightExpand(index) {
+        //     let ele = this.$refs[index]
+        //     $(ele).slideToggle(200)
+        // }
     },
     mounted() {
         let menu = window.all.menu_list.slice()

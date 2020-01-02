@@ -78,8 +78,13 @@ export default {
         }
     },
     methods: {
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo() {
+            this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            this.getList()
+        },
         getList() {
             let para = {
                 name: this.filter.name,
@@ -113,12 +118,12 @@ export default {
         },
         modConf(){
             let {id, status} = this.curr_row
-            let params = {
+            let data = {
                 id: id,
                 status: status===1? 0 : 1
             }
             let { url, method } = this.$api.game_sort_status_set
-            this.$http({ method, url, params }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
                     this.mod_show = false

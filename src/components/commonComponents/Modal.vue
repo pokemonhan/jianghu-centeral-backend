@@ -69,7 +69,7 @@ export default {
 <style scoped>
 .modal-mask {
     position: fixed;
-    z-index: 10001;
+    z-index: 11;
     top: 0;
     bottom: 0;
     left: 0;
@@ -81,7 +81,7 @@ export default {
     position: absolute;
     /* top: 100px; */
     top: 40%;
-    z-index: 10002;
+    z-index: 12;
     left: 50%;
     transform: translateX(-50%);
     background-color: #fff;

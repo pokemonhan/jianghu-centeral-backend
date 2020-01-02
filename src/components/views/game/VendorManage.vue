@@ -136,7 +136,7 @@ export default {
         modConf() {
             let id = this.curr_row.id
             let status = this.curr_row.status === 1 ? 0: this.curr_row.status === 0 ? 1:this.curr_row.status
-            let params ={
+            let data ={
                 id:id,
                 status:status
             }
@@ -144,7 +144,7 @@ export default {
             this.$http({
                 method: method,
                 url: url,
-                params:params
+                data:data
             }).then(res=>{
                 if(res && res.code==='200'){
                     this.mod_show = false
@@ -155,8 +155,13 @@ export default {
                 }
             })
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        updateNo() {
+            this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            this.getList()
+        },
     },
     mounted() {
         this.getList()

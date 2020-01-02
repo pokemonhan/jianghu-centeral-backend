@@ -24,8 +24,8 @@
                         </div>
 
                         <div class="li-right">
-                            <span v-show="group.id!==1" class="a">删除</span>
-                            <span class="a" @click="edit(group)">编辑</span>
+                            <span v-if="group.id!==1" class="a" @click="del(group)">删除</span>
+                            <span v-if="group.id!==1" class="a" @click="edit(group)">编辑</span>
                         </div>
                     </li>
                 </ul>
@@ -35,14 +35,16 @@
             <div class="cont-right">
                 <div class="edit-form">
                     <div>
-                        <span class="cont-r-hd">{{right_show==='add'?'创建组':right_show==='check'?'查看组':right_show==='edit'?'编辑组':right_show}}</span>
+                        <span
+                            class="cont-r-hd"
+                        >{{right_show==='add'?'创建组':right_show==='check'?'查看组':right_show==='edit'?'编辑组':right_show}}</span>
                     </div>
                     <div class="edit-name">
                         <p class="mb10">组名称:</p>
                         <Input
                             style="width:300px;"
                             :disabled="right_show==='check'"
-                            v-model="edit_form.name"
+                            v-model="form.group_name"
                         />
                     </div>
                     <div class="edit-authority">
@@ -67,20 +69,24 @@
                             <Tree style="width:fit-content" :list="tree_list" @change="treeUpd" />
                         </div>
                     </div>
-                    <div class="mt50 t-center">
+
+                    <div v-if="curr_group.id!==1" class="mt50 t-center">
                         <button class="btn-plain-large">取消</button>
 
-                        <button v-if="right_show==='add'"
+                        <button
+                            v-if="right_show==='add'"
                             class="btn-blue-large ml30"
                             @click="groupAddCfm"
                         >确定创建</button>
 
-                        <button v-if="right_show==='set'"
+                        <button
+                            v-if="right_show==='edit'"
                             class="btn-blue-large ml30"
                             @click="groupSetCfm"
                         >确定修改</button>
 
-                        <button v-if="right_show==='check'"
+                        <button
+                            v-if="right_show==='check'"
                             class="btn-blue-large ml30"
                             @click="groupSetCfm"
                         >确定</button>
@@ -88,101 +94,24 @@
                 </div>
                 <!-- 查看check之下面内容 -->
                 <div v-if="right_show==='check'" class="mt20">
-                    <div>
-                        <span>成员列表：</span>
-                        <span>
-                            <button class="btn-blue" @click="addMember">添加成员</button>
-                        </span>
-                    </div>
+                    
+                    <!-- table 内容 -->
                     <div class="table">
-                        <Table :headers="headers" :column="list">
-                            <template v-slot:item="{row,idx}">
-                                <td>{{row.a1}}</td>
-                                <td>{{row.a2}}</td>
-                                <td
-                                    :class="[row.a3==='1'?'green':'red']"
-                                >{{row.a3==='1'?'启用':row.a3==='0'?'禁用':'出错'}}</td>
-                                <td>
-                                    <span class="a" @click="editPwd(row)">修改密码</span>
-                                    <span
-                                        class="a"
-                                        @click="memberStatuUpd(row)"
-                                    >{{row.a3==='1'?'禁用':row.a3==='0'?'启用':'出错'}}</span>
-                                </td>
-                            </template>
-                        </Table>
-
-                        <Page
-                            class="table-page"
-                            :total="total"
-                            :pageNo.sync="pageNo"
-                            :pageSize.sync="pageSize"
-                            @updateNo="updateNo"
-                            @updateSize="updateSize"
-                        />
+                      <AdminTable :group_id="admin_id"/>
                     </div>
                 </div>
             </div>
         </div>
-        <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
-            <div class="dia-inner">
-                <div v-if="dia_show==='add_member'">
-                    <ul class="form">
-                        <li>
-                            <span>账号:</span>
-                            <Input class="w250" v-model="add_member_form.acc" />
-                        </li>
-                        <li>
-                            <span>邮箱:</span>
-                            <Input class="w250" v-model="add_member_form.email" />
-                        </li>
-                        <li>
-                            <span>密码:</span>
-                            <Input class="w250" type="password" v-model="add_member_form.pwd" />
-                        </li>
-                        <li>
-                            <span>确认密码:</span>
-                            <Input class="w250" type="password" v-model="add_member_form.conf_pwd" />
-                        </li>
-                    </ul>
-                    <div class="add-member-btn">
-                        <button class="btn-plain-large" @click="dia_show=''">取消</button>
-                        <button class="btn-blue-large ml20" @click="addMemberCfm">确认</button>
-                    </div>
-                </div>
-                <div v-if="dia_show==='edit_pwd'">
-                    <ul class="form">
-                        <li>
-                            <span>密码:</span>
-                            <Input class="w250" type="password" v-model="edit_member_form.pwd" />
-                        </li>
-                        <li>
-                            <span>确认密码:</span>
-                            <Input
-                                class="w250"
-                                type="password"
-                                v-model="edit_member_form.conf_pwd"
-                            />
-                        </li>
-                    </ul>
-                    <div class="add-member-btn">
-                        <button
-                            v-if="right_show==='check'"
-                            class="btn-plain-large"
-                            @click="dia_show=''"
-                        >取消</button>
-                        <button v-else class="btn-blue-large ml20" @click="editMemberCfm">确认</button>
-                    </div>
-                </div>
-            </div>
-        </Dialog>
+
         <Modal :show.sync="mod_show" :title="mod_title" :content="mod_cont" @confirm="modConf"></Modal>
     </div>
 </template> <script>
-import Tree from '../../commonComponents/Tree.vue'
+import Tree from '../../commonComponents/Tree'
+import AdminTable from './AdminSortDir/AdminTable'
 export default {
     components: {
-        Tree: Tree
+        Tree: Tree,
+        AdminTable: AdminTable
     },
     data() {
         return {
@@ -190,66 +119,124 @@ export default {
             filter: {
                 group: ''
             },
-            group_list: [],
-            edit_form: {
-                name: ''
+            group_list: [], // 展示列表
+            form: {
+                group_name: ''
             },
             tree_list: [],
             authority_list: [],
             tree_show: false,
-            // table
-            headers: ['名称', '邮箱', '状态', '操作'],
-            list: [
-                {
-                    a1: 'admin',
-                    a2: 'admin@qq.com',
-                    a3: '1',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                },
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '0',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                }
-            ],
-            total: 0,
-            pageNo: 1,
-            pageSize: 25,
-            dia_show: '',
-            dia_title: '',
-            /* 添加成员 */
-            add_member_form: {
-                acc: '',
-                email: '',
-                pwd: '',
-                cfm_pwd: ''
-            },
-            // 修改密码
-            edit_member_form: {
-                pwd: '',
-                cfm_pwd: ''
-            },
+
+            // table 
+            admin_id: '',
+
+            // dia_show: '',
+
+            // dia_title: '',
+            // /* 添加成员 */
+            // add_member_form: {
+            //     acc: '',
+            //     email: '',
+            //     pwd: '',
+            //     cfm_pwd: ''
+            // },
+            // // 修改密码
+            // edit_member_form: {
+            //     pwd: '',
+            //     cfm_pwd: ''
+            // },
             // 启用 禁用modal
             mod_show: false,
+            curr_group: {},
+            mod_status: '',
             mod_title: '',
             mod_cont: ''
         }
     },
     computed: {},
     methods: {
+        // 初始化tree 使其无选中项
+        initTree(tree) {
+            let arr = tree.map(item => {
+                item.checked = false
+                if (item.child) {
+                    item.child = this.initTree(item.child)
+                }
+                return item
+            })
+            return arr
+        },
+
+        // 初始化mod 内容
+        initMod() {
+            this.mod_show = false
+            this.curr_group = {}
+            this.mod_status = ''
+            this.mod_title = ''
+            this.mod_cont = ''
+        },
+
+        // 根据group 展示勾选 tree中此项
+        treeSelectShow(group) {
+            // 当前权限数组
+            let authority_arr = group.detail.map(item => item.menu_id)
+
+            // id 是否在选择项数组中
+            let isSelect = function(id) {
+                return authority_arr.indexOf(id) !== -1
+            }
+
+            let listSetCheked = function(arr) {
+                let list = arr.map(item => {
+                    item.checked = isSelect(item.id)
+                    item.child && listSetCheked(item.child)
+                    return item
+                })
+                return list
+            }
+
+            this.tree_list = listSetCheked(this.tree_list)
+            this.getAuthorityList()
+            this.isChildSelAll()
+        },
+
+        // 创建按钮
         addsort() {
             this.right_show = 'add'
+            this.form.group_name = ''
+            this.initTree(this.tree_list)
+            this.getAuthorityList()
         },
-        // 查看点击组
-        check() {
+
+        // 查看其中一组
+        check(group) {
             this.right_show = 'check'
+            this.curr_group = group
+
+            this.form.group_name = group.group_name
+            this.admin_id = group.id
+            this.treeSelectShow(group)
+
+        },
+        
+        // 删除分组列表 按钮
+        del(group) {
+            this.mod_show = true
+            this.curr_group = group // 存储当前点击的组
+            this.mod_status = 'del'
+            this.mod_title = '删除'
+            this.mod_cont = '是否确认删除该分组！'
         },
         edit(group) {
             this.right_show = 'edit'
+            this.curr_group = group // 存储当前点击的组
+            this.form.group_name = group.group_name
+            this.treeSelectShow(group)
         },
+        // operate(group, operate_name) {
+        //     this.right_show = 'check'
+        // },
+
         // 后台res 转化为 tree 数组
         resToTree(list) {
             return Object.keys(list).map(key => {
@@ -257,12 +244,15 @@ export default {
 
                 item.label = list[key].label
                 item.id = list[key].id
+                item.checked = false
                 if (list[key].child) {
                     item.child = this.resToTree(list[key].child)
                 }
                 return item
             })
         },
+
+        // 获取后台所有权限树
         getTreeList() {
             // this.tree_list = JSON.parse(JSON.stringify(window.all.menu_list))
             // console.log('想要的tree_list: ', this.tree_list);
@@ -285,20 +275,13 @@ export default {
                     }
                 }
             })
+            // this.getAuthorityList()
         },
+
+        // 返回已选中权限数组 （有[x]的tab框子）
         getAuthorityList() {
             let list = this.tree_list
-            // list.forEach(item=>{
-            //     item.checked = Boolean(item.checked)
-            //     if(item.child){
-            //         console.log('item child',item.child)
-            //         item.child.forEach(element => {
-            //             console.log('element元素: ', element);
-            //             element.checked = true
-            //         });
-            //     }
-            // })
-            console.log('list: ', list)
+
             let arr = []
             list.forEach(item => {
                 if (item.child) {
@@ -320,21 +303,24 @@ export default {
             })
             this.authority_list = arr
         },
+
         // 关闭 tree 下拉内容
         closeTree() {
             if (!this.tree_show) return
             this.tree_show = false
         },
+
+        // tree 点击更新时
         treeUpd(bool, index, list) {
             // console.log('外部获取里面反馈: ', list);
             // 重新赋值让其能检测到
             this.tree_list = list.map(item => item)
-            // console.log('外部tree_list更新: ', this.tree_list)
             this.getAuthorityList()
         },
-        // 子集全选则 父级选中  ,目前到二级菜单。。
-        isChildSelAll(list) {
-            list.forEach((lev1, lev1_idx) => {
+
+        // 子集全选,则父级选中  ,目前到二级菜单。。
+        isChildSelAll() {
+            this.tree_list.forEach((lev1, lev1_idx) => {
                 if (lev1.child) {
                     lev1.checked = lev1.child.every(item => {
                         // if(item.child){
@@ -343,16 +329,12 @@ export default {
                         return item.checked
                     })
                 }
-                // return lev1
             })
-            this.list = this.list.concat()
+            this.tree_list = this.tree_list.slice()
         },
-        // 打开tree 下拉表
+        // 点击组权限框, 下拉打开 tree
         openTree() {
-            if (this.tree_show) {
-                // this.tree_show = false
-            } else {
-                let self = this
+            if (!this.tree_show) {
                 setTimeout(() => {
                     this.tree_show = true
                     $(this.$refs.tree).slideDown(200)
@@ -376,76 +358,112 @@ export default {
             })
 
             this.getAuthorityList()
-            this.isChildSelAll(this.tree_list)
+            this.isChildSelAll()
         },
+
+        // 创建分组 ——确认
         groupAddCfm() {
-            let para = {
-                name: this.filter.vendor,
-                status: this.filter.status,
-                pageSize: this.pageSize,
-                page: this.pageNo
+            if (this.form.group_name === '') {
+                return this.$toast.error('组名称不可以为空！')
             }
-            let params = window.all.tool.rmEmpty(para)
+
+            let role = this.authority_list.map(item => {
+                return item.id
+            })
+            let data = {
+                group_name: this.form.group_name,
+                role: '[' + role.join(',') + ']'
+            }
+
             let { url, method } = this.$api.admin_class_add
-            this.$http({
-                method: method,
-                url: url,
-                data: params
-            }).then(res => {
+            let self = this
+            this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
-                    this.$toast.sucess(res.message)
+                    this.$toast.success(res.message)
+                    this.getGroupList() // 刷新分组列表
                 } else {
-                    this.$toast.error(res.message)
+                    // self.$toast.error(res.message)
                 }
             })
         },
-        groupSetCfm() {},
-        addMember() {
-            this.dia_show = 'add_member'
-        },
-        // 添加成员确认
-        addMemberCfm() {},
-        editPwd(row) {
-            this.dia_show = 'edit_pwd'
-        },
-        memberStatuUpd(row) {
-            let status = row.a3
-            if (status === '1') {
-                this.mod_title = '禁用'
-                this.mod_cont = '是否确认禁用该成员!'
-            } else if (status === '0') {
-                this.mod_title = '启用'
-                this.mod_cont = '是否确认启用该成员!'
+
+        //  编辑 确认, 查看确认
+        groupSetCfm() {
+            if (this.form.group_name === '') {
+                return this.$toast.error('组名称不可以为空！')
             }
-            this.mod_show = true
+
+            let role = this.authority_list.map(item => {
+                return item.id
+            })
+            let data = {
+                id: this.curr_group.id,
+                group_name: this.form.group_name,
+                role: '[' + role.join(',') + ']'
+            }
+            let { method, url } = this.$api.admin_class_set
+            this.$http({ method, url, data }).then(res => {
+                console.log(res)
+                if (res.code === '200') {
+                    this.$toast.success(res.message)
+                }
+                this.getGroupList() // 刷新分组列表
+            })
         },
-        editMemberCfm() {},
-        // 确认禁用,或确认启用
-        modConf() {},
+
+
+
+        // 确认禁用,确认启用, 确认删除
+        modConf() {
+            // console.log('mod_确认');
+            let group = this.curr_group
+            switch (this.mod_status) {
+                case 'del':
+                    this.delGroup(group)
+                    break
+
+                // default:
+                //     break;
+            }
+        },
+
+        // 删除群组
+        delGroup(group) {
+            console.log('group: ', group)
+            let data = {
+                id: group.id,
+                group_name: group.group_name
+            }
+            let { method, url } = this.$api.admin_class_del
+            this.$http({ method, url, data }).then(res => {
+                if (res.code === '200') {
+                    this.$toast.success(res.message)
+                    this.initMod()
+                    this.getGroupList()
+                }
+            })
+        },
+
+        // 获取群组列表 (左侧的列表)
         getGroupList() {
-            let para = {}
-            // let params = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.admin_class_list
-            this.$http({
-                method: method,
-                url: url
-                // params:params
-            }).then(res => {
+
+            this.$http({ method, url }).then(res => {
+                // console.log('res: ', res)
                 if (res && res.code === '200') {
                     this.group_list = res.data
                 }
             })
         },
-        updateNo(val) {},
-        updateSize(val) {}
+      
     },
     mounted() {
         this.getGroupList()
-        this.getAuthorityList()
         this.getTreeList()
     }
 }
 </script>
+
 <style scoped>
 .w100 {
     width: 100px;
@@ -571,25 +589,5 @@ export default {
 .table {
     margin-top: 20px;
 }
-.form > li {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-}
-.form > li span:first-child {
-    width: 70px;
-    text-align: right;
-    margin-right: 10px;
-}
-.w250 {
-    width: 250px;
-}
-.add-member-btn {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
-}
-.ml20 {
-    margin-left: 20px;
-}
+
 </style>

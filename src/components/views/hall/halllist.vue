@@ -1,6 +1,7 @@
 <template>
     <div class="container">
-        厅主列表
+        <!-- 厅主列表 -->
+
         <div class="filter p10">
             <ul class="left">
                 <li>
@@ -35,42 +36,49 @@
                 </li>
                 <li class="mt10">
                     <button class="btn-blue">查询</button>
-                    <button class="btn-blue">添加厅主</button>
+                    <button class="btn-blue" @click="addHall">添加厅主</button>
                 </li>
             </ul>
         </div>
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
+                    <!-- '厅主账号', '站点名称', '短信数量', '站点状态', '维护状态', '站点有效日期', '站点维护日期', '站点添加日期', '操作'  -->
+                    <td>{{row.owner &&row.owner.email}}</td>
+                    <td>{{row.name}}</td>
+                    <td>{{'??'}}</td>
                     <td>
-                        <i :class="[row.a4==='1'?'iconfont icongou green':'iconfont iconcha red']"></i>
+                        <i
+                            :class="[row.status===1?'iconfont icongou green':'iconfont iconcha red']"
+                        ></i>
                     </td>
                     <td>
                         <span
                             :class="['bold',row.a5==='1'?'orange':'gray']"
-                        >{{row.a5==='1'?'维护中':'未维护'}}</span>
+                        >{{row.a5==='1'?'维护中??':'未维护??'}}</span>
                     </td>
                     <td style="font-size:12px;padding:5px;">
                         <div>{{String(row.a6).split('~')[0]}}</div>
-                        <div>~</div>
+                        <div>~??</div>
                         <div>{{String(row.a6).split('~')[1]}}</div>
                     </td>
                     <td style="font-size:12px;padding:5px;">
                         <div>{{String(row.a7).split('-')[0]}}</div>
-                        <div>~</div>
+                        <div>~??</div>
                         <div>{{String(row.a7).split('-')[1]}}</div>
                     </td>
-                    <td>{{row.a8}}</td>
+                    <td>{{row.updated_at}}</td>
                     <td>
-                        <span class="a" @click="modShow(row)">{{row.a5==='1'?'启用':'禁用'}}</span>
-                        <span class="a" @click="maintainShow(row)">维护</span>
-                        <span class="a" @click="siteManageShow(row)">站点管理</span>
-                        <span class="a" @click="domainShow(row)">域名管理</span>
-                        <span class="a" @click="gameShow(row)">游戏管理</span>
-                        <span class="a" @click="activeShow(row)">活动管理</span>
+                        <div>
+                            <span class="a" @click="operateMod(row)">{{row.a5==='1'?'启用':'禁用'}}</span>
+                            <span class="a" @click="maintainShow(row)">维护</span>
+                            <span class="a" @click="siteManageShow(row)">站点管理</span>
+                        </div>
+                        <div>
+                            <span class="a" @click="domainShow(row)">域名管理</span>
+                            <span class="a" @click="gameShow(row)">游戏管理</span>
+                            <span class="a" @click="activeShow(row)">活动管理</span>
+                        </div>
                     </td>
                 </template>
             </Table>
@@ -88,7 +96,7 @@
         <Modal
             :show.sync="mod_show"
             title="站点维护"
-            :content="is_turnon?'确认启用站点':'确认禁用站点'"
+            :content="is_turn_on?'确认启用站点':'确认禁用站点'"
             @confirm="modConf"
         ></Modal>
 
@@ -96,7 +104,7 @@
             <div class="dia-inner">
                 <!-- 添加 -->
                 <div v-if="dia_show==='add'">
-                    <ul class="form">
+                    <ul class="form add-from">
                         <li>
                             <span>厅主账号:</span>
                             <Input class="w250" v-model="form.acc" />
@@ -119,13 +127,26 @@
                         </li>
                         <li>
                             <span>主域名:</span>
-                            <textarea style="width:250px;height:80px;" class="textarea" v-model="form.domain"></textarea>
+                            <textarea
+                                style="width:250px;height:80px;"
+                                class="textarea"
+                                v-model="form.domain"
+                            ></textarea>
                         </li>
                         <li>
                             <span>代理方式:</span>
                             <Checkbox label="PC" v-model="form.checked[0]" />
-                            <Checkbox style="margin-left:50px;" label="H5" v-model="form.checked[1]" />
-                            <Checkbox style="margin-left:50px;" class="ml50" label="APP" v-model="form.checked[2]" />
+                            <Checkbox
+                                style="margin-left:50px;"
+                                label="H5"
+                                v-model="form.checked[1]"
+                            />
+                            <Checkbox
+                                style="margin-left:50px;"
+                                class="ml50"
+                                label="APP"
+                                v-model="form.checked[2]"
+                            />
                         </li>
                         <li>
                             <span>权限选择</span>
@@ -141,54 +162,68 @@
                         </li>
                         <li>
                             <span>厅主状态:</span>
-                            <Radio class="radio-left" label="启用" :value="form.status" val="on" v-model="form.status" />
-                            <Radio class="radio-right" label="禁用" :value="form.status" val="off" v-model="form.status" />
-                        </li>
-                        <li>
-                            <div class="">
-                                <button class="btn-plain-large">取消</button>
-                                <button class="btn-blue-large">确定</button>
-                            </div>
+                            <Radio
+                                class="radio-left"
+                                label="启用"
+                                :value="form.status"
+                                val="on"
+                                v-model="form.status"
+                            />
+                            <Radio
+                                class="radio-right"
+                                label="禁用"
+                                :value="form.status"
+                                val="off"
+                                v-model="form.status"
+                            />
                         </li>
                     </ul>
+                    <div class="center-box mt50">
+                        <button class="btn-plain-large">取消</button>
+                        <button class="btn-blue-large ml50" @click="addHallCfm">确定</button>
+                    </div>
                 </div>
                 <!-- 维护 -->
                 <div v-if="dia_show==='maintain'" class="dia-maintain">
-                    <div style="align-self:flex-start;"> 维护时间: </div>
+                    <div style="align-self:flex-start;">维护时间:</div>
                     <div class="mt20">
                         <Date style="width:250px;" type="datetime" v-model="maintain_dates[0]" />
-                        <Date style="width:250px; margin-top:20px;" type="datetime" v-model="maintain_dates[1]" />
+                        <Date
+                            style="width:250px; margin-top:20px;"
+                            type="datetime"
+                            v-model="maintain_dates[1]"
+                        />
                     </div>
                     <div class="maintain-btns">
                         <button class="btn-plain-large" @click="dia_show=''">取消</button>
-                        <button class="btn-blue-large ml50" >确定</button>
+                        <button class="btn-blue-large ml50">确定</button>
                     </div>
                 </div>
 
                 <!-- 站点管理 -->
-                <SiteManage v-if="dia_show==='site'" :id="'idshow'"/>
+                <SiteManage v-if="dia_show==='site'" :id="'idshow'" />
 
                 <!-- 域名管理 -->
-                <Domain v-if="dia_show==='domain'" :id="'idshow'"/>
+                <Domain v-if="dia_show==='domain'" :id="'idshow'" />
                 <!-- 游戏管理 -->
-                <Gamemanage v-if="dia_show==='game'" :id="'idshow'"/>
+                <Gamemanage v-if="dia_show==='game'" :id="'idshow'" />
                 <!-- 活动管理 -->
-                <ActiveManage v-if="dia_show==='active'" :id="'idshow'"/>
+                <ActiveManage v-if="dia_show==='active'" :id="'idshow'" />
             </div>
         </Dialog>
     </div>
 </template> 
 <script>
-import SiteManage from './halllist/SiteManage';
-import Domain from './halllist/Domain';
-import Gamemanage from './halllist/Gamemanage';
-import ActiveManage from './halllist/ActiveManage';
+import SiteManage from './HallListDir/SiteManage'
+import Domain from './HallListDir/Domain'
+import Gamemanage from './HallListDir/Gamemanage'
+import ActiveManage from './HallListDir/ActiveManage'
 export default {
-    components:{
+    components: {
         SiteManage: SiteManage,
         Domain: Domain,
         Gamemanage: Gamemanage,
-        ActiveManage: ActiveManage,
+        ActiveManage: ActiveManage
     },
     data() {
         return {
@@ -222,8 +257,39 @@ export default {
                 { label: '维护中', value: '1' },
                 { label: '未维护', value: '0' }
             ],
-            headers: [ '厅主账号', '站点名称', '短信数量', '站点状态', '维护状态', '站点有效日期', '站点维护日期', '站点添加日期', '操作' ],
-            list: [ { a1: '8080@qq.com', a2: '江湖互娱', a3: '100000条', a4: '1', a5: '0', a6: '2019/11/09 13:40~2019/11/09 13:40', a7: '2019/11/09 13:40-2019/11/09 13:40', a8: '2019-02-02 21:30' }, { a1: '8080@qq.com', a2: '江湖互娱', a3: '100000条', a4: '0', a5: '1', a6: '2019/11/09 13:40~2019/11/09 13:40', a7: '2019/11/09 13:40-2019/11/09 13:40', a8: '2019-02-02 21:30' } ],
+            headers: [
+                '厅主账号',
+                '站点名称',
+                '短信数量',
+                '站点状态',
+                '维护状态',
+                '站点有效日期',
+                '站点维护日期',
+                '站点添加日期',
+                '操作'
+            ],
+            list: [
+                {
+                    a1: '8080@qq.com',
+                    a2: '江湖互娱',
+                    a3: '100000条',
+                    a4: '1',
+                    a5: '0',
+                    a6: '2019/11/09 13:40~2019/11/09 13:40',
+                    a7: '2019/11/09 13:40-2019/11/09 13:40',
+                    a8: '2019-02-02 21:30'
+                },
+                {
+                    a1: '8080@qq.com',
+                    a2: '江湖互娱',
+                    a3: '100000条',
+                    a4: '0',
+                    a5: '1',
+                    a6: '2019/11/09 13:40~2019/11/09 13:40',
+                    a7: '2019/11/09 13:40-2019/11/09 13:40',
+                    a8: '2019-02-02 21:30'
+                }
+            ],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -231,24 +297,83 @@ export default {
             mod_show: false,
             mod_cont: '',
             // 是否启用 站点
-            is_turnon: false,
+            is_turn_on: false,
+            curr_row: {},
             // dia 弹窗
-            dia_show: '', 
+            dia_show: '',
             dia_title: '临时标题!!!!',
             // 维护 dialog
-            maintain_dates: [],
+            maintain_dates: []
         }
     },
     methods: {
-        modShow(row) {
+        addHall() {
+            this.dia_show = 'add'
+            this.dia_title = '添加厅主'
+        },
+
+        // 确认添加厅主
+        addHallCfm() {
+            // let para = {
+            //     name: this.filter.vendor,
+            //     status: this.filter.status,
+            //     pageSize: this.pageSize,
+            //     page: this.pageNo
+            // }
+            // TODO  没写完..!!!!!!!!!!!
+
+            // let params = window.all.tool.rmEmpty(para)
+            let { url, method } = this.$api.platform_add
+            this.$http({
+                method: method,
+                url: url,
+                data: data
+            }).then(res => {
+                if (res && res.code === '200') {
+                    self.total = res.data.total
+                    self.list = res.data.data
+                    this.$toast.success(res && res.message)
+                } else {
+                    if (res && res.message !== '') {
+                        self.$toast.error(res.message)
+                    }
+                }
+            })
+        },
+        // 【禁用】或【启用】站点
+        operateMod(row) {
+            this.curr_row = row
             if (row.a5 === '1') {
-                this.is_turnon = true
+                this.is_turn_on = true
             } else {
-                this.is_turnon = false
+                this.is_turn_on = false
             }
             this.mod_show = true
         },
-        modConf() {},
+
+        // 禁用启用 确认
+        modConf() {
+            let data = {
+                id: this.curr_row.id,
+                status: this.curr_row.status === 1 ? 0 : 1
+            }
+            let { url, method } = this.$api.platform_switch_set
+            this.$http({
+                method: method,
+                url: url,
+                data: data
+            }).then(res => {
+                if (res && res.code === '200') {
+                    this.$toast.success(res && res.message)
+                    this.mod_show = false
+                    this.getList()
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
+        },
         // 维护
         maintainShow() {
             this.dia_show = 'maintain'
@@ -274,10 +399,41 @@ export default {
             this.dia_show = 'active'
             this.dia_title = '活动管理'
         },
-        updateNo(val) {},
-        updateSize(val) {}
+        getList() {
+            /**
+             * TODO 🎈
+             */
+            // let para = {🈚
+            //     name: this.filter.vendor,
+            //     status: this.filter.status,
+            //     pageSize: this.pageSize,
+            //     page: this.pageNo
+            // }
+            let para
+            let params = window.all.tool.rmEmpty(para)
+            let { url, method } = this.$api.platform_list
+            this.$http({ method, url, params }).then(res => {
+                if (res && res.code === '200') {
+                    this.total = res.data.total
+                    this.list = res.data
+                } else {
+                    if (res && res.message !== '') {
+                        this.toast.error(res.message)
+                    }
+                }
+            })
+        },
+        updateNo() {
+            this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            this.getList()
+        },
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 <style scoped>
@@ -289,9 +445,11 @@ export default {
 }
 /* margin-horizontal 水平边框为5px*/
 /*  添加  */
-.form > li{
+
+.form > li {
     display: flex;
     align-items: baseline;
+    padding: 0 150px;
     margin-top: 10px;
 }
 .form > li span:first-child {
@@ -301,7 +459,6 @@ export default {
 .radio-right {
     margin-left: 50px;
 }
-
 
 .text-center {
     text-align: center;
@@ -335,5 +492,14 @@ export default {
 .w250 {
     width: 250px;
 }
-
+.center-box {
+    display: flex;
+    justify-content: center;
+}
+.mt50 {
+    margin-top: 50px;
+}
+.ml50 {
+    margin-left: 50px;
+}
 </style>

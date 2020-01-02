@@ -173,8 +173,13 @@ export default {
             this.mod_title = '删除'
             this.mod_cont = '是否确定删除该短信产商？'
         },
-        updateNo(val) {},
-        updateSize(val) {},
+        updateNo() {
+            // this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            // this.getList()
+        },
     },
     mounted() {}
 }

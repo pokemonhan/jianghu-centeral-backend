@@ -6,7 +6,6 @@
                     <div class="head-title">
                         <span class="title">总控后台</span>
                     </div>
-            
                 </div>
                 <ul class="right">
                     <li>
@@ -17,7 +16,6 @@
                         <span>活跃人数</span>
                         <span>{{'3646'}}</span>
                     </li>
-
 
                     <!-- 喇叭 -->
                     <li style="width:22px;margin-left:50px;" @click="play_music=!play_music">
@@ -79,15 +77,15 @@
                             />
                             <p v-show="err_tips[2]" class="err-tips">{{err_tips[2]}}</p>
                         </li>
-                        <li>
+                        <!-- <li>
                             <span>验证码</span>
                             <Input style="width:148px;" limit="en-num" v-model="form.verificCode" />
                             <button class="btn-blue">获取验证码</button>
                             <p v-show="err_tips[2]" class="err-tips">{{err_tips[3]}}</p>
-                        </li>
+                        </li>-->
                     </ul>
                     <div class="form-btns">
-                        <button class="btn-plain-large" @click="dia_show">取消</button>
+                        <button class="btn-plain-large" @click="dia_show=false">取消</button>
                         <button class="btn-blue-large ml50" @click="passwordConf">确认</button>
                     </div>
                 </div>
@@ -110,13 +108,13 @@ export default {
             form: {
                 old_pwd: '',
                 new_pwd: '',
-                conf_pwd: '',
-                verificCode: ''
+                conf_pwd: ''
             },
             err_tips: ['', '', '', '']
         }
     },
     methods: {
+        // 全屏
         // fullScreen() {
         //     if (this.isfullScreen) {
         //         var docElm = document.documentElement;
@@ -157,7 +155,6 @@ export default {
             // var audio = document.createElement("audio");
             // audio.src = require("../assets/audio/wan.wav");
             // audio.play();
-
             //方式2
             // var audio = new Audio(require('../assets/audio/wan.wav'))
             // audio.play()
@@ -200,50 +197,60 @@ export default {
                     self.$toast('登出成功')
                 }
             })
-            window.all.tool.removeSession('token');
-            this.$router.push('/login');
+            window.all.tool.removeSession('token')
+            this.$router.push('/login')
             this.logout_conf_show = false
         },
         cancel() {
             this.logout_conf_show = false
         },
         checkPwd() {
-            let { old_pwd, new_pwd, conf_pwd, verificCode } = this.form;
-            let regExp = /^[0-9A-Za-z]{8,16}$/;
+            let { old_pwd, new_pwd, conf_pwd, verificCode } = this.form
+            let regExp = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/
 
             // 原密码
             if (!regExp.test(old_pwd)) {
-                this.$set(this.err_tips, '0', '请输入8~16位英文字母+数字密码!')
+                this.$set( this.err_tips, '0', '请输入8~16位英文字母+数字密码组合!' )
                 return false
 
                 // 新密码 验证
             } else if (!regExp.test(new_pwd)) {
-                this.$set(this.err_tips, '1', '请输入8~16位英文字母+数字密码!')
+                this.$set( this.err_tips, '1', '请输入8~16位英文字母+数字密码组合!' )
                 return false
 
                 // 确认密码
             } else if (!regExp.test(conf_pwd)) {
-                this.$set(this.err_tips, '2', '请输入8~16位英文字母+数字密码!')
+                this.$set( this.err_tips, '2', '请输入8~16位英文字母+数字密码组合!' )
                 return false
 
                 // 确认密码是否与原密码相同
             } else if (new_pwd !== conf_pwd) {
                 this.$set(this.err_tips, '2', '两次密码不同!')
                 return false
-
-                // 验证码
-            } else if (!verificCode) {
-                this.$set(this.err_tips, '3', '验证码不可为空!')
-                return false
             } else {
                 return true
             }
         },
+        // 密码确认
         passwordConf() {
             this.err_tips = ['', '', '', '']
-            if (this.checkPwd()) {
-                console.log('执行内容')
+            if (!this.checkPwd()) return
+            console.log('form',this.form);
+            let data = {
+                old_password: this.form.old_pwd,
+                password: this.form.new_pwd,
             }
+            let { method, url } = this.$api.self_update_pwd
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === '200') {
+                    this.$toast.success(res&&res.message)
+                    this.dia_show = false
+                } else {
+                    if (res && res.message !== '') {
+                        self.toast.error(res.message)
+                    }
+                }
+            })
         }
     },
     mounted() {}
@@ -370,7 +377,7 @@ export default {
 }
 .dia-inner {
     width: 600px;
-    height: 280px;
+    min-height: 200px;
     /* border: 1px solid red; */
 }
 .center-box {
