@@ -150,13 +150,7 @@ http.interceptors.response.use(res => {
 
     return res.data
 }, error => {
-    // window._Vue_.$toast(error.toString())
-    try {
-        // console.log(error.response)
-        window._Vue_.$toast(error.response)
-    } catch (error) {
-
-    }
+    error&&window._Vue_.$toast(error.response)
 
 })
 
