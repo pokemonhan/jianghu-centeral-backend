@@ -25,7 +25,7 @@
                     <td>{{row.updated_at}}</td>
                     <td :class="[row.status===1?'green':'red']">{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td>
                     <td>
-                        <span class="a" @click="opera(row)">{{row.a2===1?'禁用':'启用'}}</span>
+                        <span class="a" @click="opera(row)">{{row.status===1?'禁用':'启用'}}</span>
                     </td>
                 </template>
             </Table>

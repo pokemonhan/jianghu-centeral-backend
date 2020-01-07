@@ -15,7 +15,7 @@
             <li
                 v-for="(item, index) in options"
                 :key="index"
-                :class="[selectedValue===item.value ? 'active' : '']"
+                :class="[selectedValue===item.value ? 'active' : '','option']"
                 @click="select(item)"
             >{{item.label}}</li>
         </ul>
@@ -141,6 +141,7 @@ export default {
     border: 1px solid #e2dcdc;
     border-radius: 4px;
     position: relative;
+    overflow: hidden;
 }
 .v-select .val-box-active {
     border-color: #57a3f3;
@@ -212,6 +213,9 @@ export default {
 }
 .sections li:hover {
     background-color: rgb(243, 243, 243);
+}
+.option {
+    overflow: hidden;
 }
 </style>
 

@@ -89,6 +89,7 @@ let http = axios.create({
         'Content-Type': 'application/json; charset=utf-8',
         'Cache-Control': 'no-cache'
     },
+    // 设置 状态码范围
     validateStatus: function (status) {
         return status >= 100 && status <= 600;
     },
@@ -148,10 +149,14 @@ http.interceptors.response.use(res => {
     }
 
     return res.data
-})
-// , error => {
-//     // window._Vue_.$toast(error.toString())
-//     // console.log(error)
+}, error => {
+    // window._Vue_.$toast(error.toString())
+    try {
+        console.log(error.response)
+    } catch (error) {
 
-// } 
+    }
+
+})
+
 export default http

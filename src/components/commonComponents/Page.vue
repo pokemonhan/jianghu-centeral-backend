@@ -86,10 +86,10 @@
                 pagesNum: 0,
                 pageRange: [],
                 pageSizeList: [
-                    {
-                    value: 2,
-                    label: '2 条/页'
-                },
+                //     {
+                //     value: 2,
+                //     label: '2 条/页'
+                // },
                     {
                     value: 25,
                     label: '25 条/页'

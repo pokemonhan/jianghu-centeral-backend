@@ -14,6 +14,8 @@ import QuickQuery from '../components/commonComponents/QuickQuery.vue'
 import TwoTable from '../components/commonComponents/TwoTable.vue'
 
 import Toast from '../components/commonComponents/Toast.vue'
+import Notice from '../components/commonComponents/Notice.vue'
+import Loading from '../components/commonComponents/Loading.vue'
 // import DragTree from '../components/commonComponents/dragtree/index.js'
 
 // 指令
@@ -81,6 +83,39 @@ export default {
                 })
             }
         })
+        // $notice 注册
+        Vue.prototype.$notice = function (option) {
+            let NoticeConstructor = Vue.extend(Notice)
+            let tpl2 = new NoticeConstructor({
+                propsData: option
+            }).$mount().$el
+            document.querySelector('#notice-box').appendChild(tpl2)
+
+            if (option.duration) {
+                setTimeout(function () {
+                    document.querySelector('#notice-box').removeChild(tpl)
+                }, opt.duration)
+            }
+        }
+        
+        // $loading 注册
+        const LoadingConstructor = Vue.extend(Loading)
+        // 生成一个该子类的实例
+        const instance = new LoadingConstructor()
+        // 将这个实例挂载在我创建的div上
+        // 并将此div加入全局挂载点内部
+        instance.$mount(document.createElement('div'))
+        document.body.appendChild(instance.$el)
+        //注入vue的原型链
+        Vue.prototype.$loading = {
+            show() {
+                instance.show = true
+            },
+            close() {
+                instance.show = false
+            }
+        }
+
 
         // 2. 全局注册组件
 

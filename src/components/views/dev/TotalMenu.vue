@@ -1,7 +1,7 @@
 <template>
     <div class="container total-menu">
         <!-- 总控菜单 -->
-        
+
         <div class="tol-left">
             <div class="head">编辑菜单</div>
             <div class="head-sub">
@@ -20,7 +20,7 @@
                                 <span class="title-cont">{{lev1.label}}</span>
                                 <Switchbox class="switch" />
                                 <div v-if="lev1.show_menu" class="context-menu">
-                                    <p @click="copyMsg">添加下级</p>
+                                    <p @click="addSubordinate(lev1)">添加下级</p>
                                     <p @click="quoteMsg">编辑菜单</p>
                                     <p @click="deleteMsg">删除菜单</p>
                                     <p class="close-menu" @click="closeMenu(lev1)">关闭</p>
@@ -39,7 +39,7 @@
 
                                         <Switchbox class="switch" />
                                         <div v-if="lev2.show_menu" class="context-menu">
-                                            <p @click="copyMsg">添加下级</p>
+                                            <p @click="addSubordinate(lev2)">添加下级</p>
                                             <p @click="quoteMsg">编辑菜单</p>
                                             <p @click="deleteMsg">删除菜单</p>
                                             <p class="close-menu" @click="closeMenu(lev2)">关闭</p>
@@ -58,7 +58,7 @@
                                                 <span>{{lev3.label}}</span>
                                                 <Switchbox class="switch" />
                                                 <div v-if="lev3.show_menu" class="context-menu">
-                                                    <p @click="copyMsg">添加下级</p>
+                                                    <p @click="addSubordinate(lev3)">添加下级</p>
                                                     <p @click="quoteMsg">编辑菜单</p>
                                                     <p @click="deleteMsg">删除菜单</p>
                                                 </div>
@@ -116,7 +116,7 @@
         <!-- 右边 -->
         <div class="tol-right">
             <div class="head">路由设置</div>
-            <RouteTree :menu="menu"/>
+            <RouteTree :menu="menu" />
         </div>
 
         <!-- 添加一级菜单 -->
@@ -130,58 +130,58 @@
                         </li>
                         <li>
                             <span>中文名称：</span>
-                            <Input class="w250" v-model="form.cname" />
+                            <Input class="w250" v-model="form.label" />
                         </li>
                         <li>
                             <span>英文名称：</span>
-                            <Input class="w250" v-model="form.ename" />
+                            <Input class="w250" v-model="form.en_name" />
                         </li>
                         <li>
                             <span>路由：</span>
                             <Input class="w250" v-model="form.route" />
                         </li>
                         <li>
-                            <span>是否时父级ID：</span>
+                            <span>是否是父级ID：</span>
                             <Radio
                                 class="radio-left"
                                 label="是"
-                                :value="form.is_father_id"
-                                val="yes"
-                                v-model="form.is_father_id"
+                                :value="form.is_parent"
+                                val="1"
+                                v-model="form.is_parent"
                             />
                             <Radio
                                 class="radio-right ml20"
                                 label="否"
-                                :value="form.is_father_id"
-                                val="no"
-                                v-model="form.is_father_id"
+                                :value="form.is_parent"
+                                val="0"
+                                v-model="form.is_parent"
                             />
                         </li>
                         <li>
                             <span>父级ID：</span>
-                            <Input class="w250" v-model="form.father_id" />
+                            <Input class="w250" v-model="form.parent_id" />
                         </li>
                         <li>
                             <span>是否显示：</span>
                             <Radio
                                 class="radio-left"
                                 label="是"
-                                :value="form.is_show"
-                                val="on"
-                                v-model="form.is_show"
+                                :value="form.display"
+                                val="1"
+                                v-model="form.display"
                             />
                             <Radio
                                 class="radio-right ml20"
                                 label="否"
-                                :value="form.is_show"
-                                val="off"
-                                v-model="form.is_show"
+                                :value="form.display"
+                                val="0"
+                                v-model="form.display"
                             />
                         </li>
                     </ul>
                     <div class="center-box mt30">
                         <button class="btn-plain-large">取消创建</button>
-                        <button class="btn-blue-large ml20">确认创建</button>
+                        <button class="btn-blue-large ml20" @click="addLev1MenuCfm">确认创建</button>
                     </div>
                 </div>
             </div>
@@ -209,10 +209,13 @@ export default {
             dia_show: false,
             form: {
                 icon: '',
-                cname: '',
-                ename: '',
+                label: '',
+                en_name: '',
                 route: '',
-                is_father_id: ''
+                sort: '1', //   TODO: 先随便写个, 待和后台交流, 为什么这么写
+                is_parent: '',
+                parent_id: '',
+                display: ''
             },
             contextMenuTarget: document.body, // 可右键区域，这里也可以绑定$refs
             contextMenuVisible: false
@@ -250,26 +253,25 @@ export default {
             // console.log('show: ', show);
             // this.contextMenuVisible = show
         },
-        // checkBoxUpd(bool, idx) {
-        //     let idx_arr = idx.toString().split('-')
-        //     let list = this.list
-        //     /* 一级 */
-        //     if (idx_arr.length === 1) {
-        //         if (list[idx].child) {
-        //             list[idx].child.forEach(item => {
-        //                 item.checked = bool
-        //             })
-        //         }
-        //         /* 二级 */
-        //     } else if (idx_arr.length === 2) {
-        //         let lev1 = idx_arr[0]
-        //         list[lev1].checked = list[lev1].child.every(
-        //             item => item.checked
-        //         )
-        //     }
-        //     // this.list = this.list.map(item=>item)
-        //     this.$emit('change', bool, idx, this.list)
-        // },
+        addLev1MenuCfm() {
+            console.log('addLev1MenuCfm点击确认')
+            let data = {
+                label: this.form.label,
+                en_name: this.form.en_name,
+                display: this.form.display,
+                route: this.form.route,
+                sort: this.form.sort,
+                is_parent: this.form.is_parent,
+                parent_id: this.form.parent_id
+            }
+            let { url, method } = this.$api.menu_add
+            this.$http({ method, url, data }).then(res => {
+                console.log('res: ', res)
+                if(res && res.code==='200') {
+                    this.$toast.success(res.message)
+                }
+            })
+        },
         rtClick(r) {
             console.log('dsf', r)
         },
@@ -305,26 +307,28 @@ export default {
             return true
         },
 
+        // 后台数据转成可用tree数组1
         /**
-         * 转成可用tree数组1
+         *
          * @params {array} list 要转数组
          * @params {string} pre_idx 前缀
          */
         toTreeArray(list, pre_idx = '') {
-            return list.map((lev1, lev1_idx) => {
-                let item = {}
-                item.id = pre_idx + lev1_idx
-                item.label = lev1.label
-
-                if (lev1.child) {
-                    item.children = this.toTreeArray(lev1.child, item.key + '-')
+            return Object.keys(list).map((key, lev1_idx) => {
+                let item = {
+                    id: pre_idx + lev1_idx,
+                    label: list[key].label
+                }
+                if (list[key].child) {
+                    item.children = this.toTreeArray( list[key].child, item.id + '-' )
                 }
 
                 return item
             })
         },
-        copyMsg(e) {
-            console.log(e)
+        addSubordinate(row) {
+            console.log('row: ', row);
+
         },
         quoteMsg() {
             console.log('点击引用')
@@ -336,11 +340,27 @@ export default {
         //     let ele = this.$refs[index]
         //     $(ele).slideToggle(200)
         // }
+        getList() {
+            let { url, method } = this.$api.menu_all_list
+            this.$http({ method, url }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    let menu = res.data
+                    console.log('menu: ', menu)
+                    this.menu = this.toTreeArray(menu)
+                } else {
+                    if (res && res.message !== '') {
+                        // this.$toast.error(res.message)
+                    }
+                }
+            })
+        }
     },
     mounted() {
-        let menu = window.all.menu_list.slice()
+        // let menu = window.all.menu_list.slice()
 
-        this.menu = this.toTreeArray(menu)
+        // this.menu = this.toTreeArray(menu)
+        this.getList()
         console.log(' this.menu: ', this.menu)
         console.log(' window.all.menu_list: ', window.all.menu_list)
     }
@@ -388,7 +408,7 @@ export default {
     line-height: 20px;
 }
 .switch {
-    transform: scale(0.7);
+    transform: scale(0.5);
     /* transform: translateY(-10%); */
 }
 /* .lev1 .title {

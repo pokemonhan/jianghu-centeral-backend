@@ -61,7 +61,7 @@
                         </li>
                         <li>
                             <span>分类标识</span>
-                            <Input class="w250" v-model="form.sign" />
+                            <Input class="w250" limit="word" v-model="form.sign" />
                             <span class="err-tips">{{form.sign===''?'不可为空':''}}</span>
                         </li>
                         <li v-if="dia_status==='add'">

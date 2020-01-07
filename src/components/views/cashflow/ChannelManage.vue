@@ -76,22 +76,9 @@ export default {
                 vendor_id: '',
                 type_id: ''
             },
-            channel_opt: [
-                { label: '全部', value: '' },
-                { label: '红牛', value: '1' },
-                { label: '东鹏', value: '2' }
-            ],
-            vendor_opt: [
-                { label: '全部', value: '' },
-                { label: '红牛', value: '1' },
-                { label: '东鹏', value: '2' }
-            ],
-            sort_opt: [
-                { label: '全部', value: '' },
-                { label: '支付宝', value: '1' },
-                { label: '微信', value: '2' },
-                { label: '扫码支付', value: '3' }
-            ],
+            channel_opt: [],
+            vendor_opt: [],
+            sort_opt: [],
             // /* table 内容 */
             // status_obj: {
             //     '1': '开启', // 开启状态禁用
@@ -111,23 +98,7 @@ export default {
                 '状态',
                 '操作'
             ],
-            list: [
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30',
-                    a6: '1'
-                },
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a6: '0'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -197,17 +168,17 @@ export default {
             this.getList()
         },
         modConf() {
-            let post = {}
-            post.status = this.curr_row.status === 1 ? 0 : 1
-            post.id = this.curr_row.id
+            let data = {}
+            data.status = this.curr_row.status === 1 ? 0 : 1
+            data.id = this.curr_row.id
             let { url, method } = this.$api.finance_channel_status_set
-            this.$http({ method, url, post }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
                     this.mod_show = false
                     this.getList()
                 } else {
-                    res && this.$toast(res.message)
+                    // res && this.$toast(res.message)
                 }
             })
         },

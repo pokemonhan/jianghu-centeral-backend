@@ -10,15 +10,17 @@
                 <router-view class="router-view" />
             </div>
         </div>
+        <!-- <div class="load-back">
+            <div class="loading"></div>
+        </div> -->
         <div id="toast-box"></div>
         <!-- <div class="modal-mask" v-if="showMask"></div> -->
-        <!-- <div id="message-box"></div> -->
+        <!-- <div id="message-box"> </div> -->
+        <div id="notice-box"></div>
     </div>
 </template>
 
 <script>
-// import { mapGetters } from 'vuex'
-
 import Header from './components/Header.vue'
 import Aside from './components/Aside.vue'
 import TabNav from './components/TabNav.vue'
@@ -47,12 +49,11 @@ export default {
             // 方式2
             // var audio = new Audio(require('./assets/audio/wan.wav'))
             // audio.play();
-
             // let play = true
             // document.body.addEventListener('mouseenter', function() {
             //     play && audio.play()
             //     play = false
-                // audio = null;
+            // audio = null;
             // })
         }
     },
@@ -97,6 +98,12 @@ export default {
     left: 50%;
     z-index: 100;
 }
+#notice-box {
+    position: fixed;
+    z-index: 30;
+    right: 7px;
+    bottom: 10px;
+}
 </style>
 
 
@@ -104,6 +111,7 @@ export default {
 
 <style>
 /* ----------------------    公共样式    全局-------------------------------------------------- */
+
 .textarea {
     padding: 10px;
     /* min-height: 130px; */
@@ -111,6 +119,7 @@ export default {
     border: 1px solid #ddd;
     font-size: 14px;
 }
+
 .container {
     padding: 20px 8px 20px 8px;
     background: #fff;
@@ -484,4 +493,6 @@ button:hover {
 .bold {
     font-weight: bold;
 }
+
+
 </style>

@@ -55,7 +55,9 @@ export default {
                 "integer": /[^\-?\d]/g,                  // 整数
                 "p-integer": /\D/g,                      //  正整数
                 "no-zh-cn": /[\u4E00-\u9FA5]*/g,         // 非中文
-                "en-num": /[\W_]/g                       // 字母和数字
+                "en-num": /[\W_]/g,                      // 字母和数字
+                "en": /[\W_0-9]/g,                      // 字母
+                "word": /[\W]/g                             // 字母数字下划线
             }
         };
     },

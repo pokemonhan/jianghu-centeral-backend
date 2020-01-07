@@ -107,7 +107,9 @@ export default {
             //取 path 的父级
             // menu_list = this.menu_list
 
-            // /*** TODO
+            /*** TODO: 
+             * 
+            */
             function getfather(array) {
                 array.forEach((item, index) => {
                     // console.log("TCL: getfather -> item", item)

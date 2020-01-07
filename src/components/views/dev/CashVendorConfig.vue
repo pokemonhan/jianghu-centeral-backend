@@ -33,7 +33,10 @@
                     >{{row.status===1?'开启':row.status===0?'关闭':'----'}}</td>
                     <td>
                         <span class="a" @click="edit(row)">编辑</span>
-                        <span class="a" @click="operate(row)">禁用</span>
+                        <span
+                            class="a"
+                            @click="statusSwitch(row)"
+                        >{{row.status===1?'禁用':row.status===0?'开启':'----'}}</span>
                         <span class="a" @click="del(row)">删除</span>
                     </td>
                 </template>
@@ -64,7 +67,7 @@
                         </li>
                         <li>
                             <span>白名单</span>
-                            <textarea class="textarea" v-model="form.whitelist_ips"></textarea>
+                            <textarea class="textarea" placeholder="多个ip用都逗号隔开,例如: 1.1.1.1, 2.2.2.2" v-model="form.whitelist_ips"></textarea>
                         </li>
                         <li v-if="dia_status==='add'">
                             <span>状态选择</span>
@@ -136,6 +139,7 @@ export default {
             form: {
                 name: '',
                 sign: '',
+                whitelist_ips: '',
                 status: '1'
             },
 
@@ -146,31 +150,47 @@ export default {
         }
     },
     methods: {
+        initForm() {
+            this.form = {
+                name: '',
+                sign: '',
+                whitelist_ips: '',
+                status: '1'
+            }
+        },
         add() {
+            this.initForm()
             this.dia_status = 'add'
             this.dia_title = '添加厂商'
             this.dia_show = true
-
         },
         edit(row) {
-            this.form = row
-
+            this.form = Object.assign({}, row)
+            
+            if(this.form.whitelist_ips) {
+                this.form.whitelist_ips = this.form.whitelist_ips.replace(/["\[\]]/g, '')
+            }
             this.dia_status = 'edit'
             this.dia_title = '编辑'
-            this.curr_row = row
-            
-            this.dia_show = true
+            // this.curr_row = row
 
+            this.dia_show = true
         },
-        operate(row) {
-            this.mod_show = true
+        statusSwitch(row) {
+            this.mod_status = 'switch'
+            this.curr_row = row
             this.mod_title = row.status === 1 ? '禁用' : '启用'
             this.mod_cont = `是否确定${this.mod_title}该支付产商？`
+
+            this.mod_show = true
         },
         del(row) {
-            this.mod_show = true
+            this.mod_status = 'del'
+            this.curr_row = row
             this.mod_title = '删除'
             this.mod_cont = '是否确定删除该支付产商？'
+
+            this.mod_show = true
         },
 
         checkForm() {
@@ -183,27 +203,29 @@ export default {
             return true
         },
         diaCfm() {
-            console.log('添加')
-            if(this.dia_status==='add'){
+            if (this.dia_status === 'add') {
                 this.addVendor()
             }
-            if(this.dia_status==='edit'){
+            if (this.dia_status === 'edit') {
                 this.editVendor()
             }
         },
         addVendor() {
             if (!this.checkForm()) return
-            let whitelist_ips = this.form.whitelist_ips && this.form.whitelist_ips.split(',')
+            // let whitelist_ips =this.form.whitelist_ips && this.form.whitelist_ips.split(',')
             let data = {
                 name: this.form.name,
                 sign: this.form.sign,
-                whitelist_ips: JSON.stringify(whitelist_ips),
+                // whitelist_ips: JSON.stringify(whitelist_ips),
                 status: this.form.status
             }
-
+             if (this.form.whitelist_ips) {
+                let str =  this.form.whitelist_ips.replace('，',',')
+                str = str.replace(/\s+/g,'')
+                data.whitelist_ips = JSON.stringify( str.split(',') )
+            }
             let { url, method } = this.$api.dev_finance_vendor_add
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
                     this.dia_show = false
@@ -218,20 +240,21 @@ export default {
         editVendor() {
             if (!this.checkForm()) return
             let data = {
-                id: this.curr_row.id,
+                id: this.form.id,
                 name: this.form.name,
                 sign: this.form.sign,
-                status: this.form.status,
+                status: this.form.status
             }
-            if(this.form.whitelist_ips){
-                data.whitelist_ips = JSON.stringify(this.form.whitelist_ips.split(','))
+            if (this.form.whitelist_ips) {
+                let str =  this.form.whitelist_ips.replace('，',',')
+                str = str.replace(/\s+/g,'')
+                data.whitelist_ips = JSON.stringify(str.split(','))
             }
             let { url, method } = this.$api.dev_finance_vendor_set
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
-        
                     this.$toast.success(res && res.message)
-                    this.mod_show=false
+                    this.dia_show = false
                     this.getList()
                 } else {
                     if (res && res.message !== '') {
@@ -240,13 +263,59 @@ export default {
                 }
             })
         },
-        modConf() {},
+        modConf() {
+            if (this.mod_status === 'switch') {
+                this.switchStatus()
+            }
+            if (this.mod_status === 'del') {
+                this.delConfirm()
+            }
+        },
+        switchStatus() {
+            let data = {
+                id: this.curr_row.id,
+                status: this.curr_row.status === 1 ? 0 : 1
+            }
+
+            let { url, method } = this.$api.dev_finance_vendor_status_set
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === '200') {
+                    this.$toast.success(res && res.message)
+                    this.mod_show = false
+                    this.getList()
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
+        },
+        delConfirm() {
+            let data = {
+                id: this.curr_row.id,
+            }
+        
+            let { url, method } = this.$api.dev_finance_vendor_del
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+        
+                    this.$toast.success(res && res.message)
+                    this.mod_show = false
+                    this.getList()
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
+        },
         updateNo() {
-            // this.getList()
+            this.getList()
         },
         updateSize() {
             this.pageNo = 1
-            // this.getList()
+            this.getList()
         },
         getList() {
             let para = {
@@ -259,7 +328,6 @@ export default {
 
             let { url, method } = this.$api.dev_finance_vendor_list
             this.$http({ method, url, params }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data

@@ -3,7 +3,7 @@
         <ul class="lev1">
             <li v-for="(lev1, lev1_idx) in list" :key="lev1_idx" >
                 <div class="title" >
-                    <i class="iconfont iconup" @click="expand(lev1_idx)"></i>
+                    <i :class="['iconfont iconup',lev1.child?'':'hide']" @click="expand(lev1_idx)"></i>
                     <Checkbox class="checkbox-head" :label="lev1.label" v-model="lev1.checked" @update="checkBoxUpd($event, lev1_idx)" />
                 </div>
 
@@ -106,6 +106,9 @@ export default {
     }
     .title{
         display: flex;
+    }
+    .title .hide {
+        opacity: 0;
     }
     .checkbox-head {
         font-weight: bold;

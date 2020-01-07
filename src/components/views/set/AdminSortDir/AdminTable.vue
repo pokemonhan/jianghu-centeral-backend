@@ -165,6 +165,12 @@ export default {
         },
         addMember() {
             this.dia_show = 'add_member'
+            this.addForm = {
+                name: '',
+                email: '',
+                pwd: '',
+                // cfm_pwd: ''
+            }
         },
         nameCheck() {
             let val = this.addForm.name

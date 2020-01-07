@@ -26,6 +26,7 @@
                         <span>
                             <i class="iconfont iconzhanghao"></i>
                         </span>
+                        <span>{{user_name}}</span>
                         <span>退出</span>
                         <ul class="account-inner">
                             <li @click="dia_show=true">修改密码</li>
@@ -104,6 +105,7 @@ export default {
             play_music: false,
             account_ishow: false,
             logout_conf_show: false,
+            user_name: '',
             dia_show: false,
             form: {
                 old_pwd: '',
@@ -113,6 +115,7 @@ export default {
             err_tips: ['', '', '', '']
         }
     },
+
     methods: {
         // 全屏
         // fullScreen() {
@@ -253,7 +256,15 @@ export default {
             })
         }
     },
-    mounted() {}
+    watch: {
+        $route() {
+            this.user_name = window.all.tool.getLocal('name')
+        }
+    },
+    mounted() {
+        // this.user_name = window.all.tool.getLocal('name')
+        // console.log('this.user_name: ', this.user_name);
+    }
 }
 </script>
 

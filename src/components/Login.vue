@@ -99,6 +99,7 @@ export default {
                     ? ''
                     : '请输入8-16个字母+数字组合'
             }
+            // TODO 解放这里,当格式不对,不通过
             // return this.pwdMsg ? false : true
             return true
         },
@@ -130,6 +131,8 @@ export default {
                         if (res && res.code === '200') {
                             let Authorization = res.data.token_type + ' ' + res.data.remember_token
                             window.all.tool.setLocal('Authorization', Authorization)
+                            window.all.tool.setLocal('name', res.data.name)
+                            window.all.tool.setLocal('email', res.data.email)
                             self.$toast.success('登陆成功')
                             setTimeout(() => {
                                 self.$router.push('/')
@@ -137,10 +140,6 @@ export default {
                         } else {
                             console.log(res)
                             // self.$toast.warning(res.message)
-                        }
-                    })
-                    .catch(err => {
-                        if (err.indexOf('403')) {
                         }
                     })
             }

@@ -146,6 +146,7 @@ export default {
         method: 'post'
     },
     /*=========================== 开发管理 ===========================--*/
+
     //  游戏分类配置-添加  (注意前面有个 游戏分类,不要混淆 )
     dev_game_type_add: {
         url: '/headquarters-api/game-type/add-do',
@@ -178,7 +179,7 @@ export default {
         url: '/headquarters-api/game-vendor/add-do',
         method: 'post'
     },
-    //  游戏厂商编辑
+    //  游戏厂商配置 - 编辑
     dev_game_vendor_set: {
         url: '/headquarters-api/game-vendor/edit-do',
         method: 'post'
@@ -188,12 +189,12 @@ export default {
         url: '/headquarters-api/game-vendor/index-do',
         method: 'get'
     },
-    //  游戏厂商删除
+    //  游戏厂商配置 - 删除
     dev_game_vendor_del: {
         url: '/headquarters-api/game-vendor/del-do',
         method: 'post'
     },
-    //  游戏厂商改变状态
+    //  游戏厂商配置 - 改变状态
     dev_game_vendor_status_set: {
         url: '/headquarters-api/game-vendor/status-do',
         method: 'post'
@@ -228,30 +229,30 @@ export default {
         url: '/headquarters-api/game/status-do',
         method: 'post'
     },
-    //  金流分类添加
+    //  金流分类管理 - 添加
     dev_finance_sort_add: {
         url: '/headquarters-api/finance-type/add-do',
         method: 'post'
     },
-    //  金流分类列表
+    //  金流分类管理 - 列表
     dev_finance_sort_list: {
         url: '/headquarters-api/finance-type/index-do',
         method: 'get'
     },
-    //  金流分类编辑
+    //  金流分类管理 - 编辑
     dev_finance_sort_set: {
         url: '/headquarters-api/finance-type/edit-do',
         method: 'post'
     },
-    //  金流分类删除
+    //  金流分类管理 - 删除
     dev_finance_sort_del: {
         url: '/headquarters-api/finance-type/del-do',
         method: 'post'
     },
-    //  金流分类改变状态
+    //  金流分类管理 - 改变状态
     dev_finance_sort_status_set: {
         url: '/headquarters-api/finance-type/status-do',
-        method: 'poat'
+        method: 'post'
     },
     //  金流厂商配置 - 添加
     dev_finance_vendor_add: {
@@ -268,7 +269,7 @@ export default {
         url: '/headquarters-api/finance-vendor/edit-do',
         method: 'post'
     },
-    //  金流厂商删除
+    //  金流厂商配置 - 删除
     dev_finance_vendor_del: {
         url: '/headquarters-api/finance-vendor/del-do',
         method: 'post'
@@ -283,17 +284,17 @@ export default {
         url: '/headquarters-api/finance-channel/add-do',
         method: 'post'
     },
-    //  金流通道编辑
+    //  金流通道配置 - 编辑
     dev_finance_channel_set: {
         url: '/headquarters-api/finance-channel/edit-do',
         method: 'post'
     },
-    //  金流通道列表
+    //  金流通道配置 - 列表
     dev_finance_channel_list: {
         url: '/headquarters-api/finance-channel/index-do',
         method: 'get'
     },
-    //  金流通道删除
+    //  金流通道配置 - 删除
     dev_finance_channel_del: {
         url: '/headquarters-api/finance-channel/del-do',
         method: 'post'
@@ -303,33 +304,33 @@ export default {
         url: '/headquarters-api/finance-channel/get-search-condition',
         method: 'get'
     },
-    //  金流通道改变状态
+    //  金流通道配置 - 改变状态
     dev_finance_channel_status_set: {
         url: '/headquarters-api/finance-channel/status-do',
         method: 'post'
     },
-    //  系统银行添加
+    //  金流银行配置 - 添加
     dev_sys_bank_add: {
         url: '/headquarters-api/bank/add-do',
         method: 'post'
     },
-    //  系统银行列表
+    //  金流银行卡 - 配置
     dev_sys_bank_list: {
         url: '/headquarters-api/bank/index-do',
         method: 'get'
     },
-    //  系统银行编辑
+    //  金流银行卡 - 编辑
     dev_sys_bank_set: {
         url: '/headquarters-api/bank/edit-do',
         method: 'post'
     },
-    //  系统银行删除
+    //  金流银行卡 - 删除
     dev_sys_bank_del: {
         url: '/headquarters-api/bank/del-do',
         method: 'post'
     },
-    //  系统银行更改状态
-    dev_sys_bank_del: {
+    //  金流银行卡配置 - 更改状态
+    dev_sys_bank_status_set: {
         url: '/headquarters-api/bank/status-do',
         method: 'post'
     },
@@ -393,7 +394,7 @@ export default {
 
     /*=========================== 总控后台管理 ===========================--*/
     //  菜单开发-开发管理菜单操作相关需要的数据
-    menu_date: {
+    menu_date_list: {
         url: '/headquarters-api/menu',
         method: 'post'
     },

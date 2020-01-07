@@ -2,12 +2,12 @@
     <div class="container">
         <div class="filter p10">
             <ul class="left">
-                <li>
+                <!-- <li>
                     <span>组列表</span>
                     <Input class="w100" v-model="filter.group" />
-                </li>
+                </li> -->
                 <li>
-                    <button class="btn-blue">查找</button>
+                    <!-- <button class="btn-blue">查找</button> -->
                     <button class="btn-blue" @click="addsort">创建分组</button>
                 </li>
             </ul>
@@ -46,6 +46,7 @@
                             :disabled="right_show==='check'"
                             v-model="form.group_name"
                         />
+                        <span v-show="!form.group_name" class="err-tips">组名称不可为空</span>
                     </div>
                     <div class="edit-authority">
                         <p class="mb10">选择组权限:</p>
@@ -116,9 +117,9 @@ export default {
     data() {
         return {
             right_show: 'add', // 默认为添加组
-            filter: {
-                group: ''
-            },
+            // filter: {
+            //     group: ''
+            // },
             group_list: [], // 展示列表
             form: {
                 group_name: ''
@@ -512,6 +513,11 @@ export default {
 }
 .edit-form {
     width: 550px;
+}
+.err-tips {
+    font-size: 12px;
+    margin-left: 10px;
+    color: red;
 }
 .cont-r-hd {
     font-size: 16px;

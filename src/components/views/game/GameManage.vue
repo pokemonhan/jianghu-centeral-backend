@@ -196,33 +196,23 @@ export default {
                 // 条件一：等于该厂商或者厂商id为空时 && 条件二：等于该游戏分类或者该分类筛选为空时
                 return (item.vendor_id === vendor_id || vendor_id==='') && (item.type_id ===type_id ||type_id==='')
             })
-            console.log('nameOpt: ', nameOpt);
+            // console.log('nameOpt: ', nameOpt);
             this.name_opt = this.backToSelOpt(nameOpt)
         },
         typeUpd(val) {
             this.filterNameOpt()
         },
         edit(row) {
-            console.log('row: ', row)
-            let {
-                id,
-                name,
-                merchant_secret,
-                private_key,
-                public_key,
-                merchant_code,
-                app_id,
-                authorization_code
-            } = row
+
             this.form = {
-                id,
-                name,
-                merchant_secret,
-                private_key,
-                public_key,
-                merchant_code,
-                app_id,
-                authorization_code
+                id: row.id,
+                name: row.name,
+                merchant_secret: row.merchant_secret,
+                private_key: row.private_key,
+                public_key: row.public_key,
+                merchant_code: row.merchant_code,
+                app_id: row.app_id,
+                authorization_code: row.authorization_code
             }
             this.curr_row = row
             this.dia_show = 'edit'
@@ -230,7 +220,8 @@ export default {
         },
         editConf() {
             let { url, method } = this.$api.game_set
-            let data = this.form
+            // let data = this.form
+            let data = window.all.tool.rmEmpty(this.form)
             this.$http({ url, method, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)

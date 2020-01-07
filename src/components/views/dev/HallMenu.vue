@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h1>厅主菜单管理//待完成</h1>
+        <h1>厅主菜单管理//和总控菜单管理 相似</h1>
     </div>
 </template>
 

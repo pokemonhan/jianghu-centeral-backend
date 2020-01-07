@@ -1,6 +1,7 @@
-const Tool = {//工具汇总
+const Tool = {
+    //工具汇总
 
-    // TODO 本地存储类工具************************************************************************* //
+    //  本地存储类工具************************************************************************* //
 
     setSession: (key, val) => sessionStorage.setItem(key, JSON.stringify(val)),//保存本地信息
     getSession: key => JSON.parse(sessionStorage.getItem(key)),//获取本地信息
@@ -26,7 +27,7 @@ const Tool = {//工具汇总
     getLocal: key => JSON.parse(localStorage.getItem(key)),  // 获取localStorage
     // 工具类别分割线--------------------------------------------------------------------------------------------- //
 
-    // TODO 通用工具类************************************************************************* //
+    // 通用工具类************************************************************************* //
     isType: type => Object.prototype.toString.call(type).slice(8, Object.prototype.toString.call(type).length - 1), // 数据类型判断工具
     // 时间格式化
     formatDate(time, withTime=false) {
@@ -116,7 +117,7 @@ const Tool = {//工具汇总
                 if (obj.length > 0) {
                     params[key] = obj[key]
                 }
-            } else if (obj[key] !== '') {
+            } else if (obj[key] !== ''&&obj[key] !== null) {
                 params[key] = obj[key]
             }
         }
