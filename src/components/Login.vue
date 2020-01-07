@@ -138,7 +138,7 @@ export default {
                                 self.$router.push('/')
                             }, 200);
                         } else {
-                            console.log(res)
+                            // console.log(res)
                             // self.$toast.warning(res.message)
                         }
                     })

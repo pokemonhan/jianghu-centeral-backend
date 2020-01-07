@@ -120,7 +120,6 @@ export default {
                 method: method,
                 url: url
             }).then(res => {
-                console.log('res😍: ', res);
                 if (res && res.code === '200') {
                     this.select = res.data
                     this.channel_opt = this.backToSelOpt(res.data.channels)

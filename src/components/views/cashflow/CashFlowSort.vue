@@ -132,7 +132,6 @@ export default {
                 url: url,
                 params: params
             }).then(res => {
-                console.log('res: ', res);
                 if (res && res.code === '200') {
                     self.total = res.data.total
                     this.list = res.data.data

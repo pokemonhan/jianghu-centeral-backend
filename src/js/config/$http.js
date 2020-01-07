@@ -132,7 +132,7 @@ http.interceptors.response.use(res => {
                 } else {
                     window.__vm__.$toast.error('出现服务问题或被禁止')
                 }
-
+                // console.log(res)
             }
         }
     } else {
@@ -144,14 +144,14 @@ http.interceptors.response.use(res => {
             window.__vm__.$toast.error('出现服务问题或被禁止')
         }
         if (res) {
-            console.log('错误信息', res)
+            console.log('错误信息未知?', res)
         }
     }
 
     return res.data
-}, error => {
+}, (error) => {
     error&&window._Vue_.$toast(error.response)
-
+    return Promise.resolve(err)
 })
 
 export default http

@@ -285,7 +285,6 @@ export default {
                 page: this.pageNo
             }
             let params = window.all.tool.rmEmpty(par)
-            console.log('this.filter: ', this.filter)
 
             let { url, method } = this.$api.game_list
             this.$http({ url, method, params }).then(res => {
