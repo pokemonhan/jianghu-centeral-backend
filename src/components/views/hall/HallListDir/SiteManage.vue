@@ -36,8 +36,9 @@
                 </ul>
                 <ul class="form">
                     <li>
-                        <span>短信数量:</span>
+                        <span>修改短信数量:</span>
                         <Input class="w280" limit="p-integer" v-model="sms" />
+                        <span class="ml20">剩余短信数量: {{'1000'}}</span>
                     </li>
                     <li>
                         <span>权限选项:</span>
@@ -111,7 +112,11 @@ export default {
     /* border: 1px solid #000; */
 }
 .form > li > span:first-child {
+    width: 7em;
     margin-right: 15px;
+}
+.ml20 {
+    margin-left: 20px;
 }
 .text-center {
     text-align: center;
@@ -143,4 +148,5 @@ export default {
 .w280 {
     width: 280px;
 }
+
 </style>

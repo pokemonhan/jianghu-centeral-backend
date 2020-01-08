@@ -1,3 +1,4 @@
+'use strict';
 import axios from 'axios'
 import router from '../router'
 
@@ -96,6 +97,7 @@ let http = axios.create({
 })
 
 // 请求预设 ---
+
 http.interceptors.request.use(req => {
     let Authorization = window.all.tool.getLocal('Authorization')
     // let expires = new Date(window.all.tool.getLocal('expires_at')).getTime()

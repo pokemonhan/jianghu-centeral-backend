@@ -37,7 +37,7 @@
                             class="a"
                             @click="switchStatus(row)"
                         >{{row.status===1?'禁用':row.status===0?'启用':'--'}}</span>
-                        <span class="a" @click="del(row)">删除？todo</span>
+                        <span class="a" @click="del(row)">删除</span>
                     </td>
                 </template>
             </Table>

@@ -63,6 +63,7 @@
                         <li>
                             <span>游戏名称</span>
                             <Input class="w250" v-model="form.name" />
+                            <span v-show="!form.name" class="err-tips">游戏名称不可为空!</span>
                         </li>
                         <li>
                             <span>商户秘钥:</span>
@@ -218,10 +219,16 @@ export default {
             this.dia_show = 'edit'
             this.dia_title = '编辑'
         },
+        checkForm() {
+            if(this.form.name==='') {
+                return false
+            }
+            return true
+        },
         editConf() {
-            let { url, method } = this.$api.game_set
-            // let data = this.form
+            if(!this.checkForm()) return
             let data = window.all.tool.rmEmpty(this.form)
+            let { url, method } = this.$api.game_set
             this.$http({ url, method, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
@@ -323,6 +330,7 @@ export default {
 }
 .form > li {
     display: flex;
+    position: relative;
     align-items: baseline;
 }
 .form > li > span:first-child {
@@ -330,6 +338,13 @@ export default {
     margin-right: 10px;
     margin-top: 20px;
     text-align: right;
+}
+.err-tips {
+    position: absolute;
+    top: 44px;
+    left: 7em;
+    font-size: 12px;
+    color: rgb(255, 38, 0);
 }
 .w250 {
     width: 250px;

@@ -28,7 +28,7 @@ export default {
     // 厅主列表 - 列表
     platform_list: {
         url: '/headquarters-api/platform/detail',
-        method: 'get'
+        method: 'post'
     },
     // 厅主列表-站点管理
     platform_set: {

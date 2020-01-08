@@ -5,35 +5,65 @@
                 <tr>
                     <th class="center-box" v-if="hadCheckbox">
                         <!-- <input type="checkbox" class="checkbox" v-model="all_checked" @change="onChange(999999, $event)" /> -->
-                        <Checkbox class="checkbox" v-model="all_checked" @update="onChange(999999, all_checked)" />
-
+                        <Checkbox
+                            class="checkbox"
+                            v-model="all_checked"
+                            @update="onChange(999999, all_checked)"
+                        />
                     </th>
                     <th v-for="(col, index) in headers" :key="index">
-                        <!-- <div v-if="col.label.split(',').length!==0"></div> -->
+                        <!-- 使用label 时 -->
                         <template v-if="col.label">
-                            <div v-for="(item, index) in col.label.split(',')" :key="index">{{item}}</div>
+                            <div v-for="(item, index) in col.label.split(',')" :key="index">
+                                <div>{{item}}</div>
+                                <div v-if="false" class="sort">
+                                    <span class="asc"></span>
+                                    <span class="desc"></span>
+                                </div>
+                            </div>
                         </template>
+
+                        <!-- 直接使用数组时 -->
                         <template v-else>
-                            <div v-for="(item, index) in col.split(',')" :key="index">{{item}}</div>                   
+                            <div v-for="(item, index) in col.split(',')" :key="index">
+                                <div>{{item}}</div>
+                                <div v-if="false" class="sort">
+                                    <span class="asc"></span>
+                                    <span class="desc"></span>
+                                </div>
+                            </div>
                         </template>
-                        
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(col_row, idx) in column" :key="idx">
-                    <!-- // 如果有checkbox -->
-                    <td v-if="hadCheckbox">
-                        <Checkbox class="checkbox" v-model="col_row.checked" @update="onChange(idx, col_row.checked)" />
-                    </td>
-                    <!-- td 内容 -->
-                    <slot name="item" :row="col_row" :idx="idx"></slot>
-                </tr>
-                <!-- 如果直接用tr -->
-                <slot name="tr"></slot>
+                <!-- 有数据时 -->
+                <template v-if="column.length">
+                    <tr v-for="(col_row, idx) in column" :key="idx">
+                        <!-- // 如果有checkbox -->
+                        <td v-if="hadCheckbox">
+                            <Checkbox
+                                class="checkbox"
+                                v-model="col_row.checked"
+                                @update="onChange(idx, col_row.checked)"
+                            />
+                        </td>
+                        <!-- td 内容 -->
+                        <slot name="item" :row="col_row" :idx="idx"></slot>
+                    </tr>
+
+                    <!-- 如果直接用tr -->
+                    <slot name="tr"></slot>
+                </template>
+
+                <!-- 没有数据时 -->
+                <template v-else>
+                    <tr>
+                        <td :colspan="headers.length">没有数据</td>
+                    </tr>
+                </template>
             </tbody>
         </table>
-
     </div>
 </template>
 
@@ -44,15 +74,15 @@ export default {
         headers: Array,
         column: Array,
         hadCheckbox: {
-            type:Boolean,
-            default:()=>false
+            type: Boolean,
+            default: () => false
         }
     },
     data() {
         return {
             all_checked: false,
             check_list: []
-        };
+        }
     },
     methods: {
         onChange(index, checked) {
@@ -60,33 +90,31 @@ export default {
             if (index === 999999) {
                 // this.check_list = this.check_list.map(item => e.target.checked)
                 this.column.forEach(item => {
-                    item.checked = this.all_checked;
-                });
+                    item.checked = this.all_checked
+                })
             } else {
-                this.all_checked = this.column.every(item => item.checked);
+                this.all_checked = this.column.every(item => item.checked)
             }
-            
+
             /**
-             *  @param {Number}     index               点击的哪个checkbox, 999999:全部;其他index: 第几个
-             *  @param {Boolean}    checked                Boolean 是否选中
-             *  
+             *  @param {Number}     index       点击的哪个checkbox, 999999:全部;其他index: 第几个
+             *  @param {Boolean}    checked     Boolean 是否选中
+             *
              *  */
             // checked 已植入 this.column 中，可直接获取
-            this.$emit( "checkboxChange", index, checked );
+            this.$emit('checkboxChange', index, checked)
         }
     },
-    watch:{
-        column(val){
-
-        }
+    watch: {
+        column(val) {}
     },
     mounted() {
         // 初始化 column 使checked都为false
         this.column.forEach(item => {
-            item.checked = false;
-        });
+            item.checked = false
+        })
     }
-};
+}
 </script>
 
 <style scoped>
@@ -95,7 +123,7 @@ export default {
     width: 100%;
 }
 
-tbody tr:nth-child(2n){
+tbody tr:nth-child(2n) {
     /* background: #F7F7F7FF; */
     background: rgb(248, 252, 255);
 }
@@ -105,6 +133,7 @@ tbody tr:hover {
 }
 
 .table-container table th {
+    position: relative;
     padding: 7px 4px;
     border: 1px solid #6fa2fe;
     font-weight: 400;
@@ -120,5 +149,30 @@ tr td {
 }
 .checkbox {
     justify-content: center;
+}
+
+th > div {
+    display: flex;
+    justify-content: center;
+}
+.sort {
+    /* display: flex; */
+}
+.asc {
+
+    position: relative;
+    top: 19px;
+    left: 7px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #ffffff;
+}
+.desc {
+    position: relative;
+    top: -15px;
+    left: -5px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #ffffff;
 }
 </style>

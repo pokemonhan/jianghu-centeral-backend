@@ -6,11 +6,11 @@
             <ul class="left">
                 <li>
                     <span>厅主账号</span>
-                    <Input class="w100" v-model="filter.acc" />
+                    <Input class="w100" v-model="filter.email" />
                 </li>
                 <li>
                     <span>站点状态</span>
-                    <Select v-model="filter.website" :options="website_opt"></Select>
+                    <Select v-model="filter.status" :options="website_opt"></Select>
                 </li>
                 <li>
                     <span>维护状态</span>
@@ -23,19 +23,7 @@
                     <Date v-model="filter.add_dates[1]" />
                 </li>
                 <li class="mt10">
-                    <span>站点有效日期</span>
-                    <Date v-model="filter.effect_dates[0]" />
-                    <span class="mh-5">至</span>
-                    <Date v-model="filter.effect_dates[1]" />
-                </li>
-                <li class="mt10">
-                    <span>站点维护日期</span>
-                    <Date v-model="filter.maintain_dates[0]" />
-                    <span class="mh-5">至</span>
-                    <Date v-model="filter.maintain_dates[1]" />
-                </li>
-                <li class="mt10">
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="addHall">添加厅主</button>
                 </li>
             </ul>
@@ -67,7 +55,7 @@
                         <div>~??</div>
                         <div>{{String(row.a7).split('-')[1]}}</div>
                     </td>
-                    <td>{{row.updated_at}}</td>
+                    <td>{{row.created_at}}</td>
                     <td>
                         <div>
                             <span class="a" @click="operateMod(row)">{{row.a5==='1'?'启用':'禁用'}}</span>
@@ -177,11 +165,12 @@
                                 v-model="form.status"
                             />
                         </li>
+                        <li>
+                            <button class="btn-plain-large">取消</button>
+                            <button class="btn-blue-large ml50" @click="addHallCfm">确定</button>
+                        </li>
                     </ul>
-                    <div class="center-box mt50">
-                        <button class="btn-plain-large">取消</button>
-                        <button class="btn-blue-large ml50" @click="addHallCfm">确定</button>
-                    </div>
+                    <div class="center-box mt50"></div>
                 </div>
                 <!-- 维护 -->
                 <div v-if="dia_show==='maintain'" class="dia-maintain">
@@ -231,9 +220,7 @@ export default {
                 acc: '',
                 website: '',
                 maintain: '',
-                add_dates: [],
-                effect_dates: [],
-                maintain_dates: []
+                add_dates: []
             },
             form: {
                 acc: '',
@@ -268,28 +255,7 @@ export default {
                 '站点添加日期',
                 '操作'
             ],
-            list: [
-                {
-                    a1: '8080@qq.com',
-                    a2: '江湖互娱',
-                    a3: '100000条',
-                    a4: '1',
-                    a5: '0',
-                    a6: '2019/11/09 13:40~2019/11/09 13:40',
-                    a7: '2019/11/09 13:40-2019/11/09 13:40',
-                    a8: '2019-02-02 21:30'
-                },
-                {
-                    a1: '8080@qq.com',
-                    a2: '江湖互娱',
-                    a3: '100000条',
-                    a4: '0',
-                    a5: '1',
-                    a6: '2019/11/09 13:40~2019/11/09 13:40',
-                    a7: '2019/11/09 13:40-2019/11/09 13:40',
-                    a8: '2019-02-02 21:30'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -301,7 +267,7 @@ export default {
             curr_row: {},
             // dia 弹窗
             dia_show: '',
-            dia_title: '临时标题!!!!',
+            dia_title: '',
             // 维护 dialog
             maintain_dates: []
         }
@@ -320,7 +286,7 @@ export default {
             //     pageSize: this.pageSize,
             //     page: this.pageNo
             // }
-            // TODO  没写完..
+            // TODO:  ..
 
             // let params = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.platform_add
@@ -403,16 +369,18 @@ export default {
             /**
              * TODO 🎈
              */
-            // let para = {🈚
-            //     name: this.filter.vendor,
-            //     status: this.filter.status,
-            //     pageSize: this.pageSize,
-            //     page: this.pageNo
-            // }
-            let para
-            let params = window.all.tool.rmEmpty(para)
+            let para = {
+                email: this.filter.email,
+                status: this.filter.status,
+                createAt: JSON.stringify(this.filter.add_dates),
+                pageSize: this.pageSize,
+                page: this.pageNo
+            }
+            // if(this.filter.add_dates)
+
+            let data = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.platform_list
-            this.$http({ method, url, params }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data
@@ -429,10 +397,14 @@ export default {
         updateSize() {
             this.pageNo = 1
             this.getList()
-        },
+        }
     },
     mounted() {
         this.getList()
+        // 初始化时间
+        let date = this.filter.add_dates
+        date[0] = '2000-01-01'
+        date[1] = window.all.tool.formatDate(new Date())
     }
 }
 </script>
@@ -441,7 +413,7 @@ export default {
     width: 100px;
 }
 .p10 {
-    padding: 20px 10px;
+    padding: 10px;
 }
 /* margin-horizontal 水平边框为5px*/
 /*  添加  */
