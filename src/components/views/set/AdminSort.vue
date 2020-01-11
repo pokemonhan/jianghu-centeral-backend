@@ -43,7 +43,6 @@
                         <p class="mb10">组名称:</p>
                         <Input
                             style="width:300px;"
-                            :disabled="right_show==='check'"
                             v-model="form.group_name"
                         />
                         <span v-show="!form.group_name" class="err-tips">组名称不可为空</span>
@@ -72,7 +71,7 @@
                     </div>
 
                     <div v-if="!(curr_group.id===1 &&right_show!=='add')" class="mt50 t-center">
-                        <button class="btn-plain-large">取消</button>
+                        <button class="btn-plain-large" @click="cancel">取消</button>
 
                         <button
                             v-if="right_show==='add'"
@@ -116,7 +115,7 @@ export default {
     },
     data() {
         return {
-            right_show: 'add', // 默认为添加组
+            right_show: 'add', // 默认右侧为添加组
             // filter: {
             //     group: ''
             // },
@@ -212,7 +211,7 @@ export default {
         // 查看其中一组
         check(group) {
             this.right_show = 'check'
-            this.curr_group = group
+            this.curr_group = Object.assign({},group)
 
             this.form.group_name = group.group_name
             this.admin_id = group.id
@@ -361,7 +360,12 @@ export default {
             this.getAuthorityList()
             this.isChildSelAll()
         },
-
+        cancel() {
+            let group = Object.assign({},this.curr_group)
+            this.form.group_name = group.group_name
+            this.admin_id = group.id
+            this.treeSelectShow(group)
+        },
         // 创建分组 ——确认
         groupAddCfm() {
             if (this.form.group_name === '') {

@@ -219,6 +219,7 @@ export default {
     data() {
         return {
             filter: {
+                status: '',
                 acc: '',
                 website: '',
                 maintain: '',
