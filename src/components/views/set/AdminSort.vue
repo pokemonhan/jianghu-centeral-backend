@@ -71,7 +71,7 @@
                         </div>
                     </div>
 
-                    <div v-if="curr_group.id!==1" class="mt50 t-center">
+                    <div v-if="!(curr_group.id===1 &&right_show!=='add')" class="mt50 t-center">
                         <button class="btn-plain-large">取消</button>
 
                         <button

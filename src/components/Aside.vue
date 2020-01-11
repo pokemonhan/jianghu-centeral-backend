@@ -190,11 +190,9 @@ export default {
     max-height: 92vh;
     box-sizing: border-box;
     background: #fff;
-    /* text-align: center; */
-    /* border-radius: 6px; */
+    border-top: 2px solid #4c8bfd;
     cursor: pointer;
     overflow: auto;
-    /* border: 1px solid #48f; */
     user-select: none;
     -ms-overflow-style: none;
     overflow: -moz-scrollbars-none;

@@ -115,7 +115,6 @@ http.interceptors.request.use(req => {
 
 // 后台返回数据 全局预设 ---
 http.interceptors.response.use(res => {
-    // console.log('resabc: ', res);
     // let data = res.data
     if (res && res.data) {
         if (res.data.code !== '200') {
@@ -152,8 +151,9 @@ http.interceptors.response.use(res => {
 
     return res.data
 }, (error) => {
-    error&&window._Vue_.$toast(error.response)
-    return Promise.resolve(err)
+    // error && alert(error.response)
+    error && window.__vm__.$toast.error('出现网络服务问题')
+    // return Promise.resolve(error)
 })
 
 export default http

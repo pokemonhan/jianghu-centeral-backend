@@ -21,11 +21,11 @@
                     <!-- '编号', '游戏厂商', '厂商状态', '最后更新人','最后更新时间','操作' -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.name}}</td>
-                    <td :class="[row.status===1?'green':'red']">{{status_txt[row.status]}}</td>
+                    <td :class="['bold',row.status===1?'green':'red']">{{status_txt[row.status]}}</td>
                     <td>{{row.last_editor && row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
-                        <span class="a" @click="opera(row)">{{row.status===1?'禁用':'启用'}}</span>
+                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
                     </td>
                 </template>
             </Table>
@@ -84,10 +84,10 @@ export default {
         }
     },
     methods: {
-        opera(row) {
+        statusSwitch(row) {
             this.curr_row = row
             this.mod_show = true
-            if (row.a2 === '1') {
+            if (row.status === 1) {
                 this.mod_cont = '是否确定禁用该厂商!'
             } else {
                 this.mod_cont = '是否确定启用该厂商!'

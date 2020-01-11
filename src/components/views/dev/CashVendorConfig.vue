@@ -20,7 +20,7 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
-                    <!-- '编号','厂商名称','厂商标识','添加人','添加时间','最后更新人','最后跟新时间','状态','操作' -->
+                    <!-- '编号','厂商名称','厂商标识','添加人','添加时间','最后更新人','最后更新时间','状态','操作' -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.name}}</td>
                     <td>{{row.sign}}</td>
@@ -29,15 +29,12 @@
                     <td>{{row.last_editor&&row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td
-                        :class="row.status?'green':'red'"
+                        :class="['bold',row.status?'green':'red']"
                     >{{row.status===1?'开启':row.status===0?'关闭':'----'}}</td>
                     <td>
-                        <span class="a" @click="edit(row)">编辑</span>
-                        <span
-                            class="a"
-                            @click="statusSwitch(row)"
-                        >{{row.status===1?'禁用':row.status===0?'开启':'----'}}</span>
-                        <span class="a" @click="del(row)">删除</span>
+                        <button class="btns-blue" @click="edit(row)">编辑</button>
+                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <button class="btns-blue" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -122,7 +119,7 @@ export default {
                 '添加人',
                 '添加时间',
                 '最后更新人',
-                '最后跟新时间',
+                '最后更新时间',
                 '状态',
                 '操作'
             ],

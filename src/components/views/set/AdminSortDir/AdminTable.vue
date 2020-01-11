@@ -9,14 +9,14 @@
                 <td>{{row.name}}</td>
                 <td>{{row.email}}</td>
                 <td
-                    :class="[row.status?'green':'red']"
+                    :class="['bold',row.status?'green':'red']"
                 >{{row.status===1?'启用':row.status===0?'禁用':'出错!!!'}}</td>
                 <td>
-                    <span class="a" @click="editPwd(row)">修改密码</span>
-                    <span
-                        class="a"
-                        @click="memberStatusUpd(row)"
-                    >{{row.status===1?'禁用':row.status===0?'启用':'出错'}}</span>
+                    <button class="btns-blue" @click="editPwd(row)">修改密码</button>
+                    <button
+                        :class="[row.status?'btns-red':'btns-green']"
+                        @click="memberStatusSwitch(row)"
+                    >{{row.status===1?'禁用':row.status===0?'启用':'出错'}}</button>
                 </td>
             </template>
         </Table>
@@ -255,14 +255,14 @@ export default {
             this.dia_title = `修改密码: ${row.name}`
             this.dia_show = 'edit_pwd'
         },
-        memberStatusUpd(row) {
+        memberStatusSwitch(row) {
             let status = row.status
             this.curr_row = row
-            if (status === '1') {
+            if (status === 1) {
                 this.mod_title = '禁用'
                 this.mod_status = 'turnOff'
                 this.mod_cont = '是否确认禁用该成员!'
-            } else if (status === '0') {
+            } else if (status === 0) {
                 this.mod_status = 'turnOn'
                 this.mod_title = '启用'
                 this.mod_cont = '是否确认启用该成员!'

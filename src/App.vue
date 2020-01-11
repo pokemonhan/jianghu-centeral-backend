@@ -12,7 +12,7 @@
         </div>
         <!-- <div class="load-back">
             <div class="loading"></div>
-        </div> -->
+        </div>-->
         <div id="toast-box"></div>
         <!-- <div class="modal-mask" v-if="showMask"></div> -->
         <!-- <div id="message-box"> </div> -->
@@ -67,15 +67,78 @@ export default {
 </script>
 
 <style scoped>
+/* @media screen and (max-width: 1200px) {
+    .app-content {
+        max-width: 1200px;
+    }
+    .container {
+        width: 1040px;
+    }
+}
+
+@media screen and (min-width: 1201px) and (max-width: 1400px) {
+    .app-content {
+        max-width: 1200px;
+    }
+    .container {
+        width: 1040px;
+    }
+}
+@media screen and (min-width: 1401px) and (max-width: 1600px) {
+    .app-content {
+        max-width: 1400px;
+    }
+    .container {
+        width: 1240px;
+    }
+}
+@media screen and (min-width: 1601px) and (max-width: 1900px) {
+    .app-content {
+        max-width: 1600px;
+    }
+    .container {
+        width: 1440px;
+    }
+}
+@media screen and (min-width: 1901px) and (max-width: 2300px) {
+    .app-content {
+        max-width: 1900px;
+    }
+    .container {
+        width: 1740px;
+    }
+}
+
+@media screen and (min-width: 2301px) {
+    .app-content {
+        max-width: 2300px;
+    }
+    .container {
+        width: 2140px;
+    }
+} */
+
+/* @media screen and (min-width: 2500px) {
+    .app-content {
+        max-width: 2500px;
+    }
+    .container {
+        width: 2340px;
+        color: darkblue;
+    }
+} */
 .app-header {
     width: 100%;
 }
 .app-content {
-    max-width: 1200px;
     display: flex;
+    justify-content: center;
+    min-width: 1200px;
+    max-width: 2220px;
     margin: 0 auto;
     margin-top: 20px;
 }
+
 .app-aside {
     width: 150px;
     /* overflow: hidden; */
@@ -83,7 +146,7 @@ export default {
 .app-main {
     margin-left: 10px;
     /* width: 100%; */
-    width: 1040px;
+    width: 100%;
     overflow: hidden;
 }
 /* .router-view{
@@ -91,6 +154,9 @@ export default {
 } */
 .tab-nav {
     width: 100%;
+    margin-bottom: 10px;
+    margin-right: 30px;
+    padding-right: 20px;
 }
 #toast-box {
     position: fixed;
@@ -124,7 +190,8 @@ export default {
     padding: 20px 8px 20px 8px;
     background: #fff;
     border: 1px solid #4c8bfd;
-    width: 1040px;
+    margin-right: 20px;
+    /* min-width: 1040px; */
 }
 /* 背景遮罩层 */
 .modal-mask {
@@ -342,26 +409,26 @@ button:hover {
 }
 .btns-green {
     color: #fff;
-    background: #4cc013;
-    box-shadow: 1px 1px 3px rgba(67, 204, 17, 0.2);
+    background: #19be6b;
+    box-shadow: 1px 1px 3px rgba(37, 224, 131, 0.253);
 }
 .btns-green:hover {
-    background: #42a80f;
+    background: #35d485;
 }
 .btns-gree:active {
     background: #4cc013;
 }
 .btns-blue {
     color: #fff;
-    background: #48f;
-    box-shadow: 1px 1px 3px rgba(68, 137, 255, 0.2);
+    background: #4c8bfd;
+    box-shadow: 1px 1px 3px rgba(102, 158, 255, 0.2);
 }
 .btns-blue:hover {
     background: rgba(68, 137, 255, 0.801);
 }
 .btns-blue:active {
     color: #fff;
-    background: #48f;
+    background: #4c8bfd;
 }
 .btns-yellow {
     color: #fff;
@@ -493,6 +560,4 @@ button:hover {
 .bold {
     font-weight: bold;
 }
-
-
 </style>

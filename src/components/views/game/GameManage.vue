@@ -31,17 +31,15 @@
                     <td>{{row.name}}</td>
                     <td>{{row.type&&row.type.name}}</td>
                     <td
-                        :class="[row.status===1?'green':'red']"
+                        :class="['bold',row.status===1?'green':'red']"
                     >{{row.status===1?'开启':row.status===0?'关闭':row.status}}</td>
                     <td>{{row.last_editor && row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
-                        <span class="a" @click="edit(row)">编辑</span>
-                        <span
-                            class="a"
-                            @click="opera(row)"
-                        >{{row.status===1?'禁用':row.status===0?'启用':row.status}}</span>
-                        <span class="a" @click="detail(row)">编辑详情</span>
+                        <button class="btns-blue" @click="edit(row)">编辑</button>
+                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+
+                        <button class="btns-blue" @click="detail(row)">编辑详情</button>
                     </td>
                 </template>
             </Table>
@@ -243,7 +241,7 @@ export default {
                 }
             })
         },
-        opera(row) {
+        statusSwitch(row) {
             this.curr_row = row
             this.mod_show = true
             if (row.status === 1) {

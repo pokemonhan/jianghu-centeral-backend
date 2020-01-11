@@ -14,34 +14,34 @@
 
 <script>
 export default {
-    name: "Toast",
+    name: 'Toast',
     props: {
         message: {
             type: String,
-            // required: 
-            default: ()=>'$toast is null'
+            // required:
+            default: () => '$toast is null'
         },
         type: {
             type: String,
-            default: () => "info"
+            default: () => 'info'
         },
         duration: {
             type: Number,
-            default: () => 3000
+            default: () => 4000
         }
     },
     data() {
         return {
             show: false
-        };
+        }
     },
     mounted() {
-        this.show = true;
-        setTimeout( ()=>{
+        this.show = true
+        setTimeout(() => {
             this.show = false
-        }, this.duration-400)
+        }, this.duration - 400)
     }
-};
+}
 </script>
 
 <style scoped>

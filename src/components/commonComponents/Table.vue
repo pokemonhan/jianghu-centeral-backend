@@ -1,5 +1,5 @@
 <template>
-    <div class="table-container" :class="css">
+    <div class="table-container v-table" :class="css">
         <table>
             <thead>
                 <tr>
@@ -121,6 +121,7 @@ export default {
 .table-container table {
     border-collapse: collapse;
     width: 100%;
+    /* table-layout: fixed */
 }
 
 tbody tr:nth-child(2n) {

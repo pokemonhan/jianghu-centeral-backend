@@ -253,7 +253,9 @@ export default {
 
 <style scoped>
 .home {
-    width: 1040px;
+    min-width: 1040px;
+    /* padding-right: 20px; */
+    margin-right: 20px;
 }
 .row1 {
     width: 100%;
@@ -263,7 +265,7 @@ export default {
 }
 .row1 li {
     position: relative;
-    width: 246px;
+    width: 20%;
     height: 100%;
     /* padding: 10px; */
     /* border-radius: 5px; */
@@ -331,7 +333,7 @@ export default {
     /* position: relative; */
 }
 .row1 .bottom-10 {
-    width: 225px;
+    width: 90%;
     position: absolute;
     bottom: 10px;
     padding-top: 4px;
@@ -341,7 +343,7 @@ export default {
 
 .row2,
 .row3 {
-    width: 1040px;
+    /* width: 1040px; */
     height: 300px;
     margin-top: 20px;
     border: 1px solid #4c8bfd;
@@ -359,7 +361,9 @@ export default {
 }
 /* 白色朴素plain按钮 */
 .btn-plain-white {
-    padding: 5px 10px;
+    /* padding: 5px 10px; */
+    height: 30px;
+    line-height: 20px;
     border: 1px solid #fff;
     color: #fff;
     background: transparent;
@@ -369,7 +373,9 @@ export default {
 }
 /* 激活按钮 */
 .btn-active {
-    padding: 5px 10px;
+    /* padding: 5px 10px; */
+    height: 30px;
+    line-height: 20px;
     border-radius: 3px;
     background: #fff;
     color: #4c8bfd;
@@ -384,6 +390,7 @@ export default {
 .row2 .body,
 .row3 .body {
     display: flex;
+    justify-content: center;
     /* height: 254px; */
 }
 .row2 .body .left,

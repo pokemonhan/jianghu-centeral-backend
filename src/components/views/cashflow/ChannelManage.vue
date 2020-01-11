@@ -28,10 +28,10 @@
                     <td>{{row.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>{{row.last_editor?row.last_editor.name:'--'}}</td>
-                    <td :class="[row.status===1?'green':'red']">{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td>
+                    <td :class="['bold',row.status===1?'green':'red']">{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td>
                     <td>
-                        <span class="a" @click="opera(row)">{{opera_obj[row.status]}}</span>
-                        <span class="a" @click="detail(row)">操作详情</span>
+                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <button class="btns-blue" @click="detail(row)">操作详情</button>
                     </td>
                 </template>
             </Table>
@@ -79,22 +79,13 @@ export default {
             channel_opt: [],
             vendor_opt: [],
             sort_opt: [],
-            // /* table 内容 */
-            // status_obj: {
-            //     '1': '开启', // 开启状态禁用
-            //     '0': '关闭'
-            // },
-            opera_obj: {
-                '1': '禁用', // 开启状态禁用
-                '0': '启用'
-            },
             headers: [
                 '编号',
                 '厂商名称',
                 '所属分类',
                 '通道名称',
                 '最后更新人',
-                '最后跟新时间',
+                '最后更新时间',
                 '状态',
                 '操作'
             ],
@@ -145,10 +136,10 @@ export default {
             })
             return arr
         },
-        opera(row) {
+        statusSwitch(row) {
             this.mod_show = true
             this.curr_row = row
-            if (row.a6 === '1') {
+            if (row.status === 1) {
                 this.mod_title = '禁用'
                 this.mod_cont = '是否确定禁用该通道名称'
             } else {

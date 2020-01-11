@@ -22,12 +22,12 @@
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.name}}</td>
                     <td
-                        :class="[row.status?'green':'red']"
+                        :class="['bold',row.status?'green':'red']"
                     >{{row.status===1?'启用':row.status===0?'禁用':row.status}}</td>
                     <td>{{row.last_editor &&row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
-                        <span class="a" @click="opera(row)">{{row.status===1?'禁用':'启用'}}</span>
+                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
                     </td>
                 </template>
             </Table>
@@ -67,7 +67,7 @@ export default {
                 '厂商名称',
                 '状态',
                 '最后更新人',
-                '最后跟新时间',
+                '最后更新时间',
                 '操作'
             ],
             list: [
@@ -108,15 +108,15 @@ export default {
             this.pageNo = 1
             this.getList()
         },
-        opera(row) {
+        statusSwitch(row) {
             this.mod_show = true
             this.curr_row = row
             if (row.status === 1) {
                 this.mod_title = '禁用'
-                this.mod_cont = '是否确认禁用该分类名称!'
+                this.mod_cont = '是否确认禁用该支付厂商!'
             } else {
                 this.mod_title = '启用'
-                this.mod_cont = '是否确认启用该分类名称!'
+                this.mod_cont = '是否确认启用该支付厂商!'
             }
         },
         modConf() {

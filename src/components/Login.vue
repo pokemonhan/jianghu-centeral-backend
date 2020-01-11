@@ -135,7 +135,8 @@ export default {
                             window.all.tool.setLocal('email', res.data.email)
                             self.$toast.success('登陆成功')
                             setTimeout(() => {
-                                self.$router.push('/')
+                                // TODO: 可能有些不能查看首页 
+                                self.$router.push('/home')
                             }, 200);
                         } else {
                             // console.log(res)

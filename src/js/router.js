@@ -4,26 +4,80 @@ import Router from 'vue-router'
 import Home from '@/components/views/Home.vue'
 import Login from '@/components/Login.vue'
 
+// /*------------------- 厅主管理 --------------------*/
+// import HalList from '../components/views/hall/Halllist'
 // import LoginRecord from '../components/views/hall/LoginRecord'
-Vue.use(Router)
 
+// /*------------------- 厂商管理 --------------------*/
+// // import hehe from '../components/views/hall/hehe'
+// import VendorManage from '../components/views/game/VendorManage'
+// import SortSet from '../components/views/game/SortSet'
+// import GameManage from '../components/views/game/GameManage'
+
+
+
+Vue.use(Router)
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err)
+}
 // const router = new Router({
 //     mode: 'history',
 //     routes: [
 //         {
 //             path: '/',
-//             component: HomePage
+//             component: Login
 //         },
+//         {
+//             path: '/home',
+//             component: Home
+//         },
+//         {
+//             path: '/login',
+//             component: Login
+//         },
+
+//         /*------------------ 厅主管理 ------------------------*/
+//         // {
+//         //     path: '/hall/halllist',
+//         //     component: HalList
+//         // },
+//         { path: "/hall/halllist", component: () => import('../components/views/hall/Halllist.vue') },
+//         {
+//             path: '/hall/loginrecord',
+//             component: LoginRecord
+//         },
+//         /* 厅主管理 */
+
+//         /*--------------------- 游戏管理 ---------------------*/
+//         {
+//             path: '/game/vendormanage',
+//             component: VendorManage
+//         },
+//         {
+//             path: '/game/sortset',
+//             component: SortSet
+//         },
+//         {
+//             path: '/game/gamemanage',
+//             component: GameManage
+//         }
+
+//         /*---------------------- 游戏管理 ----------------------*/
+
 //     ]
 // })
 
 // export default router
+
+// 自动加载路由
+
 const routes = new Router({
     mode: 'history',
     routes: [
         {
             path: '/',
-            component: Home
+            component: Login
         },
         {
             path: '/home',
@@ -36,11 +90,8 @@ const routes = new Router({
     ]
 })
 routes.beforeEach((to, from, next) => {
-    // console.log(to.path);
-    // console.log(from.path);
-    if (to.path !== from.path) {
-        next()
-    }
+
+    if (to.path !== from.path) { next() }
 })
 let route_add = []
 
@@ -50,18 +101,19 @@ r.keys().forEach(file_name => {
     let path = file_name.slice(1).replace('.vue', '').toLowerCase()
 
     let length = file_name.split('/').length
-    // let name = file_name.split('/')[length-1].replace('.vue','')
+    let name = file_name.split('/')[length - 1].replace('.vue', '')
     // console.log(name)
     // console.log('文件path ', path)
     route_add.push({
         path: path,
-        // name: name,
         // 懒加载
         component: () => r(file_name)
     })
 
 })
-// console.log('"所有"路由',route_add)
+// console.log('"所有"路由', JSON.stringify(route_add))
+// console.table(route_add)
 routes.addRoutes(route_add)
+
 export default routes
 

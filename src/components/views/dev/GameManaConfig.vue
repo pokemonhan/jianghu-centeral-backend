@@ -5,7 +5,7 @@
             <ul class="left">
                 <li>
                     <span>游戏名称</span>
-                    <Select v-model="filter.game_id" :options="game_opt"></Select>
+                    <Select v-model="filter.game_id" :options="geme_type_opt"></Select>
                 </li>
                 <li>
                     <span>游戏厂商</span>
@@ -16,7 +16,7 @@
                     <Select v-model="filter.type_id" :options="type_opt"></Select>
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="add">添加</button>
                 </li>
             </ul>
@@ -25,20 +25,22 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
-                    <td>{{row.a5}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a7}}</td>
-                    <td>{{row.a8}}</td>
-                    <td>{{row.a9}}</td>
-                    <td>{{row.a10}}</td>
+                    <td>{{row.vendor&&row.vendor.name}}</td>
+                    <td>{{row.name}}</td>
+                    <td>{{row.type&&row.type.name}}</td>
+                    <td>{{row.sign}}</td>
+                    <td>{{row.app_id}}</td>
+                    <td
+                        :class="['bold',row.status?'green':'red']"
+                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
+                    <td>{{row.author&&row.author.name}}</td>
+                    <td>{{row.created_at}}</td>
+                    <td>{{row.last_editor&&row.last_editor.name}}</td>
+                    <td>{{row.updated_at}}</td>
                     <td>
-                        <span class="a" @click="edit(row)">编辑</span>
-                        <span class="a" @click="operate(row)">禁用</span>
-                        <span class="a" @click="del(row)">删除</span>
+                        <button class="btns-blue" @click="edit(row)">编辑</button>
+                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <button class="btns-blue" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -70,109 +72,127 @@
                                 <span>游戏分类:</span>
                                 <Select
                                     style="width:250px;"
-                                    v-model="form.game_id"
-                                    :options="game_opt"
+                                    v-model="form.type_id"
+                                    :options="type_opt"
                                 ></Select>
                             </li>
                             <li>
-                                <span>商户秘钥:</span>
-                                <Input class="w250" v-model="form.secret_key" />
+                                <span>商户密钥:</span>
+                                <Input class="w250" v-model="form.merchant_secret" />
                             </li>
                             <li>
                                 <span>商户号:</span>
-                                <Input class="w250" v-model="form.number" />
+                                <Input class="w250" v-model="form.merchant_code" />
+                            </li>
+                            <li>
+                                <span>商户私钥:</span>
+                                <Input class="w250" v-model="form.private_key" />
                             </li>
                             <li>
                                 <span>授权码:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <Input class="w250" v-model="form.authorization_code" />
                             </li>
 
                             <li>
                                 <span>进入游戏测试地址:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <Input class="w250" v-model="form.test_in_game_url" />
                             </li>
                             <li>
                                 <span>额度测试地址:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <Input class="w250" v-model="form.test_conver_url" />
                             </li>
 
                             <li>
                                 <span>检查余额测试地址:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <Input class="w250" v-model="form.test_check_balance_url" />
                             </li>
                             <li>
-                                <span>活动订单测试地址:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <span>检查订单测试地址:</span>
+                                <Input class="w250" v-model="form.test_check_order_url" />
                             </li>
                             <li>
                                 <span>活动注单测试地址:</span>
-                                <Input class="w250" v-model="form.author" />
-                            </li>
-                            <li v-if="dia_status_show">
-                                <span>状态选择</span>
-                                <Radio
-                                    class="radio-left"
-                                    label="启用"
-                                    :value="form.status"
-                                    val="on"
-                                    v-model="form.status"
-                                />
-                                <Radio
-                                    class="radio-right ml50"
-                                    label="禁用"
-                                    :value="form.status"
-                                    val="off"
-                                    v-model="form.status"
-                                />
+                                <Input class="w250" v-model="form.test_get_station_order_url" />
                             </li>
                         </ul>
                         <!-- form 右侧 -->
                         <ul class="form ml20">
                             <li>
                                 <span>游戏标识:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <Input class="w250" v-model="form.sign" />
                             </li>
                             <li>
                                 <span>游戏名称:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <Input class="w250" v-model="form.name" />
                             </li>
                             <li>
                                 <span>商户公钥:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <Input class="w250" v-model="form.public_key" />
                             </li>
+
                             <li>
                                 <span>APPID:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <Input class="w250" v-model="form.app_id" />
                             </li>
                             <li>
                                 <span>进入游戏地址:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <Input class="w250" v-model="form.in_game_url" />
                             </li>
                             <li>
                                 <span>额度地址:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <Input class="w250" v-model="form.conver_url" />
                             </li>
                             <li>
                                 <span>检查余额地址:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <Input class="w250" v-model="form.check_balance_url" />
                             </li>
                             <li>
                                 <span>检查订单地址:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <Input class="w250" v-model="form.check_order_url" />
                             </li>
                             <li>
-                                <span>检查注单地址:</span>
-                                <Input class="w250" v-model="form.author" />
+                                <span>获取注单地址:</span>
+                                <Input class="w250" v-model="form.get_station_order_url" />
                             </li>
                             <li>
                                 <span>请求模式:</span>
-                                <Input class="w250" v-model="form.author" />
+
+                                <Radio
+                                    label="获取数据模式"
+                                    :value="form.request_mode"
+                                    val="1"
+                                    v-model="form.request_mode"
+                                />
+
+                                <Radio
+                                    class="ml50"
+                                    label="直接跳转"
+                                    :value="form.request_mode"
+                                    val="0"
+                                    v-model="form.request_mode"
+                                />
+                            </li>
+                            <li v-if="dia_status==='add'">
+                                <span>状态选择</span>
+                                <Radio
+                                    label="启用"
+                                    :value="form.status"
+                                    val="1"
+                                    v-model="form.status"
+                                />
+                                <Radio
+                                    class="ml50"
+                                    label="禁用"
+                                    :value="form.status"
+                                    val="0"
+                                    v-model="form.status"
+                                />
                             </li>
                         </ul>
                     </div>
                     <div class="center-box">
                         <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                        <button class="btn-blue-large ml50">确定</button>
+                        <button class="btn-blue-large ml50" @click="diaCfm">确定</button>
                     </div>
                 </div>
             </div>
@@ -194,7 +214,7 @@ export default {
                 vendor_id: '',
                 type_id: ''
             },
-            game_opt: [],
+            geme_type_opt: [],
             vendor_opt: [],
             type_opt: [],
             headers: [
@@ -207,36 +227,11 @@ export default {
                 '游戏状态',
                 '添加人',
                 '添加时间',
-                '最后跟新人',
-                '最后跟新时间',
+                '最后更新人',
+                '最后更新时间',
                 '操作'
             ],
-            list: [
-                {
-                    a1: '开元棋牌??',
-                    a2: '抢庄牛牛',
-                    a3: '热门棋牌',
-                    a4: 'ADB',
-                    a5: '1',
-                    a6: '1',
-                    a7: 'admin',
-                    a8: '2019-02-02 21:30',
-                    a9: 'admin',
-                    a10: '2019-02-02 21:30'
-                },
-                {
-                    a1: '开元棋牌???',
-                    a2: '抢庄牛牛',
-                    a3: '热门棋牌',
-                    a4: 'ADB',
-                    a5: '1',
-                    a6: '0',
-                    a7: 'admin',
-                    a8: '2019-02-02 21:30',
-                    a9: 'admin',
-                    a10: '2019-02-02 21:30'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -245,14 +240,8 @@ export default {
             curr_row: {},
             dia_show: false,
             dia_title: '',
-            dia_status_show: false,
-            form: {
-                name: '',
-                sort: '',
-                secret_key: '',
-                number: '',
-                author: ''
-            },
+            dia_status: '',
+            form: {},
             sort_opt: [{ label: '全部', value: '' }],
 
             // mod 禁用删除框
@@ -262,26 +251,188 @@ export default {
         }
     },
     methods: {
+        initForm() {
+            this.form = {
+                vendor_id: '', // 厂商选中
+                sign: '', // 游戏标识
+                type_id: '', // 游戏分类
+                name: '', // 游戏名称
+
+                merchant_secret: '', // 商户密钥
+                public_key: '', // 商户公钥
+                merchant_code: '', //商户号码
+                private_key: '', // 商户私钥
+                app_id: '',
+
+                authorization_code: '', //授权码
+                in_game_url: '', // 进入游戏地址
+                test_in_game_url: '', // 进入游戏测试地址
+                conver_url: '', // 额度转换地址 额度地址
+                test_conver_url: '', // 额度测试地址
+                check_balance_url: '', //检查余额地址
+                test_check_balance_url: '', //检查余额测试地址
+                check_order_url: '', // 检查订单地址
+                test_check_order_url: '', // 检查订单测试地址
+                get_station_order_url: '', // 获取注单地址
+                test_get_station_order_url: '', // 活动注单测试地址
+                request_mode: '1', // 请求模式
+                status: '1' // 状态选择
+            }
+        },
         add() {
+            this.initForm()
+            this.dia_title = '添加'
+            this.dia_status = 'add'
             this.dia_show = true
-            this.dia_status_show = true
         },
         edit(row) {
+            console.log('row: ', row)
+            // this.curr_row = row
+           
+            this.form = {
+				id: row.id,
+				vendor_id: row.vendor_id, 
+				sign: row.sign,
+				type_id: row.type_id,
+				name: row.name,
+
+				merchant_secret: row.merchant_secret,
+				public_key: row.public_key,
+				merchant_code: row.merchant_code,
+				private_key: row.private_key,
+				app_id: row.app_id,
+
+				authorization_code: row.authorization_code, 
+				in_game_url: row.in_game_url,
+				test_in_game_url: row.test_in_game_url,
+				conver_url: row.conver_url,
+				test_conver_url: row.test_conver_url,
+				check_balance_url: row.check_balance_url, 
+				test_check_balance_url: row.test_check_balance_url, 
+				check_order_url: row.check_order_url, 
+				test_check_order_url: row.test_check_order_url, 
+				get_station_order_url: row.get_station_order_url, 
+				test_get_station_order_url: row.test_get_station_order_url, 
+                // request_mode,
+                status: row.status
+            }
+            this.form.request_mode = String(row.request_mode)
+            this.dia_status = 'edit'
+            this.dia_title = '编辑'
             this.dia_show = true
-            this.curr_row = row
-            this.dia_status_show = false
         },
-        operate(row) {
-            this.mod_show = true
+        statusSwitch(row) {
+            this.curr_row = row
+            this.mod_status = 'switch'
             this.mod_title = row.status === 1 ? '禁用' : '启用'
             this.mod_cont = `是否确定${this.mod_title}该游戏名称？`
+            this.mod_show = true
         },
         del(row) {
-            this.mod_show = true
+            this.curr_row = row
+            this.mod_status = 'del'
             this.mod_title = '删除'
             this.mod_cont = '是否确定删除该游戏名称？'
+            this.mod_show = true
         },
-        modConf() {},
+        diaCfm() {
+            if (this.dia_status === 'add') {
+                this.addCfm()
+            }
+            if (this.dia_status === 'edit') {
+                this.editCfm()
+            }
+        },
+        addCfm() {
+            let data = {
+                type_id: this.form.type_id,
+                vendor_id: this.form.vendor_id,
+                name: this.form.name,
+                sign: this.form.sign,
+                request_mode: this.form.request_mode,
+
+                conver_url: this.form.conver_url,
+                test_conver_url: this.form.test_conver_url,
+                check_balance_url: this.form.check_balance_url,
+                test_check_balance_url: this.form.test_check_balance_url,
+                check_order_url: this.form.check_order_url,
+
+                test_check_order_url: this.form.test_check_order_url,
+                in_game_url: this.form.in_game_url,
+                test_in_game_url: this.form.test_in_game_url,
+                get_station_order_url: this.form.get_station_order_url,
+                test_get_station_order_url: this.form .test_get_station_order_url,
+
+                status: this.form.status,
+                app_id: this.form.app_id,
+                authorization_code: this.form.authorization_code,
+                merchant_code: this.form.merchant_code,
+                merchant_secret: this.form.merchant_secret,
+
+                public_key: this.form.public_key,
+                private_key: this.form.private_key
+            }
+            console.log('检查')
+            let { url, method } = this.$api.dev_game_add
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.$toast.success(res && res.message)
+                    this.mod_show = false
+                    this.getList()
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
+        },
+        editCfm() {
+            let data = this.form
+
+            let { url, method } = this.$api.dev_game_set
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.$toast.success(res && res.message)
+                    this.mod_show = false
+                    this.getList()
+                }
+            })
+        },
+        modConf() {
+            if (this.mod_status === 'switch') {
+                this.switchStatus()
+            }
+            if (this.mod_status === 'del') {
+                this.delCfm()
+            }
+        },
+        switchStatus() {
+            let data = {
+                id: this.curr_row.id,
+                status: this.curr_row.status === 1 ? 0 : 1
+            }
+            let { url, method } = this.$api.dev_game_status_set
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === '200') {
+                    this.$toast.success(res && res.message)
+                    this.mod_show = false
+                    this.getList()
+                }
+            })
+        },
+        delCfm() {
+            let data = { id: this.curr_row.id }
+            let { url, method } = this.$api.dev_game_del
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === '200') {
+                    this.$toast.success(res && res.message)
+                    this.mod_show = false
+                    this.getList()
+                }
+            })
+        },
         updateNo() {
             this.getList()
         },
@@ -290,14 +441,22 @@ export default {
             this.getList()
         },
         toSelectOpt(arr) {
+            let array = [{ label: '全部', value: '' }]
+            let opt = arr.map(item => {
+                return { label: item.name, value: item.id }
+            })
+            return array.concat(opt)
+        },
+        // 这个名字就是value // TODO:
+        gameToSelectOpt(arr) {
             let array = [
                 {
-                    label:'全部',
-                    value: '',
+                    label: '全部',
+                    value: ''
                 }
             ]
             let opt = arr.map(item => {
-                return { label: item.name, value: item.id }
+                return { label: item.name, value: item.name }
             })
             return array.concat(opt)
         },
@@ -305,15 +464,13 @@ export default {
             let { url, method } = this.$api.dev_game_search_condition_get
 
             this.$http({ method, url }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                console.log('select列表: ', res)
                 if (res && res.code === '200') {
-                    
-                    this.game_opt = this.toSelectOpt(res.data.games)
+                    this.geme_type_opt = this.toSelectOpt(res.data.games)
+
                     this.vendor_opt = this.toSelectOpt(res.data.vendors)
                     this.type_opt = this.toSelectOpt(res.data.types)
-                    //this.$toast.success(res && res.message)
-                    //this.mod_show=false
-                    //this.getList()
+                    // 初始化 filter 筛选内容
                 } else {
                     if (res && res.message !== '') {
                         this.$toast.error(res.message)
@@ -323,27 +480,20 @@ export default {
         },
         getList() {
             let para = {
-                // name: this.filter.vendor,
-                // status: this.filter.status,
-                // pageSize: this.pageSize,
-                // page: this.pageNo
+                game_id: this.filter.game_id,
+                vendor_id: this.filter.vendor_id,
+                type_id: this.filter.type_id,
+                pageSize: this.pageSize,
+                page: this.pageNo
             }
             let params = window.all.tool.rmEmpty(para)
 
             let { url, method } = this.$api.dev_game_list
             this.$http({ method, url, params }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                console.log('游戏管理配置列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data
-
-                    //this.$toast.success(res && res.message)
-                    //this.mod_show=false
-                    //this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
                 }
             })
         }
@@ -352,8 +502,8 @@ export default {
         this.getSelectOpt()
     },
     mounted() {
-        // this.getList()
-        
+        this.getList()
+        this.initForm()
     }
 }
 </script> <style scoped>
@@ -366,11 +516,9 @@ export default {
 .mt20 {
     margin-top: 20px;
 }
+/* dia-inner全局样式 */
 .dia-inner {
-    display: flex;
-    justify-content: center;
-    min-width: 600px;
-    padding-bottom: 20px;
+    padding: 0 50px;
 }
 .dia-detail {
     display: flex;

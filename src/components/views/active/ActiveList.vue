@@ -22,9 +22,13 @@
                     <td>{{row.a1}}</td>
                     <td>{{row.a2}}</td>
                     <td>{{row.a2}}</td>
-                    <td :class="[row.a2==='1'?'green':'red']">{{row.a2}}</td>
+                    <td :class="['bold',row.a2==='1'?'green':'red']">{{row.a2}}</td>
                     <td>
-                        <span class="a">禁用</span>
+                        <!-- <button class="btns-red">禁用</button> -->
+                        <button
+                            :class="[row.status?'btns-red':'btns-green']"
+                            @click="statusSwitch(row)"
+                        >{{row.status===1?'禁用':'启用'}}</button>
                     </td>
                 </template>
             </Table>
@@ -56,13 +60,13 @@ export default {
                 '编号',
                 '活动名称',
                 '最后更新人',
-                '最后跟新时间',
+                '最后更新时间',
                 '活动状态',
                 '操作'
             ],
             list: [
                 {
-                    a1: '64646466',
+                    a1: '64646466??',
                     a2: 'sdfsdfdsf',
                     a3: '充支好礼',
                     a4: '1',
@@ -82,6 +86,17 @@ export default {
         }
     },
     methods: {
+        statusSwitch(row) {
+            this.mod_show = true
+            this.curr_row = row
+            if (row.status === 1) {
+                this.mod_title = '禁用'
+                this.mod_cont = '是否确定禁用该通道名称'
+            } else {
+                this.mod_title = '启用'
+                this.mod_cont = '是否确定启用该通道名称'
+            }
+        },
         updateNo() {
             this.getList()
         },

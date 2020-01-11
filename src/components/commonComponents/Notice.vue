@@ -1,12 +1,12 @@
 <template>
-    <transition name="toast">
-        <div v-if="show" class="vue-toast">
+    <transition name="notice">
+        <div v-if="show" class="vue-notice">
             <div class="inner">
                 <div>
-                    <i v-if="type==='warning'" class="toast-warning iconfont iconjinggao1-"></i>
-                    <i v-else-if="type==='success'" class="toast-success iconfont iconchenggong-"></i>
-                    <i v-else-if="type==='error'" class="toast-error iconfont iconcuowuguanbi-"></i>
-                    <i v-else-if="type==='info'" class="toast-info iconfont iconinfor"></i>
+                    <i v-if="type==='warning'" class="notice-warning iconfont iconjinggao1-"></i>
+                    <i v-else-if="type==='success'" class="notice-success iconfont iconchenggong-"></i>
+                    <i v-else-if="type==='error'" class="notice-error iconfont iconcuowuguanbi-"></i>
+                    <i v-else-if="type==='info'" class="notice-info iconfont iconinfor"></i>
                     <span class="title">{{title}}</span>
                     <i :class="['close','iconfont iconicon-test']" @click="close"></i>
                 </div>
@@ -18,15 +18,16 @@
 
 <script>
 export default {
-    name: 'Toast',
+    name: 'notice',
     props: {
         title: {
-            type: String
+            type: String,
+            // default: () => 'title is null'
         },
         message: {
             type: String,
             // required:
-            default: () => '$notice is null'
+            default: () => 'message is null'
         },
         type: {
             type: String,
@@ -57,27 +58,29 @@ export default {
 </script>
 
 <style scoped>
-.toast-enter {
+
+.notice-enter {
     position: relative;
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-74px);
     z-index: 100;
 }
-.toast-leave-to {
-    margin-top: -55px;
+.notice-leave-to {
+    margin-bottom: -90px;
     opacity: 0;
 }
-.toast-enter-to,
-.toast-leave {
+.notice-enter-to,
+.notice-leave {
     margin: 0;
     transform: translateY(0);
     opacity: 1;
 }
-.toast-enter-active,
-.toast-leave-active {
-    transition: all 0.3s ease;
+.notice-enter-active,
+.notice-leave-active {
+    transition: all .2s ease;
 }
-.vue-toast {
+.vue-notice {
+    position: relative;
     max-height: 400px;
     width: 350px;
     box-sizing: border-box;
@@ -88,7 +91,7 @@ export default {
     justify-content: center; */
     overflow: hidden;
 }
-.vue-toast .inner {
+.vue-notice .inner {
     height: 100%;
     padding: 16px 20px;
     border-radius: 4px;
@@ -99,19 +102,19 @@ export default {
     /* justify-content: center; */
     /* align-items: center; */
 }
-.vue-toast i {
+.vue-notice i {
     margin-right: 8px;
 }
-.vue-toast .toast-success {
+.vue-notice .notice-success {
     color: #19be6b;
 }
-.vue-toast .toast-warning {
+.vue-notice .notice-warning {
     color: #f90;
 }
-.vue-toast .toast-info {
+.vue-notice .notice-info {
     color: #2d8cf0;
 }
-.vue-toast .toast-error {
+.vue-notice .notice-error {
     color: #ed4014;
 }
 .title {

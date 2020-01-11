@@ -2,7 +2,7 @@
     <div class="container">
         <!-- 厅主列表 -->
 
-        <div class="filter p10">
+        <div class="filter">
             <ul class="left">
                 <li>
                     <span>厅主账号</span>
@@ -22,7 +22,7 @@
                     <span class="mh-5">至</span>
                     <Date v-model="filter.add_dates[1]" />
                 </li>
-                <li class="mt10">
+                <li>
                     <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="addHall">添加厅主</button>
                 </li>
@@ -56,16 +56,18 @@
                         <div>{{String(row.a7).split('-')[1]}}</div>
                     </td>
                     <td>{{row.created_at}}</td>
-                    <td>
+                    <td style="padding:5px 0;">
                         <div>
-                            <span class="a" @click="operateMod(row)">{{row.a5==='1'?'启用':'禁用'}}</span>
-                            <span class="a" @click="maintainShow(row)">维护</span>
-                            <span class="a" @click="siteManageShow(row)">站点管理</span>
+                            <!-- <button class="btns-blue" @click="operateMod(row)">{{row.a5==='1'?'启用':'禁用'}}</button> -->
+                        <button :class="[row.status?'btns-red':'btns-green']" @click="operateMod(row)">{{row.status===1?'禁用':'启用'}}</button>
+
+                            <button class="btns-blue" @click="maintainShow(row)">维护</button>
+                            <button class="btns-blue" @click="siteManageShow(row)">站点管理</button>
                         </div>
-                        <div>
-                            <span class="a" @click="domainShow(row)">域名管理</span>
-                            <span class="a" @click="gameShow(row)">游戏管理</span>
-                            <span class="a" @click="activeShow(row)">活动管理</span>
+                        <div style="margin-top:5px;">
+                            <button class="btns-blue" @click="domainShow(row)">域名管理</button>
+                            <button class="btns-blue" @click="gameShow(row)">游戏管理</button>
+                            <button class="btns-blue" @click="activeShow(row)">活动管理</button>
                         </div>
                     </td>
                 </template>
@@ -83,8 +85,8 @@
         <!-- 禁用 启用 -->
         <Modal
             :show.sync="mod_show"
-            title="站点维护"
-            :content="is_turn_on?'确认启用站点':'确认禁用站点'"
+            title="站点状态"
+            :content="curr_row.status?'确认禁用站点':'确认启用站点'"
             @confirm="modConf"
         ></Modal>
 
@@ -236,13 +238,13 @@ export default {
             },
             website_opt: [
                 { label: '全部', value: '' },
-                { label: '启用', value: 0 },
-                { label: '禁用', value: 1 }
+                { label: '启用', value: 1 },
+                { label: '禁用', value: 0 }
             ],
             maintain_opt: [
                 { label: '全部', value: '' },
-                { label: '维护中', value: '1' },
-                { label: '未维护', value: '0' }
+                { label: '维护中', value: 1 },
+                { label: '未维护', value: 0 }
             ],
             headers: [
                 '厅主账号',
@@ -309,11 +311,7 @@ export default {
         // 【禁用】或【启用】站点
         operateMod(row) {
             this.curr_row = row
-            if (row.a5 === '1') {
-                this.is_turn_on = true
-            } else {
-                this.is_turn_on = false
-            }
+            this.mod_status = 'switch'
             this.mod_show = true
         },
 
@@ -412,8 +410,10 @@ export default {
 .w100 {
     width: 100px;
 }
-.p10 {
-    padding: 10px;
+.filter {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 5px;
 }
 /* margin-horizontal 水平边框为5px*/
 /*  添加  */

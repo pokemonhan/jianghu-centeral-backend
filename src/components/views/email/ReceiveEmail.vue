@@ -53,7 +53,7 @@
             />
         </div>
         <!-- 详情 -->
-        <Dialog :show.sync="dia_show" title="收件箱详情">
+        <Dialog class="dialog" :show.sync="dia_show" title="收件箱详情">
             <div class="dia-inner">
                 <Detail @close="dia_show=false" />
             </div>
@@ -163,5 +163,8 @@ export default {
 }
 .pointer{
     cursor: pointer;
+}
+.dia-inner {
+    max-width: 1200px;
 }
 </style>

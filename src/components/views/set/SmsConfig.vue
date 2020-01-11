@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <!-- 短信配置 -->
-        
+
         <div class="filter p10">
             <ul class="left">
                 <li>
@@ -31,12 +31,17 @@
                     <td>{{row.a2}}</td>
                     <td>{{row.a2}}</td>
                     <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
+                    <td
+                        :class="['bold',row.status?'green':'red']"
+                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
                     <td>{{row.a2}}</td>
                     <td>
-                        <span class="a" @click="edit(row)">编辑</span>
-                        <span class="a" @click="forbidden(row)">禁用</span>
-                        <span class="a" @click="del(row)">删除</span>
+                        <button class="btns-blue" @click="edit(row)">编辑</button>
+                        <button
+                            :class="[row.status?'btns-red':'btns-green']"
+                            @click="statusSwitch(row)"
+                        >{{row.status===1?'禁用':'启用'}}</button>
+                        <button class="btns-blue" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -92,7 +97,13 @@
                 </div>
             </div>
         </Dialog>
-        <Modal :show.sync="mod_show" :title="mod_title" :content="mod_cont" @cancel="mod_show=false" @confirm="modConf"></Modal>
+        <Modal
+            :show.sync="mod_show"
+            :title="mod_title"
+            :content="mod_cont"
+            @cancel="mod_show=false"
+            @confirm="modConf"
+        ></Modal>
     </div>
 </template> <script>
 export default {
@@ -112,8 +123,8 @@ export default {
                 '编号',
                 '商户号',
                 '短信条数',
-                '最后跟新人',
-                '最后跟新时间',
+                '最后更新人',
+                '最后更新时间',
                 '启用状态',
                 '添加时间',
                 '操作'
@@ -152,21 +163,28 @@ export default {
             // mod 确认框
             mod_show: false,
             mod_title: '',
-            mod_cont: '',
+            mod_cont: ''
         }
     },
     methods: {
         edit(row) {
-            this.dia_show = true;
+            this.dia_show = true
         },
-       
-        modConf() {
 
-        },
-        forbidden(row) {
+        modConf() {},
+        // statusSwitch(row) {
+        //     this.mod_show = true
+        //     this.mod_title = '禁用'
+        //     this.mod_cont = '是否确定禁用该短信产商？'
+        // },
+        statusSwitch(row) {
+            this.curr_row = row
             this.mod_show = true
-            this.mod_title = '禁用'
-            this.mod_cont = '是否确定禁用该短信产商？'
+            if (row.status === 1) {
+                this.mod_cont = '是否确定禁用该厂商!'
+            } else {
+                this.mod_cont = '是否确定启用该厂商!'
+            }
         },
         del(row) {
             this.mod_show = true
@@ -179,7 +197,7 @@ export default {
         updateSize() {
             this.pageNo = 1
             // this.getList()
-        },
+        }
     },
     mounted() {}
 }

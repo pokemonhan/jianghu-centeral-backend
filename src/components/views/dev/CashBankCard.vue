@@ -28,16 +28,11 @@
                     <td>{{row.created_at}}</td>
                     <td>{{row.last_editor&&row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
-                    <td
-                        :class="row.status?'green':'red'"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'--'}}</td>
+                    <td :class="['bold',row.status?'green':'red']" >{{row.status===1?'开启':row.status===0?'关闭':'--'}}</td>
                     <td>
-                        <span class="a" @click="edit(row)">编辑</span>
-                        <span
-                            class="a"
-                            @click="switchStatus(row)"
-                        >{{row.status===1?'禁用':row.status===0?'启用':'--'}}</span>
-                        <span class="a" @click="del(row)">删除</span>
+                        <button class="btns-blue" @click="edit(row)">编辑</button>
+                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <button class="btns-blue" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -167,7 +162,7 @@ export default {
 
             this.dia_show = true
         },
-        switchStatus(row) {
+        statusSwitch(row) {
             this.curr_row = row
             this.mod_status = 'switch'
             this.mod_title = row.status === 1 ? '禁用' : '启用'

@@ -113,7 +113,7 @@ export default {
     width: 100%;
 }
 .talbe-fixed {
-    table-layout: fixed;
+    /* table-layout: fixed; */
 }
 .table td,
 .table th {

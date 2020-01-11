@@ -2,91 +2,79 @@
     <div class="container total-menu">
         <!-- 总控菜单 -->
 
-        <div class="tol-left">
+        <div class="tol-left" @contextmenu.prevent>
             <div class="head">编辑菜单</div>
             <div class="head-sub">
                 <button class="btn-blue" @click="addLev1Menu">添加一级菜单</button>
             </div>
             <!-- 编辑菜单 -->
-            <div class="edit-menu center-box">
-                <div>
-                    <ul class="lev1" @contextmenu.prevent>
-                        <li v-for="(lev1, lev1_idx) in menu" :key="lev1_idx">
-                            <div class="title" @click.right="contexMenu(lev1)">
-                                <i
-                                    :class="['iconfont iconup',lev1.children?'':'hide']"
-                                    @click="expand(lev1.id)"
-                                ></i>
-                                <span class="title-cont">{{lev1.label}}</span>
-                                <Switchbox class="switch" />
-                                <div v-if="lev1.show_menu" class="context-menu">
-                                    <p @click="addSubordinate(lev1)">添加下级</p>
-                                    <p @click="quoteMsg">编辑菜单</p>
-                                    <p @click="deleteMsg">删除菜单</p>
-                                    <p class="close-menu" @click="closeMenu(lev1)">关闭</p>
-                                </div>
-                            </div>
+            <div class="edit-menu center-box ph20">
+                <ul class="lev1">
+                    <li v-for="(lev1, lev1_idx) in menu" :key="lev1_idx">
+                        <div class="title" @contextmenu.prevent="contextmenu($event,lev1)">
+                            <i
+                                :class="['iconfont iconup',lev1.children?'':'hide']"
+                                @click="expand(lev1.key)"
+                            ></i>
+                            <span class="title-cont">{{lev1.label}}</span>
+                            <Switchbox class="switch" />
+                        </div>
 
-                            <!-- 内容 -->
-                            <ul v-if="lev1.children" class="lev2" :ref="lev1.id">
-                                <li v-for="(lev2, lev2_idx) in lev1.children" :key="lev2_idx">
-                                    <div class="title" @click.right="contexMenu(lev2)">
-                                        <i
-                                            :class="['iconfont iconup',lev2.children?'':'hide']"
-                                            @click="expand(lev2.id)"
-                                        ></i>
-                                        <span>{{lev2.label}}</span>
+                        <!-- 内容 -->
+                        <ul v-if="lev1.children" class="lev2" :ref="lev1.key">
+                            <li v-for="(lev2, lev2_idx) in lev1.children" :key="lev2_idx">
+                                <div class="title" @contextmenu.prevent="contextmenu($event,lev2)">
+                                    <i
+                                        :class="['iconfont iconup',lev2.children?'':'hide']"
+                                        @click="expand(lev2.key)"
+                                    ></i>
+                                    <span>{{lev2.label}}</span>
 
-                                        <Switchbox class="switch" />
-                                        <div v-if="lev2.show_menu" class="context-menu">
-                                            <p @click="addSubordinate(lev2)">添加下级</p>
-                                            <p @click="quoteMsg">编辑菜单</p>
-                                            <p @click="deleteMsg">删除菜单</p>
-                                            <p class="close-menu" @click="closeMenu(lev2)">关闭</p>
-                                        </div>
+                                    <Switchbox class="switch" />
+                                    <div v-show="lev2.show_menu" class="context-menu">
+                                        <p @click="addSubordinate(lev1)">添加下级</p>
+                                        <p @click="editMenu(lev1)">编辑菜单</p>
+                                        <p @click="delMenu(lev1)">删除菜单</p>
                                     </div>
-                                    <ul v-if="lev2.children" class="lev3" :ref="lev2.id">
-                                        <li
-                                            v-for="(lev3, lev3_idx) in lev2.children"
-                                            :key="lev3_idx"
+                                </div>
+
+                                <ul v-if="lev2.children" class="lev3" :ref="lev2.key">
+                                    <li v-for="(lev3, lev3_idx) in lev2.children" :key="lev3_idx">
+                                        <div
+                                            class="title"
+                                            @contextmenu.prevent="contextmenu($event,lev3)"
                                         >
-                                            <div class="title">
-                                                <i
-                                                    :class="['iconfont iconup',lev3.children?'':'hide']"
-                                                    @click="expand(lev3.id)"
-                                                ></i>
-                                                <span>{{lev3.label}}</span>
-                                                <Switchbox class="switch" />
-                                                <div v-if="lev3.show_menu" class="context-menu">
-                                                    <p @click="addSubordinate(lev3)">添加下级</p>
-                                                    <p @click="quoteMsg">编辑菜单</p>
-                                                    <p @click="deleteMsg">删除菜单</p>
-                                                </div>
-                                            </div>
-                                            <ul
-                                                v-if="lev3.children"
-                                                class="lev4"
-                                                :ref="lev3.id"
-                                                @click="expand(lev4.id)"
+                                            <i
+                                                :class="['iconfont iconup',lev3.children?'':'hide']"
+                                                @click="expand(lev3.key)"
+                                            ></i>
+                                            <span>{{lev3.label}}</span>
+                                            <Switchbox class="switch" />
+                                        </div>
+
+                                        <ul
+                                            v-if="lev3.children"
+                                            class="lev4"
+                                            :ref="lev3.key"
+                                            @click="expand(lev4.key)"
+                                        >
+                                            <li
+                                                v-for="(lev4, lev4_idx) in lev3.children"
+                                                :key="lev4_idx"
                                             >
-                                                <li
-                                                    v-for="(lev4, lev4_idx) in lev3.children"
-                                                    :key="lev4_idx"
-                                                >
-                                                    <i
-                                                        :class="['iconfont iconup',lev4.children?'':'hide']"
-                                                        @click="expand(lev4.id)"
-                                                    ></i>
-                                                    <span>{{lev4.title}}</span>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                                                <i
+                                                    :class="['iconfont iconup',lev4.children?'':'hide']"
+                                                    @click="expand(lev4.key)"
+                                                ></i>
+                                                <span>{{lev4.label}}</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
 
@@ -95,7 +83,7 @@
             <!-- <div class="head-sub">
                 <button class="btn-blue">添加一级菜单</button>
             </div>-->
-            <div class="center-box">
+            <div class="center-box ph20">
                 <!-- 这里使用 ant vue ui -->
                 <el-tree
                     :data="menu"
@@ -116,11 +104,11 @@
         <!-- 右边 -->
         <div class="tol-right">
             <div class="head">路由设置</div>
-            <RouteTree :menu="menu" />
+            <RouteSet class="ph20" :menu="menu" />
         </div>
 
         <!-- 添加一级菜单 -->
-        <Dialog :show.sync="dia_show" title="标题标题">
+        <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <div class="form">
                     <ul>
@@ -181,12 +169,17 @@
                     </ul>
                     <div class="center-box mt30">
                         <button class="btn-plain-large">取消创建</button>
-                        <button class="btn-blue-large ml20" @click="addLev1MenuCfm">确认创建</button>
+                        <button class="btn-blue-large ml20" @click="diaCfm">确认创建</button>
                     </div>
                 </div>
             </div>
         </Dialog>
         <!-- @update:show="(show) => contextMenuVisible = show" -->
+        <div v-show="menu_show" class="context-menu" ref="menu" v-clickoutside="menuClose">
+            <p @click="addSubordinate">添加下级</p>
+            <p @click="editMenu">编辑菜单</p>
+            <p @click="delMenu">删除菜单</p>
+        </div>
     </div>
 </template>
 
@@ -194,19 +187,22 @@
 // import DragTree from 'ant-design-vue/lib/tree' // 按需引入
 // import css from 'ant-design-vue/lib/tree/style/css' // 加载 ant CSS
 // import Vue from 'vue';
-import RouteTree from './TotaMenuDir/RouteTree'
+import RouteSet from './TotaMenuDir/RouteSet'
 import { Tree } from 'element-ui'
 export default {
     // name: 'vue-draggable-tree-demo',
     components: {
         [Tree.name]: Tree,
-        RouteTree: RouteTree
+        RouteSet: RouteSet
     },
     data() {
         return {
             menu: [],
             expandedKeys: ['0', '0-0', '0-0-0', '0-0-0-0'],
+            curr_row: {},
             dia_show: false,
+            dia_status: '',
+            dia_title: '',
             form: {
                 icon: '',
                 label: '',
@@ -218,43 +214,70 @@ export default {
                 display: ''
             },
             contextMenuTarget: document.body, // 可右键区域，这里也可以绑定$refs
-            contextMenuVisible: false
+            contextMenuVisible: false,
+
+            menu_show: false
         }
     },
     methods: {
+        initForm() {
+            // this.form = {}
+        },
         addLev1Menu() {
+            this.initForm()
+            this.dia_status = 'addlev1'
+            this.dia_title = '添加一级菜单'
             this.dia_show = true
         },
         expand(index) {
-            console.log('index: ', index)
+            // console.log('index: ', index)
             let ele = this.$refs[index]
             $(ele).slideToggle(200)
         },
-        // 点击右键菜单
-        contexMenu(item) {
-            this.menu.forEach(item => {
-                item.show_menu = false
-                if (item.children) {
-                    item.children.forEach(children => {
-                        children.show_menu = false
-                    })
-                }
-            })
-            item.show_menu = true
-            this.menu = this.menu.slice()
-            console.log('this.menu: ', this.menu)
+
+        contextmenu(e, row) {
+            this.curr_row = row
+            let left = e.clientX
+            let top = e.clientY + 20
+            // this.$refs.menu
+            let menuDom = this.$refs.menu
+            menuDom.style.left = left + 'px'
+            menuDom.style.top = top + 'px'
+            this.menu_show = true
         },
-        // 关闭菜单
-        closeMenu(item) {
-            this.menu = this.menu.slice()
-            item.show_menu = false
+
+        addSubordinate() {
+            console.log('当前值',this.curr_row)
+            this.dia_status = 'add_sub'
+            this.dia_title = '添加下级'
+            this.dia_show = true
+            this.menu_show = false
         },
-        updateShow(show) {
-            // console.log('show: ', show);
-            // this.contextMenuVisible = show
+        editMenu() {
+            console.log('当前值',this.curr_row)
+            this.dia_status = 'edit'
+            this.dia_title = '编辑菜单'
+            this.dia_show = true
+            this.menu_show = false
         },
-        addLev1MenuCfm() {
-            console.log('addLev1MenuCfm点击确认')
+        delMenu() {
+            console.log('点击删除')
+        },
+
+        diaCfm() {
+            if(this.dia_status==='addlev1') {
+                this.addMenuCfm()
+            }
+            if(this.dia_status==='add_sub') {
+                this.addSubCfm()
+            }
+            if(this.dia_status==='edit') {
+                this.editCfm()
+            }
+            
+        },
+        addMenuCfm() {
+            console.log('当前row', this.curr_row)
             let data = {
                 label: this.form.label,
                 en_name: this.form.en_name,
@@ -267,11 +290,37 @@ export default {
             let { url, method } = this.$api.menu_add
             this.$http({ method, url, data }).then(res => {
                 console.log('res: ', res)
-                if(res && res.code==='200') {
+                if (res && res.code === '200') {
                     this.$toast.success(res.message)
                 }
             })
         },
+        editCfm() {
+            let data = {
+                // id: this.form.id,
+                // status: this.form.status,
+            }
+            
+            let { url, method } = this.$api.menu_set
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+            
+                    this.$toast.success(res && res.message)
+                    this.mod_show=false
+                    this.getList()
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
+        },
+        // 关闭菜单
+        menuClose() {
+            this.menu_show = false
+        },
+
         rtClick(r) {
             console.log('dsf', r)
         },
@@ -314,44 +363,26 @@ export default {
          * @params {string} pre_idx 前缀
          */
         toTreeArray(list, pre_idx = '') {
-            return Object.keys(list).map((key, lev1_idx) => {
-                let item = {
-                    id: pre_idx + lev1_idx,
-                    label: list[key].label
-                }
+            return Object.keys(list).map((key, index) => {
+                let item = list[key]
+                item.key = pre_idx + index // 方便下拉框使用
                 if (list[key].child) {
-                    item.children = this.toTreeArray( list[key].child, item.id + '-' )
+                    item.children = this.toTreeArray(
+                        list[key].child,
+                        item.key + '-'
+                    )
                 }
 
                 return item
             })
         },
-        addSubordinate(row) {
-            console.log('row: ', row);
 
-        },
-        quoteMsg() {
-            console.log('点击引用')
-        },
-        deleteMsg() {
-            console.log('点击删除')
-        },
-        // rightExpand(index) {
-        //     let ele = this.$refs[index]
-        //     $(ele).slideToggle(200)
-        // }
-        getList() {
+        getMenuList() {
             let { url, method } = this.$api.menu_all_list
             this.$http({ method, url }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     let menu = res.data
-                    console.log('menu: ', menu)
                     this.menu = this.toTreeArray(menu)
-                } else {
-                    if (res && res.message !== '') {
-                        // this.$toast.error(res.message)
-                    }
                 }
             })
         }
@@ -360,9 +391,9 @@ export default {
         // let menu = window.all.menu_list.slice()
 
         // this.menu = this.toTreeArray(menu)
-        this.getList()
-        console.log(' this.menu: ', this.menu)
-        console.log(' window.all.menu_list: ', window.all.menu_list)
+        this.getMenuList()
+        // console.log(' this.menu: ', this.menu)
+        // console.log(' window.all.menu_list: ', window.all.menu_list)
     }
 }
 </script>
@@ -374,9 +405,19 @@ export default {
 .total-menu .tol-left,
 .total-menu .tol-center,
 .total-menu .tol-right {
-    width: 360px;
+    /* width: 33%; */
+    /* padding: 20px; */
+    min-width: 200px;
+    min-height: 700px;
     border: 1px solid #70a2fd;
 }
+/* .total-menu .tol-left {
+}
+.total-menu .tol-center {
+}
+.tol-right {
+
+} */
 .total-menu .head {
     height: 40px;
     text-align: center;
@@ -477,9 +518,9 @@ export default {
 
 /* 右键菜单 */
 .context-menu {
-    position: absolute;
-    top: 25px;
-    left: 50px;
+    position: fixed;
+    /* top: 25px;
+    left: 50px; */
     /* padding: 10px; */
     background: rgb(255, 255, 255);
     border: 1px solid #eee;
@@ -503,5 +544,9 @@ export default {
 /* 菜单拖动排序  中*/
 .tol-center .center-box {
     margin-top: 50px;
+}
+.ph20 {
+    padding-left: 20px;
+    padding-right: 20px;
 }
 </style>

@@ -278,6 +278,7 @@ export default {
 }
 .content {
     /* height: 100%; */
+    line-height: 70px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
