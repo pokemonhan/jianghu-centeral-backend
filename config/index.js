@@ -52,7 +52,7 @@ module.exports = {
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'statica',
+    assetsSubDirectory: 'static',
     assetsPublicPath: '/', // 改回绝对路径
 
     /**
