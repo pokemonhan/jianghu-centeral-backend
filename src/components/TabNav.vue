@@ -182,23 +182,7 @@ export default {
                 this.scrollTop += obj.top
             }
         }
-        let self = this
-        let a = 1
-        function notice(){
-            self.$notice({
-                title:'notice',
-                message: String(a++)
-            })
-        }
-        // setInterval(notice, 2000);
-        notice()
-        notice()
-        notice()
-        notice()
-        notice()
-        notice()
-        notice()
-        notice()
+        
 
     }
 }
