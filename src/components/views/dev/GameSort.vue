@@ -1,6 +1,7 @@
 <template>
     <div class="container">
-        游戏分类配置
+        <!-- 游戏分类配置 -->
+
         <div class="filter p10">
             <ul class="left">
                 <li>
@@ -152,6 +153,7 @@ export default {
         },
         add() {
             this.dia_status = 'add'
+            this.dia_title = '添加'
             this.initForm()
             this.dia_show = true
         },
@@ -189,11 +191,11 @@ export default {
         },
         checkForm() {
             if (this.form.name === '') {
-                this.$toast.error('分类名称不可为空!')
+                this.$toast.warning('分类名称不可为空!')
                 return false
             }
             if (this.form.sign === '') {
-                this.$toast.error('分类标识不可为空!')
+                this.$toast.warning('分类标识不可为空!')
                 return false
             }
             return true

@@ -25,7 +25,7 @@
         <!-- 已选 -->
         <transition name="date-picker">
             <div class="date-container">
-                <div v-if="showPanel" :class="['date-box', pickerClassName]" ref="date-box">
+                <div v-show="showPanel" :class="['date-box', pickerClassName]" ref="date-box">
                     <!-- 当前选中 -->
                     <div class="date-info">
                         <span>
@@ -37,16 +37,14 @@
                             ></i>
                         </span>
                         <span>
-                            <!-- @click="changeStep(2)" -->
-                            <span class="change-btn change-year">{{startYear}}年</span>&nbsp;
-                            <!-- @click="changeStep(3)" -->
-                            <span v-if="step==1" class="change-btn change-month">{{startMonth}}月</span>
+                            
+                            <span class="change-btn change-year" @click="changeStep(2)">{{startYear}}年</span>&nbsp;
+                            <span v-show="step==1" class="change-btn change-month" @click.stop="changeStep(3)">{{startMonth}}月</span>
                         </span>
-                        <span v-if="type==='daterange' || type==='datetimerange'">
-                            <!-- @click="changeStep(2)" -->
-                            <span class="change-btn change-year">{{endYear}}年</span>&nbsp;
-                            <!-- @click="changeStep(3)" -->
-                            <span v-if="step==1" class="change-btn change-month">{{endMonth}}月</span>
+                        <span v-show="type==='daterange' || type==='datetimerange'">
+                            
+                            <span class="change-btn change-year" @click="changeStep(2)">{{endYear}}年</span>&nbsp;
+                            <span v-show="step==1" class="change-btn change-month" @click.stop="changeStep(3)">{{endMonth}}月</span>
                         </span>
                         <span>
                             <i
@@ -61,7 +59,7 @@
                     <div class="list-container">
                         <div class="list-box">
                             <!-- 日期 -->
-                            <div class="date-list" v-if="step===1">
+                            <div class="date-list" v-show="step===1">
                                 <ul class="week-list">
                                     <li v-for="(day, index) in weekList" :key="index">{{day}}</li>
                                 </ul>
@@ -93,7 +91,7 @@
                             </div>
                             <!-- 日期 -->
                             <!-- 年份 -->
-                            <div v-else-if="step===2" class="year-list">
+                            <div v-show="step===2" class="year-list">
                                 <ul>
                                     <li v-for="n in 10" :key="n">
                                         <span
@@ -105,7 +103,7 @@
                             </div>
                             <!-- 年份 -->
                             <!-- 月份 -->
-                            <div v-else-if="step===3" class="month-list">
+                            <div v-show="step===3" class="month-list">
                                 <ul>
                                     <li v-for="n in 12" :key="n">
                                         <span
@@ -117,7 +115,7 @@
                             </div>
                             <!-- 月份 -->
                             <!-- 时间 -->
-                            <div v-else-if="step===4" class="time-picker">
+                            <div v-show="step===4" class="time-picker">
                                 <div ref="startHour">
                                     <ul>
                                         <li
@@ -151,9 +149,9 @@
                             </div>
                             <!-- 时间 -->
                         </div>
-                        <div class="list-box" v-if="type==='daterange' || type==='datetimerange'">
+                        <div class="list-box" v-show="type==='daterange' || type==='datetimerange'">
                             <!-- 日期 -->
-                            <div class="date-list" v-if="step===1">
+                            <div class="date-list" v-show="step===1">
                                 <ul class="week-list">
                                     <li v-for="(day, index) in weekList" :key="index">{{day}}</li>
                                 </ul>
@@ -185,7 +183,7 @@
                             </div>
                             <!-- 日期 -->
                             <!-- 年份 -->
-                            <div v-else-if="step===2" class="year-list">
+                            <div v-show="step===2" class="year-list">
                                 <ul>
                                     <li v-for="n in 10" :key="n">
                                         <span
@@ -197,7 +195,7 @@
                             </div>
                             <!-- 年份 -->
                             <!-- 月份 -->
-                            <div v-else-if="step===3" class="month-list">
+                            <div v-show="step===3" class="month-list">
                                 <ul>
                                     <li v-for="n in 12" :key="n">
                                         <span
@@ -209,7 +207,7 @@
                             </div>
                             <!-- 月份 -->
                             <!-- 时间 -->
-                            <div v-else-if="step===4" class="time-picker">
+                            <div v-show="step===4" class="time-picker">
                                 <div ref="endHour">
                                     <ul>
                                         <li
@@ -1003,12 +1001,12 @@ export default {
 .date-box .date-info i:first-child {
     margin-right: 10px;
 }
-/* .date-box .date-info .change-btn{
+.date-box .date-info .change-btn{
         cursor: pointer;
-    } */
-/* .date-box .date-info .change-btn:hover{
-        color: #19a9d5;
-    } */
+    } 
+.date-box .date-info .change-btn:hover{
+        color: #4c8bfd;
+}
 .date-box .list-box {
     padding: 10px;
     background-color: #fff;
@@ -1069,7 +1067,7 @@ export default {
 .date-box .year-list span.active,
 .date-box .month-list span.active,
 .date-box .date-list li.active {
-    background-color: #2d8cf0;
+    background-color: #4c8bfd;
     color: #fff;
 }
 .date-box .year-list .today-year,
@@ -1077,7 +1075,7 @@ export default {
     background-color: #e1f0fe;
 }
 .date-box .days-list .today {
-    border: 1px solid #2d8cf0;
+    border: 1px solid #4c8bfd;
 }
 
 .v-date-picker .select-time {
@@ -1090,14 +1088,14 @@ export default {
 }
 .v-date-picker .select-time div {
     cursor: pointer;
-    color: #2d8cf0;
+    color: #4c8bfd;
     padding: 0 10px;
 }
 .v-date-picker .select-time div > button {
     margin-left: 10px;
 }
 .v-date-picker .select-time > div:hover {
-    color: #2d8cf0;
+    color: #4c8bfd;
 }
 
 .time-picker {
@@ -1125,7 +1123,7 @@ export default {
     border-radius: 4px;
 }
 .time-picker ul li.active {
-    color: #2d8cf0;
+    color: #4c8bfd;
     background-color: #f3f3f3;
 }
 .date-box .time-picker ul li:hover {

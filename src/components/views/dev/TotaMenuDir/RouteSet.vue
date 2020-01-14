@@ -1,41 +1,60 @@
 <template>
     <div class="center-box">
         <ul class="lev1">
+            <!-- 一级 -->
             <li v-for="(lv1,lv1_idx) in routes" :key="lv1_idx">
                 <div class="title">
-                    <i :class="['iconfont iconup',lv1.children?'':'hide']" @click="expand(lv1_idx)"></i>
+                    <span class="icons">
+                        <i
+                            :class="['iconfont iconup',lv1.children?'':'hide']"
+                            @click="expand(lv1_idx)"
+                        ></i>
+                        <i
+                            :class="['iconfont iconup',lv1.routes?'':'none']"
+                            @click="routeExpand(lv1_idx)"
+                        ></i>
+                    </span>
                     <span class="title-cont">{{lv1.label}}</span>
                     <span v-if="!lv1.children" class="add-router" @click="add">添加路由</span>
                 </div>
 
-                <!-- ** 路由内容 -->
-                <ul v-if="lv1.routes" class="route-lv2">
+                <!-- 二级 路由内容 -->
+                <ul v-if="lv1.routes" class="route-lv2" :ref="lv1_idx">
                     <li v-for="(route, route_idx) in lv1.routes" :key="route_idx">
-                        <i class="iconfont iconshezhi2"></i>
+                        <i class="iconfont iconshezhi2 ml20"></i>
                         <span>{{route.title}}</span>
                         <span class="a" @click="edit(lv1)">编辑</span>
+                        <span></span>
                         <span class="a" @click="del(lv1)">删除</span>
                         <Switchbox class="switch" />
                     </li>
                 </ul>
 
+                <!-- 二级 菜单 -->
                 <ul v-if="lv1.children" class="lev2" :ref="lv1_idx">
                     <li v-for="(lv2,lv2_idx) in lv1.children" :key="lv2_idx">
                         <div class="title">
-                            <i
-                                :class="['iconfont iconup',lv2.children?'':'hide']"
-                                @click="expand(lv1_idx+'-'+lv2_idx)"
-                            ></i>
+                            <span class="icons">
+                                <i
+                                    :class="['iconfont iconup',lv2.children?'':'hide']"
+                                    @click="expand(lv1_idx+'-'+lv2_idx)"
+                                ></i>
+                                <i
+                                    :class="['iconfont iconup',lv2.routes?'':'none']"
+                                    @click="routeExpand(lv1_idx+'-'+lv2_idx)"
+                                ></i>
+                            </span>
+
                             <span class="title-cont">{{lv2.label}}</span>
                             <span v-if="!lv2.children" class="add-router" @click="add(lv2)">添加路由</span>
                         </div>
 
-                        <!-- ** 路由内容 -->
-                        <ul v-if="lv2.routes" class="route-lv3">
+                        <!-- ** 三级 路由内容 -->
+                        <ul v-if="lv2.routes" class="route-lv3" :ref="lv1_idx+'-'+lv2_idx">
                             <li
                                 class="flex"
-                                v-for="(route2, route_idx_2) in lv2.routes"
-                                :key="route_idx_2"
+                                v-for="(route2, rout2_idx) in lv2.routes"
+                                :key="rout2_idx"
                             >
                                 <i class="iconfont iconshezhi2"></i>
                                 <span>{{route2.title}}</span>
@@ -44,7 +63,7 @@
                                 <Switchbox class="switch" />
                             </li>
                         </ul>
-
+                        <!-- 三级 菜单 -->
                         <ul v-if="lv2.children" class="lev3" :ref="lv1_idx+'-'+lv2_idx">
                             <li v-for="(lv3, lv3_idx) in lv2.children" :key="lv3_idx">
                                 <div class="title">
@@ -52,13 +71,64 @@
                                         :class="['iconfont iconup',lv3.children?'':'hide']"
                                         @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx)"
                                     ></i>
+                                    <i
+                                        :class="['iconfont iconup',lv3.routes?'':'none']"
+                                        @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx)"
+                                    ></i>
+                                    <span class="title-cont">{{lv3.label}}</span>
+                                    <span
+                                        v-if="!lv3.children"
+                                        class="add-router"
+                                        @click="add(lv3)"
+                                    >添加路由</span>
                                 </div>
+
+                                <!-- 四级路由 -->
+                                <ul
+                                    v-if="lv3.routes"
+                                    class="route-lv4"
+                                    :ref="lv1_idx+'-'+lv2_idx+'-'+lv3_idx"
+                                >
+                                    <li
+                                        class="flex"
+                                        v-for="(route3, route3_idx) in lv3.routes"
+                                        :key="route3_idx"
+                                    >
+                                        <i class="iconfont iconshezhi2"></i>
+                                        <span>{{route3.title}}</span>
+                                        <span class="a" @click="edit(route3)">编辑</span>
+                                        <span class="a" @click="del(route3)">删除</span>
+                                        <Switchbox class="switch" />
+                                    </li>
+                                </ul>
+                                <!-- 四级 菜单 -->
+                                <ul
+                                    v-if="lv2.children"
+                                    class="lev3"
+                                    :ref="lv1_idx+'-'+lv2_idx+'-'+lv3_idx"
+                                >
+                                    <li v-for="(lv4, lv4_idx) in lv3.children" :key="lv4_idx">
+                                        <div class="title">
+                                            <i
+                                                :class="['iconfont iconup',lv3.children?'':'hide']"
+                                                @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx+'-'+lv4_idx)"
+                                            ></i>
+                                            <span class="title-cont">{{lv4.label}}</span>
+                                            <span
+                                                v-if="!lv4.children"
+                                                class="add-router"
+                                                @click="add(lv4)"
+                                            >添加路由</span>
+                                        </div>
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </li>
                 </ul>
             </li>
         </ul>
+
         <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner">
                 <div>
@@ -178,7 +248,7 @@ export default {
             let route_arr = this.curr_route.map(item => item.route_name)
             // 已使用路由不可再被使用
             this.add_route_opt = this.route_all.filter(item => {
-                // 路由没有被使用就放进select 
+                // 路由没有被使用就放进select
                 return route_arr.indexOf(item.url) === -1
             })
 
@@ -191,8 +261,11 @@ export default {
             let route_arr = this.curr_route.map(item => item.route_name)
             // 已使用路由不可再被使用
             this.edit_route_opt = this.route_all.filter(item => {
-                 // 路由没有被使用就放进select,另外当前路由也需要放进去. () 
-                return route_arr.indexOf(item.url) === -1 ||item.url===row.route_name
+                // 路由没有被使用就放进select,另外当前路由也需要放进去. ()
+                return (
+                    route_arr.indexOf(item.url) === -1 ||
+                    item.url === row.route_name
+                )
             })
 
             this.route_all.forEach((item, index) => {
@@ -219,7 +292,10 @@ export default {
             let ele = this.$refs[index]
             $(ele).slideToggle(200)
         },
-
+        routeExpand(index) {
+            let ele = this.$refs[index]
+            $(ele).slideToggle(200)
+        },
         modConf() {
             // 删除 确认
             let data = {
@@ -347,16 +423,23 @@ export default {
     display: flex;
     justify-content: center;
 }
+.center-box li {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
 .lev1 > li {
-    margin-top: 10px;
+    /* margin-top: 10px; */
+    padding-top: 10px;
 }
 
 /* .lev1 > li > .title > span { */
 /* } */
 .lev2 {
+    color: #777;
     margin-left: 10px;
-    font-size: 12px;
+    font-size: 13px;
     /* text-align: left; */
+    margin-left: 2em;
 }
 /* .lev2 > li {
 } */
@@ -364,23 +447,32 @@ export default {
     display: inline-block;
     margin-top: 6px;
 }
+.lev3 {
+    margin-left: 3em;
+}
 .title {
     display: flex;
 }
 .title .hide {
-    opacity: 0;
+    /* opacity: .2; */
+    display: none;
+}
+.title .none {
+    display: none;
 }
 .checkbox-head {
     font-weight: bold;
     font-size: 16px;
 }
+.iconup {
+    margin-right: 5px;
+    cursor: pointer;
+}
 .lev2 .checkbox {
     /* margin-top: 10px; */
     padding: 5px 0;
 }
-.iconup {
-    margin-right: 5px;
-}
+
 .lev3 {
     margin-left: 16px;
 }
@@ -412,6 +504,18 @@ export default {
 .mb10 {
     margin-bottom: 10px;
 }
+.iconshezhi2 {
+    margin-right: 5px;
+}
+.ml5 {
+    margin-left: 5px;
+}
+.ml10 {
+    margin-left: 10px;
+}
+.ml20 {
+    margin-left: 20px;
+}
 .mt50 {
     margin-top: 50px;
 }
@@ -439,5 +543,15 @@ export default {
 }
 .route-lv3 {
     margin-left: 40px;
+}
+.route-lv2 > li,
+.route-lv3 > li {
+    margin: 2px 0;
+    font-size: 12px;
+    color: rgb(118, 135, 155);
+}
+.icons {
+    width: 3em;
+    text-align: right;
 }
 </style>

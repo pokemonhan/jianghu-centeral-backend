@@ -140,17 +140,7 @@ export default {
                 { label: '启用', value: '1' },
                 { label: '关闭', value: '0' }
             ],
-            headers: [
-                '编号',
-                '分类名称',
-                '分类标识',
-                '添加人',
-                '添加时间',
-                '最后更新人',
-                '最后更新时间',
-                '状态',
-                '操作'
-            ],
+            headers: [ '编号', '分类名称', '分类标识', '添加人', '添加时间', '最后更新人', '最后更新时间', '状态', '操作' ],
             list: [],
             total: 0,
             pageNo: 1,
@@ -231,11 +221,11 @@ export default {
         },
         checkForm() {
             if (this.form.name === '') {
-                this.$toast.error('分类名称不可为空!')
+                this.$toast.warning('分类名称不可为空!')
                 return false
             }
             if (this.form.sign === '') {
-                this.$toast.error('分类标识不可为空!')
+                this.$toast.warning('分类标识不可为空!')
                 return false
             }
             return true

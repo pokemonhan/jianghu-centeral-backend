@@ -129,7 +129,7 @@
                             <Input class="w250" v-model="form.route" />
                         </li>
                         <li>
-                            <span>是否是父级ID：</span>
+                            <span>是否是父级菜单：</span>
                             <Radio
                                 class="radio-left"
                                 label="是"

@@ -140,13 +140,18 @@ export default {
     box-shadow: none;
 }
 .v-modal .modal-footer .confirm {
-    background-color: #2d8cf0;
+    background-color: #4c8bfd;
     color: #fff;
     margin-left: 8px;
     box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.219);
 }
 .v-modal .modal-footer .confirm:hover {
+    background-color: #6e9df5;
+    border: 1px solid #6e9df5;
     box-shadow: none;
+}
+.v-modal .modal-footer .confirm:active {
+    background-color: #4c8bfd;
 }
 </style>
 

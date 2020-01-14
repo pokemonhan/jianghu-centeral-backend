@@ -27,7 +27,7 @@
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
-                    <button class="btn-blue" @click="addDomain">添加</button>
+                    <button class="btn-blue" @click="add">添加</button>
                 </li>
             </ul>
         </div>
@@ -39,15 +39,18 @@
                 <template v-slot:item="{row}">
                     <td class="tab-domain">
                         <i v-show="domain_idx!==0" class="iconfont iconstart"></i>
-                        <span>{{row.a1}}</span>
+                        <span>{{row.domain}}</span>
                     </td>
-                    <td>{{row.a2}}</td>
+                    <td>{{row.created_at}}</td>
                     <td>
-                        <span :class="[row.a3==='1'?'green':'red']">{{row.a3==='1'?'开启':'关闭'}}</span>
+                        <span :class="['bold',row.status===1?'green':'red']">{{row.status===1?'开启':'关闭'}}</span>
                     </td>
                     <td>
-                        <span class="a" @click="forbid(row)">禁止</span>
-                        <span class="a" @click="del(row)">删除</span>
+                        <button
+                            :class="[row.status?'btns-red':'btns-green']"
+                            @click="statusSwitch(row)"
+                        >{{row.status===1?'禁用':'启用'}}</button>
+                        <button class="btns-blue" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -71,13 +74,13 @@
                     </li>
                     <li>
                         <span>是否启用:</span>
-                        <Radio class="radio-left" label="是" :value="form.is_turnon" val="on" v-model="form.is_turnon" />
-                        <Radio class="radio-right" label="否" :value="form.is_turnon" val="off" v-model="form.is_turnon" />
+                        <Radio class="radio-left" label="是" :value="form.status" val="1" v-model="form.status" />
+                        <Radio class="radio-right" label="否" :value="form.status" val="0" v-model="form.status" />
                     </li>
                 </ul>
                 <div class="mt50">
                     <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                    <button class="btn-blue-large ml20">确定</button>
+                    <button class="btn-blue-large ml20" @click="diaCfm">确定</button>
                 </div>
             </div>
         </Dialog>
@@ -91,7 +94,9 @@
 <script>
 export default {
     props: {
-        id: ''
+        sign: {
+            type: [String,Number]
+        }
     },
     data() {
         return {
@@ -129,11 +134,14 @@ export default {
             pageSize: 25,
             // dialog 对话框
             dia_show: false,
+            dia_status: '',
             form: {
                 domain: '',
-                is_turnon: ''
+                status: ''
             },
+
             // 确认模态框 modal
+            curr_row: {},
             mod_show : false,
             mod_title: '',
             mod_status: '',
@@ -145,31 +153,115 @@ export default {
         domainClk(index) {
             this.domain_idx = index
         },
-        addDomain() {
+        add() {
+            this.dia_status = 'add'
             this.dia_show = true
         },
-        modConf() {
-
+        diaCfm() {
+            if(this.dia_status ==='add') {
+                this.addCfm()
+            }
         },
-        forbid () {
-            this.mod_status = 'forbid'
-            this.mod_cont = '是否禁止该域名!'
+        addCfm() {
+            let data = {
+                platform_sign: this.sign,
+                type: '1', //TODO: 类型 1.PC 2.H5 3.APP
+                domain: this.form.domain,
+                status: this.form.status,
+            }
+            
+            let { url, method } = this.$api.platform_domain_add
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+            
+                    this.$toast.success(res && res.message)
+                    this.mod_show=false
+                    this.getList()
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
+        },
+        modConf() {
+            if(this.mod_status ==='switch') {
+                this.switchCfm()
+            }
+        },
+        statusSwitch (row) {
+            this.curr_row = row
+            this.mod_status = 'switch'
+            this.mod_title = row.status===1?'禁用':'启用'
+            this.mod_cont = '是否禁用该域名!'
             this.mod_show = true
         },
         del() {
             this.mod_status = 'delete'
+            this.mod_title = '删除'
             this.mod_cont = '是否删除该域名!'
             this.mod_show = true
         },
+        switchCfm() {
+            return // TODO:
+            let data = {
+                // id: this.form.id,
+                // status: this.form.status,
+            }
+            
+            // let { url, method } = this.$api.aaaaaaaa🐷
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+            
+                    this.$toast.success(res && res.message)
+                    this.mod_show=false
+                    this.getList()
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
+        },
+        getList() {
+            console.log('getlist',this.sign);
+            let para = {
+                sign: this.sign,
+                // name: this.filter.vendor,
+                // status: this.filter.status,
+                // pageSize: this.pageSize,
+                // page: this.pageNo
+            }
+            let params = window.all.tool.rmEmpty(para)
+            console.log('params: ', params);
+        
+            let { url, method } = this.$api.platform_domain_list
+            this.$http({ method, url, params }).then(res => {
+                console.log('域名列表?👌: ', res)
+                if (res && res.code === '200') {
+                    this.total = res.data.total
+                    this.list = res.data
+        
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
+        },
         updateNo() {
-            // this.getList()
+            this.getList()
         },
         updateSize() {
             this.pageNo = 1
-            // this.getList()
+            this.getList()
         },
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 

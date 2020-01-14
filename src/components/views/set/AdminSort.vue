@@ -5,7 +5,7 @@
                 <!-- <li>
                     <span>组列表</span>
                     <Input class="w100" v-model="filter.group" />
-                </li> -->
+                </li>-->
                 <li>
                     <!-- <button class="btn-blue">查找</button> -->
                     <button class="btn-blue" @click="addsort">创建分组</button>
@@ -41,10 +41,7 @@
                     </div>
                     <div class="edit-name">
                         <p class="mb10">组名称:</p>
-                        <Input
-                            style="width:300px;"
-                            v-model="form.group_name"
-                        />
+                        <Input style="width:300px;" v-model="form.group_name" />
                         <span v-show="!form.group_name" class="err-tips">组名称不可为空</span>
                     </div>
                     <div class="edit-authority">
@@ -54,6 +51,7 @@
                                 class="sel-item"
                                 v-for="(item, index) in authority_list"
                                 :key="index"
+                                @click.stop
                             >
                                 <span>{{item.label}}</span>
                                 <i class="iconfont iconcuowuguanbi-" @click.stop="tabClose(item)"></i>
@@ -66,7 +64,7 @@
                             class="drop-list"
                             v-clickoutside="closeTree"
                         >
-                            <Tree style="width:fit-content" :list="tree_list" @change="treeUpd" />
+                            <Tree style="width:fit-content" :list.sync="tree_list" @change="treeUpd" />
                         </div>
                     </div>
 
@@ -94,10 +92,9 @@
                 </div>
                 <!-- 查看check之下面内容 -->
                 <div v-if="right_show==='check'" class="mt20">
-                    
                     <!-- table 内容 -->
                     <div class="table">
-                      <AdminTable :group_id="admin_id"/>
+                        <AdminTable :group_id="admin_id" />
                     </div>
                 </div>
             </div>
@@ -127,7 +124,7 @@ export default {
             authority_list: [],
             tree_show: false,
 
-            // table 
+            // table
             admin_id: '',
 
             // dia_show: '',
@@ -211,14 +208,13 @@ export default {
         // 查看其中一组
         check(group) {
             this.right_show = 'check'
-            this.curr_group = Object.assign({},group)
+            this.curr_group = Object.assign({}, group)
 
             this.form.group_name = group.group_name
             this.admin_id = group.id
             this.treeSelectShow(group)
-
         },
-        
+
         // 删除分组列表 按钮
         del(group) {
             this.mod_show = true
@@ -233,13 +229,11 @@ export default {
             this.form.group_name = group.group_name
             this.treeSelectShow(group)
         },
-        // operate(group, operate_name) {
-        //     this.right_show = 'check'
-        // },
 
         // 后台res 转化为 tree 数组
         resToTree(list) {
-            return Object.keys(list).map(key => {
+            let arr = []
+            arr = Object.keys(list).map(key => {
                 let item = {}
 
                 item.label = list[key].label
@@ -250,6 +244,7 @@ export default {
                 }
                 return item
             })
+            return arr
         },
 
         // 获取后台所有权限树
@@ -265,71 +260,63 @@ export default {
                 method: method,
                 url: url
             }).then(res => {
-                // console.log('res👌: ', res);
+                // console.log('所有权限树: ', res)
                 if (res && res.code === '200') {
                     self.total = res.data.total
                     self.tree_list = this.resToTree(res.data)
-                } else {
-                    if (res && res.message !== '') {
-                        self.toast.error(res.message)
-                    }
                 }
             })
-            // this.getAuthorityList()
         },
 
         // 返回已选中权限数组 （有[x]的tab框子）
         getAuthorityList() {
-            let list = this.tree_list
+            let tem_arr = []
 
-            let arr = []
-            list.forEach(item => {
-                if (item.child) {
-                    item.child.forEach(child_item => {
-                        if (child_item.checked) {
-                            arr.push({
-                                label: child_item.label,
-                                id: child_item.id
-                            })
-                        }
-                    })
-                }
-                if (item.path === '/home' && item.checked) {
-                    arr.push({
-                        label: item.label,
-                        id: item.id
-                    })
-                }
-            })
-            this.authority_list = arr
+            let getCheckedArr = function(arr) {
+                arr.forEach(item => {
+                    if (!item.child) {
+                        // 没有子项，且选中，放入 tem_arr中，方便展示
+                        item.checked &&
+                            tem_arr.push({ label: item.label, id: item.id })
+                    } else {
+                        item.child && getCheckedArr(item.child)
+                    }
+                })
+            }
+            getCheckedArr(this.tree_list)
+
+            this.authority_list = tem_arr
         },
 
         // 关闭 tree 下拉内容
         closeTree() {
             if (!this.tree_show) return
             this.tree_show = false
+
         },
 
         // tree 点击更新时
         treeUpd(bool, index, list) {
+            // console.log('index: ', index);
             // console.log('外部获取里面反馈: ', list);
             // 重新赋值让其能检测到
-            this.tree_list = list.map(item => item)
+            this.tree_list = list.slice()
+            // console.log('this.tree_list: ', this.tree_list);
             this.getAuthorityList()
         },
 
-        // 子集全选,则父级选中  ,目前到二级菜单。。
+
+        // 子集全选,则父级选中 。
         isChildSelAll() {
-            this.tree_list.forEach((lev1, lev1_idx) => {
-                if (lev1.child) {
-                    lev1.checked = lev1.child.every(item => {
-                        // if(item.child){
-                        //     item.checked = item.child.every(i => i.checked)
-                        // }
-                        return item.checked
-                    })
-                }
-            })
+            let isSelectAll = function(arr) {
+                arr.forEach(item => {
+                    if (item.child) {
+                        item.checked = item.child.every(item => item.checked)
+                        isSelectAll(item.child)
+                    }
+                })
+            }
+            isSelectAll(this.tree_list)
             this.tree_list = this.tree_list.slice()
         },
         // 点击组权限框, 下拉打开 tree
@@ -341,17 +328,18 @@ export default {
                 }, 0)
             }
         },
-        // 关闭 tab 框(点击tab里那个叉叉时触发..)
+        // 关闭 tab 框(点击tab里那个[x]时触发..)
         tabClose(sel_item) {
+
             this.tree_list = this.tree_list.map((item, index) => {
                 if (item.child) {
                     item.child.forEach((child_item, child_index) => {
-                        if (child_item.label === sel_item.label) {
+                        if (child_item.id === sel_item.id) {
                             child_item.checked = false
                         }
                     })
                 }
-                if (sel_item.label === '首页' && sel_item.label === '首页') {
+                if (item.id === sel_item.id) {
                     item.checked = false
                 }
                 return item
@@ -361,7 +349,7 @@ export default {
             this.isChildSelAll()
         },
         cancel() {
-            let group = Object.assign({},this.curr_group)
+            let group = Object.assign({}, this.curr_group)
             this.form.group_name = group.group_name
             this.admin_id = group.id
             this.treeSelectShow(group)
@@ -416,8 +404,6 @@ export default {
             })
         },
 
-
-
         // 确认禁用,确认启用, 确认删除
         modConf() {
             // console.log('mod_确认');
@@ -459,8 +445,7 @@ export default {
                     this.group_list = res.data
                 }
             })
-        },
-      
+        }
     },
     mounted() {
         this.getGroupList()
@@ -599,5 +584,4 @@ export default {
 .table {
     margin-top: 20px;
 }
-
 </style>

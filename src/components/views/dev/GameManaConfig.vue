@@ -39,7 +39,10 @@
                     <td>{{row.updated_at}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
-                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <button
+                            :class="[row.status?'btns-red':'btns-green']"
+                            @click="statusSwitch(row)"
+                        >{{row.status===1?'禁用':'启用'}}</button>
                         <button class="btns-blue" @click="del(row)">删除</button>
                     </td>
                 </template>
@@ -67,6 +70,7 @@
                                     v-model="form.vendor_id"
                                     :options="vendor_opt"
                                 ></Select>
+                                <span v-show="!form.vendor_id" class="err-tips">必填项!</span>
                             </li>
                             <li>
                                 <span>游戏分类:</span>
@@ -75,6 +79,7 @@
                                     v-model="form.type_id"
                                     :options="type_opt"
                                 ></Select>
+                                <span v-show="!form.type_id" class="err-tips">必填项!</span>
                             </li>
                             <li>
                                 <span>商户密钥:</span>
@@ -95,35 +100,77 @@
 
                             <li>
                                 <span>进入游戏测试地址:</span>
-                                <Input class="w250" v-model="form.test_in_game_url" />
+                                <Input
+                                    class="w250"
+                                    placeholder="格式:  http://baidu.com"
+                                    v-model="form.test_in_game_url"
+                                />
+                                <span
+                                    v-show="form.test_in_game_url&&(!urlRegExp.test(form.test_in_game_url))"
+                                    class="err-tips"
+                                >请检查内容格式!</span>
                             </li>
                             <li>
-                                <span>额度测试地址:</span>
-                                <Input class="w250" v-model="form.test_conver_url" />
+                                <span>额度转换测试地址:</span>
+                                <Input
+                                    class="w250"
+                                    placeholder="格式:  http://baidu.com"
+                                    v-model="form.test_conver_url"
+                                />
+                                <span
+                                    v-show="form.test_conver_url&&(!urlRegExp.test(form.test_conver_url))"
+                                    class="err-tips"
+                                >请检查内容格式!</span>
                             </li>
 
                             <li>
                                 <span>检查余额测试地址:</span>
-                                <Input class="w250" v-model="form.test_check_balance_url" />
+                                <Input
+                                    class="w250"
+                                    placeholder="格式:  http://baidu.com"
+                                    v-model="form.test_check_balance_url"
+                                />
+                                <span
+                                    v-show="form.test_check_balance_url&&(!urlRegExp.test(form.test_check_balance_url))"
+                                    class="err-tips"
+                                >请检查内容格式!</span>
                             </li>
                             <li>
                                 <span>检查订单测试地址:</span>
-                                <Input class="w250" v-model="form.test_check_order_url" />
+                                <Input
+                                    class="w250"
+                                    placeholder="格式:  http://baidu.com"
+                                    v-model="form.test_check_order_url"
+                                />
+                                <span
+                                    v-show="form.test_check_order_url&&(!urlRegExp.test(form.test_check_order_url))"
+                                    class="err-tips"
+                                >请检查内容格式!</span>
                             </li>
                             <li>
                                 <span>活动注单测试地址:</span>
-                                <Input class="w250" v-model="form.test_get_station_order_url" />
+                                <Input
+                                    class="w250"
+                                    placeholder="格式:  http://baidu.com"
+                                    v-model="form.test_get_station_order_url"
+                                />
+                                <span
+                                    v-show="form.test_get_station_order_url&&(!urlRegExp.test(form.test_get_station_order_url))"
+                                    class="err-tips"
+                                >请检查内容格式!</span>
                             </li>
                         </ul>
                         <!-- form 右侧 -->
                         <ul class="form ml20">
                             <li>
                                 <span>游戏标识:</span>
-                                <Input class="w250" v-model="form.sign" />
+                                <Input class="w250" limit="word" v-model="form.sign" />
+                                <span v-show="!form.sign" class="err-tips">不可为空!</span>
                             </li>
                             <li>
                                 <span>游戏名称:</span>
                                 <Input class="w250" v-model="form.name" />
+                                <span v-show="!form.name" class="err-tips">不可为空!</span>
                             </li>
                             <li>
                                 <span>商户公钥:</span>
@@ -136,23 +183,59 @@
                             </li>
                             <li>
                                 <span>进入游戏地址:</span>
-                                <Input class="w250" v-model="form.in_game_url" />
+                                <Input
+                                    class="w250"
+                                    placeholder="格式:  http://baidu.com"
+                                    v-model="form.in_game_url"
+                                />
+                                <span
+                                    v-show="!urlRegExp.test(form.in_game_url)"
+                                    class="err-tips"
+                                >请检查内容格式!</span>
                             </li>
                             <li>
-                                <span>额度地址:</span>
-                                <Input class="w250" v-model="form.conver_url" />
+                                <span>额度转换地址:</span>
+                                <Input
+                                    class="w250"
+                                    placeholder="格式:  http://baidu.com"
+                                    v-model="form.conver_url"
+                                />
+                                <span
+                                    v-show="!urlRegExp.test(form.conver_url)"
+                                    class="err-tips"
+                                >请检查内容格式!</span>
                             </li>
                             <li>
                                 <span>检查余额地址:</span>
-                                <Input class="w250" v-model="form.check_balance_url" />
+                                <Input
+                                    class="w250"
+                                    placeholder="格式:  http://baidu.com"
+                                    v-model="form.check_balance_url"
+                                />
+                                <span
+                                    v-show="!urlRegExp.test(form.check_balance_url)"
+                                    class="err-tips"
+                                >请检查内容格式!</span>
                             </li>
                             <li>
                                 <span>检查订单地址:</span>
                                 <Input class="w250" v-model="form.check_order_url" />
+                                <span
+                                    v-show="!urlRegExp.test(form.check_order_url)"
+                                    class="err-tips"
+                                >请检查内容格式!</span>
                             </li>
                             <li>
                                 <span>获取注单地址:</span>
-                                <Input class="w250" v-model="form.get_station_order_url" />
+                                <Input
+                                    class="w250"
+                                    placeholder="格式:  http://baidu.com"
+                                    v-model="form.get_station_order_url"
+                                />
+                                <span
+                                    v-show="!urlRegExp.test(form.get_station_order_url)"
+                                    class="err-tips"
+                                >请检查内容格式!</span>
                             </li>
                             <li>
                                 <span>请求模式:</span>
@@ -168,7 +251,7 @@
                                     class="ml50"
                                     label="直接跳转"
                                     :value="form.request_mode"
-                                    val="0"
+                                    val="2"
                                     v-model="form.request_mode"
                                 />
                             </li>
@@ -242,6 +325,7 @@ export default {
             dia_title: '',
             dia_status: '',
             form: {},
+            urlRegExp: /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/,
             sort_opt: [{ label: '全部', value: '' }],
 
             // mod 禁用删除框
@@ -286,37 +370,34 @@ export default {
             this.dia_show = true
         },
         edit(row) {
-            console.log('row: ', row)
-            // this.curr_row = row
-           
+
             this.form = {
-				id: row.id,
-				vendor_id: row.vendor_id, 
-				sign: row.sign,
-				type_id: row.type_id,
-				name: row.name,
+                id: row.id,
+                vendor_id: row.vendor_id,
+                sign: row.sign,
+                type_id: row.type_id,
+                name: row.name,
 
-				merchant_secret: row.merchant_secret,
-				public_key: row.public_key,
-				merchant_code: row.merchant_code,
-				private_key: row.private_key,
-				app_id: row.app_id,
+                merchant_secret: row.merchant_secret,
+                public_key: row.public_key,
+                merchant_code: row.merchant_code,
+                private_key: row.private_key,
+                app_id: row.app_id,
 
-				authorization_code: row.authorization_code, 
-				in_game_url: row.in_game_url,
-				test_in_game_url: row.test_in_game_url,
-				conver_url: row.conver_url,
-				test_conver_url: row.test_conver_url,
-				check_balance_url: row.check_balance_url, 
-				test_check_balance_url: row.test_check_balance_url, 
-				check_order_url: row.check_order_url, 
-				test_check_order_url: row.test_check_order_url, 
-				get_station_order_url: row.get_station_order_url, 
-				test_get_station_order_url: row.test_get_station_order_url, 
-                // request_mode,
+                authorization_code: row.authorization_code,
+                in_game_url: row.in_game_url,
+                test_in_game_url: row.test_in_game_url,
+                conver_url: row.conver_url,
+                test_conver_url: row.test_conver_url,
+                check_balance_url: row.check_balance_url,
+                test_check_balance_url: row.test_check_balance_url,
+                check_order_url: row.check_order_url,
+                test_check_order_url: row.test_check_order_url,
+                get_station_order_url: row.get_station_order_url,
+                test_get_station_order_url: row.test_get_station_order_url,
+                request_mode: row.request_mode,
                 status: row.status
             }
-            this.form.request_mode = String(row.request_mode)
             this.dia_status = 'edit'
             this.dia_title = '编辑'
             this.dia_show = true
@@ -343,7 +424,64 @@ export default {
                 this.editCfm()
             }
         },
+        checkForm() {
+            let regExp = /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/
+            let noEmpty = {
+                vendor_id: {
+                    title: '厂商选择'
+                },
+                sign: {
+                    title: '游戏标识'
+                },
+                type_id: {
+                    title: '游戏分类'
+                },
+                name: {
+                    title: '游戏名称'
+                },
+                in_game_url: {
+                    title: '进入游戏地址',
+                    regExp: regExp
+                },
+                conver_url: {
+                    title: '额度转换地址',
+                    regExp: regExp
+                },
+                check_balance_url: {
+                    title: '检查余额地址',
+                    regExp: regExp
+                },
+                check_order_url: {
+                    title: '检查订单地址',
+                    regExp: regExp
+                },
+                get_station_order_url: {
+                    title: '获取注单地址',
+                    regExp: regExp
+                },
+                request_mode: {
+                    title: '请求模式'
+                },
+                status: {
+                    title: '状态选择'
+                }
+            }
+            for (const key in noEmpty) {
+                if (this.form[key] === '') {
+                    this.$toast.info(`${noEmpty[key].title}不可为空`)
+                    return false
+                } else if (noEmpty[key].regExp) {
+                    let reg = noEmpty[key].regExp
+                    if (!reg.test(this.form[key])) {
+                        this.$toast.info(`请检查${noEmpty[key].title}的格式`)
+                        return false
+                    }
+                }
+            }
+            return true
+        },
         addCfm() {
+            if (!this.checkForm()) return
             let data = {
                 type_id: this.form.type_id,
                 vendor_id: this.form.vendor_id,
@@ -361,7 +499,8 @@ export default {
                 in_game_url: this.form.in_game_url,
                 test_in_game_url: this.form.test_in_game_url,
                 get_station_order_url: this.form.get_station_order_url,
-                test_get_station_order_url: this.form .test_get_station_order_url,
+                test_get_station_order_url: this.form
+                    .test_get_station_order_url,
 
                 status: this.form.status,
                 app_id: this.form.app_id,
@@ -372,30 +511,28 @@ export default {
                 public_key: this.form.public_key,
                 private_key: this.form.private_key
             }
-            console.log('检查')
+            data = window.all.tool.rmEmpty(data)
             let { url, method } = this.$api.dev_game_add
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.mod_show = false
+                    this.dia_show = false
                     this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
                 }
             })
         },
         editCfm() {
-            let data = this.form
-
+            if (!this.checkForm()) return
+            let data = Object.assign(this.form)
+            if (data.request_mode) {
+                data.request_mode = parseInt(data.request_mode)
+            }
+            data = window.all.tool.rmEmpty(data)
             let { url, method } = this.$api.dev_game_set
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.mod_show = false
+                    this.dia_show = false
                     this.getList()
                 }
             })
@@ -464,7 +601,6 @@ export default {
             let { url, method } = this.$api.dev_game_search_condition_get
 
             this.$http({ method, url }).then(res => {
-                console.log('select列表: ', res)
                 if (res && res.code === '200') {
                     this.geme_type_opt = this.toSelectOpt(res.data.games)
 
@@ -527,10 +663,17 @@ export default {
 .form > li {
     display: flex;
     align-items: center;
+    position: relative;
     margin-top: 20px;
 }
 .form > li > span:first-child {
     width: 9em;
+}
+.err-tips {
+    position: absolute;
+    top: 30px;
+    left: 10em;
+    color: rgb(255, 51, 0);
 }
 .w250 {
     width: 250px;

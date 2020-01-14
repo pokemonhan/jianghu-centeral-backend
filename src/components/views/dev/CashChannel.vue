@@ -81,6 +81,7 @@
                         </li>
                         <li>
                             <span>请求模式:</span>
+
                             <Radio
                                 class="radio-left"
                                 label="直接跳转"
@@ -88,6 +89,7 @@
                                 val="0"
                                 v-model="form.request_mode"
                             />
+
                             <Radio
                                 class="radio-right ml50"
                                 label="获取数据模式"
@@ -103,7 +105,11 @@
                                 placeholder="例如:http://baidu.com"
                                 v-model="form.request_url"
                             />
-                            <span v-show="!form.request_url" class="err-tips">请求地址不可为空</span>
+                            <!-- <span v-show="!form.request_url" class="err-tips">请求地址不可为空</span> -->
+                             <span
+                                    v-show="!urlRegExp.test(form.request_url)"
+                                    class="err-tips"
+                                >请检查内容格式!</span>
                         </li>
                         <li>
                             <span>银行码:</span>
@@ -163,19 +169,7 @@ export default {
             type_opt: [],
             channel_opt: [],
 
-            headers: [
-                '编号',
-                '厂商名称',
-                '分类名称',
-                '通道名称',
-                '通道标识',
-                '添加人',
-                '添加时间',
-                '最后更新人',
-                '最后更新时间',
-                '状态',
-                '操作'
-            ],
+            headers: [ '编号', '厂商名称', '分类名称', '通道名称', '通道标识', '添加人', '添加时间', '最后更新人', '最后更新时间', '状态', '操作' ],
             list: [],
             total: 0,
             pageNo: 1,
@@ -196,7 +190,7 @@ export default {
                 desc: '',
                 status: '1'
             },
-
+            urlRegExp : /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/,
             // modal 确认modal
             mod_show: false,
             mod_status: '',

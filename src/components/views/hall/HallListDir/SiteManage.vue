@@ -42,7 +42,9 @@
                     </li>
                     <li>
                         <span>权限选项:</span>
-                        <Input class="w280" v-model="authority" />
+                        <!-- <div>x</div> -->
+                        <!-- <Input class="w280" v-model="authority" /> -->
+                        <AuthorityTree style="width:500px;"/>
                     </li>
                 </ul>
             </div>
@@ -56,9 +58,13 @@
 
 
 <script>
+import AuthorityTree from '../../../commonComponents/AuthorityTree'
 export default {
     props: {
-        id: String
+        id: [String, Number]
+    },
+    components: {
+        AuthorityTree: AuthorityTree
     },
     data() {
         return {
@@ -107,7 +113,7 @@ export default {
 }
 .form > li {
     display: flex;
-    align-items: baseline;
+    /* align-items: baseline; */
     margin-top: 20px;
     /* border: 1px solid #000; */
 }

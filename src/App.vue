@@ -261,7 +261,7 @@ button:hover {
     box-sizing: border-box;
     border-radius: 3px;
     outline: none;
-    border: none;
+    /* border: none; */
     cursor: pointer;
     color: #4c8bfd;
     border: 1px solid #4c8bfd;
@@ -352,13 +352,14 @@ button:hover {
     background: #6397f7;
 }
 .btn-blue-large:active {
+    color: #b9cff8;
     box-shadow: none;
-    background: #3f7beb;
+    background: #2c71f1;
 }
-.btn-blue-large:hover {
+/* .btn-blue-large:hover {
     box-shadow: none;
     background: #6397f7;
-}
+} */
 
 .btn-plain {
     /* height: 26px; */
@@ -373,7 +374,12 @@ button:hover {
 
 .btn-plain:hover {
     box-shadow: none;
-    color: #246aeb;
+    color: #83acf7;
+    border: 1px solid #83acf7;
+}
+.btn-plain:active {
+    color: #4c8bfd;
+    border: 1px solid #4c8bfd;
 }
 
 .btn-plain-large {
@@ -393,12 +399,13 @@ button:hover {
 }
 .btn-plain-large:active {
     box-shadow: none;
-    color: #3f7beb;
+    color: #6796ec;
+    border: 1px solid #6796ec;
 }
 /* 小按钮 */
 .btns-red {
     color: #fff;
-    background: #ff6a6a;
+    background: #f34630;
     box-shadow: 1px 1px 3px rgba(255, 106, 106, 0.226);
 }
 .btns-red:hover {
@@ -483,9 +490,10 @@ button:hover {
 
 /* 让page 居中,margin-top设置为25 */
 .table-page {
-    margin-top: 25px;
     display: flex;
     justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
 }
 
 .a {

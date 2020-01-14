@@ -4,7 +4,8 @@
         @click="update"
     >
         <span class="icon">
-            <span :class="value === val ? 'active' : ''"></span>
+            <!-- 注意: 字符串 '1' == number 1 -->
+            <span :class="value == val ? 'active' : ''"></span>
             <input
                 type="radio"
                 v-model="result"

@@ -34,7 +34,7 @@
                 <div v-if="dia_show==='add_member'">
                     <ul class="form">
                         <li>
-                            <span>账号:</span>
+                            <span>名称:</span>
                             <Input class="w250" v-model="addForm.name" @keyup="nameCheck" />
                             <span class="err-tips">{{add_err_msg.name}}</span>
                         </li>
@@ -152,7 +152,7 @@ export default {
             }
             let { url, method } = this.$api.admin_group_user_list
             this.$http({ method, url, params }).then(res => {
-                console.log('成语列表呢res: ', res)
+                // console.log('成语列表呢res: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data

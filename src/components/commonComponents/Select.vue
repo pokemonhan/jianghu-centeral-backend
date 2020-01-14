@@ -105,6 +105,14 @@ export default {
                     this.selectedLabel = item.label
                 }
             })
+        },
+        options() {
+            if(!this.options) return
+            this.options.forEach(item => {
+                if (item.value === this.value) {
+                    this.selectedLabel = item.label
+                }
+            })
         }
     },
     mounted() {

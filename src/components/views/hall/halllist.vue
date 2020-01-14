@@ -187,19 +187,19 @@
                     </div>
                     <div class="maintain-btns">
                         <button class="btn-plain-large" @click="dia_show=''">取消</button>
-                        <button class="btn-blue-large ml50">确定</button>
+                        <button class="btn-blue-large ml50" @click="maintainCfm">确定</button>
                     </div>
                 </div>
 
                 <!-- 站点管理 -->
-                <SiteManage v-if="dia_show==='site'" :id="'idshow'" />
+                <SiteManage v-if="dia_show==='site'" :id="curr_row.id" />
 
                 <!-- 域名管理 -->
-                <Domain v-if="dia_show==='domain'" :id="'idshow'" />
+                <Domain v-if="dia_show==='domain'" :sign="curr_row.sign" />
                 <!-- 游戏管理 -->
-                <Gamemanage v-if="dia_show==='game'" :id="'idshow'" />
+                <Gamemanage v-if="dia_show==='game'" :id="curr_row" />
                 <!-- 活动管理 -->
-                <ActiveManage v-if="dia_show==='active'" :id="'idshow'" />
+                <ActiveManage v-if="dia_show==='active'" :id="curr_row.id" />
             </div>
         </Dialog>
     </div>
@@ -340,7 +340,8 @@ export default {
             })
         },
         // 维护
-        maintainShow() {
+        maintainShow(row) {
+            this.curr_row = row
             this.dia_show = 'maintain'
             this.dia_title = '维护'
         },
@@ -350,7 +351,10 @@ export default {
             this.dia_title = '站点管理'
         },
         // 域名管理
-        domainShow() {
+        domainShow(row) {
+            console.log('row: ', row);
+            this.curr_row = row
+
             this.dia_show = 'domain'
             this.dia_title = '域名管理'
         },
@@ -363,6 +367,20 @@ export default {
         activeShow() {
             this.dia_show = 'active'
             this.dia_title = '活动管理'
+        },
+        maintainCfm() {
+            let data = { id: this.curr_row.id, }
+            // TODO:
+            let { url, method } = this.$api.platform_maintain_set
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+            
+                    this.$toast.success(res && res.message)
+                    this.dia_show=false
+                    this.getList()
+                }
+            })
         },
         getList() {
             /**
@@ -448,6 +466,10 @@ export default {
 }
 .gray {
     color: rgb(152, 155, 158);
+}
+.dia-inner {
+    max-height: 80vh;
+    overflow: auto;
 }
 .dia-maintain {
     display: flex;

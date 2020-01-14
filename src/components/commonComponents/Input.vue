@@ -63,7 +63,7 @@ export default {
     },
     watch: {
         value(value){
-            this.val= value
+            this.val = value
           }
     },
     methods: {

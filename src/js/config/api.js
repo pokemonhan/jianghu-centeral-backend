@@ -51,11 +51,16 @@ export default {
         method: 'post'
     },
     // 厅主列表 -域名管理-添加
-    platform_domain_list: {
+    platform_domain_add: {
         url: '/headquarters-api/platform/domain-add',
         method: 'post'
     },
-
+    // 厅主列表 - 站点维护
+    platform_maintain_set: {
+        url: '/headquarters-api/platform/maintain',
+        method: 'post'
+    },
+    //
 
     /*=========================== 3.游戏管理 ===========================--*/
     /* 3.1 厂商管理   */

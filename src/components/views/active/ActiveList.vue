@@ -24,7 +24,6 @@
                     <td>{{row.a2}}</td>
                     <td :class="['bold',row.a2==='1'?'green':'red']">{{row.a2}}</td>
                     <td>
-                        <!-- <button class="btns-red">禁用</button> -->
                         <button
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
