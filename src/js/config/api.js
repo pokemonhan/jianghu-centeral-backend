@@ -5,9 +5,10 @@ export default {
      * 增  add
      * 删  del
      * 改  set
-     * 查  list (或search)
+     * 查  list
      * 
     */
+
     // 登录
     login: { url: '/headquarters-api/login', method: 'post' },
     // 登出
@@ -59,6 +60,17 @@ export default {
     platform_maintain_set: {
         url: '/headquarters-api/platform/maintain',
         method: 'post'
+    },
+    // 厅主列表 - 站点管理
+    site_manage_set: {
+        url: '/headquarters-api/platform/edit',
+        method: 'post'
+    },
+
+    // 登录记录
+    login_record_list:{
+        url: '/headquarters-api/login-log/index',
+        method: 'post',
     },
     //
 
@@ -229,7 +241,7 @@ export default {
 
     /*=========================== 开发管理 ===========================--*/
     /* --------总控菜单管理 -----------------*/
-    
+
     //  总控菜单管理-开发管理菜单操作相关需要的数据 (所有select 路由)
     menu_date_list: {
         url: '/headquarters-api/menu',
@@ -463,7 +475,7 @@ export default {
 
 
     /* --------金流通道配置 -----------------*/
-    
+
     //  金流银行卡配置 - 添加
     dev_sys_bank_add: {
         url: '/headquarters-api/bank/add-do',

@@ -23,7 +23,7 @@
             </ul>
         </div>
      
-        <div class="table">
+        <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
                     <td>{{row.a1}}</td>
@@ -118,5 +118,7 @@ export default {
     padding-left: 10px;
     padding-bottom: 10px;
 }
-
+.mt20 {
+    margin-top: 20px;
+}
 </style>

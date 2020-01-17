@@ -7,7 +7,8 @@
             @mouseout="updateClearState(false)"
         >
             <input v-model="selectedValue" type="hidden" />
-            <span>{{selectedLabel}}</span>
+            <input class="show-input" v-model="showValue" :type="input?'text':'hidden'" />
+            <span v-show="!input">{{selectedLabel}}</span>
             <i v-if="clearable && isClear" @click.stop="clear" class="iconfont icon-icon-test"></i>
             <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
         </div>
@@ -32,12 +33,12 @@
 export default {
     name: 'Select',
     props: {
-        options: {
-            // 可选选项
+        css: Object, // 自定义css
+        input: Boolean, // 是否像 input 可以输入 
+        options: {  // 选项内容
             type: Array,
             default: () => []
         },
-        css: Object, // 自定义css
         value: [Number, String], // 默认值
         clearable: Boolean // 是否可清空
     },
@@ -47,6 +48,7 @@ export default {
     },
     data() {
         return {
+            showValue: '',
             selectedValue: '',
             selectedLabel: '',
             index: 0,
@@ -81,6 +83,7 @@ export default {
             if (item.value === this.selectedValue) return
             this.selectedValue = item.value
             this.selectedLabel = item.label
+            this.showValue = item.value // input 展示的内容
             this.$emit('update', item.value, item)
         },
         clear() {
@@ -120,6 +123,7 @@ export default {
         this.options.forEach(item => {
             if (item.value === this.value) {
                 this.selectedLabel = item.label
+                this.showValue = item.value // input 展示的内容
             }
         })
     }
@@ -136,7 +140,7 @@ export default {
     /* display: inline-block; */
     box-sizing: border-box;
     cursor: pointer;
-    box-sizing: border-box;
+    /* box-sizing: border-box; */
     background: #fff;
 }
 .val-box {
@@ -149,10 +153,19 @@ export default {
     border: 1px solid #e2dcdc;
     border-radius: 4px;
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 .v-select .val-box-active {
     border-color: #57a3f3;
+}
+.val-box .show-input {
+    height: 95%;
+    width: 98%;
+    margin-left: 1px;
+    padding-left: 6px;
+    padding-right: 23px;
+    border: none;
+    background: rgb(253, 254, 255);
 }
 .val-box .icon-icon-test {
     display: none;
@@ -178,14 +191,15 @@ export default {
     text-indent: 10px;
 }
 .val-box .drop-down {
-    width: 0;
-    height: 0;
-    margin-top: 10px;
-    margin-right: 4px;
+    position: absolute;
+    right: 4px;
+    top: 10px;
+    width: 10px;
+    height: 3px;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-top: 8px solid #4c8bfd;
-    transition: all 0.2s;
+    transition: transform 0.2s;
 }
 .sections {
     width: 100%;

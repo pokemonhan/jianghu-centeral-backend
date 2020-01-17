@@ -1,5 +1,9 @@
 <template>
     <div class="cont">
+
+        <!-- 域名管理 -->
+
+
         <div class="domain-select">
             <button
                 :class="domain_idx ===index?'btn-blue':'btn-plain'"
@@ -137,7 +141,7 @@ export default {
             dia_status: '',
             form: {
                 domain: '',
-                status: ''
+                status: '1'
             },
 
             // 确认模态框 modal
@@ -152,8 +156,13 @@ export default {
     methods: {
         domainClk(index) {
             this.domain_idx = index
+            this.getList()
         },
         add() {
+            this.form = {
+                domain: '',
+                status: '1'
+            }
             this.dia_status = 'add'
             this.dia_show = true
         },
@@ -165,7 +174,7 @@ export default {
         addCfm() {
             let data = {
                 platform_sign: this.sign,
-                type: '1', //TODO: 类型 1.PC 2.H5 3.APP
+                type: this.domain_idx, // 类型 1.PC 2.H5 3.APP
                 domain: this.form.domain,
                 status: this.form.status,
             }
@@ -206,8 +215,8 @@ export default {
         switchCfm() {
             return // TODO:
             let data = {
-                // id: this.form.id,
-                // status: this.form.status,
+                id: this.form.id,
+                status: this.form.status,
             }
             
             // let { url, method } = this.$api.aaaaaaaa🐷
@@ -227,22 +236,18 @@ export default {
         },
         getList() {
             console.log('getlist',this.sign);
-            let para = {
+            let params = {
                 sign: this.sign,
-                // name: this.filter.vendor,
-                // status: this.filter.status,
-                // pageSize: this.pageSize,
-                // page: this.pageNo
+                type: this.domain_idx
+
             }
-            let params = window.all.tool.rmEmpty(para)
-            console.log('params: ', params);
         
             let { url, method } = this.$api.platform_domain_list
             this.$http({ method, url, params }).then(res => {
                 console.log('域名列表?👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
-                    this.list = res.data
+                    this.list = res.data.data
         
                 } else {
                     if (res && res.message !== '') {

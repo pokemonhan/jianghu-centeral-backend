@@ -3,12 +3,9 @@
         <ul class="level-1">
             <li v-for="(lev1, lev1_index) in menu_list" :key="lev1_index">
                 <span
-                    :class="['title',$route.path == lev1.path?'active-menu':'']"
+                    :class="['title',$route.path == lev1.path&&(!lev1.child)?'active-menu':'']"
                     @click="expandMenu(lev1,lev1_index)"
                 >
-                    <!-- <span></span> -->
-                    <!-- name 改label,child 改child-->
-                    <!-- <i :class="['icon-left','iconfont', lev1.icon]"></i> -->
                     <span class="title-name">{{lev1.label}}</span>
                     <span v-if="lev1.child" class="iconfont iconup right"></span>
                 </span>
@@ -50,8 +47,8 @@ import { mapState, mapMutations, mapGetters } from 'vuex'
 export default {
     data() {
         return {
-            currentMenu: Number,
-            menu_list: []
+            menu_list: [],
+            chain: [] // 父子级关系，格式[0,2,3]// 第0下标个的第二个子级
         }
     },
     computed: {
@@ -60,45 +57,72 @@ export default {
     methods: {
         ...mapMutations(['updatetab_nav_list']),
         expandMenu(item, index) {
-            // console.log("TCL: expandMenu -> item", item)
             // console.log("该元素item", item);
             // console.log("这个index", index);
-            // console.log("TCL: expandMenu -> 当前", this.currentMenu)
-            if (item.path && true) {
-                if (this.$route.path !== item.path) {
-                    this.$router.push(item.path)
-                }
+            if (!item.child) {
+                this.$router.push(item.path)
 
                 let list = this.tab_nav_list
                 // 导航条没有该页面 就添加进去
-                if (this.tab_nav_list.indexOf(item) === -1) {
-                    list.push(item)
+                let isHadTab = list.find(tab => tab.path === item.path)
+                if (!isHadTab) {
+                    list.push({
+                        label: item.label,
+                        path: item.path
+                    })
                     this.updatetab_nav_list(list)
                 }
 
-                // 没有 path 就是父级菜单,就下滑打开该菜单
+                // 没有 child 就是父级菜单,就下滑打开该菜单
             } else {
                 let ele = this.$refs[index]
-                item.child && $(ele).slideToggle(200)
+                $(ele).slideToggle(200)
             }
-            this.currentMenu = index
         },
         objToArr(obj) {
             let list = []
             for (let key in obj) {
                 let item = obj[key]
+
                 if (item.child) {
-                    item.child = objToArr(item.child)
+                    item.child = this.objToArr(item.child)
                 }
                 list.push(item)
             }
             return list
+        },
+        // 获取当前路由的父级或祖先级
+        getFather() {
+            let curr_path = this.$route.path
+            let menu = this.menu_list
+            if (!menu) return
+            // console.log('menu: ', menu);
+            // 获取父子级关系 如 1-1-1
+            let chain_temp = ''
+            let getPreChain = function(arr, pre_fix = '') {
+                arr.forEach((item, index) => {
+
+                    if (item.child) {
+                        let pre = pre_fix!=='' ? pre_fix + '-' + index : index
+                        getPreChain(item.child, pre)
+
+                    } else {
+                        if (item.path === curr_path) {
+                            pre_fix = pre_fix!=='' ? pre_fix + '-' + index : index
+                            chain_temp = pre_fix
+                        }
+                    }
+                })
+            }
+            getPreChain(menu)
+            // this.chain = (chain_temp||[]).split('-')
+            // console.log('menu: ', menu)
+            // console.log('锁链', this.chain)
         }
     },
     watch: {
         $route: function(to, from) {
-            if (to.path === '/home') return
-            let path = to.path
+            // if (to.path === '/home') return
             // console.log("TCL: path", path);
             /*       1.同一父级,则 退出 2.不同父级,关闭以前,打开跳转的父级菜单 */
 
@@ -107,79 +131,28 @@ export default {
             //取 path 的父级
             // menu_list = this.menu_list
 
-            /*** TODO: 
-             * 
-            */
-            function getfather(array) {
-                array.forEach((item, index) => {
-                    // console.log("TCL: getfather -> item", item)
-                    if (item.child) {
-                        item.child.forEach(i => {
-                            if (i.path === to.path) {
-                                return item.path
-                            }
-                        })
-                    }
-                })
+            /*** TODO:
+             *
+             */
+            // 当前没有菜单就 localStorage找
+            if (!this.menu_list) {
+                let menu = window.all.tool.getLocal('menu')
+                if (menu) {
+                    this.menu_list = menu
+                }
+            } else {
+                this.getFather()
             }
-            let father_path = getfather(this.menu_list)
         }
     },
     mounted() {
         // console.log('aside');
-        this.menu_list = window.all.menu_list
-        const self = this
-        // let { method, url, params } = this.$api.all_menu
-        // function objToArr(obj) {
-        //     let list = [];
-        //     for (let key in obj) {
-        //         let item = obj[key];
-        //         if (item.child) {
-        //             item.child = objToArr(item.child);
-        //         }
-        //         list.push(item);
-        //     }
-        //     return list;
-        // }
-
-        // let opt = {
-        //     method,
-        //     url,
-        //     data: params
-        // }
-        // this.$http(opt).then(res => {
-        //     // console.log(res);
-        //     if (res && res.code === '200') {
-        //         // self.menu_list = res.data;
-        //         function objToArr(obj) {
-        //             let list = []
-        //             for (let key in obj) {
-        //                 let item = obj[key]
-        //                 if (item.child) {
-        //                     item.child = objToArr(item.child)
-        //                 }
-        //                 list.push(item)
-        //             }
-        //             return list
-        //         }
-        //         // console.log("list-list", objToArr(self.menu_list));
-        //     }
-        // })
-        // 解决刷新时顶部tab_nav都消失的问题, 根据路由加载当前导航.
-        setTimeout(() => {
-            if (self.tab_nav_list.length === 0) {
-                self.menu_list.forEach((item, index) => {
-                    if (item.child) {
-                        item.child.forEach(item => {
-                            if (item.path === self.$route.path) {
-                                let list = [item] // 获取当前路由 item {name: name,path:'/***'}
-                                self.updatetab_nav_list(list)
-                            }
-                        })
-                    }
-                })
-            }
-        }, 100)
+        // this.menu_list = window.all.menu_list
+        // const self = this
+        // this.getList()
+        this.menu_list = window.all.tool.getLocal('menu')
+        this.menu_list && this.getFather()
+        // console.log()
     }
 }
 </script>

@@ -200,7 +200,7 @@ export default {
                     self.$toast('登出成功')
                 }
             })
-            window.all.tool.removeSession('token')
+            // window.all.tool.removeSession('token')
             this.$router.push('/login')
             this.logout_conf_show = false
         },
@@ -363,8 +363,8 @@ export default {
     display: none;
     width: 100px;
     position: absolute;
-    right: -23px;
-    top: 40px;
+    right: 0;
+    top: 60px;
     border-radius: 3px;
     box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.212);
     z-index: 20;

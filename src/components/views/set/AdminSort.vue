@@ -177,10 +177,12 @@ export default {
         treeSelectShow(group) {
             // 当前权限数组
             let authority_arr = group.detail.map(item => item.menu_id)
+            console.log('authority_arr: ', authority_arr);
 
             // id 是否在选择项数组中
             let isSelect = function(id) {
                 return authority_arr.indexOf(id) !== -1
+                return false
             }
 
             let listSetCheked = function(arr) {

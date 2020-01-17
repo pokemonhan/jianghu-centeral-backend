@@ -59,7 +59,10 @@
                     <td style="padding:5px 0;">
                         <div>
                             <!-- <button class="btns-blue" @click="operateMod(row)">{{row.a5==='1'?'启用':'禁用'}}</button> -->
-                        <button :class="[row.status?'btns-red':'btns-green']" @click="operateMod(row)">{{row.status===1?'禁用':'启用'}}</button>
+                            <button
+                                :class="[row.status?'btns-red':'btns-green']"
+                                @click="operateMod(row)"
+                            >{{row.status===1?'禁用':'启用'}}</button>
 
                             <button class="btns-blue" @click="maintainShow(row)">维护</button>
                             <button class="btns-blue" @click="siteManageShow(row)">站点管理</button>
@@ -176,18 +179,21 @@
                 </div>
                 <!-- 维护 -->
                 <div v-if="dia_show==='maintain'" class="dia-maintain">
-                    <div style="align-self:flex-start;">维护时间:</div>
-                    <div class="mt20">
-                        <Date style="width:250px;" type="datetime" v-model="maintain_dates[0]" />
-                        <Date
-                            style="width:250px; margin-top:20px;"
-                            type="datetime"
-                            v-model="maintain_dates[1]"
-                        />
-                    </div>
-                    <div class="maintain-btns">
-                        <button class="btn-plain-large" @click="dia_show=''">取消</button>
-                        <button class="btn-blue-large ml50" @click="maintainCfm">确定</button>
+                    <div>
+                        <div style="align-self:flex-start;">维护时间:</div>
+                        <div class="mt20">
+                            <Date style="width:250px;" type="datetime" v-model="maintain_dates[0]" />
+                            <Date
+                                style="width:250px; margin-top:20px;"
+                                type="datetime"
+                                v-model="maintain_dates[1]"
+                            />
+                        </div>
+                        <div class="mt50"> 提示: 维护时间为空代表一直有效. </div>
+                        <div class="maintain-btns">
+                            <button class="btn-plain-large" @click="dia_show=''">取消</button>
+                            <button class="btn-blue-large ml50" @click="maintainCfm">确定</button>
+                        </div>
                     </div>
                 </div>
 
@@ -197,11 +203,12 @@
                 <!-- 域名管理 -->
                 <Domain v-if="dia_show==='domain'" :sign="curr_row.sign" />
                 <!-- 游戏管理 -->
-                <Gamemanage v-if="dia_show==='game'" :id="curr_row" />
+                <Gamemanage v-if="dia_show==='game'" :id="curr_row.id" />
                 <!-- 活动管理 -->
                 <ActiveManage v-if="dia_show==='active'" :id="curr_row.id" />
             </div>
         </Dialog>
+        <Loading :show.sync="loading" />
     </div>
 </template> 
 <script>
@@ -237,6 +244,7 @@ export default {
                 site_ident: '',
                 status: 'on'
             },
+            loading: false,
             website_opt: [
                 { label: '全部', value: '' },
                 { label: '启用', value: 1 },
@@ -302,10 +310,6 @@ export default {
                     self.total = res.data.total
                     self.list = res.data.data
                     this.$toast.success(res && res.message)
-                } else {
-                    if (res && res.message !== '') {
-                        self.$toast.error(res.message)
-                    }
                 }
             })
         },
@@ -332,10 +336,6 @@ export default {
                     this.$toast.success(res && res.message)
                     this.mod_show = false
                     this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
                 }
             })
         },
@@ -346,38 +346,45 @@ export default {
             this.dia_title = '维护'
         },
         // 站点管理
-        siteManageShow() {
+        siteManageShow(row) {
+            console.log('row: ', row);
+            this.curr_row = row
             this.dia_show = 'site'
             this.dia_title = '站点管理'
         },
         // 域名管理
         domainShow(row) {
-            console.log('row: ', row);
+            console.log('row: ', row)
             this.curr_row = row
 
             this.dia_show = 'domain'
             this.dia_title = '域名管理'
         },
         // 游戏管理
-        gameShow() {
+        gameShow(row) {
+            this.curr_row = row
             this.dia_show = 'game'
             this.dia_title = '游戏管理'
         },
         // 活动管理
-        activeShow() {
+        activeShow(row) {
+            this.curr_row = row
             this.dia_show = 'active'
             this.dia_title = '活动管理'
         },
         maintainCfm() {
-            let data = { id: this.curr_row.id, }
+            let data = {
+                id: this.curr_row.id,
+                start_time: this.maintain_dates[0],
+                end_time: this.maintain_dates[1],
+            }
             // TODO:
             let { url, method } = this.$api.platform_maintain_set
             this.$http({ method, url, data }).then(res => {
                 console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
-            
                     this.$toast.success(res && res.message)
-                    this.dia_show=false
+                    this.dia_show = ''
                     this.getList()
                 }
             })
@@ -386,6 +393,9 @@ export default {
             /**
              * TODO 🎈
              */
+
+            // this.loading = true
+
             let para = {
                 email: this.filter.email,
                 status: this.filter.status,
@@ -401,11 +411,8 @@ export default {
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data
-                } else {
-                    if (res && res.message !== '') {
-                        this.toast.error(res.message)
-                    }
                 }
+                // this.loading =false
             })
         },
         updateNo() {
@@ -464,6 +471,9 @@ export default {
 .mt20 {
     margin-top: 20px;
 }
+.w250 {
+    width: 250px;
+}
 .gray {
     color: rgb(152, 155, 158);
 }
@@ -473,9 +483,9 @@ export default {
 }
 .dia-maintain {
     display: flex;
-    flex-direction: column;
+    min-height: 420px;
+    width: 700px;
     justify-content: center;
-    align-items: center;
 }
 .maintain-btns {
     margin-top: 40px;
@@ -484,9 +494,7 @@ export default {
 .ml50 {
     margin-left: 50px;
 }
-.w250 {
-    width: 250px;
-}
+
 .center-box {
     display: flex;
     justify-content: center;

@@ -62,6 +62,7 @@ export default {
         setTimeout(() => {
             // self.playMusic()
         }, 400)
+        
     }
 }
 </script>
@@ -141,6 +142,7 @@ export default {
 
 .app-aside {
     width: 150px;
+    margin-left: 10px;
     /* overflow: hidden; */
 }
 .app-main {
@@ -155,7 +157,6 @@ export default {
 .tab-nav {
     width: 100%;
     margin-bottom: 10px;
-    margin-right: 30px;
     padding-right: 20px;
 }
 #toast-box {
@@ -463,12 +464,10 @@ button:hover {
 
 .filter {
     display: flex;
-    /* line-height: 30px; */
     align-items: center;
     justify-content: space-between;
     /* white-space: nowrap; */
     font-size: 13px;
-    /* line-height: 30px; */
     background: #f2f2f2;
 }
 
@@ -508,7 +507,38 @@ button:hover {
     color: red;
 }
 .w100 {
-    width: 110px;
+    width: 100px;
+}
+.w250 {
+    width: 250px;
+}
+.ml5 {
+    margin-left: 5px;
+}
+.ml10 {
+    margin-left: 10px;
+}
+.ml20 {
+    margin-left: 20px;
+}
+.ml50 {
+    margin-left: 50px;
+}
+.mr5 {
+    margin-right: 5px;
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+.mt20 {
+    margin-top: 20px;
+}
+.mt50 {
+    margin-top: 50px;
+}
+.p10 {
+    padding: 10px;
 }
 /* 字体颜色 */
 .orange {
@@ -546,7 +576,7 @@ button:hover {
 .p10 {
     padding: 10px;
 }
-.total-table ul {
+/* .total-table ul {
     display: flex;
     height: 40px;
     line-height: 40px;
@@ -557,7 +587,7 @@ button:hover {
 }
 .total-table ul > li {
     margin-right: 100px;
-}
+} */
 .g-form > li {
     display: flex;
     align-items: center;

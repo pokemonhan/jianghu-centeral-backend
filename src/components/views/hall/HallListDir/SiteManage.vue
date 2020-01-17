@@ -1,20 +1,26 @@
 <template>
     <div class="cont">
+
+        <!-- 厅主列表 - 站点管理 -->
+
         <div class="body">
             <div class="left">
                 <ul style="margin-top:-13px;" class="form">
                     <li>
-                        <span>代理方式:</span>
-                        <Checkbox label="PC" v-model="checked[0]" />
-                        <Checkbox label="H5" v-model="checked[1]" />
-                        <Checkbox label="APP" v-model="checked[2]" />
+                        <span>代理方式?:</span>
+                        <Checkbox label="PC" v-model="agency_method[0]" />
+                        <Checkbox label="H5" v-model="agency_method[1]" />
+                        <Checkbox label="APP" v-model="agency_method[2]" />
+                        <p v-show="!agency_method.find(item=>item)" class="err-tips">至少选择一个!</p>
                     </li>
+                  
                     <li>
                         <span>有效日期:</span>
                         <div class="text-center">
                             <Date type="datetime" v-model="dates[0]" />
-                            <span>~</span>
+                            <span >~</span>
                             <Date type="datetime" v-model="dates[1]" />
+                            <p v-show="!(dates[0]&&dates[1])" class="red mt5">开始时间和结束都不可为空!</p>
                         </div>
                     </li>
                 </ul>
@@ -44,14 +50,14 @@
                         <span>权限选项:</span>
                         <!-- <div>x</div> -->
                         <!-- <Input class="w280" v-model="authority" /> -->
-                        <AuthorityTree style="width:500px;"/>
+                        <AuthorityTree v-model="authorityList" style="width:500px;"/>
                     </li>
                 </ul>
             </div>
         </div>
         <div class="btns">
-            <button class="btn-plain-large">重置</button>
-            <button class="btn-blue-large ml50">保存</button>
+            <button class="btn-plain-large" @click="initial">重置</button>
+            <button class="btn-blue-large ml50" @click="save">保存</button>
         </div>
     </div>
 </template>
@@ -69,7 +75,7 @@ export default {
     data() {
         return {
             show_black_list_conf:true,
-            checked: [],
+            agency_method: [],
             dates: [],
             skin_pc: 0,
             skin_h5: 0,
@@ -93,12 +99,38 @@ export default {
                 { label: '皮肤三', value: 3 },
             ],
             sms: '',
-            authority: ''
+            authority: '',
+            authorityList: [],
         }
     },
-    methods: {},
+    methods: {
+        initial() {
+            this.agency_method = []
+            dates = []
+            sms = ''
+            authorityList = []
+        },
+        save() {
+            let data = {
+                id: this.id,
+                agency_method: agency_method.join(','),
+            }
+            
+            let { url, method } = this.$api.site_manage_set
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+            
+                    this.$toast.success(res && res.message)
+                    this.dia_show = false
+                    // this.getList()
+                    this.$emit('confirm')
+                }
+            })
+        }
+    },
     mounted() {
-        // console.log('%c id','color:green;font-size:18px;',this.id)
+        console.log('%c id','color:green;font-size:18px;',this.id)
     }
 }
 </script>
@@ -106,20 +138,35 @@ export default {
 <style scoped>
 .cont{
     width: 1000px;
-    padding: 50px 0;
+    padding-top: 50px;
+    padding-bottom: 90px;
 }
 .body {
     display: flex;
 }
 .form > li {
     display: flex;
-    /* align-items: baseline; */
+    position: relative;
+    min-height: 32px;
     margin-top: 20px;
-    /* border: 1px solid #000; */
 }
 .form > li > span:first-child {
     width: 7em;
     margin-right: 15px;
+}
+.mt5 {
+    margin-top: 5px;
+}
+.err-tips {
+    position: absolute;
+    left: 10em;
+    top: 32px;
+    color: rgb(255, 17, 0);
+    font-size: 12px;
+}
+.transparent {
+    opacity: 0;
+    border: 1px solid #000;
 }
 .ml20 {
     margin-left: 20px;

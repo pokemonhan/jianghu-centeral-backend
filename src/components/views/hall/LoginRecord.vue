@@ -80,9 +80,28 @@ export default {
             this.pageNo = 1
             // this.getList()
         },
+        getList() {
+            let para = {
+                // name: this.filter.vendor,
+                // status: this.filter.status,
+                // pageSize: this.pageSize,
+                // page: this.pageNo
+            }
+            let params = window.all.tool.rmEmpty(para)
+        
+            let { url, method } = this.$api.login_record_list
+            this.$http({ method, url, params }).then(res => {
+        console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.total = res.data.total
+                    this.list = res.data.data
+        
+                }
+            })
+        },
     },
     mounted() {
-        this.filter.acc = '你好世界'
+        // this.getList()
     }
 }
 </script>

@@ -1,7 +1,6 @@
 <template>
     <div class="container total-menu">
         <!-- 总控菜单 -->
-
         <div class="tol-left" @contextmenu.prevent>
             <div class="head">编辑菜单</div>
             <div class="head-sub">

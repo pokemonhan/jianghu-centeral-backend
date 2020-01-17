@@ -55,13 +55,21 @@
                                 <div v-show="verifyMsg" class="err-item">{{verifyMsg}}</div>
                             </li>-->
                             <li style="margin-top:40px;">
-                                <button class="login-btn" @click="login">登录</button>
+                                <button
+                                    :class="['login-btn',login_show?'cursor-wait':'']"
+                                    @click="login"
+                                    :disabled="login_show"
+                                >登录</button>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- <Loading :show="login_show"/>  -->
+        <!-- <div class="modal-mask" v-if="login_show">
+            <Loading show />
+        </div> -->
     </div>
 </template>
 
@@ -77,7 +85,8 @@ export default {
             pwdReg: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/,
             accMsg: '',
             pwdMsg: '',
-            verifyMsg: ''
+            verifyMsg: '',
+            login_show: false
         }
     },
     methods: {
@@ -100,7 +109,7 @@ export default {
                     : '请输入8-16个字母+数字组合'
             }
             // TODO 解放这里,当格式不对,不通过
-            // return this.pwdMsg ? false : true
+            return this.pwdMsg ? false : true
             return true
         },
         // checkVerify(){
@@ -113,39 +122,83 @@ export default {
         //       this.verifyMsg = '验证码不能为空'
         //       return false
         //   }
+
+        objToArr(obj) {
+            let list = []
+            for (let key in obj) {
+                let item = obj[key]
+
+                let template = {
+                    id: item.id,
+                    label: item.label,
+                    path: item.route,
+                    route: item.route,
+                    level: item.level,
+                    display: item.display
+                }
+                if (item.child) {
+                    template.child = this.objToArr(item.child)
+                }
+                list.push(template)
+            }
+            return list
+        },
+        getMenuList() {
+            let { method, url } = this.$api.menu_all_list
+
+            this.$http({ method, url }).then(res => {
+                if (res && res.code === '200') {
+                    let menu = this.objToArr(res.data)
+                    window.all.tool.setLocal('menu', menu)
+                }
+            })
+        },
         // },
         login() {
+            let self = this
+            setTimeout(() => {
+                self.login_show = false
+            }, 15000)
             let params = {
                 email: this.account,
                 password: this.password
             }
             let { url, method } = this.$api.login
-            let self = this
             if (this.checkUname() && this.checkPwd()) {
+                this.login_show = true
+
                 this.$http({
                     method: this.$api.login.method,
                     url: this.$api.login.url,
                     data: params // post 请求用data
+                }).then(res => {
+                    this.login_show = false
+                    if (res && res.code === '200') {
+                        let Authorization =
+                            res.data.token_type + ' ' + res.data.remember_token
+                        window.all.tool.setLocal('Authorization', Authorization)
+                        window.all.tool.setLocal('name', res.data.name)
+                        window.all.tool.setLocal('email', res.data.email)
+                        self.$toast.success('登陆成功')
+                        setTimeout(() => {
+                            // TODO: 可能有些不能查看首页
+                            self.$router.push('/home')
+                        }, 200)
+
+                        // 获取客户菜单内容
+                        // TODO: 目前是所有
+                        this.getMenuList()
+                    } else {
+                        // console.log(res)
+                        // self.$toast.warning(res.message)
+                    }
                 })
-                    .then(res => {
-                        if (res && res.code === '200') {
-                            
-                            let Authorization = res.data.token_type + ' ' + res.data.remember_token
-                            window.all.tool.setLocal('Authorization', Authorization)
-                            window.all.tool.setLocal('name', res.data.name)
-                            window.all.tool.setLocal('email', res.data.email)
-                            self.$toast.success('登陆成功')
-                            setTimeout(() => {
-                                // TODO: 可能有些不能查看首页 
-                                self.$router.push('/home')
-                            }, 200);
-                        } else {
-                            // console.log(res)
-                            // self.$toast.warning(res.message)
-                        }
-                    })
             }
         }
+    },
+    mounted() {
+        // 清空localStorage
+        localStorage.clear()
     }
 }
 </script>
@@ -230,15 +283,15 @@ export default {
     border: none;
     /* outline: none; */
 }
-.verify-img {
-    display: inline-block;
-    width: 95px;
-    height: 42px;
-    line-height: 42px;
-    margin-left: 7px;
-    background: #eff6ff;
-}
 
+.err-item {
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    /* height: 13px; */
+    font-size: 13px;
+    color: red;
+}
 .login-btn {
     width: 337px;
     height: 42px;
@@ -249,14 +302,11 @@ export default {
 .login-btn:active {
     background: #3275f0;
 }
-.err-item {
-    position: absolute;
-    top: 40px;
-    left: 10px;
-    /* height: 13px; */
-    font-size: 13px;
-    color: red;
+.cursor-wait {
+    /* cursor: cursor-waited; */
+    cursor:wait;
 }
+
 .flex {
     display: flex;
     /* justify-content: center; */
@@ -265,6 +315,16 @@ export default {
 .pic-change {
     font-size: 11px;
     cursor: pointer;
+}
+
+.modal-mask {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.103);
 }
 </style>
 

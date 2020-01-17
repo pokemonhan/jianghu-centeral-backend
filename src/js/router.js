@@ -14,13 +14,14 @@ import Login from '@/components/Login.vue'
 // import SortSet from '../components/views/game/SortSet'
 // import GameManage from '../components/views/game/GameManage'
 
-
-
 Vue.use(Router)
+
+// 解决 路由 NavigationDuplicated 报错问题
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location) {
     return originalPush.call(this, location).catch(err => err)
 }
+
 // const router = new Router({
 //     mode: 'history',
 //     routes: [
@@ -38,11 +39,14 @@ Router.prototype.push = function push(location) {
 //         },
 
 //         /*------------------ 厅主管理 ------------------------*/
-//         // {
-//         //     path: '/hall/halllist',
-//         //     component: HalList
-//         // },
-//         { path: "/hall/halllist", component: () => import('../components/views/hall/Halllist.vue') },
+//         {
+//             path: '/hall/halllist',
+//             component: HalList
+//         },
+//         {
+//             path: "/hall/halllist",
+//             component: () => import('../components/views/hall/Halllist.vue')
+//         },
 //         {
 //             path: '/hall/loginrecord',
 //             component: LoginRecord
@@ -70,6 +74,7 @@ Router.prototype.push = function push(location) {
 
 // export default router
 
+
 // 自动加载路由
 
 const routes = new Router({
@@ -77,7 +82,7 @@ const routes = new Router({
     routes: [
         {
             path: '/',
-            component: Login
+            redirect: 'login'
         },
         {
             path: '/home',
@@ -98,16 +103,17 @@ let route_add = []
 //获取 /views所有文件路径 lazy加载
 let r = require.context('../components/views', true, /.vue$/, 'lazy')
 r.keys().forEach(file_name => {
+    // 路径
     let path = file_name.slice(1).replace('.vue', '').toLowerCase()
 
-    let length = file_name.split('/').length
-    let name = file_name.split('/')[length - 1].replace('.vue', '')
+    // let length = file_name.split('/').length
+    // let name = file_name.split('/')[length - 1].replace('.vue', '')
     // console.log(name)
-    // console.log('文件path ', path)
     route_add.push({
         path: path,
         // 懒加载
-        component: () => r(file_name)
+        component: () => r(file_name),
+        // meta:{}
     })
 
 })

@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-nav" v-if="$route.path!=='/home' &&tab_nav_list.length>0" ref="tabNav">
+    <div class="tab-nav" v-if="$route.path!=='/home' && tab_nav_list.length>0" ref="tabNav">
         <button class="btn-plain" @click="scrollLeft">←</button>
         <ul class="ul" ref="ul">
             <li
@@ -207,6 +207,7 @@ export default {
 
 .tab-nav ul > li {
     position: relative;
+    min-width: 140px;
     width: 140px;
     /* border: 1px solid #000; */
     height: 28px;
@@ -230,7 +231,7 @@ export default {
 }
 .close {
     position: absolute;
-    top: 5px;
+    top: 6px;
     right: 5px;
     display: inline-block;
     height: 16px;

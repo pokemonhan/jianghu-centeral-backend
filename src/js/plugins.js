@@ -44,6 +44,7 @@ const components = {
     Radio,
     QuickQuery,
     TwoTable,
+    Loading
     // DragTree
 }
 
@@ -98,23 +99,23 @@ export default {
             }
         }
         
-        // $loading 注册
-        const LoadingConstructor = Vue.extend(Loading)
-        // 生成一个该子类的实例
-        const instance = new LoadingConstructor()
-        // 将这个实例挂载在我创建的div上
-        // 并将此div加入全局挂载点内部
-        instance.$mount(document.createElement('div'))
-        document.body.appendChild(instance.$el)
-        //注入vue的原型链
-        Vue.prototype.$loading = {
-            show() {
-                instance.show = true
-            },
-            close() {
-                instance.show = false
-            }
-        }
+        // // $loading 注册
+        // const LoadingConstructor = Vue.extend(Loading)
+        // // 生成一个该子类的实例
+        // const instance = new LoadingConstructor()
+        // // 将这个实例挂载在我创建的div上
+        // // 并将此div加入全局挂载点内部
+        // instance.$mount(document.createElement('div'))
+        // document.body.appendChild(instance.$el)
+        // //注入vue的原型链
+        // Vue.prototype.$loading = {
+        //     show() {
+        //         instance.show = true
+        //     },
+        //     close() {
+        //         instance.show = false
+        //     }
+        // }
 
 
         // 2. 全局注册组件
