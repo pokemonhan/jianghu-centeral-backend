@@ -3,15 +3,15 @@
         <ul class="level-1">
             <li v-for="(lev1, lev1_index) in menu_list" :key="lev1_index">
                 <span
-                    :class="['title',$route.path == lev1.path&&(!lev1.child)?'active-menu':'']"
+                    :class="['title',$route.path == lev1.path&&(!lev1.children)?'active-menu':'']"
                     @click="expandMenu(lev1,lev1_index)"
                 >
                     <span class="title-name">{{lev1.label}}</span>
-                    <span v-if="lev1.child" class="iconfont iconup right"></span>
+                    <span v-if="lev1.children" class="iconfont iconup right"></span>
                 </span>
                 <!-- 二级菜单 -->
                 <ul :ref="lev1_index" class="level2">
-                    <li v-for="(lev2, lev2_index) in lev1.child" :key="lev2_index">
+                    <li v-for="(lev2, lev2_index) in lev1.children" :key="lev2_index">
                         <!-- 标题 -->
                         <span
                             :class="['title',$route.path == lev2.path?'active-menu':'']"
@@ -19,19 +19,19 @@
                         >
                             <!-- <i :class="['iconfont', i.icon]"></i> -->
                             <span>{{lev2.label}}</span>
-                            <span v-if="lev2.child" class="iconfont iconup right"></span>
+                            <span v-if="lev2.children" class="iconfont iconup right"></span>
                         </span>
 
                         <!-- ---------    三级菜单 ------------------------->
                         <ul :ref="lev2_index" class="level3">
-                            <li v-for="(lev3, lev3_index) in lev2.child" :key="lev3_index">
+                            <li v-for="(lev3, lev3_index) in lev2.children" :key="lev3_index">
                                 <span
                                     :class="['title',$route.path == lev3.path?'active-menu':'']"
                                     @click="expandMenu(lev3, lev3_index)"
                                 >
                                     <!-- <i :class="['iconfont', i.icon]"></i> -->
                                     <span>{{lev3.label}}</span>
-                                    <span v-if="lev3.child" class="iconfont iconup right"></span>
+                                    <span v-if="lev3.children" class="iconfont iconup right"></span>
                                 </span>
                             </li>
                         </ul>
@@ -48,7 +48,7 @@ export default {
     data() {
         return {
             menu_list: [],
-            chain: [] // 父子级关系，格式[0,2,3]// 第0下标个的第二个子级
+            chain: [] // 父子级关系，格式[0,2,3]// 第下标 0 个的第 2 个子级 的第3个子子级
         }
     },
     computed: {
@@ -59,7 +59,7 @@ export default {
         expandMenu(item, index) {
             // console.log("该元素item", item);
             // console.log("这个index", index);
-            if (!item.child) {
+            if (!item.children) {
                 this.$router.push(item.path)
 
                 let list = this.tab_nav_list
@@ -73,7 +73,7 @@ export default {
                     this.updatetab_nav_list(list)
                 }
 
-                // 没有 child 就是父级菜单,就下滑打开该菜单
+                // 没有 children 就是父级菜单,就下滑打开该菜单
             } else {
                 let ele = this.$refs[index]
                 $(ele).slideToggle(200)
@@ -84,8 +84,8 @@ export default {
             for (let key in obj) {
                 let item = obj[key]
 
-                if (item.child) {
-                    item.child = this.objToArr(item.child)
+                if (item.children) {
+                    item.children = this.objToArr(item.children)
                 }
                 list.push(item)
             }
@@ -101,21 +101,20 @@ export default {
             let chain_temp = ''
             let getPreChain = function(arr, pre_fix = '') {
                 arr.forEach((item, index) => {
-
-                    if (item.child) {
-                        let pre = pre_fix!=='' ? pre_fix + '-' + index : index
-                        getPreChain(item.child, pre)
-
+                    if (item.children) {
+                        let pre = pre_fix !== '' ? pre_fix + '-' + index : index
+                        getPreChain(item.children, pre)
                     } else {
                         if (item.path === curr_path) {
-                            pre_fix = pre_fix!=='' ? pre_fix + '-' + index : index
+                            pre_fix =
+                                pre_fix !== '' ? pre_fix + '-' + index : index
                             chain_temp = pre_fix
                         }
                     }
                 })
             }
             getPreChain(menu)
-            // this.chain = (chain_temp||[]).split('-')
+            this.chain = (chain_temp || '').split('-')
             // console.log('menu: ', menu)
             // console.log('锁链', this.chain)
         }
@@ -135,21 +134,18 @@ export default {
              *
              */
             // 当前没有菜单就 localStorage找
-            if (!this.menu_list) {
+            if (this.menu_list) {
+                this.getFather()
+            } else {
                 let menu = window.all.tool.getLocal('menu')
                 if (menu) {
                     this.menu_list = menu
                 }
-            } else {
-                this.getFather()
             }
         }
     },
     mounted() {
-        // console.log('aside');
-        // this.menu_list = window.all.menu_list
-        // const self = this
-        // this.getList()
+
         this.menu_list = window.all.tool.getLocal('menu')
         this.menu_list && this.getFather()
         // console.log()

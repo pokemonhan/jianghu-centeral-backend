@@ -153,6 +153,7 @@
                                 style="width:550px;margin-top:10px;"
                                 v-model="form.route"
                                 :options="add_route_opt"
+                                input
                             ></Select>
                         </li>
                         <li v-else>
@@ -231,9 +232,9 @@ export default {
         },
         /* 获取所有可选路由 (select内容) */
         getRouteSelect() {
-            let params = { type: 0 }
+            let data = { type: 0 }
             let { url, method } = this.$api.menu_date_list
-            this.$http({ method, url, params }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 // console.log('select 内容res: ', res);
                 // this.route_info = res.data.route_info
                 if (res && res.code === '200') {
@@ -326,7 +327,7 @@ export default {
 
             let { url, method } = this.$api.route_del
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
                     this.mod_show = false
@@ -382,7 +383,7 @@ export default {
 
             let { url, method } = this.$api.route_set
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
                     this.dia_show = false

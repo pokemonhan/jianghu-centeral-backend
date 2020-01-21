@@ -13,19 +13,19 @@
                         <div class="title" @contextmenu.prevent="contextmenu($event,lev1)">
                             <i
                                 :class="['iconfont iconup',lev1.children?'':'hide']"
-                                @click="expand(lev1.key)"
+                                @click="expand(lev1.pre_idx)"
                             ></i>
                             <span class="title-cont">{{lev1.label}}</span>
                             <Switchbox class="switch" />
                         </div>
 
                         <!-- 内容 -->
-                        <ul v-if="lev1.children" class="lev2" :ref="lev1.key">
+                        <ul v-if="lev1.children" class="lev2" :ref="lev1.pre_idx">
                             <li v-for="(lev2, lev2_idx) in lev1.children" :key="lev2_idx">
                                 <div class="title" @contextmenu.prevent="contextmenu($event,lev2)">
                                     <i
                                         :class="['iconfont iconup',lev2.children?'':'hide']"
-                                        @click="expand(lev2.key)"
+                                        @click="expand(lev2.pre_idx)"
                                     ></i>
                                     <span>{{lev2.label}}</span>
 
@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
 
-                                <ul v-if="lev2.children" class="lev3" :ref="lev2.key">
+                                <ul v-if="lev2.children" class="lev3" :ref="lev2.pre_idx">{{lev2.pre_idx}}
                                     <li v-for="(lev3, lev3_idx) in lev2.children" :key="lev3_idx">
                                         <div
                                             class="title"
@@ -45,7 +45,7 @@
                                         >
                                             <i
                                                 :class="['iconfont iconup',lev3.children?'':'hide']"
-                                                @click="expand(lev3.key)"
+                                                @click="expand(lev3.pre_idx)"
                                             ></i>
                                             <span>{{lev3.label}}</span>
                                             <Switchbox class="switch" />
@@ -54,8 +54,8 @@
                                         <ul
                                             v-if="lev3.children"
                                             class="lev4"
-                                            :ref="lev3.key"
-                                            @click="expand(lev4.key)"
+                                            :ref="lev3.pre_idx"
+                                            @click="expand(lev4.pre_idx)"
                                         >
                                             <li
                                                 v-for="(lev4, lev4_idx) in lev3.children"
@@ -63,7 +63,7 @@
                                             >
                                                 <i
                                                     :class="['iconfont iconup',lev4.children?'':'hide']"
-                                                    @click="expand(lev4.key)"
+                                                    @click="expand(lev4.pre_idx)"
                                                 ></i>
                                                 <span>{{lev4.label}}</span>
                                             </li>
@@ -276,7 +276,7 @@ export default {
             
         },
         addMenuCfm() {
-            console.log('当前row', this.curr_row)
+            // console.log('当前row', this.curr_row)
             let data = {
                 label: this.form.label,
                 en_name: this.form.en_name,
@@ -302,7 +302,7 @@ export default {
             
             let { url, method } = this.$api.menu_set
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
             
                     this.$toast.success(res && res.message)
@@ -377,22 +377,19 @@ export default {
         },
 
         getMenuList() {
-            let { url, method } = this.$api.menu_all_list
-            this.$http({ method, url }).then(res => {
-                if (res && res.code === '200') {
-                    let menu = res.data
-                    this.menu = this.toTreeArray(menu)
-                }
-            })
+            // let { url, method } = this.$api.menu_all_list
+            // this.$http({ method, url }).then(res => {
+            //     if (res && res.code === '200') {
+            //         let menu = res.data
+            //         this.menu = this.toTreeArray(menu)
+            //     }
+            // })
+            this.menu = JSON.parse(localStorage.getItem('menu'))
+            console.log('外层menu: ', this.menu);
         }
     },
     mounted() {
-        // let menu = window.all.menu_list.slice()
-
-        // this.menu = this.toTreeArray(menu)
         this.getMenuList()
-        // console.log(' this.menu: ', this.menu)
-        // console.log(' window.all.menu_list: ', window.all.menu_list)
     }
 }
 </script>

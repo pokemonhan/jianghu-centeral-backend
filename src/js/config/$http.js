@@ -87,7 +87,8 @@ let http = axios.create({
     // retry: 2,
     // retryDelay: 1000,
     header: {
-        'Content-Type': 'application/json; charset=utf-8',
+        // 'Content-Type': 'application/json; charset=utf-8',
+        'Content-Type': 'application/x-www-form-urlencoded',
         'Cache-Control': 'no-cache'
     },
     // 设置 状态码范围
@@ -102,8 +103,11 @@ http.interceptors.request.use(req => {
     let Authorization = window.all.tool.getLocal('Authorization')
     // let expires = new Date(window.all.tool.getLocal('expires_at')).getTime()
     // let now = new Date().getTime()
-    let not_login = req.url.indexOf('/headquarters-api/login') === -1        // 并非 /login页面
-    if (Authorization && not_login) {
+    // let url = window.location.pathname
+    // console.log('url: ', url);
+    // let not_login = req.url.indexOf('/headquarters-api/login') === -1     // 并非 /login页面
+    let not_login =  window.location.pathname !== '/login'
+    if (Authorization && true) {
         req.headers.Authorization = Authorization   // 这是token+token_type
         // if (expires && now > expires) {
         //     // alert('token已经超时,请重新登陆..')

@@ -1,8 +1,6 @@
 <template>
     <div class="cont">
-
         <!-- 域名管理 -->
-
 
         <div class="domain-select">
             <button
@@ -21,7 +19,7 @@
                 </li>
                 <li>
                     <span>状态</span>
-                    <Select v-model="filter.status" :options="status_opt" ></Select>
+                    <Select v-model="filter.status" :options="status_opt"></Select>
                 </li>
                 <li>
                     <span>日期</span>
@@ -36,10 +34,7 @@
             </ul>
         </div>
         <div class="table mt20">
-            <Table
-                :headers="headers"
-                :column="list"
-            >
+            <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
                     <td class="tab-domain">
                         <i v-show="domain_idx!==0" class="iconfont iconstart"></i>
@@ -47,7 +42,9 @@
                     </td>
                     <td>{{row.created_at}}</td>
                     <td>
-                        <span :class="['bold',row.status===1?'green':'red']">{{row.status===1?'开启':'关闭'}}</span>
+                        <span
+                            :class="['bold',row.status===1?'green':'red']"
+                        >{{row.status===1?'开启':'关闭'}}</span>
                     </td>
                     <td>
                         <button
@@ -78,8 +75,20 @@
                     </li>
                     <li>
                         <span>是否启用:</span>
-                        <Radio class="radio-left" label="是" :value="form.status" val="1" v-model="form.status" />
-                        <Radio class="radio-right" label="否" :value="form.status" val="0" v-model="form.status" />
+                        <Radio
+                            class="radio-left"
+                            label="是"
+                            :value="form.status"
+                            val="1"
+                            v-model="form.status"
+                        />
+                        <Radio
+                            class="radio-right"
+                            label="否"
+                            :value="form.status"
+                            val="0"
+                            v-model="form.status"
+                        />
                     </li>
                 </ul>
                 <div class="mt50">
@@ -90,7 +99,13 @@
         </Dialog>
 
         <!-- 确认, 删除 弹出框 -->
-        <Modal :show.sync="mod_show" :title="mod_title" :content="mod_cont" @cancel="mod_show=false" @confirm="modConf"></Modal>
+        <Modal
+            :show.sync="mod_show"
+            :title="mod_title"
+            :content="mod_cont"
+            @cancel="mod_show=false"
+            @confirm="modConf"
+        ></Modal>
     </div>
 </template>
 
@@ -99,7 +114,7 @@
 export default {
     props: {
         sign: {
-            type: [String,Number]
+            type: [String, Number]
         }
     },
     data() {
@@ -112,9 +127,9 @@ export default {
                 dates: []
             },
             status_opt: [
-                {label:'全部',value: ''},
-                {label:'开启',value: 0},
-                {label:'关闭',value: 1},
+                { label: '全部', value: '' },
+                { label: '开启', value: 0 },
+                { label: '关闭', value: 1 }
             ],
             headers: ['域名', '添加时间', '状态', '操作'],
             list: [
@@ -146,11 +161,10 @@ export default {
 
             // 确认模态框 modal
             curr_row: {},
-            mod_show : false,
+            mod_show: false,
             mod_title: '',
             mod_status: '',
             mod_cont: ''
-
         }
     },
     methods: {
@@ -158,16 +172,18 @@ export default {
             this.domain_idx = index
             this.getList()
         },
-        add() {
+        initForm() {
             this.form = {
                 domain: '',
                 status: '1'
             }
+        },
+        add() {
             this.dia_status = 'add'
             this.dia_show = true
         },
         diaCfm() {
-            if(this.dia_status ==='add') {
+            if (this.dia_status === 'add') {
                 this.addCfm()
             }
         },
@@ -176,16 +192,15 @@ export default {
                 platform_sign: this.sign,
                 type: this.domain_idx, // 类型 1.PC 2.H5 3.APP
                 domain: this.form.domain,
-                status: this.form.status,
+                status: this.form.status
             }
-            
+
             let { url, method } = this.$api.platform_domain_add
             this.$http({ method, url, data }).then(res => {
                 console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
-            
                     this.$toast.success(res && res.message)
-                    this.mod_show=false
+                    this.dia_show = false
                     this.getList()
                 } else {
                     if (res && res.message !== '') {
@@ -195,14 +210,14 @@ export default {
             })
         },
         modConf() {
-            if(this.mod_status ==='switch') {
+            if (this.mod_status === 'switch') {
                 this.switchCfm()
             }
         },
-        statusSwitch (row) {
+        statusSwitch(row) {
             this.curr_row = row
             this.mod_status = 'switch'
-            this.mod_title = row.status===1?'禁用':'启用'
+            this.mod_title = row.status === 1 ? '禁用' : '启用'
             this.mod_cont = '是否禁用该域名!'
             this.mod_show = true
         },
@@ -216,16 +231,15 @@ export default {
             return // TODO:
             let data = {
                 id: this.form.id,
-                status: this.form.status,
+                status: this.form.status
             }
-            
+
             // let { url, method } = this.$api.aaaaaaaa🐷
             this.$http({ method, url, data }).then(res => {
                 console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
-            
                     this.$toast.success(res && res.message)
-                    this.mod_show=false
+                    this.mod_show = false
                     this.getList()
                 } else {
                     if (res && res.message !== '') {
@@ -235,20 +249,18 @@ export default {
             })
         },
         getList() {
-            console.log('getlist',this.sign);
+            console.log('getlist', this.sign)
             let params = {
                 sign: this.sign,
                 type: this.domain_idx
-
             }
-        
+
             let { url, method } = this.$api.platform_domain_list
             this.$http({ method, url, params }).then(res => {
                 console.log('域名列表?👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data
-        
                 } else {
                     if (res && res.message !== '') {
                         this.$toast.error(res.message)
@@ -262,7 +274,7 @@ export default {
         updateSize() {
             this.pageNo = 1
             this.getList()
-        },
+        }
     },
     mounted() {
         this.getList()
@@ -294,7 +306,7 @@ export default {
     /* position: absolute;
     top: 5px;
     left: 10px; */
-    color:rgb(251, 204, 2);
+    color: rgb(251, 204, 2);
     font-size: 25px;
 }
 .radio-right {

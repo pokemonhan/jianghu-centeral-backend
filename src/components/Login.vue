@@ -69,7 +69,7 @@
         <!-- <Loading :show="login_show"/>  -->
         <!-- <div class="modal-mask" v-if="login_show">
             <Loading show />
-        </div> -->
+        </div>-->
     </div>
 </template>
 
@@ -123,24 +123,42 @@ export default {
         //       return false
         //   }
 
-        objToArr(obj) {
+        objToArr(obj, pre_idx = '') {
             let list = []
-            for (let key in obj) {
-                let item = obj[key]
+            // for (let key in obj) {
+            //     let item = obj[key]
 
+            //     let template = {
+            //         id: item.id,
+            //         label: item.label,
+            //         path: item.route,
+            //         route: item.route,
+            //         level: item.level,
+            //         display: item.display,
+            //         pre_idx:pre_idx + index,
+            //     }
+            //     if (item.child) {
+            //         template.children = this.objToArr(item.child,pre_idx+'-')
+            //     }
+            // list.push(template)
+            return Object.keys(obj).map((key, index) => {
+                let item = obj[key]
                 let template = {
                     id: item.id,
                     label: item.label,
                     path: item.route,
-                    route: item.route,
-                    level: item.level,
-                    display: item.display
+                    // route: item.route,
+                    // level: item.level,
+                    display: item.display,
+                    pre_idx: pre_idx + index
                 }
                 if (item.child) {
-                    template.child = this.objToArr(item.child)
+                    template.children = this.objToArr(item.child, pre_idx+index + '-')
                 }
-                list.push(template)
-            }
+
+                return template
+            })
+            // }
             return list
         },
         getMenuList() {
@@ -186,7 +204,7 @@ export default {
                         }, 200)
 
                         // 获取客户菜单内容
-                        // TODO: 目前是所有
+                        // TODO: 目前是所有,以后换个人
                         this.getMenuList()
                     } else {
                         // console.log(res)
@@ -304,7 +322,7 @@ export default {
 }
 .cursor-wait {
     /* cursor: cursor-waited; */
-    cursor:wait;
+    cursor: wait;
 }
 
 .flex {

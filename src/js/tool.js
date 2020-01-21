@@ -30,7 +30,7 @@ const Tool = {
     // 通用工具类************************************************************************* //
     isType: type => Object.prototype.toString.call(type).slice(8, Object.prototype.toString.call(type).length - 1), // 数据类型判断工具
     // 时间格式化
-    formatDate(time, withTime=false) {
+    formatDate(time, withTime = false) {
         let arr1 = [],
             arr2 = [],
             date = new Date(time);
@@ -38,7 +38,7 @@ const Tool = {
         arr1.push(`0${date.getMonth() + 1}`.slice(-2))
         arr1.push(`0${date.getDate()}`.slice(-2))
 
-        if(!withTime) return arr1.join('-')
+        if (!withTime) return arr1.join('-')
 
         arr2.push(`0${date.getHours()}`.slice(-2))
         arr2.push(`0${date.getMinutes()}`.slice(-2))
@@ -46,68 +46,28 @@ const Tool = {
         return `${arr1.join('-')} ${arr2.join(':')}`
     },
     // 节流
-    throttle(func, wait, options) {
-        var context, args, result;
-        var timeout = null;
-        var previous = 0;
-        if (!options) options = {};
-        var later = function() {
-            previous = options.leading === false ? 0 : getnow();
-            timeout = null;
-            result = func.apply(context, args);
-            if (!timeout) context = args = null;
-        };
-        return function() {
-            var now = getnow();
-            if (!previous && options.leading === false) previous = now;
-            var remaining = wait - (now - previous);
-            context = this;
-            args = arguments;
-            if (remaining <= 0 || remaining > wait) {
-                if (timeout) {
-                    clearTimeout(timeout);
-                    timeout = null;
-                }
-                previous = now;
-                result = func.apply(context, args);
-                if (!timeout) context = args = null;
-            } else if (!timeout && options.trailing !== false) {
-                timeout = setTimeout(later, remaining);
-            }
-            return result;
+    throttle(fn, interval = 300) {
+        let canRun = true;
+        return function () {
+            if (!canRun) return;
+            canRun = false;
+            setTimeout(() => {
+                fn.apply(this, arguments);
+                canRun = true;
+            }, interval);
         };
     },
+
     // 防抖
-    debounce(func, wait, immediate) {
-        var timeout, args, context, timestamp, result;
-    
-        var later = function() {
-            var last = getnow() - timestamp;
-    
-            if (last < wait && last >= 0) {
-                timeout = setTimeout(later, wait - last);
-            } else {
-                timeout = null;
-                if (!immediate) {
-                    result = func.apply(context, args);
-                    if (!timeout) context = args = null;
-                }
-            }
-        };
-    
-        return function() {
-            context = this;
-            args = arguments;
-            timestamp = getnow();
-            var callNow = immediate && !timeout;
-            if (!timeout) timeout = setTimeout(later, wait);
-            if (callNow) {
-                result = func.apply(context, args);
-                context = args = null;
-            }
-    
-            return result;
-        };
+    debounce(fun, delay) {
+        return function (args) {
+            let that = this
+            let _args = args
+            clearTimeout(fun.id)
+            fun.id = setTimeout(function () {
+                fun.call(that, _args)
+            }, delay)
+        }
     },
     // 去除为param空的 属性 (不支持空对象。。)
     rmEmpty(obj) {
@@ -117,7 +77,7 @@ const Tool = {
                 if (obj.length > 0) {
                     params[key] = obj[key]
                 }
-            } else if (obj[key] !== ''&&obj[key] !== null) {
+            } else if (obj[key] !== '' && obj[key] !== null) {
                 params[key] = obj[key]
             }
         }

@@ -7,6 +7,7 @@ export default {
      * 改  set
      * 查  list
      * 
+     * 状态更改 status_set
     */
 
     // 登录
@@ -75,7 +76,9 @@ export default {
     //
 
     /*=========================== 3.游戏管理 ===========================--*/
+
     /* 3.1 厂商管理   */
+
     //----- 厂商管理 - 列表
     game_vendor_list: {
         url: '/headquarters-api/game-vendor/opt-index-do',
@@ -86,7 +89,9 @@ export default {
         url: '/headquarters-api/game-vendor/opt-status-do',
         method: 'post'
     },
+
     /* 3.2 分类设置 --------- */
+
     // 分类设置 - 列表
     game_sort_list: {
         url: '/headquarters-api/game-type/opt-index-do',
@@ -180,6 +185,8 @@ export default {
 
     /*=========================== 设置管理 ===========================--*/
 
+    /*   --------    管理员分组    -------- */
+
     //  管理员分组-获取管理员组列表
     admin_class_list: {
         url: '/headquarters-api/backend-admin-group/detail',
@@ -202,6 +209,7 @@ export default {
     },
 
     // -----成员 ---
+
     // 管理员分组-创建管理员用户 (添加成员)
     admin_user_add: {
         url: '/headquarters-api/headquarters-admin-user/create',
@@ -237,12 +245,43 @@ export default {
         url: '/headquarters-api/headquarters-admin-user/switch-admin',
         method: 'post'
     },
+    /*   --------    操作日志    -------- */
+
+
+    /*   --------    短信配置    -------- */
+
+    // 短信配置-列表
+    sms_config_list: {
+        url: '/headquarters-api/sms-config/index',
+        method: 'post'
+    },
+    // 短信配置-添加
+    sms_config_add: {
+        url: '/headquarters-api/sms-config/do-add',
+        method: 'post'
+    },
+    // 短信配置-编辑
+    sms_config_add: {
+        url: '/headquarters-api/sms-config/edit',
+        method: 'post'
+    },
+    // 短信配置-删除
+    sms_config_add: {
+        url: '/headquarters-api/sms-config/delete',
+        method: 'post'
+    },
+    // 短信配置-禁用启用
+    sms_config_status_set: {
+        url: '/headquarters-api/sms-config/status',
+        method: 'post'
+    },
 
 
     /*=========================== 开发管理 ===========================--*/
+
     /* --------总控菜单管理 -----------------*/
 
-    //  总控菜单管理-开发管理菜单操作相关需要的数据 (所有select 路由)
+    //  总控菜单管理-开发管理菜单操作相关需要的数据 (所有select下拉框 路由)
     menu_date_list: {
         url: '/headquarters-api/menu',
         method: 'post'
@@ -402,6 +441,7 @@ export default {
         url: '/headquarters-api/finance-vendor/edit-do',
         method: 'post'
     },
+
     //  金流厂商配置 - 删除
     dev_finance_vendor_del: {
         url: '/headquarters-api/finance-vendor/del-do',

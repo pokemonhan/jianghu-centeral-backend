@@ -100,11 +100,11 @@
                     <ul class="form add-from">
                         <li>
                             <span>厅主账号:</span>
-                            <Input class="w250" v-model="form.acc" />
+                            <Input class="w250" v-model="form.email" />
                         </li>
                         <li>
                             <span>登录密码:</span>
-                            <Input class="w250" type="password" v-model="form.pwd" />
+                            <Input class="w250" type="password" v-model="form.password" />
                         </li>
                         <li>
                             <span>有效日期:</span>
@@ -116,42 +116,44 @@
                         </li>
                         <li>
                             <span>站点名称:</span>
-                            <Input class="w250" v-model="form.site_name" />
+                            <Input class="w250" v-model="form.platform_name" />
                         </li>
                         <li>
                             <span>主域名:</span>
                             <textarea
                                 style="width:250px;height:80px;"
                                 class="textarea"
-                                v-model="form.domain"
+                                v-model="form.domains"
                             ></textarea>
                         </li>
                         <li>
                             <span>代理方式:</span>
-                            <Checkbox label="PC" v-model="form.checked[0]" />
+                            <Checkbox label="PC" v-model="form.agency_method[0]" />
                             <Checkbox
                                 style="margin-left:50px;"
                                 label="H5"
-                                v-model="form.checked[1]"
+                                v-model="form.agency_method[1]"
                             />
                             <Checkbox
                                 style="margin-left:50px;"
                                 class="ml50"
                                 label="APP"
-                                v-model="form.checked[2]"
+                                v-model="form.agency_method[2]"
                             />
                         </li>
                         <li>
                             <span>权限选择</span>
-                            <Input class="w250" v-model="form.authority" />
+                            <!-- // TODO: -->
+                            <!-- <Input class="w250" v-model="form.role" /> -->
+                            <AuthorityTree v-model="form.role" style="width:500px;"/>
                         </li>
                         <li>
                             <span>短信数量</span>
-                            <Input class="w250" limit="p-integer" v-model="form.sms" />
+                            <Input class="w250" limit="p-integer" v-model="form.sms_num" />
                         </li>
                         <li>
                             <span>站点标识</span>
-                            <Input class="w250" v-model="form.site_ident" />
+                            <Input class="w250" v-model="form.platform_sign" />
                         </li>
                         <li>
                             <span>厅主状态:</span>
@@ -159,14 +161,14 @@
                                 class="radio-left"
                                 label="启用"
                                 :value="form.status"
-                                val="on"
+                                val="1"
                                 v-model="form.status"
                             />
                             <Radio
                                 class="radio-right"
                                 label="禁用"
                                 :value="form.status"
-                                val="off"
+                                val="0"
                                 v-model="form.status"
                             />
                         </li>
@@ -189,7 +191,7 @@
                                 v-model="maintain_dates[1]"
                             />
                         </div>
-                        <div class="mt50"> 提示: 维护时间为空代表一直有效. </div>
+                        <div class="mt50"> 提示: 不传时间代表取消维护状态. </div>
                         <div class="maintain-btns">
                             <button class="btn-plain-large" @click="dia_show=''">取消</button>
                             <button class="btn-blue-large ml50" @click="maintainCfm">确定</button>
@@ -216,12 +218,14 @@ import SiteManage from './HallListDir/SiteManage'
 import Domain from './HallListDir/Domain'
 import Gamemanage from './HallListDir/Gamemanage'
 import ActiveManage from './HallListDir/ActiveManage'
+import AuthorityTree from '../../commonComponents/AuthorityTree'
 export default {
     components: {
         SiteManage: SiteManage,
         Domain: Domain,
         Gamemanage: Gamemanage,
-        ActiveManage: ActiveManage
+        ActiveManage: ActiveManage,
+        AuthorityTree: AuthorityTree
     },
     data() {
         return {
@@ -233,17 +237,19 @@ export default {
                 add_dates: []
             },
             form: {
-                acc: '',
-                pwd: '',
+                email: '',
+                password: '',
                 dates: [],
                 site_name: '',
-                domain: '',
-                checked: [],
-                authority: '',
-                sms: '',
-                site_ident: '',
-                status: 'on'
+                platform_name: '',
+                domains: '',
+                agency_method: [],
+                role: '', // 权限选择
+                sms_num: '',
+                platform_sign: '', // 站点标识
+                status: '1'
             },
+            authorityList: [],
             loading: false,
             website_opt: [
                 { label: '全部', value: '' },
@@ -284,22 +290,43 @@ export default {
         }
     },
     methods: {
+        intiForm() {
+            this.form = {
+                email: '',
+                password: '',
+                dates: [],
+                site_name: '',
+                platform_name: '',
+                domains: '',
+                agency_method: [],
+                role: '', // 权限选择
+                sms_num: '',
+                platform_sign: '', // 站点标识
+                status: '1'
+            }
+        },
         addHall() {
             this.dia_show = 'add'
             this.dia_title = '添加厅主'
+            this.intiForm()
         },
 
         // 确认添加厅主
         addHallCfm() {
-            // let para = {
-            //     name: this.filter.vendor,
-            //     status: this.filter.status,
-            //     pageSize: this.pageSize,
-            //     page: this.pageNo
-            // }
-            // TODO:  ..
+            let data = {
+                email: this.form.email,
+                password: this.form.password,
+                start_time: this.form.dates &&this.form.dates[0], // 有效日期
+                end_time: this.form.dates &&this.form.dates[1],
+                platform_name: this.form.platform_name,
+                domains: this.form.domains.split(/[\,\，]/), // TODO: 是数组吗?
+                agency_method: this.form.agency_method.join(','), // 1,2,3
+                role: '[1,2]', // TODO:
+                sms_num: this.form.sms_num, 
+                platform_sign: this.form.platform_sign, 
+                status: this.form.status,
+            }
 
-            // let params = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.platform_add
             this.$http({
                 method: method,
@@ -313,6 +340,7 @@ export default {
                 }
             })
         },
+        
         // 【禁用】或【启用】站点
         operateMod(row) {
             this.curr_row = row
