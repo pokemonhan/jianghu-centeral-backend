@@ -261,12 +261,12 @@ export default {
         method: 'post'
     },
     // 短信配置-编辑
-    sms_config_add: {
+    sms_config_set: {
         url: '/headquarters-api/sms-config/edit',
         method: 'post'
     },
     // 短信配置-删除
-    sms_config_add: {
+    sms_config_del: {
         url: '/headquarters-api/sms-config/delete',
         method: 'post'
     },

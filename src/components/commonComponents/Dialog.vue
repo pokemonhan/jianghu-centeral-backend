@@ -49,7 +49,13 @@ export default {
         //     this.$emit('update:show', false)
         //     this.$emit('confirm')
         // }
-    }
+    },
+    watch: {
+        show(val){
+            // 当有遮罩时, 禁止滚动
+            document.body.style.overflow=val?'hidden':'auto'
+        }
+    },
 }
 </script>
 
@@ -67,6 +73,7 @@ export default {
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.6);
+    overflow: hidden;
 }
 .v-dialog {
     /* min-width: 160px;

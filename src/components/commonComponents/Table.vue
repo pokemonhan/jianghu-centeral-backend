@@ -1,6 +1,6 @@
 <template>
     <div class="table-container v-table" :class="css">
-        <table>
+        <table :class="[fixed?'table-layout-fixed':'']">
             <thead>
                 <tr>
                     <th class="center-box" v-if="hadCheckbox">
@@ -11,7 +11,7 @@
                             @update="onChange(999999, all_checked)"
                         />
                     </th>
-                    <th v-for="(col, index) in headers" :key="index">
+                    <th v-for="(col, index) in headers" :key="index" >
                         <!-- 使用label 时 -->
                         <template v-if="col.label">
                             <div v-for="(item, index) in col.label.split(',')" :key="index">
@@ -39,7 +39,7 @@
             <tbody>
                 <!-- 有数据时 -->
                 <template v-if="column.length">
-                    <tr v-for="(col_row, idx) in column" :key="idx">
+                    <tr v-for="(col_row, idx) in column" :key="idx" >
                         <!-- // 如果有checkbox -->
                         <td v-if="hadCheckbox">
                             <Checkbox
@@ -71,6 +71,7 @@
 export default {
     props: {
         css: Object,
+        fixed: Boolean,
         headers: Array,
         column: Array,
         hadCheckbox: {
@@ -123,14 +124,17 @@ export default {
     width: 100%;
     /* table-layout: fixed */
 }
-
+.table-container .table-layout-fixed {
+    table-layout: fixed;
+    border: 1px solid #000;
+}
 tbody tr:nth-child(2n) {
     /* background: #F7F7F7FF; */
     background: rgb(248, 252, 255);
 }
 
 tbody tr:hover {
-    background: rgb(230, 244, 253);
+    background: #fbfdfe;
 }
 
 .table-container table th {

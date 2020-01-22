@@ -136,8 +136,7 @@ export default {
     justify-content: center;
     min-width: 1200px;
     max-width: 2220px;
-    margin: 0 auto;
-    margin-top: 20px;
+    margin: 10px auto 0 auto;
 }
 
 .app-aside {
@@ -357,6 +356,7 @@ button:hover {
     box-shadow: none;
     background: #2c71f1;
 }
+
 /* .btn-blue-large:hover {
     box-shadow: none;
     background: #6397f7;
@@ -406,14 +406,14 @@ button:hover {
 /* 小按钮 */
 .btns-red {
     color: #fff;
-    background: #f34630;
+    background: #ec5946;
     box-shadow: 1px 1px 3px rgba(255, 106, 106, 0.226);
 }
 .btns-red:hover {
-    background: rgba(245, 87, 87, 0.8);
+    background: rgba(241, 119, 119, 0.8);
 }
 .btns-red:active {
-    background: #ff6a6a;
+    background: #ec5946;
 }
 .btns-green {
     color: #fff;
@@ -536,6 +536,9 @@ button:hover {
 }
 .mt50 {
     margin-top: 50px;
+}
+.p5 {
+    padding: 5px;
 }
 .p10 {
     padding: 10px;

@@ -7,7 +7,7 @@
             @mouseout="updateClearState(false)"
         >
             <input v-model="selectedValue" type="hidden" />
-            <input class="show-input" v-model="showValue" :type="input?'text':'hidden'" />
+            <input class="show-input" v-model="showValue" :type="input?'text':'hidden'" @input="handleInput"/>
             <span v-show="!input">{{selectedLabel}}</span>
             <i v-if="clearable && isClear" @click.stop="clear" class="iconfont icon-icon-test"></i>
             <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
@@ -60,17 +60,22 @@ export default {
     },
     methods: {
         showOptions(e) {
-            this.isShow = !this.isShow
+            
+            if(this.input) {
+                this.isShow = true
+            }else {
+                this.isShow = !this.isShow
+            }
             let ele = this.$refs.sections
             // console.log("TCL: showOptions -> ele", ele)
             if (this.isShow) {
-                let y =
-                    document.body.scrollHeight -
-                    e.target.getBoundingClientRect().bottom
-                this.sectionsDir =
-                    y < 220
-                        ? 'top-upfold'
-                        : 'bottom-upfold'
+                let scrollTop = document.documentElement.scrollTop
+                let scrollHeight = document.body.scrollHeight
+                let toBottom = e.target.getBoundingClientRect().bottom
+                let y = scrollHeight -scrollTop -toBottom
+
+                this.sectionsDir = y < 150 ? 'top-upfold' : 'bottom-upfold'
+
                 $(ele).slideDown(200)
             } else {
                 $(ele).slideUp(200)
@@ -98,6 +103,9 @@ export default {
         },
         updateClearState(bool) {
             this.isClear = bool
+        },
+        handleInput() {
+            this.$emit('input', this.showValue)
         }
     },
     watch: {

@@ -125,44 +125,26 @@ export default {
 
         objToArr(obj, pre_idx = '') {
             let list = []
-            // for (let key in obj) {
-            //     let item = obj[key]
-
-            //     let template = {
-            //         id: item.id,
-            //         label: item.label,
-            //         path: item.route,
-            //         route: item.route,
-            //         level: item.level,
-            //         display: item.display,
-            //         pre_idx:pre_idx + index,
-            //     }
-            //     if (item.child) {
-            //         template.children = this.objToArr(item.child,pre_idx+'-')
-            //     }
-            // list.push(template)
             return Object.keys(obj).map((key, index) => {
                 let item = obj[key]
                 let template = {
                     id: item.id,
                     label: item.label,
                     path: item.route,
-                    // route: item.route,
-                    // level: item.level,
                     display: item.display,
                     pre_idx: pre_idx + index
                 }
                 if (item.child) {
                     template.children = this.objToArr(item.child, pre_idx+index + '-')
                 }
-
                 return template
             })
             // }
             return list
         },
         getMenuList() {
-            let { method, url } = this.$api.menu_all_list
+            // let { method, url } = this.$api.menu_all_list
+            let { method, url } = this.$api.current_admin_menu
 
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
@@ -171,7 +153,6 @@ export default {
                 }
             })
         },
-        // },
         login() {
             let self = this
             setTimeout(() => {

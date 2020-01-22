@@ -106,12 +106,12 @@ http.interceptors.request.use(req => {
     // let url = window.location.pathname
     // console.log('url: ', url);
     // let not_login = req.url.indexOf('/headquarters-api/login') === -1     // 并非 /login页面
-    let not_login =  window.location.pathname !== '/login'
+    // let not_login =  window.location.pathname !== '/login' && eq.url.indexOf('/headquarters-api/login') === -1
     if (Authorization && true) {
         req.headers.Authorization = Authorization   // 这是token+token_type
         // if (expires && now > expires) {
         //     // alert('token已经超时,请重新登陆..')
-        //     // window._Vue_.$router.push('/login')
+            // window._Vue_.$router.push('/login')
         // }
     }
     return req
@@ -156,7 +156,7 @@ http.interceptors.response.use(res => {
     return res.data
 }, (error) => {
     // error && alert(error.response)
-    error && window.__vm__.$toast.error('出现网络服务问题')
+    error && window.__vm__.$toast.error('出现服务问题或被禁止')
     // return Promise.resolve(error)
 })
 

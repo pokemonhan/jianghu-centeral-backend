@@ -14,6 +14,7 @@
             :autocomplete="autocomplete"
         />
         <i v-if="icon" :class="['iconfont', icon]"></i>
+        
     </span>
 </template>
 
@@ -44,7 +45,7 @@ export default {
     },
     model: {
         prop: "value",
-        event: "input"
+        event: "keyup" // 原来是input
     },
     data() {
         return {
@@ -57,7 +58,7 @@ export default {
                 "no-zh-cn": /[\u4E00-\u9FA5]*/g,         // 非中文
                 "en-num": /[\W_]/g,                      // 字母和数字
                 "en": /[\W_0-9]/g,                      // 字母
-                "word": /[\W]/g                             // 字母数字下划线
+                "word": /[\W]/g                         // 字母数字下划线
             }
         };
     },
@@ -74,7 +75,8 @@ export default {
             this.$emit("enter");
         },
         keyup() {
-            this.regs[this.limit] && (this.val = this.val .toString() .replace(this.regs[this.limit], ""));
+            this.regs[this.limit] && (this.val = this.val.toString().replace(this.regs[this.limit], ""));
+            // console.log(this.val)
             this.$emit("keyup", this.val);
         }
     },
@@ -118,7 +120,7 @@ input::placeholder{
 .v-input input {
     width: 100%;
     height: 100%;
-    border: none;
+    /* border: none; */
     outline: none;
     border-radius: 4px;
     box-sizing: border-box;

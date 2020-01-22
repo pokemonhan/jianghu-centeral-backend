@@ -21,7 +21,7 @@
 
         <div class="table mt20">
             <Table :headers="headers" :column="list">
-                <template v-slot:item="{row,idx}">
+                <template v-slot:item="{row}">
                     <td>{{row.name}}</td>
                     <td>{{row.code}}</td>
                     <td>{{row.author&&row.author.name}}</td>

@@ -9,7 +9,7 @@ export default {
     name: 'Switchbox',
     props:{
         value: {
-            type: Boolean,
+            type: [Boolean, Number],
             default: false
         },
         size: {

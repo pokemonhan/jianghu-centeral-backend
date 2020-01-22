@@ -19,7 +19,7 @@
             </ul>
             <div>
                 <button class="btn-blue">查询</button>
-                <button class="btn-blue">导出EXcel</button>
+                <button class="btn-blue" @click="exportExcel">导出EXcel</button>
             </div>
         </div>
         <div class="table mt20">
@@ -56,7 +56,7 @@ export default {
             total: 0,
             pageNo: 1,
             pageSize: 25,
-            headers: ['账号','登录IP','登录日期'],
+            headers: ['账号', '登录IP', '登录日期'],
             list: [
                 {
                     a1: '13256564589',
@@ -67,12 +67,28 @@ export default {
                     a1: '13256564589',
                     a2: '192.168.1.1(中国.广州）',
                     a3: '2019/12/15 12:12:00'
-                },
-                
+                }
             ]
         }
     },
     methods: {
+        exportExcel() {
+            console.log('触发')
+            import('../../../js/config/Export2Excel').then(excel => {
+                console.log('触发2')
+                const tHeader = this.headers
+                const data = this.list.map(item=>{
+                    return [item.email, item.ip, item.created_at]
+                })
+                excel.export_json_to_excel({
+                    header: tHeader, //表头 必填
+                    data, //具体数据 必填
+                    filename: `excel page${this.pageNo}`, //非必填
+                    autoWidth: true, //非必填
+                    bookType: 'xlsx' //非必填
+                })
+            })
+        },
         updateNo() {
             this.getList()
         },
@@ -86,17 +102,16 @@ export default {
                 page: this.pageNo
             }
             let params = window.all.tool.rmEmpty(para)
-        
+
             let { url, method } = this.$api.login_record_list
             this.$http({ method, url, params }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data
-        
                 }
             })
-        },
+        }
     },
     mounted() {
         this.getList()

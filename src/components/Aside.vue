@@ -9,9 +9,11 @@
                     <span class="title-name">{{lev1.label}}</span>
                     <span v-if="lev1.children" class="iconfont iconup right"></span>
                 </span>
+
                 <!-- 二级菜单 -->
                 <ul :ref="lev1_index" class="level2">
                     <li v-for="(lev2, lev2_index) in lev1.children" :key="lev2_index">
+                        
                         <!-- 标题 -->
                         <span
                             :class="['title',$route.path == lev2.path?'active-menu':'']"
@@ -47,6 +49,7 @@ import { mapState, mapMutations, mapGetters } from 'vuex'
 export default {
     data() {
         return {
+            screenWidth: document.body.clientWidth, // 屏幕高度
             menu_list: [],
             chain: [] // 父子级关系，格式[0,2,3]// 第下标 0 个的第 2 个子级 的第3个子子级
         }
@@ -79,18 +82,30 @@ export default {
                 $(ele).slideToggle(200)
             }
         },
-        objToArr(obj) {
+        objToArr(obj, pre_idx = '') {
             let list = []
-            for (let key in obj) {
+            return Object.keys(obj).map((key, index) => {
                 let item = obj[key]
+                let template = {
+                    id: item.id,
+                    label: item.label,
+                    path: item.route,
 
-                if (item.children) {
-                    item.children = this.objToArr(item.children)
+                    display: item.display,
+                    pre_idx: pre_idx + index
                 }
-                list.push(item)
-            }
+                if (item.child) {
+                    template.children = this.objToArr(
+                        item.child,
+                        pre_idx + index + '-'
+                    )
+                }
+
+                return template
+            })
             return list
         },
+
         // 获取当前路由的父级或祖先级
         getFather() {
             let curr_path = this.$route.path
@@ -117,24 +132,9 @@ export default {
             this.chain = (chain_temp || '').split('-')
             // console.log('menu: ', menu)
             // console.log('锁链', this.chain)
-        }
-    },
-    watch: {
-        $route: function(to, from) {
-            // if (to.path === '/home') return
-            // console.log("TCL: path", path);
-            /*       1.同一父级,则 退出 2.不同父级,关闭以前,打开跳转的父级菜单 */
-
-            //1.同一父级,则 退出
-
-            //取 path 的父级
-            // menu_list = this.menu_list
-
-            /*** TODO:
-             *
-             */
-            // 当前没有菜单就 localStorage找
-            if (this.menu_list) {
+        },
+        getMenu() {
+            if (this.menu_list.length) {
                 this.getFather()
             } else {
                 let menu = window.all.tool.getLocal('menu')
@@ -144,11 +144,34 @@ export default {
             }
         }
     },
+    watch: {
+        $route: function(to, from) {
+            // if (to.path === '/home') return
+            // console.log("TCL: path", path);
+            /*       1.同一父级,则 退出 2.不同父级,关闭以前,打开跳转的父级菜单 */
+            //1.同一父级,则 退出
+            //取 path 的父级
+            // menu_list = this.menu_list
+            /*** TODO:
+             *
+             */
+            // 当前没有菜单就 localStorage找
+            if (from.path === '/login') {
+                this.getMenu()
+            }
+        }
+    },
     mounted() {
-
-        this.menu_list = window.all.tool.getLocal('menu')
-        this.menu_list && this.getFather()
-        // console.log()
+        this.getMenu()
+        let self = this
+        let setHeight = function() {
+            let height = document.documentElement.clientHeight
+            let ele = document.querySelector('.contain')
+            ele.style.height = height - 100 + 'px'
+        }
+        setHeight()
+        // onresize调节尺寸时, 同步设置 菜单高度
+        window.onresize = window.all.tool.debounce(setHeight, 400)
     }
 }
 </script>
@@ -156,7 +179,7 @@ export default {
 <style scoped>
 .contain {
     width: 150px;
-    max-height: 92vh;
+    /* max-height: 92vh; */
     box-sizing: border-box;
     background: #fff;
     border-top: 2px solid #4c8bfd;

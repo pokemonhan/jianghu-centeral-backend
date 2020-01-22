@@ -397,23 +397,26 @@ export default {
 <style scoped>
 .total-menu {
     display: flex;
+    min-width: 1200px;
 }
 .total-menu .tol-left,
 .total-menu .tol-center,
 .total-menu .tol-right {
-    /* width: 33%; */
+    width: 33%;
     /* padding: 20px; */
-    min-width: 200px;
+    /* min-width: 350px; */
     min-height: 700px;
     border: 1px solid #70a2fd;
 }
 /* .total-menu .tol-left {
+
 }
 .total-menu .tol-center {
-}
-.tol-right {
-
 } */
+.tol-right {
+    white-space: nowrap;
+    overflow: auto;
+}
 .total-menu .head {
     height: 40px;
     text-align: center;

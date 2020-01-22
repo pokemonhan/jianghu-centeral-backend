@@ -282,7 +282,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    width: 1200px;
+    min-width: 1200px;
     align-items: center;
     /* white-space: nowrap; */
     margin: 0 auto;
