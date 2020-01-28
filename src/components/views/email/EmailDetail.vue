@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container email-detail">
         <div class="filter p10">
             <ul class="left">
                 <li>
@@ -9,35 +9,40 @@
                 </li>
             </ul>
             <div class="right">
-                <button class="btn-plain">上一封</button>
-                <button class="btn-plain">下一封</button>
+                <span class="page-indicate">{{list_idx}}/{{total}}</span>
+                <button :class="[list_idx>1?'btn-plain':'btn-disabled']" @click="prevEmail">上一封</button>
+                <button :class="[list_idx<total?'btn-plain':'btn-disabled']" @click="nextEmail">下一封</button>
             </div>
         </div>
         <div class="body">
             <div class="top">
                 <ul>
                     <li>
-                        <span class="head">充值好礼</span>
+                        <span class="head">{{content.title}}</span>
                     </li>
                     <li>
                         <span>发件人:</span>
-                        <span>{{'admin'}}</span>
+                        <span>{{content.platform_sign}}</span>
                     </li>
                     <li>
                         <span>发送时间:</span>
-                        <span>{{'2019/11/26 14:55'}}</span>
+                        <span>{{content.send_time}}</span>
                     </li>
-                    <li>
+                    <li v-if="isSend">
                         <span>收件人:</span>
-                        <span>{{'test'}}</span>
+                        <div>
+                            <span
+                                class="ml10"
+                                v-for="(item, index) in (content.receivers||[])"
+                                :key="index"
+                            >{{item}}</span>
+                        </div>
                     </li>
                 </ul>
             </div>
             <!-- 内容 -->
             <div class="content">
-                <p class="p">
-                    趣闻 1947 年，时装设计师 Elsa Schiaparelli 将“艳粉色”引入西方时尚圈。 桃色可以营造亲密氛围，减少攻击性和敌意。 由于听说粉色有一种镇定效果，有些球队会把客队的休息室漆成粉色。 对于粉色的研究发现，男性举重运动员在粉色房间内似乎感到力不从心，而女性举重运动员面对这种颜色反而会有变强的倾向。 糕点从粉色盒子里取出或盛在粉色盘子里时，尝起来会更美味（这种情况仅适用于甜点），因为粉色令我们渴望糖份。
-                </p>
+                <span class="p" v-html="$xss(content.content)"></span>
             </div>
         </div>
     </div>
@@ -47,61 +52,165 @@
 <script>
 export default {
     props: {
-        id:String,
-        // 是否是已发邮件(true: 已发邮件, false:收件箱)
-        isSend: Boolean
+        isSend: Boolean, // 是否是已发邮件(true: 已发邮件, false:收件箱)
+        row: {
+            type: Object,
+            default: {}
+        }
     },
     data() {
         return {
+            content: {},
+            list_idx: 1, // 第几个
+            content_obj: {},
 
-        };
+            pageNo: 1,
+            pageSize: 25,
+            total: 0
+        }
     },
     methods: {
         reply() {
             this.$router.push({
                 path: '/email/sendemail',
-                query:'传递的内容'
+                query: {
+                    platform_sign: this.content.platform_sign
+                }
             })
         },
         goBack() {
             this.$emit('close')
+        },
+
+        getList() {
+            if (this.isSend) {
+                this.getSentList()
+            } else {
+                this.getRecei_list()
+            }
+        },
+        // 获取 收件箱
+        getRecei_list() {
+            let para = {
+                pageSize: this.pageSize,
+                page: Math.ceil(this.list_idx / this.pageSize)
+            }
+            let params = window.all.tool.rmEmpty(para)
+            let { url, method } = this.$api.email_recei_list
+
+            this.$http({ method, url, params }).then(res => {
+                if (res && res.code === '200') {
+                    let list = res.data && res.data.data
+                    list.forEach((item, index) => {
+                        // 后台数据的第几个,存入content_obj 中.
+                        let idx = (para.page - 1) * this.pageSize + index + 1
+                        this.content_obj[String(idx)] = item && item.email
+                    })
+                    this.content = this.content_obj[this.list_idx] || {}
+                }
+            })
+        },
+        // 获取 已发邮件
+        getSentList() {
+            let para = {
+                pageSize: this.pageSize,
+                page: Math.ceil(this.list_idx / this.pageSize)
+            }
+            let params = window.all.tool.rmEmpty(para)
+            let { url, method } = this.$api.email_sent_list
+            this.$http({ method, url, params }).then(res => {
+                if (res && res.code === '200') {
+                    let list = res.data && res.data.data
+
+                    list.forEach((item, index) => {
+                        // 后台数据的第几个,存入content_obj 中.
+                        let idx = (para.page - 1) * this.pageSize + index + 1
+                        this.content_obj[String(idx)] = item
+                    })
+                    this.content = this.content_obj[this.list_idx] || {}
+                }
+            })
+        },
+        prevEmail() {
+            if (this.list_idx <= 1) return
+            this.list_idx--
+
+            // 判断是否在其中, 在就获取内部, 2. 不在就getList
+            if (this.content_obj[this.list_idx]) {
+                this.content = this.content_obj[this.list_idx]
+            } else {
+                this.getList()
+            }
+        },
+        nextEmail() {
+            // 判断是否在其中, 在就获取内部, 2. 不在就getList
+            if (this.list_idx >= this.total) return
+            this.list_idx++
+            if (this.content_obj[this.list_idx]) {
+                this.content = this.content_obj[this.list_idx]
+            } else {
+                this.getList()
+            }
         }
     },
     mounted() {
-        console.log(this.id)
-        console.log(this.isSend)
-    },
-};
+        // 1. 已发邮件
+        if (this.isSend) {
+            this.content = this.row
+
+            // 2. 收件箱
+        } else {
+            this.content = this.row && this.row.email
+        }
+        this.total = this.row.total
+        // 这是后端数据的第几条
+        this.list_idx =
+            (this.row.pageNo - 1) * this.row.pageSize + this.row.index + 1
+    }
+}
 </script>
 
 <style scoped>
-    .p10 {
-        padding: 10px;
-    }
-    .ml10 {
-        margin-left: 10px;
-    }
-    .body {
-        padding: 30px 20px;
-        margin-top: 20px;
-        background: #f2f2f2;
-    }
-    .body .top {
-        color: #4c8bfd;
-    }
-    .top >ul >li{
-        margin-top: 8px;
-    }
-    .body .top .head {
-        font-size: 16px;
-        font-weight: bold;
-    }
-    .content {
-        margin-top: 50px;
-        /* height: 770px; */
-        overflow: auto;
-    }
-    .p{
-        text-indent: 2em;
-    }
+/* p10 ml10 全局css样式 App.vue中 */
+.email-detail {
+    height: 80%;
+    /* width: 100%; */
+    overflow: auto;
+}
+.btn-disabled {
+    padding: 5px 15px;
+    color: #ccc;
+    border: 1px solid #ccc;
+    cursor: not-allowed;
+}
+.page-indicate {
+    vertical-align: center;
+    line-height: 28px;
+    margin-right: 5px;
+}
+.body {
+    max-height: 50%;
+    padding: 30px 20px;
+    margin-top: 20px;
+    background: #f2f2f2;
+    overflow: auto;
+}
+.body .top {
+    color: #4c8bfd;
+}
+.top > ul > li {
+    margin-top: 8px;
+}
+.body .top .head {
+    font-size: 16px;
+    font-weight: bold;
+}
+.content {
+    margin-top: 50px;
+    /* height: 770px; */
+    overflow: auto;
+}
+.p {
+    text-indent: 2em;
+}
 </style>

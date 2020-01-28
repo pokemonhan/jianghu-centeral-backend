@@ -120,16 +120,21 @@ http.interceptors.request.use(req => {
 // 后台返回数据 全局预设 ---
 http.interceptors.response.use(res => {
     // let data = res.data
+    if(res.status=== 503) {
+        window.__vm__.$toast.error('请求太频繁，服务器限制！')
+        return
+    }
+    // 401 跳转到login 登录
+    if (res.status === 401) {
+        res.data.message && window.__vm__.$toast.error(res.data.message)
+        router.push('/login')
+        return
+    }
     if (res && res.data) {
         if (res.data.code !== '200') {
 
             if (res.status !== 200) {
-                // 401 跳转到login 登录
-                if (res.status === 401) {
-                    res.data.message && window.__vm__.$toast.error(res.data.message)
-                    router.push('/login')
-                    return res.data
-                }
+                
 
                 let message = res.message || res.data.message
                 if (message) {
@@ -146,7 +151,7 @@ http.interceptors.response.use(res => {
         if (message) {
             window.__vm__.$toast.error(message)
         } else {
-            window.__vm__.$toast.error('出现服务问题或被禁止')
+            window.__vm__.$toast.error('出现服务问题或被禁止.')
         }
         if (res) {
             console.log('错误信息未知?', res)
@@ -156,8 +161,7 @@ http.interceptors.response.use(res => {
     return res.data
 }, (error) => {
     // error && alert(error.response)
-    error && window.__vm__.$toast.error('出现服务问题或被禁止')
-    // return Promise.resolve(error)
+    error && window.__vm__.$toast.error('出现服务问题或被禁止!')
 })
 
 export default http

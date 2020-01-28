@@ -22,7 +22,8 @@
     "vue-router": "^3.0.1",
     "vuex": "^3.1.2",
     "wangeditor": "^3.1.1",
-    "xlsx": "^0.15.4"
+    "xlsx": "^0.15.4",
+    "xss": "^1.0.6"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

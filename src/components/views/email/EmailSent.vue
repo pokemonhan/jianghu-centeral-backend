@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-
         <!----------------        收件箱          ----->
         <QuickQuery :date="quick_query" @update="qqUpd" />
         <!-- filter 筛选 -->
@@ -17,7 +16,7 @@
                     <Date v-model="filter.dates[1]" @update="timeUpdate()" />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-red" @click="clearFilter">清空</button>
                 </li>
             </ul>
@@ -30,17 +29,33 @@
                 </div>
                 <div class="right">
                     <span>{{pageNo}}/{{Math.ceil(total/pageSize)}}</span>
-                    <button class="btn-plain">上一页</button>
-                    <button class="btn-plain">下一页</button>
+                    <button
+                        :disabled="pageNo<2"
+                        :class="[pageNo>1?'btn-plain':'btn-disabled']"
+                        @click="prevPage"
+                    >上一页</button>
+                    <button
+                        :class="[pageNo<Math.ceil(total/pageSize)?'btn-plain':'btn-disabled']"
+                        @click="nextPage"
+                    >下一页</button>
+                    <!-- <button class="btn-plain">上一页</button>
+                    <button class="btn-plain">下一页</button> -->
                 </div>
             </div>
             <!-- table -->
             <div style="margin-top:5px;"></div>
             <Table :headers="headers" :column="list" @checkboxChange="checkboxChange" hadCheckbox>
-                <template v-slot:item="{row}">
-                    <td class="pointer" style="width:100px;" @click="showDetail(row)">{{row.a1}}</td>
-                    <td class="pointer" style="width:760px;padding:5px;" @click="showDetail(row)">{{row.a2}}</td>
-                    <td class="pointer" @click="showDetail(row)">{{row.a3}}</td>
+                <template v-slot:item="{row,idx}">
+                    <td class="pointer" style="width:100px;" @click="showDetail(row,idx)">
+                        <p v-for="(item, index) in row.receivers" :key="index">{{item}}</p>
+                    </td>
+                    <!-- <td>{{title}}</td> -->
+                    <td
+                        class="pointer"
+                        style="min-width:760px;padding:5px;"
+                        @click="showDetail(row,idx)"
+                    >{{getText(row.content)}}</td>
+                    <td class="pointer" @click="showDetail(row,idx)">{{row.send_time}}</td>
                 </template>
             </Table>
             <Page
@@ -55,7 +70,7 @@
         <!-- 详情 -->
         <Dialog :show.sync="dia_show" title="已发邮件详情">
             <div class="dia-inner">
-                <Detail isSend @close="dia_show=false" />
+                <Detail isSend :row="curr_row" @close="dia_show=false" />
             </div>
         </Dialog>
         <!-- 删除确认 -->
@@ -84,26 +99,14 @@ export default {
                 dates: []
             },
             headers: ['发件人', '内容', '收件日期'],
-            list: [
-                {
-                    a1: 'admin',
-                    a2:
-                        'admin趣闻 1947 年，时装设计师 Elsa Schiaparelli 将“艳粉色”引入西方时尚圈。 桃色可以营造亲密氛围，减少攻击性和敌意。 由于听说粉色有一种镇定效果，有些球队会把客队的休息室漆成粉色。 对于粉色的研究发现，男性举重运动员在粉色房间内似乎感到力不从心，而女性举重运动员面对这种颜色反而会有变强的倾向。 糕点从粉色盒子里取出或盛在粉色盘子里时，尝起来会更美味（这种情况仅适用于甜点），因为粉色令我们渴望糖份',
-                    a3: '2019-02-02'
-                },
-                {
-                    a1: 'admin',
-                    a2:
-                        'admin趣闻 1947 年，时装设计师 Elsa Schiaparelli 将“艳粉色”引入西方时尚圈。 桃色可以营造亲密氛围，减少攻击性和敌意。 由于听说粉色有一种镇定效果，有些球队会把客队的休息室漆成粉色。 对于粉色的研究发现，男性举重运动员在粉色房间内似乎感到力不从心，而女性举重运动员面对这种颜色反而会有变强的倾向。 糕点从粉色盒子里取出或盛在粉色盘子里时，尝起来会更美味（这种情况仅适用于甜点），因为粉色令我们渴望糖份',
-                    a3: '2019-02-02'
-                }
-            ],
-            total: 2,
+            list: [],
+            total: 0,
             pageNo: 1,
             pageSize: 25,
+
+            curr_row: {},
             dia_show: false,
             mod_show: false
-
         }
     },
     methods: {
@@ -113,7 +116,7 @@ export default {
         },
         qqUpd(dates) {
             //同步时间筛选值
-            this.filter.dates = dates;
+            this.filter.dates = dates
             this.filter = Object.assign(this.filter)
         },
         clearFilter() {
@@ -122,27 +125,77 @@ export default {
                 dates: []
             }
         },
+        prevPage() {
+            if(this.pageNo>1) {
+                this.pageNo--
+                this.getList()
+            }
+        },
+        nextPage() {
+            if(this.pageNo<Math.ceil(this.total/this.pageSize)) {
+                this.pageNo ++
+                this.getList()
+            }
+        },
         checkboxChange(index, e) {
             // console.log('e: ', e);
             // console.log('index: ', index);
             // console.log(this.list);
         },
-        showDetail(row) {
-            console.log(row);
+        showDetail(row, index) {
+            this.curr_row = row
+            this.curr_row.pageSize = this.pageSize
+            this.curr_row.pageNo = this.pageNo
+            this.curr_row.total = this.total
+            this.curr_row.index = index
+            // console.log(row);
             this.dia_show = true
         },
         modConf() {
-            console.log('确认删除')
+            // console.log('确认删除')
+        },
+        getText(content) {
+            let divLink = document.createElement('div')
+            divLink.innerHTML = content
+            return divLink.innerText
+        },
+        getList() {
+            let created_at = ''
+            if (this.filter.dates[0] && this.filter.dates[1]) {
+                created_at = JSON.stringify(this.filter.dates)
+            }
+            let para = {
+                name: this.filter.vendor,
+                created_at: this.filter.created_at,
+                pageSize: this.pageSize,
+                page: this.pageNo
+            }
+            let params = window.all.tool.rmEmpty(para)
+
+            let { url, method } = this.$api.email_sent_list
+            this.$http({ method, url, params }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.total = res.data.total
+                    this.list = res.data.data
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
         },
         updateNo() {
-            // this.getList()
+            this.getList()
         },
         updateSize() {
             this.pageNo = 1
-            // this.getList()
-        },
+            this.getList()
+        }
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 
@@ -161,10 +214,18 @@ export default {
     padding: 10px;
     background: #d8e2f5;
 }
-.pointer{
+.pointer {
     cursor: pointer;
+}
+.btn-disabled {
+    padding: 5px 15px;
+    color: #ccc;
+    border: 1px solid #ccc;
+    cursor: not-allowed;
 }
 .dia-inner {
     max-width: 1200px;
+    max-height: 800px;
+    overflow: auto;
 }
 </style>

@@ -7,6 +7,7 @@ export default {
      * 改  set
      * 查  list
      * 
+     * 其他 send
      * 状态更改 status_set
     */
 
@@ -25,7 +26,7 @@ export default {
         method: 'post'
     },
 
-    /*=========================== 2.厅主列表 ===========================--*/
+    /*=========================== 2.厅主管理 ===========================--*/
 
     // 厅主列表 - 列表
     platform_list: {
@@ -125,7 +126,21 @@ export default {
 
 
     /*=========================== 邮件系统 ===========================--*/
-
+    // 发邮件
+    email_send_add: {
+        url: '/headquarters-api/email/send',
+        method: 'post'
+    },
+    // 已收邮件
+    email_recei_list: {
+        url: '/headquarters-api/email/received-index',
+        method: 'get'
+    },
+    // 已发邮件
+    email_sent_list: {
+        url: '/headquarters-api/email/send-index',
+        method: 'get'
+    },
 
 
     /*=========================== 报表管理 ===========================--*/

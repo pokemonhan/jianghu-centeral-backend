@@ -215,16 +215,11 @@ export default {
             checkArr.forEach(key => {
                 if(this.form[key]==='') {
                     pass = false
-                    console.log(key)
                     this.$toast.warning('请检查表单内容!')
                     
-                }else {
-                    console.log('短信内容',this.form.sms_num);
                 }
-                
             })
             
-            console.log('pass: ', pass);
             return pass
             
         },
@@ -307,7 +302,7 @@ export default {
 
             let { url, method } = this.$api.sms_config_list
             this.$http({ method, url, params }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data

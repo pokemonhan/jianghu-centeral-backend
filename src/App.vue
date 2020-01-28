@@ -185,7 +185,9 @@ export default {
     border: 1px solid #ddd;
     font-size: 14px;
 }
-
+.textarea:focus {
+    border: 1px solid #4c8bfd;
+}
 .container {
     padding: 20px 8px 20px 8px;
     background: #fff;
@@ -256,6 +258,12 @@ button {
 button:hover {
     box-shadow: none;
 }
+/* button :disabled{
+    padding: 4px 8px;
+    color:#ccc;
+    border: 1px solid #ccc;
+    cursor: not-allowed;
+} */
 .btn {
     padding: 5px 15px;
     box-sizing: border-box;

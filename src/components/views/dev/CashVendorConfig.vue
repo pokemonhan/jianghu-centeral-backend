@@ -216,11 +216,13 @@ export default {
                 // whitelist_ips: JSON.stringify(whitelist_ips),
                 status: this.form.status
             }
-             if (this.form.whitelist_ips) {
+            if (this.form.whitelist_ips) {
                 let str =  this.form.whitelist_ips.replace('，',',')
                 str = str.replace(/\s+/g,'')
                 data.whitelist_ips = JSON.stringify( str.split(',') )
             }
+            /// <reference path="../../../main.js" />
+            /// <reference path="../../../js/plugins.js" />
             let { url, method } = this.$api.dev_finance_vendor_add
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {

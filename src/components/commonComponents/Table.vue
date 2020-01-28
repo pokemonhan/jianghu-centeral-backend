@@ -59,7 +59,7 @@
                 <!-- 没有数据时 -->
                 <template v-else>
                     <tr>
-                        <td :colspan="headers.length">没有数据</td>
+                        <td :colspan="headers.length+hadCheckbox">没有数据</td>
                     </tr>
                 </template>
             </tbody>
@@ -148,7 +148,7 @@ tbody tr:hover {
 tr td {
     height: 40px;
     text-align: center;
-    /* padding: 7px 4px; */
+    padding: 7px 4px;
     border: 1px solid #6fa2fe;
     font-size: 13px;
 }
@@ -160,9 +160,8 @@ th > div {
     display: flex;
     justify-content: center;
 }
-.sort {
-    /* display: flex; */
-}
+/* .sort {
+} */
 .asc {
 
     position: relative;

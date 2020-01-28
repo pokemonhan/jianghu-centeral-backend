@@ -73,7 +73,7 @@ export default {
     },
     methods: {
         exportExcel() {
-            console.log('触发')
+            // console.log('触发')
             import('../../../js/config/Export2Excel').then(excel => {
                 console.log('触发2')
                 const tHeader = this.headers
@@ -89,6 +89,7 @@ export default {
                 })
             })
         },
+        
         updateNo() {
             this.getList()
         },

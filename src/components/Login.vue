@@ -229,7 +229,7 @@ export default {
 .left {
     width: 655px;
     height: 100%;
-    background: url('../assets/image/login/left.jpg');
+    background-image: url('../assets/image/login/left.jpg');
 }
 .right {
     position: relative;
@@ -260,14 +260,14 @@ export default {
     padding-left: 15px;
     border: 1px solid #e9e9e9;
 }
-.verify-input {
+/* .verify-input {
     display: inline-block;
     width: 200px;
     height: 42px;
     line-height: 42px;
     padding-left: 15px;
     border: 1px solid #e9e9e9;
-}
+} */
 /* .verify-inner-input{
     width: 80%;
     height: 34px;
