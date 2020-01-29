@@ -1,9 +1,9 @@
 <template>
     <div class="login">
         <div class="inner">
-            <div class="left">
-                <!-- <img src="" alt=""> -->
-            </div>
+            <!-- <div class="left"> -->
+                <img class="left" src="../assets/image/login/left.jpg" alt="图片刷新加载...">
+            <!-- </div> -->
             <div class="right login-box">
                 <div>
                     <div class="title">江湖总控</div>
@@ -229,7 +229,7 @@ export default {
 .left {
     width: 655px;
     height: 100%;
-    background-image: url('../assets/image/login/left.jpg');
+    /* background-image: url('../assets/image/login/left.jpg'); */
 }
 .right {
     position: relative;
