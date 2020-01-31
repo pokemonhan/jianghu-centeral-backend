@@ -78,7 +78,7 @@ Router.prototype.push = function push(location) {
 // 自动加载路由
 
 const routes = new Router({
-    mode: 'history',
+    // mode: 'history',
     routes: [
         {
             path: '/',
@@ -116,6 +116,14 @@ r.keys().forEach(file_name => {
         // meta:{}
     })
 
+})
+route_add.push({
+    path: '/page404',
+    component: ()=>import('../components/views/page404/page404.vue')
+})
+route_add.push({
+    path: '*',
+    redirect: '/page404'
 })
 // console.log('"所有"路由', JSON.stringify(route_add))
 // console.table(route_add)

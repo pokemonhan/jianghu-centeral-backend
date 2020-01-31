@@ -101,6 +101,7 @@ export default {
                     item => item.path === this.curr_tab.path
                 )
                 this.updatetab_nav_list(list)
+                this.$router.push(this.curr_tab.path)
             }
             if (val === 'all') {
                 let list = []
