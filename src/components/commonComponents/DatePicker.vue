@@ -892,8 +892,8 @@ export default {
 <style scoped>
 .v-date-picker {
     /* width: 100%; */
-    height: 32px;
-    line-height: 32px;
+    height: 30px;
+    line-height: 30px;
     position: relative;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -981,7 +981,7 @@ export default {
 }
 .date-box .date-info {
     width: 100%;
-    height: 32px;
+    height: 30px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

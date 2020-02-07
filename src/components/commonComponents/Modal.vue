@@ -1,7 +1,7 @@
 <template>
     <div v-if="show" class="modal-mask">
         <transition name="modal-animate">
-            <div v-if="show" class="v-modal">
+            <div v-if="dialog" class="v-modal">
                 <div class="modal-header">
                     <!-- <i v-if="icon" :class="['iconfont', icon]"></i> -->
                     <span v-text="title"></span>
@@ -47,7 +47,18 @@ export default {
         }
     },
     data() {
-        return {}
+        return {
+            dialog: true
+        }
+    },
+    watch: {
+        show(val) {
+            // 当有遮罩时, 禁止滚动
+            document.body.style.overflow = val ? 'hidden' : 'auto'
+            setTimeout(() => {
+                this.dialog = val
+            }, 100)
+        }
     },
     methods: {
         close() {
@@ -62,30 +73,53 @@ export default {
             // this.$emit('update:show', false)
             this.$emit('confirm')
         }
+    },
+    mounted() {
+        setTimeout(() => {
+            this.dialog = this.show
+        }, 100)
     }
 }
 </script>
 
 <style scoped>
 .modal-mask {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     position: fixed;
-    z-index: 11;
+    z-index: 10001;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
+
     background-color: rgba(55, 55, 55, 0.6);
 }
+
+/* modal-animate */
+.modal-animate-leave-active,
+.modal-animate-enter-active {
+    transition: all 0.4s;
+}
+
+.modal-animate-enter {
+    opacity: 0;
+    transform: translateY(-30px);
+}
+
+.modal-animate-leave-to {
+    opacity: 0;
+    transform: translateY(-30px);
+}
+
 .v-modal {
     width: 520px;
-    position: absolute;
-    /* top: 100px; */
-    top: 40%;
     z-index: 12;
-    left: 50%;
-    transform: translateX(-50%);
+
     background-color: #fff;
-    /* border-radius: 8px; */
+    border-radius: 5px;
 }
 .v-modal .modal-header {
     position: relative;
@@ -117,7 +151,6 @@ export default {
     display: flex;
     justify-content: space-around;
     border-top: 1px solid #f7f9fa;
-
 }
 .v-modal .modal-footer button {
     /* padding: 6px 15px; */

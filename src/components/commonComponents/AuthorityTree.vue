@@ -153,7 +153,7 @@ export default {
         }
     },
     mounted() {
-        this.getTreeList()
+        // this.getTreeList()
     }
 }
 </script>

@@ -43,7 +43,7 @@
                     <td>{{row.created_at}}</td>
                     <td>
                         <span
-                            :class="['bold',row.status===1?'green':'red']"
+                            :class="[row.status===1?'green':'red']"
                         >{{row.status===1?'开启':'关闭'}}</span>
                     </td>
                     <td>

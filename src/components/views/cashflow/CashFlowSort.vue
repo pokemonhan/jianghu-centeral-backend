@@ -23,7 +23,7 @@
                     <td>{{row.name}}</td>
                     <td>{{row.last_editor?row.last_editor.name:'--'}}</td>
                     <td>{{row.updated_at}}</td>
-                    <td :class="['bold',row.status===1?'green':'red']">{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td>
+                    <td :class="[row.status===1?'green':'red']">{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td>
                     <td>
                         <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
                     </td>
@@ -147,10 +147,10 @@ export default {
         this.getList()
     }
 }
-</script> <style scoped>
-.w100 {
-    width: 100px;
-}
+</script>
+
+<style scoped>
+
 .p10 {
     padding: 10px;
 }

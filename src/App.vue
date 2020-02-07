@@ -2,12 +2,17 @@
     <div id="app">
         <!-- 顶部 -->
         <Header class="app-header"></Header>
+        <!-- <div style="border:1px solid red;width:10rem;">10rem</div>
+        <div style="border:1px solid red;width:10em;">10em</div> -->
+
         <div class="app-content">
             <!-- 侧边栏 -->
             <Aside class="app-aside"></Aside>
             <div class="app-main">
                 <TabNav class="tab-nav"></TabNav>
-                <router-view class="router-view" />
+                <transition name="fade-transform" mode="out-in">
+                    <router-view class="router-view" />
+                </transition>
             </div>
         </div>
         <!-- <div class="load-back">
@@ -55,92 +60,45 @@ export default {
             //     play = false
             // audio = null;
             // })
+        },
+
+        // 阻止 别人f12按键审查代码
+        stopCheckCode() {
+            document.onkeydown = function(e) {
+                let currKey = 0
+                let evt = e || window.event
+                currKey = evt.keyCode || evt.which || evt.charCode
+                if (currKey == 123) {
+                    window.event.cancelBubble = true
+                    window.event.returnValue = false
+                }
+            }
         }
     },
     mounted() {
+        // this.stopCheckCode()
         let self = this
         setTimeout(() => {
             // self.playMusic()
         }, 400)
-        
     }
 }
 </script>
 
 <style scoped>
-/* @media screen and (max-width: 1200px) {
-    .app-content {
-        max-width: 1200px;
-    }
-    .container {
-        width: 1040px;
-    }
-}
-
-@media screen and (min-width: 1201px) and (max-width: 1400px) {
-    .app-content {
-        max-width: 1200px;
-    }
-    .container {
-        width: 1040px;
-    }
-}
-@media screen and (min-width: 1401px) and (max-width: 1600px) {
-    .app-content {
-        max-width: 1400px;
-    }
-    .container {
-        width: 1240px;
-    }
-}
-@media screen and (min-width: 1601px) and (max-width: 1900px) {
-    .app-content {
-        max-width: 1600px;
-    }
-    .container {
-        width: 1440px;
-    }
-}
-@media screen and (min-width: 1901px) and (max-width: 2300px) {
-    .app-content {
-        max-width: 1900px;
-    }
-    .container {
-        width: 1740px;
-    }
-}
-
-@media screen and (min-width: 2301px) {
-    .app-content {
-        max-width: 2300px;
-    }
-    .container {
-        width: 2140px;
-    }
-} */
-
-/* @media screen and (min-width: 2500px) {
-    .app-content {
-        max-width: 2500px;
-    }
-    .container {
-        width: 2340px;
-        color: darkblue;
-    }
-} */
 .app-header {
     width: 100%;
 }
 .app-content {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     min-width: 1200px;
     max-width: 2220px;
     margin: 10px auto 0 auto;
 }
 
 .app-aside {
-    width: 150px;
+    /* width: 150px; */
     margin-left: 10px;
     /* overflow: hidden; */
 }
@@ -149,6 +107,22 @@ export default {
     /* width: 100%; */
     width: 100%;
     overflow: hidden;
+}
+
+/* fade-transform */
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+    transition: all 0.4s;
+}
+
+.fade-transform-enter {
+    opacity: 0;
+    transform: translateX(-30px);
+}
+
+.fade-transform-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
 }
 /* .router-view{
     width: 1040px;
@@ -178,6 +152,98 @@ export default {
 <style>
 /* ----------------------    公共样式    全局-------------------------------------------------- */
 
+@media screen and (max-width: 1200px) {
+    /* .app-content {
+        font-size: 12px;
+    } */
+    html {
+        /* color: rgb(110, 38, 243); */
+
+        font-size: 12px;
+    }
+
+    .app-aside {
+        width: 150px;
+    }
+}
+
+@media screen and (min-width: 1201px) and (max-width: 1400px) {
+    /*  .app-content {
+        max-width: 1200px;
+    } */
+    html {
+        /* color: rgb(243, 120, 38); */
+        font-size: 12px;
+    }
+    .app-aside {
+        width: 165px;
+    }
+}
+@media screen and (min-width: 1401px) and (max-width: 1600px) {
+    /*  .app-content {
+        max-width: 1400px;
+    } */
+    .app-aside {
+        width: 180px;
+    }
+    html {
+        /* width: 1240px; */
+        font-size: 13px;
+        /* color: rgb(192, 192, 5); */
+    }
+}
+@media screen and (min-width: 1601px) and (max-width: 1900px) {
+    /*  .app-content {
+        max-width: 1600px;
+    } */
+    html {
+        /* width: 1440px; */
+        font-size: 14px;
+
+        /* color: green; */
+    }
+    .app-aside {
+        width: 195px;
+    }
+}
+@media screen and (min-width: 1901px) and (max-width: 2300px) {
+    /*  .app-content {
+        max-width: 1900px;
+    } */
+    html {
+        /* width: 1740px; */
+        /* color: turquoise; */
+        font-size: 15px;
+    }
+    .app-aside {
+        width: 210px;
+    }
+}
+
+@media screen and (min-width: 2301px) {
+    /*   .app-content {
+        max-width: 2300px;
+    } */
+    html {
+        /* width: 2140px; */
+        /* color: purple !important; */
+        font-size: 15px;
+    }
+    .app-aside {
+        width: 225px;
+    }
+}
+
+/* @media screen and (min-width: 2500px) {
+    .app-content {
+        max-width: 2500px;
+    }
+    html {
+        width: 2340px;
+        color: darkblue;
+    }
+} */
+
 .textarea {
     padding: 10px;
     /* min-height: 130px; */
@@ -205,17 +271,18 @@ export default {
     z-index: 1000;
     background-color: rgba(0, 0, 0, 0.6);
 }
-.v-modal {
-    /* min-width: 160px;
-    min-height: 90px; */
+/* .v-modal {
+   
     position: absolute;
     z-index: 2;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%); /* 会影响position fixed的定位 */
+    transform: translate(-50%, -50%); 
     background-color: #fff;
     border-radius: 5px;
-}
+} */
+/* transform 会影响position fixed的定位 */
+
 .modal-mask .mod-head {
     position: relative;
     height: 40px;
@@ -475,7 +542,7 @@ button:hover {
     align-items: center;
     justify-content: space-between;
     /* white-space: nowrap; */
-    font-size: 13px;
+    /* font-size: 13px; */
     background: #f2f2f2;
 }
 
@@ -491,10 +558,20 @@ button:hover {
     margin-right: 10px;
 }
 
+/* 所有筛选下面的输入框 */
+/* .filter .w10rem{
+    width: 10rem;
+    min-width: 100px;
+
+} */
 .filter .left > li > span:first-child {
     margin-right: 4px;
 }
-
+.filter .v-input,
+.filter .v-date-picker,
+.filter .v-select {
+    width: 8.3rem;
+}
 /* 让page 居中,margin-top设置为25 */
 .table-page {
     display: flex;
@@ -519,6 +596,10 @@ button:hover {
 }
 .w250 {
     width: 250px;
+}
+.mh5 {
+    margin-left: 5px;
+    margin-right: 5px;
 }
 .ml5 {
     margin-left: 5px;
@@ -559,7 +640,7 @@ button:hover {
     color: #4c8bfd;
 }
 .green {
-    color: #00cc33;
+    color: #4cc013;
 }
 
 .red {

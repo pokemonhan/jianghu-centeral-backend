@@ -272,20 +272,24 @@ export default {
 #header {
     display: flex;
     align-items: center;
+    width: 100%;
     min-height: 70px;
     background: #4c8bfd;
-    font-size: 13px;
+    /* font-size: 14px; */
 }
 .content {
     /* height: 100%; */
-    line-height: 70px;
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     justify-content: space-between;
-    min-width: 1200px;
-    align-items: center;
-    /* white-space: nowrap; */
+    width: 100%;
+    line-height: 70px;
+    min-width: 700px;
+    max-width: 2220px;
+
     margin: 0 auto;
+    padding-left: 30px;
+    padding-right: 30px;
     color: #fff;
     background: #4c8bfd;
 }
@@ -412,9 +416,7 @@ export default {
 .w250 {
     width: 250px;
 }
-.w100 {
-    width: 100px;
-}
+
 .err-tips {
     position: absolute;
     top: 31px;

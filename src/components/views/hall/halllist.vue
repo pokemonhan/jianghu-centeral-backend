@@ -6,7 +6,7 @@
             <ul class="left">
                 <li>
                     <span>厅主账号</span>
-                    <Input class="w100" v-model="filter.email" />
+                    <Input v-model="filter.email" />
                 </li>
                 <li>
                     <span>站点状态</span>
@@ -42,7 +42,7 @@
                     </td>
                     <td>
                         <span
-                            :class="['bold',row.a5==='1'?'orange':'gray']"
+                            :class="[row.a5==='1'?'orange':'gray']"
                         >{{row.a5==='1'?'维护中??':'未维护??'}}</span>
                     </td>
                     <td style="font-size:12px;padding:5px;">
@@ -461,13 +461,14 @@ export default {
 }
 </script>
 <style scoped>
-.w100 {
-    width: 100px;
+
+.container {
+    min-width: 1040px;
 }
 .filter {
     padding-top: 10px;
     padding-bottom: 10px;
-    padding-left: 5px;
+    padding-left: 10px;
 }
 /* margin-horizontal 水平边框为5px*/
 /*  添加  */

@@ -2,6 +2,7 @@ const menuList = [
     {
         label: '首页',
         path: '/home',
+        icon: 'iconhome',
     },
 
     /*----------------------------------------- 厅主管理 ------------------------------*/
@@ -9,14 +10,16 @@ const menuList = [
     {
         label: '厅主管理',
         // path: 'hall',
+        icon: 'iconaccount',
+
         child: [
             {
                 label: '厅主列表',
-                path: '/hall/halllist'
+                path: '/hall/halllist',
             },
             {
                 label: '登录记录',
-                path: '/hall/loginrecord'
+                path: '/hall/loginrecord',
             }
         ]
     },
@@ -25,18 +28,19 @@ const menuList = [
     {
         label: '游戏管理',
         // path: 'game',
+        icon: 'icongame',
         child: [
             {
                 label: '厂商管理',
-                path: '/game/vendormanage'
+                path: '/game/vendormanage',
             },
             {
                 label: '分类设置',
-                path: '/game/sortset'
+                path: '/game/sortset',
             },
             {
                 label: '游戏管理',
-                path: '/game/gamemanage'
+                path: '/game/gamemanage',
             }
         ]
     },
@@ -45,10 +49,11 @@ const menuList = [
     {
         label: '活动管理',
         // path: 'active',
+        icon: 'iconcalculator',
         child: [
             {
                 label: '活动列表',
-                path: '/active/activelist'
+                path: '/active/activelist',
             }
         ]
     },
@@ -57,18 +62,19 @@ const menuList = [
     {
         label: '邮件系统',
         // path: 'email',
+        icon: 'icon185078emailmailstreamline',
         child: [
             {
                 label: '发邮件',
-                path: '/email/sendemail'
+                path: '/email/sendemail',
             },
             {
                 label: '收件箱',
-                path: '/email/receiveemail'
+                path: '/email/receiveemail',
             },
             {
                 label: '已发邮件',
-                path: '/email/emailsent'
+                path: '/email/emailsent',
             }
         ]
     },
@@ -77,22 +83,23 @@ const menuList = [
     {
         label: '报表管理',
         // path: 'report',
+        icon: 'iconmiaojie1029data',
         child: [
             {
                 label: '厅主注单报表',
-                path: '/report/hallregist'
+                path: '/report/hallregist',
             },
             {
                 label: '第三方游戏报表',
-                path: '/report/thirdgame'
+                path: '/report/thirdgame',
             },
             {
                 label: '厅主游戏报表',
-                path: '/report/hallgame'
+                path: '/report/hallgame',
             },
             {
                 label: '厅主充提报表',
-                path: '/report/halldeposit'
+                path: '/report/halldeposit',
             }
         ]
     },
@@ -101,18 +108,19 @@ const menuList = [
     {
         label: '金流配置',
         // path: 'cashflow',
+        icon: 'iconmoneybag',
         child: [
             {
                 label: '厂商管理',
-                path: '/cashflow/cashflowvendor'
+                path: '/cashflow/cashflowvendor',
             },
             {
                 label: '分类管理',
-                path: '/cashflow/cashflowsort'
+                path: '/cashflow/cashflowsort',
             },
             {
                 label: '通道管理',
-                path: '/cashflow/channelmanage'
+                path: '/cashflow/channelmanage',
             }
         ]
     },
@@ -121,18 +129,20 @@ const menuList = [
     {
         label: '设置管理',
         // path: 'set',
+        icon: 'iconshezhi2',
+
         child: [
             {
                 label: '管理员分组',
-                path: '/set/adminsort'
+                path: '/set/adminsort',
             },
             {
                 label: '操作日志',
-                path: '/set/operatlog'
+                path: '/set/operatlog',
             },
             {
                 label: '短信配置',
-                path: '/set/smsconfig'
+                path: '/set/smsconfig',
             }
         ]
     },
@@ -141,42 +151,43 @@ const menuList = [
     {
         label: '开发管理',
         // path: 'dev',
+        icon: 'iconkaifa',
         child: [
             {
                 label: '总控菜单管理',
-                path: '/dev/totalmenu'
+                path: '/dev/totalmenu',
             },
             {
                 label: '厅主菜单管理',
-                path: '/dev/hallmenu'
+                path: '/dev/hallmenu',
             },
             {
                 label: '游戏厂商配置',
-                path: '/dev/gamevendor'
+                path: '/dev/gamevendor',
             },
             {
                 label: '游戏分类配置',
-                path: '/dev/gamesort'
+                path: '/dev/gamesort',
             },
             {
                 label: '游戏管理配置',
-                path: '/dev/gamemanaconfig'
+                path: '/dev/gamemanaconfig',
             },
             {
                 label: '金流厂商配置',
-                path: '/dev/cashvendorconfig'
+                path: '/dev/cashvendorconfig',
             },
             {
                 label: '金流分类管理',
-                path: '/dev/cashsort'
+                path: '/dev/cashsort',
             },
             {
                 label: '金流通道配置',
-                path: '/dev/cashchannel'
+                path: '/dev/cashchannel',
             },
             {
                 label: '金流银行卡配置',
-                path: '/dev/cashbankcard'
+                path: '/dev/cashbankcard',
             }
         ]
     },

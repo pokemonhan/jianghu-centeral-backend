@@ -31,7 +31,7 @@
                     <td>{{row.sign}}</td>
                     <td>{{row.app_id}}</td>
                     <td
-                        :class="['bold',row.status?'green':'red']"
+                        :class="[row.status?'green':'red']"
                     >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
                     <td>{{row.author&&row.author.name}}</td>
                     <td>{{row.created_at}}</td>
@@ -642,16 +642,9 @@ export default {
         this.initForm()
     }
 }
-</script> <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
-.mt20 {
-    margin-top: 20px;
-}
+</script>
+
+<style scoped>
 /* dia-inner全局样式 */
 .dia-inner {
     padding: 0 50px;

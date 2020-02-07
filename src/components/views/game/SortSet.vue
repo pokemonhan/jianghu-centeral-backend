@@ -5,7 +5,7 @@
             <ul class="left">
                 <li>
                     <span>分类名称</span>
-                    <Input class="w100" v-model="filter.name" />
+                    <Input v-model="filter.name" />
                 </li>
                 <li>
                     <span>分类状态</span>
@@ -23,7 +23,7 @@
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.name}}</td>
                     <td >
-                        <span :class="['bold',row.status===1?'green':'red']">{{row.status===1?'开启':'关闭'}}</span>
+                        <span :class="[row.status===1?'green':'red']">{{row.status===1?'开启':'关闭'}}</span>
                     </td>
                     <td>{{row.last_editor?row.last_editor.name:'---'}}</td>
                     <td>{{row.updated_at}}</td>
@@ -136,14 +136,8 @@ export default {
         this.getList()
     }
 }
-</script> <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
-.mt20 {
-    margin-top: 20px;
-}
+</script>
+
+<style scoped>
+
 </style>

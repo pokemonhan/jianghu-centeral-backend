@@ -17,7 +17,7 @@
             </ul>
         </div>
      
-        <div class="table">
+        <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
                     <td>{{row.a1}}</td>
@@ -96,12 +96,7 @@ export default {
 }
 </script> 
 <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
+
 .mh5 {
     margin-left: 5px;
     margin-right: 5px;
@@ -109,8 +104,5 @@ export default {
 .filter-row2 {
     padding-left: 10px;
     padding-bottom: 10px;
-}
-.table {
-    margin-top: 20px;
 }
 </style>

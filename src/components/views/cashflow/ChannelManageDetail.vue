@@ -105,18 +105,15 @@ export default {
     },
     mounted() {}
 }
-</script> <style scoped>
+</script>
+
+<style scoped>
 .cont {
     width: 1000px;
     max-height: 80vh;
     overflow: auto;
 }
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
+
 .opera-list {
     /* margin-left: 100px; */
     width: 730px;

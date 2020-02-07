@@ -1,5 +1,5 @@
 <template>
-    <div class="container email-detail">
+    <div class="cont email-detail">
         <div class="filter p10">
             <ul class="left">
                 <li>
@@ -175,7 +175,10 @@ export default {
 .email-detail {
     height: 80%;
     /* width: 100%; */
+    padding: 10px;
+    border: 1px solid #4c8bfd;
     overflow: auto;
+
 }
 .btn-disabled {
     padding: 5px 15px;

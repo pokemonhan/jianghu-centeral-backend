@@ -1,11 +1,12 @@
 <template>
     <div class="container">
-        金流厂商配置
+        <!-- 金流厂商配置 -->
+        
         <div class="filter p10">
             <ul class="left">
                 <li>
                     <span>厂商名称</span>
-                    <Input class="w100" v-model="filter.name" />
+                    <Input v-model="filter.name" />
                 </li>
                 <li>
                     <span>厂商状态</span>
@@ -29,7 +30,7 @@
                     <td>{{row.last_editor&&row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td
-                        :class="['bold',row.status?'green':'red']"
+                        :class="[row.status?'green':'red']"
                     >{{row.status===1?'开启':row.status===0?'关闭':'----'}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
@@ -342,16 +343,10 @@ export default {
         this.getList()
     }
 }
-</script> <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
-.mt20 {
-    margin-top: 20px;
-}
+</script>
+
+<style scoped>
+
 .dia-inner {
     display: flex;
     justify-content: center;

@@ -14,7 +14,6 @@
                 <li>
                     <span>游戏名称</span>
                     <Select v-model="filter.name" :options="name_opt"></Select>
-                    <!-- <Input class="w100" v-model="filter.aa" /> -->
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -31,7 +30,7 @@
                     <td>{{row.name}}</td>
                     <td>{{row.type&&row.type.name}}</td>
                     <td
-                        :class="['bold',row.status===1?'green':'red']"
+                        :class="[row.status===1?'green':'red']"
                     >{{row.status===1?'开启':row.status===0?'关闭':row.status}}</td>
                     <td>{{row.last_editor && row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
@@ -310,13 +309,10 @@ export default {
         this.getSelectOpt()
     }
 }
-</script> <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
+</script>
+
+<style scoped>
+
 .edit-form {
     position: relative;
     width: 700px;

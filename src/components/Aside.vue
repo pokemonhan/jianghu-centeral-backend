@@ -1,19 +1,19 @@
 <template>
-    <div class="contain">
+    <div class="contain" ref="contain">
         <ul class="level-1">
             <li v-for="(lev1, lev1_index) in menu_list" :key="lev1_index">
                 <span
-                    :class="['title',$route.path == lev1.path&&(!lev1.children)?'active-menu':'']"
+                    :class="['title',$route.path == lev1.path&&(!lev1.children)?'active-menu':'',curr_ul(lev1)?'lev1-active':'']"
                     @click="expandMenu(lev1,lev1_index)"
                 >
+                    <i :class="['iconfont '+lev1.icon, 'mr5']"></i>
                     <span class="title-name">{{lev1.label}}</span>
                     <span v-if="lev1.children" class="iconfont iconup right"></span>
                 </span>
 
                 <!-- 二级菜单 -->
-                <ul :ref="lev1_index" class="level2">
+                <ul :ref="lev1_index" :class="['level2',curr_ul(lev1)?'active-ul':'']">
                     <li v-for="(lev2, lev2_index) in lev1.children" :key="lev2_index">
-                        
                         <!-- 标题 -->
                         <span
                             :class="['title',$route.path == lev2.path?'active-menu':'']"
@@ -59,6 +59,20 @@ export default {
     },
     methods: {
         ...mapMutations(['updatetab_nav_list']),
+
+        // 是否是当前路由的父级, 是返回true
+        curr_ul(lev1) {
+           
+            if (lev1.children) {
+                // 子项有当前路由返回true
+                let havePath = lev1.children.find(item => {
+                    return item.path === this.$route.path
+
+                })
+                return havePath ? true : false
+            }
+            return false
+        },
         expandMenu(item, index) {
             // console.log("该元素item", item);
             // console.log("这个index", index);
@@ -165,27 +179,35 @@ export default {
         this.getMenu()
         let self = this
         let setHeight = function() {
-            let height = document.documentElement.clientHeight
-            let ele = document.querySelector('.contain')
-            ele.style.height = height - 100 + 'px'
+            let height = document.documentElement.clientHeight // 可视 页面高度
+            let ele = self.$refs.contain
+            // console.log('ele: ', ele);
+
+            if (ele) {
+                let offsetTop = ele.offsetTop
+                ele.style.height = height - offsetTop - 10 + 'px'
+            }
         }
         setHeight()
         // onresize调节尺寸时, 同步设置 菜单高度
-        window.onresize = window.all.tool.debounce(setHeight, 400)
+        window.onresize = window.all.tool.debounce(setHeight, 300)
     }
 }
 </script>
 
 <style scoped>
 .contain {
-    width: 150px;
+    /* width: 150px; */
     /* max-height: 92vh; */
+    min-width: 145px;
     box-sizing: border-box;
-    background: #fff;
     border-top: 2px solid #4c8bfd;
     cursor: pointer;
     overflow: auto;
-    user-select: none;
+    background: #fff;
+
+
+    /* user-select: none; */
     -ms-overflow-style: none;
     overflow: -moz-scrollbars-none;
 }
@@ -201,21 +223,46 @@ export default {
     display: inline-block;
     padding: 10px 0;
     width: 100%;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
+    text-align: center;
     /* color: rgb(63, 62, 62); */
 }
+
 /* 二级菜单 */
 /* .level2 {
 } */
+
+/* 激活的ul */
+
+.lev1-active {
+    border-left: 3px solid #2569e9;
+    color: #4c8bfd;
+    transition: border .2s;
+}
+.active-ul {
+    border-left: 3px solid #2569e9;
+    transition: border .2s;
+}
+
 .level2 > li > .title {
     display: inline-block;
-    /* display:none; */
-    padding: 8px 10px;
+    /* padding: 8px 0; */
+    padding-top: 8px;
+    padding-bottom: 8px;
     padding-left: 20px;
     width: 100%;
-    font-size: 14px;
+    font-size: 13px;
+    text-align: center;
     /* font-weight: 600; */
+    /* border: 1px solid #000; */
+}
+.level2 > li > .title span {
+    display: inline-block;
+    min-width: 100px;
+    text-align: left;
+    margin-left: 10px;
+    /* padding-left: 20px; */
     /* border: 1px solid #000; */
 }
 .level3 > li .title {
@@ -241,9 +288,11 @@ li .title:hover {
     margin-right: 8px;
     margin-top: 4px;
 }
-.title-name {
-    margin-left: 16px;
-}
+
+/* 菜单 - 标题文字 lev1 */
+/* .title-name {
+    margin-left: 1.23rem;
+} */
 .icon-left {
     margin-left: 21px;
 }

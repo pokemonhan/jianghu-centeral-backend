@@ -9,20 +9,20 @@
                 </li>
                 <li>
                     <span>厂商状态</span>
-                    <Select v-model="filter.status" :options="status_opt"></Select>
+                    <Select style="9rem" class="w100" v-model="filter.status" :options="status_opt"></Select>
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
                 </li>
             </ul>
         </div>
-        <div class="table">
+        <div class="table mt10">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.name}}</td>
                     <td
-                        :class="['bold',row.status?'green':'red']"
+                        :class="[row.status?'green':'red']"
                     >{{row.status===1?'启用':row.status===0?'禁用':row.status}}</td>
                     <td>{{row.last_editor &&row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
@@ -165,13 +165,9 @@ export default {
     }
 }
 </script> <style scoped>
-.w100 {
-    width: 100px;
-}
+
 .p10 {
     padding: 10px;
 }
-.table {
-    margin-top: 10px;
-}
+
 </style>

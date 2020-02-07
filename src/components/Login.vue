@@ -127,12 +127,19 @@ export default {
             let list = []
             return Object.keys(obj).map((key, index) => {
                 let item = obj[key]
+                
                 let template = {
                     id: item.id,
                     label: item.label,
                     path: item.route,
                     display: item.display,
-                    pre_idx: pre_idx + index
+                    pre_idx: pre_idx + index,
+                }
+
+                // TODO: 后期改为以其他关键字作为匹配. 
+                let curr_menu = window.all.menu_list.filter(menu=>menu.label===item.label)
+                if(curr_menu.length){
+                    template.icon = curr_menu[0].icon
                 }
                 if (item.child) {
                     template.children = this.objToArr(item.child, pre_idx+index + '-')
@@ -185,7 +192,6 @@ export default {
                         }, 200)
 
                         // 获取客户菜单内容
-                        // TODO: 目前是所有,以后换个人
                         this.getMenuList()
                     } else {
                         // console.log(res)

@@ -6,7 +6,7 @@
             <ul class="left">
                 <li>
                     <span>更新人</span>
-                    <Input class="w100" v-model="filter.acc" />
+                    <Input v-model="filter.acc" />
                 </li>
                 <li>
                     <span>更新日期</span>
@@ -32,7 +32,7 @@
                     <td>{{row.admin&&row.admin.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td
-                        :class="['bold',row.status?'green':'red']"
+                        :class="[row.status?'green':'red']"
                     >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
                     <td>{{row.created_at}}</td>
                     <td>
@@ -321,14 +321,10 @@ export default {
         this.getList()
     }
 }
-</script> 
+</script>
+
 <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
+
 .mt20 {
     margin-top: 20px;
 }
@@ -346,9 +342,7 @@ export default {
     text-align: right;
     margin-right: 10px;
 }
-.w250 {
-    width: 250px;
-}
+
 .err-tips {
     position: absolute;
     top: 30px;

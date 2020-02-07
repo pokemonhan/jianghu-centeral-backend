@@ -7,7 +7,7 @@
             <ul class="left">
                 <li>
                     <span>发件人</span>
-                    <Input class="w100" v-model="filter.sender" />
+                    <Input v-model="filter.sender" />
                 </li>
                 <li>
                     <span>发件时间</span>
@@ -46,7 +46,7 @@
             <div style="margin-top:5px;"></div>
             <Table :headers="headers" :column="list" @checkboxChange="checkboxChange" hadCheckbox>
                 <template v-slot:item="{row,idx}">
-                    <td class="pointer" style="width:100px;" @click="showDetail(row,idx)">
+                    <td class="pointer" style="width:140px;" @click="showDetail(row,idx)">
                         <p v-for="(item, index) in row.receivers" :key="index">{{item}}</p>
                     </td>
                     <!-- <td>{{title}}</td> -->
@@ -200,12 +200,7 @@ export default {
 </script>
 
 <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
+
 .tab-control {
     /* width: 100%; */
     display: flex;

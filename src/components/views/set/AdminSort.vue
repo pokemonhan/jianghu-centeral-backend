@@ -2,10 +2,7 @@
     <div class="container">
         <div class="filter p10">
             <ul class="left">
-                <!-- <li>
-                    <span>组列表</span>
-                    <Input class="w100" v-model="filter.group" />
-                </li>-->
+              
                 <li>
                     <!-- <button class="btn-blue">查找</button> -->
                     <button class="btn-blue" @click="addsort">创建分组</button>
@@ -457,12 +454,7 @@ export default {
 </script>
 
 <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
+
 .cont {
     display: flex;
     margin-top: 20px;

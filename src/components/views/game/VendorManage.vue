@@ -4,7 +4,7 @@
             <ul class="left">
                 <li>
                     <span>游戏厂商</span>
-                    <Input class="w100" v-model="filter.vendor" />
+                    <Input v-model="filter.vendor" />
                 </li>
                 <li>
                     <span>厂商状态</span>
@@ -15,13 +15,13 @@
                 </li>
             </ul>
         </div>
-        <div class="table">
+        <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
                     <!-- '编号', '游戏厂商', '厂商状态', '最后更新人','最后更新时间','操作' -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.name}}</td>
-                    <td :class="['bold',row.status===1?'green':'red']">{{status_txt[row.status]}}</td>
+                    <td :class="[row.status===1?'green':'red']">{{status_txt[row.status]}}</td>
                     <td>{{row.last_editor && row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
@@ -168,13 +168,7 @@ export default {
     }
 }
 </script> <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
-.table {
+/* .table {
     margin-top: 20px;
-}
+} */
 </style>

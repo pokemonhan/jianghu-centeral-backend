@@ -126,7 +126,7 @@ export default {
 }
 .table-container .table-layout-fixed {
     table-layout: fixed;
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
 }
 tbody tr:nth-child(2n) {
     /* background: #F7F7F7FF; */
@@ -139,18 +139,20 @@ tbody tr:hover {
 
 .table-container table th {
     position: relative;
-    padding: 7px 4px;
+    /* padding: 7px 4px; */
+    height: 2.8rem;
     border: 1px solid #6fa2fe;
     font-weight: 400;
     color: #ffffff;
     background: #70a1fd;
 }
 tr td {
-    height: 40px;
+    /* height: 40px; */
     text-align: center;
-    padding: 7px 4px;
+    /* padding: 7px 4px; */
+    height: 2.9rem;
     border: 1px solid #6fa2fe;
-    font-size: 13px;
+    /* font-size: 13px; */
 }
 .checkbox {
     justify-content: center;

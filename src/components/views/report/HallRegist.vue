@@ -8,7 +8,7 @@
             <ul class="left">
                 <li>
                     <span>站点名称</span>
-                    <Input class="w100" v-model="filter.name" />
+                    <Input v-model="filter.name" />
                 </li>
                 <li>
                     <span>派彩时间</span>
@@ -44,7 +44,7 @@
                     <template v-slot:item="{row,idx}">
                         <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                         <td
-                            :class="['bold',row.status?'green':'red']"
+                            :class="[row.status?'green':'red']"
                         >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
                         <td>{{row.a1}}</td>
                         <td>{{row.a2}}</td>
@@ -167,12 +167,8 @@ export default {
     height:8px;
     /* background-color:#F5F5F5; */
 }
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
+
+
 .filter-row2 {
     padding-left: 10px;
     padding-bottom: 10px;
@@ -183,7 +179,5 @@ export default {
 .table .v-table {
     min-width: 1920px;
 }
-.mt20 {
-    margin-top: 20px;
-}
+
 </style>

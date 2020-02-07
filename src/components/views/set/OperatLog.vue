@@ -4,7 +4,7 @@
             <ul class="left">
                 <li>
                     <span>管理员</span>
-                    <Input class="w100" v-model="filter.admin" />
+                    <Input v-model="filter.admin" />
                 </li>
                 <li>
                     <span>日期选择</span>
@@ -84,12 +84,7 @@ export default {
     max-height: 80vh;
     overflow: auto;
 }
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
+
 .opera-list {
     /* margin-left: 100px; */
     width: 730px;

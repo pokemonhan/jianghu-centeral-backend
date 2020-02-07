@@ -6,7 +6,7 @@
             <ul class="left">
                 <li>
                     <span>银行名称</span>
-                    <Input class="w100" v-model="filter.name" />
+                    <Input v-model="filter.name" />
                 </li>
                 <li>
                     <span>状态</span>
@@ -28,7 +28,7 @@
                     <td>{{row.created_at}}</td>
                     <td>{{row.last_editor&&row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
-                    <td :class="['bold',row.status?'green':'red']" >{{row.status===1?'开启':row.status===0?'关闭':'--'}}</td>
+                    <td :class="[row.status?'green':'red']" >{{row.status===1?'开启':row.status===0?'关闭':'--'}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
                         <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
@@ -312,15 +312,6 @@ export default {
 </script>
 
 <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
-.mt20 {
-    margin-top: 20px;
-}
 .dia-maintain {
     padding: 0 150px;
 }

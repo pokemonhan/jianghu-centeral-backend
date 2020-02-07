@@ -102,14 +102,9 @@ export default {
     },
     mounted() {}
 }
-</script> 
+</script>
+
 <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
 .mh5 {
     margin-left: 5px;
     margin-right: 5px;

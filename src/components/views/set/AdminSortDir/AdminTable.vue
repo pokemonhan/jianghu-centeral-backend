@@ -5,11 +5,11 @@
             <button class="btn-blue" @click="addMember">添加成员</button>
         </div>
         <Table :headers="headers" :column="list">
-            <template v-slot:item="{row,idx}">
+            <template v-slot:item="{row}">
                 <td>{{row.name}}</td>
                 <td>{{row.email}}</td>
                 <td
-                    :class="['bold',row.status?'green':'red']"
+                    :class="[row.status?'green':'red']"
                 >{{row.status===1?'启用':row.status===0?'禁用':'出错!!!'}}</td>
                 <td>
                     <button class="btns-blue" @click="editPwd(row)">修改密码</button>

@@ -133,12 +133,7 @@ export default {
     max-height: 80vh;
     overflow: auto;
 }
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
+
 .opera-list {
     margin-top: 20px;
     margin-left: 50px;

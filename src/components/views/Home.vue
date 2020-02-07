@@ -259,13 +259,15 @@ export default {
 }
 .row1 {
     width: 100%;
-    height: 150px;
+    /* height: 150px; */
+    height: 13rem;
+    min-height: 150px;
     display: flex;
     justify-content: space-between;
 }
 .row1 li {
     position: relative;
-    width: 20%;
+    width: 22%;
     height: 100%;
     /* padding: 10px; */
     /* border-radius: 5px; */
@@ -287,6 +289,10 @@ export default {
 .row1 > li .head {
     padding-top: 5px;
     padding-bottom: 5px;
+    /* height: 2rem; */
+    /* min-height: 26px; */
+
+    /* line-height: 2rem; */
     color: #fff;
     text-indent: 17px;
 }
@@ -344,12 +350,17 @@ export default {
 .row2,
 .row3 {
     /* width: 1040px; */
-    height: 300px;
-    margin-top: 20px;
+    /* height: 300px; */
+    min-height: 300px;
+    height: 18rem;
+    /* margin-top: 20px; */
+    margin-top: 1.3rem;
     border: 1px solid #4c8bfd;
     background: #fff;
 }
-/* row2,3,4 头颜色及样式 */
+
+
+/* row2,3,4 头 */
 .row2 .header,
 .row3 .header {
     height: 45px;
@@ -387,11 +398,14 @@ export default {
     color: #4c8bfd;
     border: 1px solid #f9fafc;
 }
+
+/* 第二排,第三排 主体 */
 .row2 .body,
 .row3 .body {
     display: flex;
     justify-content: center;
-    /* height: 254px; */
+    align-items: center;
+    /* height: 100%; */
 }
 .row2 .body .left,
 .row3 .body .left {

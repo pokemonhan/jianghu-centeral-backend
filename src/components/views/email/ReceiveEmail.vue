@@ -202,12 +202,10 @@ export default {
 </script>
 
 <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
+
+/* .p10 {
     padding: 10px;
-}
+} */
 .tab-control {
     /* width: 100%; */
     display: flex;

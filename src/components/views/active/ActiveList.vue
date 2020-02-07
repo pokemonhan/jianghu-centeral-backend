@@ -4,11 +4,11 @@
             <ul class="left">
                 <li>
                     <span>活动名称</span>
-                    <Input class="w100" v-model="filter.name" />
+                    <Input class="w10rem" v-model="filter.name" />
                 </li>
                 <li>
                     <span>活动状态</span>
-                    <Select v-model="filter.status" :options="status_opt"></Select>
+                    <Select class="w10rem" v-model="filter.status" :options="status_opt"></Select>
                 </li>
                 <li>
                     <button class="btn-blue">查找</button>
@@ -22,7 +22,7 @@
                     <td>{{row.a1}}</td>
                     <td>{{row.a2}}</td>
                     <td>{{row.a2}}</td>
-                    <td :class="['bold',row.a2==='1'?'green':'red']">{{row.a2}}</td>
+                    <td :class="[row.a2==='1'?'green':'red']">{{row.a2}}</td>
                     <td>
                         <button
                             :class="[row.status?'btns-red':'btns-green']"
@@ -106,14 +106,8 @@ export default {
     },
     mounted() {}
 }
-</script> <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
-.mt20 {
-    margin-top: 20px;
-}
+</script>
+
+<style scoped>
+
 </style>

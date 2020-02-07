@@ -111,7 +111,7 @@ http.interceptors.request.use(req => {
         req.headers.Authorization = Authorization   // 这是token+token_type
         // if (expires && now > expires) {
         //     // alert('token已经超时,请重新登陆..')
-            // window._Vue_.$router.push('/login')
+        // window._Vue_.$router.push('/login')
         // }
     }
     return req
@@ -120,38 +120,46 @@ http.interceptors.request.use(req => {
 // 后台返回数据 全局预设 ---
 http.interceptors.response.use(res => {
     // let data = res.data
-    if(res.status=== 503) {
-        window.__vm__.$toast.error('请求太频繁，服务器限制！')
+    let toastErr = window.__vm__.$toast.error
+    // 503 请求频繁 
+    if (res.status === 503) {
+        toastErr('请求次数过于频繁，请稍后再试')
         return
     }
     // 401 跳转到login 登录
     if (res.status === 401) {
-        res.data.message && window.__vm__.$toast.error(res.data.message)
+        // res.data.message && toastErr(res.data.message)
+        let message = res.message || res.data.message
+        if (message) {
+            toastErr(message)
+        } else {
+            toastErr('出现服务问题或被禁止')
+        }
         router.push('/login')
         return
     }
     if (res && res.data) {
-        if (res.data.code !== '200') {
 
-            if (res.status !== 200) {
-                
+        if (res.status !== 200) {
+            if (res.data.code !== '200') {
 
                 let message = res.message || res.data.message
                 if (message) {
-                    window.__vm__.$toast.error(message)
+                    toastErr(message)
                 } else {
-                    window.__vm__.$toast.error('出现服务问题或被禁止')
+                    toastErr('出现服务问题或被禁止..')
                 }
                 // console.log(res)
             }
         }
+        // 正常
     } else {
 
-        let message = res.message || res.data.message
+        let message = res.message
         if (message) {
-            window.__vm__.$toast.error(message)
+            toastErr(message)
         } else {
-            window.__vm__.$toast.error('出现服务问题或被禁止.')
+            toastErr('出现服务问题或被禁止.')
         }
         if (res) {
             console.log('错误信息未知?', res)
@@ -160,8 +168,12 @@ http.interceptors.response.use(res => {
 
     return res.data
 }, (error) => {
-    // error && alert(error.response)
-    error && window.__vm__.$toast.error('出现服务问题或被禁止!')
+    let toastErr = window.__vm__.$toast.error
+    if (error && error.response) {
+        toastErr(error.response)
+    } else {
+        toastErr('出现服务问题或请求频繁!')
+    }
 })
 
 export default http

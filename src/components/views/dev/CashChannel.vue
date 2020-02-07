@@ -35,7 +35,7 @@
                     <td>{{row.last_editor&&row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td
-                        :class="['bold',row.status?'green':'red']"
+                        :class="[row.status?'green':'red']"
                     >{{row.status===1?'开启':row.status===0?'关闭':'--'}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
@@ -434,16 +434,9 @@ export default {
     }
 }
 </script>
+
 <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
-.mt20 {
-    margin-top: 20px;
-}
+
 .dia-maintain {
     padding: 0 150px;
 }

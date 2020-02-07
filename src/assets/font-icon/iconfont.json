@@ -153,6 +153,13 @@
       "unicode_decimal": 58906
     },
     {
+      "icon_id": "2525929",
+      "name": "开发",
+      "font_class": "kaifa",
+      "unicode": "e962",
+      "unicode_decimal": 59746
+    },
+    {
       "icon_id": "3141404",
       "name": "问号",
       "font_class": "wenhao",
@@ -237,6 +244,13 @@
       "unicode_decimal": 58893
     },
     {
+      "icon_id": "7598313",
+      "name": "404",
+      "font_class": "icon-test1",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
       "icon_id": "8093715",
       "name": "充值 & 提现-02",
       "font_class": "chongzhitixian-",
@@ -305,6 +319,13 @@
       "font_class": "yuanquan",
       "unicode": "ea45",
       "unicode_decimal": 59973
+    },
+    {
+      "icon_id": "12887343",
+      "name": "185078 - email mail streamline",
+      "font_class": "185078emailmailstreamline",
+      "unicode": "e600",
+      "unicode_decimal": 58880
     }
   ]
 }

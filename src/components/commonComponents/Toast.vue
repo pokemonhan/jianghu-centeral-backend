@@ -27,7 +27,7 @@ export default {
         },
         duration: {
             type: Number,
-            default: () => 4000
+            default: () => 4500
         }
     },
     data() {

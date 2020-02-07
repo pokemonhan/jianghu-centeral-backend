@@ -86,12 +86,7 @@ export default {
 .cont {
     width: 1040px;
 }
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
+
 .table {
     display: flex;
     margin-top: 20px;

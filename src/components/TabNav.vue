@@ -1,19 +1,24 @@
 <template>
     <div class="tab-nav" v-if="$route.path!=='/home' && tab_nav_list.length>0" ref="tabNav">
-        <button class="btn-plain" @click="scrollLeft">←</button>
+        <button class="btn-arrow" @click="scrollLeft">
+            <i class="iconfont iconzuofanyezuohua"></i>
+        </button>
         <ul class="ul" ref="ul">
             <li
                 :class="[item.path===$route.path?'active-tab-nav':'bg-gray',need_close===index?'need-close':'']"
                 v-for="(item, index) in tab_nav_list"
                 :key="item.path"
                 :ref="item.path"
+                :title="item.label"
                 @contextmenu.prevent="contextmenu($event,item)"
             >
                 <span class="title" @click="jumpRouter(item)">{{item.label}}</span>
                 <span class="close" @click="closeCurrent(item,index)">X</span>
             </li>
         </ul>
-        <button class="btn-plain" @click="scrollRight">→</button>
+        <button class="btn-arrow" @click="scrollRight">
+            <i class="iconfont iconyoufanyeyouhua"></i>
+        </button>
         <!-- TODO: -->
         <!-- <context-menu
             class="right-menu"
@@ -190,13 +195,27 @@ export default {
 </script>
 
 <style scoped>
+
 .tab-nav {
     width: 100%;
     max-width: 100%;
     overflow: auto;
     display: flex;
 }
-
+.btn-arrow {
+    height: 28px;
+    padding: 0 8px;
+    color: #4c8bfd;
+    border: 1px solid #4c8bfd;
+    background: #fff;
+    box-shadow: none;
+}
+.btn-arrow:active {
+    color: #0dbb24;
+}
+.iconfont {
+    font-size: 24px;
+}
 .tab-nav ul {
     width: 100%;
     display: flex;

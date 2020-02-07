@@ -8,7 +8,7 @@
             <ul class="left">
                 <li>
                     <span>站点名称</span>
-                    <Input class="w100" v-model="filter.name" />
+                    <Input v-model="filter.name" />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
@@ -95,17 +95,9 @@ export default {
     mounted() {}
 }
 </script> 
+
 <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
-.mh5 {
-    margin-left: 5px;
-    margin-right: 5px;
-}
+
 .filter-row2 {
     padding-left: 10px;
     padding-bottom: 10px;

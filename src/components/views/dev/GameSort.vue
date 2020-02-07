@@ -6,7 +6,7 @@
             <ul class="left">
                 <li>
                     <span>分类名称</span>
-                    <Input class="w100" v-model="filter.name" />
+                    <Input v-model="filter.name" />
                 </li>
                 <li>
                     <span>分类状态</span>
@@ -24,7 +24,7 @@
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.name}}</td>
                     <td
-                        :class="['bold',row.status?'green':'red']"
+                        :class="[row.status?'green':'red']"
                     >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
                     <td>{{row.sign}}</td>
                     <td>{{row.author && row.author.name}}</td>
@@ -316,16 +316,10 @@ export default {
         this.getList()
     }
 }
-</script> <style scoped>
-.w100 {
-    width: 100px;
-}
-.p10 {
-    padding: 10px;
-}
-.mt20 {
-    margin-top: 20px;
-}
+</script>
+
+<style scoped>
+
 .dia-inner {
     display: flex;
     justify-content: center;

@@ -253,7 +253,6 @@ export default {
         },
         recipientUpd(val) {
             if (val) {
-                // console.log('val: ', val)
                 this.contact_show = false
             } else {
                 this.contact_show = true
@@ -379,7 +378,9 @@ export default {
     justify-content: space-around;
 }
 .left {
-    width: 560px;
+    /* width: 560px; */
+    width: 43rem;
+    min-width: 560px;
     height: 100%;
 }
 .hd-btn {
@@ -388,7 +389,9 @@ export default {
     padding: 10px;
 }
 .w500 {
-    width: 500px;
+    /* width: 500px; */
+    width: 40rem;
+    min-width: 500px;
 }
 .p10 {
     padding: 10px;
@@ -399,7 +402,7 @@ export default {
     margin-top: 20px;
 }
 .form > li > span:first-child {
-    width: 4.1em;
+    width: 4.5em;
 }
 /* 图片 */
 .img-show {
