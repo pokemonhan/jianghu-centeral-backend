@@ -65,7 +65,7 @@
                         </li>
                         <li>
                             <span>白名单:</span>
-                            <textarea class="textarea" v-model="form.whitelist_ips"></textarea>
+                            <textarea class="textarea" placeholder="格式例子: 2.2.2.2, 5.5.3.5" v-model="form.whitelist_ips"></textarea>
                         </li>
                         <li>
                             <span>状态选择:</span>
