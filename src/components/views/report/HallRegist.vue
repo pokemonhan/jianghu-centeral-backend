@@ -39,7 +39,7 @@
             </ul>
         </div>
         <div class="mt20">
-            <div class="table">
+            <div class="table mb10">
                 <Table class="v-table" :headers="headers" :column="list">
                     <template v-slot:item="{row,idx}">
                         <td>{{(pageNo-1)*pageSize+idx+1}}</td>
@@ -178,6 +178,7 @@ export default {
 }
 .table .v-table {
     min-width: 1920px;
+    margin-bottom: 5px;
 }
 
 </style>

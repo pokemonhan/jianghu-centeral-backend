@@ -6,6 +6,7 @@ import router from './js/router'
 import store from './js/vuex'
 Vue.config.productionTip = false
 
+
 import tool from './js/tool'                  // 常用工具
 import plugins from './js/plugins'            // 1.公用组件, 2.指令,  3.axios
 

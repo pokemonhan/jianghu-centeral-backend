@@ -9,8 +9,9 @@
                 v-for="(item, index) in tab_nav_list"
                 :key="item.path"
                 :ref="item.path"
-                :title="item.label"
                 @contextmenu.prevent="contextmenu($event,item)"
+                @mousemove="setPosition($event,item)"
+                @mouseout="closeTooltip(item)"
             >
                 <span class="title" @click="jumpRouter(item)">{{item.label}}</span>
                 <span class="close" @click="closeCurrent(item,index)">X</span>
@@ -19,17 +20,12 @@
         <button class="btn-arrow" @click="scrollRight">
             <i class="iconfont iconyoufanyeyouhua"></i>
         </button>
-        <!-- TODO: -->
-        <!-- <context-menu
-            class="right-menu"
-            :target="contextMenuTarget"
-            :show="contextMenuVisible"
-            @update:show="(show) => contextMenuVisible = show"
-        >
-           <span>一</span>
-           <span>二</span>
-           <span>三</span>
-        </context-menu>-->
+
+        <div
+            v-show="true"
+            ref="tooltip"
+            :class="hover_curr_tab?'tooltip-active':'tooltip'"
+        >{{hover_curr_tab}}</div>
         <div v-show="menu_show" class="context-menu" ref="menu" v-clickoutside="closeMenu">
             <div @click="menuClose('other')">关闭其他菜单</div>
             <div @click="menuClose('all')">关闭所有菜单</div>
@@ -53,7 +49,9 @@ export default {
             need_close: -1,
 
             menu_show: false,
-            curr_tab: {}
+            curr_tab: {},
+            hover_curr_tab: '',
+            tooltipTimer: {}
             // context_menu 右键菜单
             // contextMenuTarget: this.$refs.tabNav,
             // contextMenuVisible: false
@@ -61,14 +59,6 @@ export default {
     },
     computed: {
         ...mapState(['tab_nav_list'])
-
-        // current_item() {
-        //     let tabList = this.tab_nav_list
-        //     let list = tabList.filter(item => {
-        //         return item.path === this.$route.path
-        //     })[0]
-        //     return list
-        // }
     },
     methods: {
         ...mapMutations(['updatetab_nav_list']),
@@ -94,11 +84,26 @@ export default {
             this.curr_tab = row
             let left = e.clientX
             let top = e.clientY + 20
-            // this.$refs.menu
+
             let menuDom = this.$refs.menu
             menuDom.style.left = left + 'px'
             menuDom.style.top = top + 'px'
             this.menu_show = true
+        },
+        setPosition(e, row) {
+            clearTimeout(this.tooltipTimer)
+            this.hover_curr_tab = row.label
+            let tipDom = this.$refs.tooltip
+            let left = e.clientX
+            let liDom = this.$refs[row.path][0]
+            // let left = liDom.offsetLeft
+            tipDom.style.left = left - 30 + 'px'
+        },
+        closeTooltip(row) {
+            let liDom = this.$refs[row.path][0]
+            this.tooltipTimer = setTimeout(() => {
+                this.hover_curr_tab = ''
+            }, 200)
         },
         menuClose(val) {
             if (val === 'other') {
@@ -153,7 +158,7 @@ export default {
             if (this.tab_nav_list.length < 2) return
             let path = route.fullPath
             let ul = this.$refs.ul
-            if(!ul) return
+            if (!ul) return
             let parent_left = ul.offsetLeft
             let curr_li = this.$refs[path] && this.$refs[path][0]
             let left = curr_li && curr_li.offsetLeft
@@ -188,22 +193,19 @@ export default {
                 this.scrollTop += obj.top
             }
         }
-        
-
     }
 }
 </script>
 
 <style scoped>
-
 .tab-nav {
     width: 100%;
     max-width: 100%;
-    overflow: auto;
     display: flex;
+    overflow: auto;
 }
 .btn-arrow {
-    height: 28px;
+    height: 27px;
     padding: 0 8px;
     color: #4c8bfd;
     border: 1px solid #4c8bfd;
@@ -222,17 +224,18 @@ export default {
     font-size: 14px;
     font-weight: 600;
     color: #444;
-    overflow: auto;
+    overflow-x: auto;
 }
 
 .tab-nav ul > li {
-    position: relative;
+    /* position: relative; */
     min-width: 140px;
     width: 140px;
     /* border: 1px solid #000; */
-    height: 28px;
-    line-height: 28px;
+    height: 26px;
+    line-height: 26px;
     margin-left: 5px;
+    margin-bottom: 5px;
     padding-left: 6px;
     background: #fff;
     font-size: 13px;
@@ -244,22 +247,25 @@ export default {
 .tab-nav ul li .title {
     display: inline-block;
     width: 100px;
+    line-height: 21px
 }
 .tab-nav ul > li:hover {
     background: #679cff;
     color: #fff;
 }
-.close {
-    position: absolute;
-    top: 6px;
-    right: 5px;
-    display: inline-block;
+.ul li .close {
+    /* position: absolute; */
+    /* top: 6px;
+    right: 5px; */
+    float: right;
+    /* display: inline-block; */
     height: 16px;
     line-height: 16px;
     width: 16px;
     font-size: 12px;
     text-align: center;
-    /* margin-right: 2px; */
+    margin-right: 5px;
+    margin-top: 6px;
     color: rgb(158, 158, 158);
     border-radius: 50%;
     background: #fff;
@@ -294,34 +300,96 @@ export default {
     /* display: flex; */
     top: 120px;
     background: #fff;
-    border-radius: 4px;
-    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.39);
+    border: 1px solid #4c8bfd;
+    border-radius: 3px;
+    /* box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.39); */
 }
 
 .context-menu > div {
-    padding: 4px 8px;
+    padding: 4px 12px;
 }
 .context-menu > div:hover {
     color: #fff;
     background: #4c8bfd;
 }
 
-/*定义滚动条高宽及背景
- 高宽分别对应横竖滚动条的尺寸*/
 ::-webkit-scrollbar {
-    /* width:6px; */
-    height: 6px;
-    border-radius: 3px;
-    background-color: #fff;
+    width: 5px;
+    height: 5px;
+    background-color: #f5f5f5;
 }
 /*定义滚动条轨道
  内阴影+圆角*/
 ::-webkit-scrollbar-track {
-    /* box-shadow:inset 0 0 6px rgba(48, 100, 241, 0.3); */
+    /* -webkit-box-shadow: inset 0 0 6px rgba(239, 240, 241, 0.979); */
+    box-shadow: inset 0 0 6px rgba(241, 241, 241, 0.568);
     border-radius: 3px;
-    background-color: rgb(228, 233, 238);
+    background-color: #d6d8da;
 }
-.tab-nav .btn-plain {
-    height: 28px;
+/*定义滑块
+ 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    /* -webkit-box-shadow: inset 0 0 3px rgba(247, 247, 247, 0.849); */
+    box-shadow: inset 0 0 3px rgba(243, 243, 243, 0.849);
+    background-color: #4c84fd;
+}
+
+/* tooltip */
+
+/* 
+.tooltip .tooltiptext {
+    visibility: visible;
+    position: absolute;
+    top: 114px;
+    z-index: 1;
+
+    padding: 0 10px;
+    text-align: center;
+    border-radius: 4px;
+    color: rgb(93, 131, 168);
+
+    background-color: #fff;
+    box-shadow: 1px 1px 4px 0 rgb(163, 163, 163);
+    transition: all .3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+} */
+
+/* .tooltip  */
+.tooltip {
+    position: fixed;
+    z-index: 10;
+    /* top: 100px; */
+    opacity: 0;
+    transform: scale(0.1);
+    box-shadow: 1px 1px 0 rgb(150, 150, 150);
+}
+.tooltip-active {
+    position: fixed;
+    z-index: 10;
+    top: 50px;
+    padding: 4px 8px;
+
+    text-align: center;
+    border-radius: 3px;
+    color: #666;
+    background: #fff;
+    opacity: 1;
+    box-shadow: 1px 1px 4px rgb(150, 150, 150);
+    transform: scale(1);
+    transition: all 0.4s;
+}
+.tooltip-active:after {
+    content: '';
+    position: absolute;
+    top: 23px;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #fefcfc transparent transparent transparent;
 }
 </style>

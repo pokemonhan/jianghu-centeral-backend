@@ -161,6 +161,7 @@ export default {
 
             // 确认
             mod_show: false,
+            mod_status: '',
             mod_title: '',
             mod_cont: ''
         }

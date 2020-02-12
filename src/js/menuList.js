@@ -49,7 +49,7 @@ const menuList = [
     {
         label: '活动管理',
         // path: 'active',
-        icon: 'iconcalculator',
+        icon: 'iconhuodong',
         child: [
             {
                 label: '活动列表',
@@ -83,7 +83,7 @@ const menuList = [
     {
         label: '报表管理',
         // path: 'report',
-        icon: 'iconmiaojie1029data',
+        icon: 'iconassistant_lefticon_Statisticalreportforms',
         child: [
             {
                 label: '厅主注单报表',

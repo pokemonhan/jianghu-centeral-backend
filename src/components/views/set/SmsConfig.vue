@@ -65,8 +65,7 @@
                     </li>
                     <li>
                         <span>商户标识</span>
-                        <Input class="w250" v-model="form.sign" />
-                        <span class="err-tips" v-show="!form.sign">商户标识不可为空!</span>
+                        <Input class="w250" disabled v-model="form.sign" />
                     </li>
                     <li>
                         <span>商户号</span>
@@ -150,7 +149,7 @@ export default {
             dia_status: '',
             form: {
                 name: '',
-                // sign: '', //    TODO: 关于是否有标识
+                sign: '', //    TODO: 关于是否有标识
                 merchant_code: '',
                 merchant_secret: '',
                 public_key: '',
@@ -173,8 +172,8 @@ export default {
             this.dia_show = true
             this.form = {
                 id: row.id, // id
-                name: row.name,
                 sign: row.sign,
+                name: row.name,
                 merchant_code: row.merchant_code,
                 merchant_secret: row.merchant_secret,
                 public_key: row.public_key,
@@ -210,7 +209,7 @@ export default {
             }
         },
         checkForm() {
-            let checkArr = ['name','sign','merchant_code', 'merchant_secret', 'public_key','sms_num','authorization_code','url']
+            let checkArr = ['name','merchant_code', 'merchant_secret', 'public_key','sms_num','authorization_code','url']
             let pass = true
             checkArr.forEach(key => {
                 if(this.form[key]==='') {
@@ -334,6 +333,7 @@ export default {
 }
 .form > li {
     display: flex;
+    align-items: center;
     position: relative;
     margin-top: 20px;
 }

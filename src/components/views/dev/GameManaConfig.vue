@@ -330,6 +330,7 @@ export default {
 
             // mod 禁用删除框
             mod_show: false,
+            mod_status: '',
             mod_title: '',
             mod_cont: ''
         }

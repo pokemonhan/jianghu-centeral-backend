@@ -7,7 +7,9 @@
 
         <div class="app-content">
             <!-- 侧边栏 -->
-            <Aside class="app-aside"></Aside>
+            <div class="app-aside">
+                <Aside class="adf"></Aside>
+            </div>
             <div class="app-main">
                 <TabNav class="tab-nav"></TabNav>
                 <transition name="fade-transform" mode="out-in">
@@ -95,12 +97,13 @@ export default {
     min-width: 1200px;
     max-width: 2220px;
     margin: 10px auto 0 auto;
+    
 }
 
 .app-aside {
     /* width: 150px; */
     margin-left: 10px;
-    /* overflow: hidden; */
+    /* overflow: scroll; */
 }
 .app-main {
     margin-left: 10px;
@@ -244,6 +247,30 @@ export default {
     }
 } */
 
+/* setup tooltips */
+
+::-webkit-scrollbar {
+    width: 13px;
+    height: 13px;
+    background-color: #808080;
+}
+/*定义滚动条轨道
+ 内阴影+圆角*/
+::-webkit-scrollbar-track {
+    /* -webkit-box-shadow: inset 0 0 6px rgba(239, 240, 241, 0.979); */
+    box-shadow: inset 0 0 6px rgba(241, 241, 241, 0.568);
+    border-radius: 3px;
+    background-color: #d6d8da;
+}
+/*定义滑块
+ 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    /* -webkit-box-shadow: inset 0 0 3px rgba(247, 247, 247, 0.849); */
+    box-shadow: inset 0 0 3px rgba(243, 243, 243, 0.849);
+    background-color: #a8a8a8;
+}
+
 .textarea {
     padding: 10px;
     /* min-height: 130px; */
@@ -258,7 +285,7 @@ export default {
     padding: 20px 8px 20px 8px;
     background: #fff;
     border: 1px solid #4c8bfd;
-    margin-right: 20px;
+    margin-right: 10px;
     /* min-width: 1040px; */
 }
 /* 背景遮罩层 */
@@ -625,6 +652,9 @@ button:hover {
 }
 .mt50 {
     margin-top: 50px;
+}
+.mb10 {
+    margin-bottom: 10px;
 }
 .p5 {
     padding: 5px;

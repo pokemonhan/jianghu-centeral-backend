@@ -96,6 +96,7 @@ export default {
     /* background: #fff; */
 }
 .disabled {
+    color: #666;
     cursor: not-allowed;
 }
 input::placeholder{

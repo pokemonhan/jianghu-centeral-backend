@@ -48,9 +48,10 @@ const components = {
     // DragTree
 }
 
-
+let toastTimer = []
 export default {
     install(Vue) {
+        // 相同提示 5s内不再提示
         // 1.  $toast组件
         Vue.prototype.$toast = function (option) {
             let opt = {}
@@ -64,17 +65,22 @@ export default {
             let tpl = new ToastConstructor({
                 propsData: opt
             }).$mount().$el;
+            let toastDom = document.querySelector('#toast-box')
 
-            document.querySelector('#toast-box').appendChild(tpl)
-
+            function noHadToast() {
+                for (let child of toastDom.children) {
+                    if (child.innerText === opt.message) return false
+                }
+                return true
+            }
+            // 当前 toast-box 没有该消息 则添加
+            noHadToast() && toastDom.appendChild(tpl)
             if (opt.duration) {
                 setTimeout(function () {
-                    document.querySelector('#toast-box').removeChild(tpl)
+                    // debugger
+                    tpl.tagName && document.querySelector('#toast-box').removeChild(tpl)
                 }, opt.duration)
             }
-            // if (document.querySelector('#toast-box').children.length > 200) {
-            //     setTimeout(function () { document.querySelector('#toast-box').html = '' }, 3000)
-            // }
         }
         new Array('error', 'success', 'info', 'warning').forEach(type => {
             Vue.prototype.$toast[type] = function (tips) {
@@ -98,7 +104,7 @@ export default {
                 }, opt.duration)
             }
         }
-        
+
         // // $loading 注册
         // const LoadingConstructor = Vue.extend(Loading)
         // // 生成一个该子类的实例

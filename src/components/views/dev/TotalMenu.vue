@@ -302,7 +302,6 @@ export default {
             
             let { url, method } = this.$api.menu_set
             this.$http({ method, url, data }).then(res => {
-                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
             
                     this.$toast.success(res && res.message)
@@ -437,7 +436,7 @@ export default {
 }
 .edit-menu .title {
     position: relative;
-    line-height: 25px;
+    line-height: 26px;
 }
 .edit-menu .title:hover {
     background: #dce6fa;
@@ -453,9 +452,9 @@ export default {
 }
 /* .lev1 .title {
 } */
-.lev1 > li {
+/* .lev1 > li {
     margin-top: 10px;
-}
+} */
 
 /* .lev1 > li > .title > span { */
 /* } */
@@ -542,7 +541,7 @@ export default {
 
 /* 菜单拖动排序  中*/
 .tol-center .center-box {
-    margin-top: 50px;
+    margin-top: 40px;
 }
 .ph20 {
     padding-left: 20px;

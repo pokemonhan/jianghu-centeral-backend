@@ -1,6 +1,6 @@
 <template>
     <transition name="toast">
-        <div v-show="show" class="vue-toast">
+        <div v-if="show" class="vue-toast">
             <div>
                 <i v-if="type==='warning'" class="toast-warning iconfont iconjinggao1-"></i>
                 <i v-else-if="type==='success'" class="toast-success iconfont iconchenggong-"></i>

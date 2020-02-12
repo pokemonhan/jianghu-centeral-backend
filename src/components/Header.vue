@@ -78,12 +78,7 @@
                             />
                             <p v-show="err_tips[2]" class="err-tips">{{err_tips[2]}}</p>
                         </li>
-                        <!-- <li>
-                            <span>验证码</span>
-                            <Input style="width:148px;" limit="en-num" v-model="form.verificCode" />
-                            <button class="btn-blue">获取验证码</button>
-                            <p v-show="err_tips[2]" class="err-tips">{{err_tips[3]}}</p>
-                        </li>-->
+                     
                     </ul>
                     <div class="form-btns">
                         <button class="btn-plain-large" @click="dia_show=false">取消</button>
@@ -144,12 +139,7 @@ export default {
         //         this.isfullScreen = true;
         //     }
         // },
-        // handleCommand(command) {
-        //     if (command === "logout") {
-        //         Cookies.remove("token");
-        //         location.reload();
-        //     }
-        // }
+    
         playMusic() {
             // let ele = document.querySelector('.playMusic');
             // console.log("TCL: playMusic -> ele", ele)
@@ -273,7 +263,7 @@ export default {
     display: flex;
     align-items: center;
     width: 100%;
-    min-height: 70px;
+    height: 70px;
     background: #4c8bfd;
     /* font-size: 14px; */
 }
@@ -282,8 +272,9 @@ export default {
     display: flex;
     /* flex-wrap: wrap; */
     justify-content: space-between;
+    align-items: center;
     width: 100%;
-    line-height: 70px;
+    /* line-height: 70px; */
     min-width: 700px;
     max-width: 2220px;
 
@@ -296,6 +287,8 @@ export default {
 .left {
     display: flex;
     align-items: center;
+    /* border: 1px solid #000; */
+    line-height: 42px;
 }
 .left .title {
     font-size: 30px;
@@ -367,8 +360,8 @@ export default {
     display: none;
     width: 100px;
     position: absolute;
-    right: 0;
-    top: 60px;
+    right: -10px;
+    top: 30px;
     border-radius: 3px;
     box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.212);
     z-index: 20;

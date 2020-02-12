@@ -78,7 +78,7 @@ Router.prototype.push = function push(location) {
 // 自动加载路由
 
 const routes = new Router({
-    // mode: 'history',
+    mode: 'history',
     routes: [
         {
             path: '/',
