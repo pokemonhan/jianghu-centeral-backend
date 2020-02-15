@@ -24,6 +24,7 @@
         <!-- <div class="modal-mask" v-if="showMask"></div> -->
         <!-- <div id="message-box"> </div> -->
         <div id="notice-box"></div>
+        
     </div>
 </template>
 
@@ -139,7 +140,8 @@ export default {
     position: fixed;
     top: 10px;
     left: 50%;
-    z-index: 100;
+    transform: translateX(-50%);
+    z-index: 10002;
 }
 #notice-box {
     position: fixed;
@@ -250,7 +252,7 @@ export default {
 /* setup tooltips */
 
 ::-webkit-scrollbar {
-    width: 13px;
+    width: 5px;
     height: 13px;
     background-color: #808080;
 }

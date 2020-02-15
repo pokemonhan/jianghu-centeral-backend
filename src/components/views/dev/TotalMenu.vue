@@ -15,7 +15,7 @@
                                 :class="['iconfont iconup',lev1.children?'':'hide']"
                                 @click="expand(lev1.pre_idx)"
                             ></i>
-                            <span class="title-cont">{{lev1.label}}</span>
+                            <span class="title-cont label">{{lev1.label}}</span>
                             <Switchbox class="switch" />
                         </div>
 
@@ -27,7 +27,7 @@
                                         :class="['iconfont iconup',lev2.children?'':'hide']"
                                         @click="expand(lev2.pre_idx)"
                                     ></i>
-                                    <span>{{lev2.label}}</span>
+                                    <span class="label">{{lev2.label}}</span>
 
                                     <Switchbox class="switch" />
                                     <div v-show="lev2.show_menu" class="context-menu">
@@ -47,7 +47,7 @@
                                                 :class="['iconfont iconup',lev3.children?'':'hide']"
                                                 @click="expand(lev3.pre_idx)"
                                             ></i>
-                                            <span>{{lev3.label}}</span>
+                                            <span class="label">{{lev3.label}}</span>
                                             <Switchbox class="switch" />
                                         </div>
 
@@ -65,7 +65,7 @@
                                                     :class="['iconfont iconup',lev4.children?'':'hide']"
                                                     @click="expand(lev4.pre_idx)"
                                                 ></i>
-                                                <span>{{lev4.label}}</span>
+                                                <span class="label">{{lev4.label}}</span>
                                             </li>
                                         </ul>
                                     </li>
@@ -76,28 +76,13 @@
                 </ul>
             </div>
         </div>
-
+        <!-- 菜单拖拽排序 -->
         <div class="tol-center">
             <div class="head">菜单拖动排序</div>
-            <!-- <div class="head-sub">
-                <button class="btn-blue">添加一级菜单</button>
-            </div>-->
+
             <div class="center-box ph20">
-                <!-- 这里使用 ant vue ui -->
-                <el-tree
-                    :data="menu"
-                    node-key="id"
-                    default-expand-all
-                    @node-drag-start="handleDragStart"
-                    @node-drag-enter="handleDragEnter"
-                    @node-drag-leave="handleDragLeave"
-                    @node-drag-over="handleDragOver"
-                    @node-drag-end="handleDragEnd"
-                    @node-drop="handleDrop"
-                    draggable
-                    :allow-drop="allowDrop"
-                    :allow-drag="allowDrag"
-                ></el-tree>
+                
+                <MenuSort :menu="menu"/>
             </div>
         </div>
         <!-- 右边 -->
@@ -173,7 +158,6 @@
                 </div>
             </div>
         </Dialog>
-        <!-- @update:show="(show) => contextMenuVisible = show" -->
         <div v-show="menu_show" class="context-menu" ref="menu" v-clickoutside="menuClose">
             <p @click="addSubordinate">添加下级</p>
             <p @click="editMenu">编辑菜单</p>
@@ -187,12 +171,14 @@
 // import css from 'ant-design-vue/lib/tree/style/css' // 加载 ant CSS
 // import Vue from 'vue';
 import RouteSet from './TotaMenuDir/RouteSet'
+import MenuSort from './TotaMenuDir/MenuSort'
 import { Tree } from 'element-ui'
 export default {
     // name: 'vue-draggable-tree-demo',
     components: {
         [Tree.name]: Tree,
-        RouteSet: RouteSet
+        RouteSet: RouteSet,
+        MenuSort: MenuSort
     },
     data() {
         return {
@@ -212,9 +198,6 @@ export default {
                 parent_id: '',
                 display: ''
             },
-            contextMenuTarget: document.body, // 可右键区域，这里也可以绑定$refs
-            contextMenuVisible: false,
-
             menu_show: false
         }
     },
@@ -322,37 +305,6 @@ export default {
         rtClick(r) {
             console.log('dsf', r)
         },
-        handleDragStart(node, ev) {
-            console.log('drag start', node)
-        },
-        handleDragEnter(draggingNode, dropNode, ev) {
-            console.log('tree drag enter: ', dropNode.label)
-        },
-        handleDragLeave(draggingNode, dropNode, ev) {
-            console.log('tree drag leave: ', dropNode.label)
-        },
-        handleDragOver(draggingNode, dropNode, ev) {
-            console.log('tree drag over: ', dropNode.label)
-        },
-        handleDragEnd(draggingNode, dropNode, dropType, ev) {
-            console.log('tree drag end: ', dropNode && dropNode.label, dropType)
-        },
-        handleDrop(draggingNode, dropNode, dropType, ev) {
-            console.log('tree drop: ', dropNode.label, dropType)
-        },
-        allowDrop(draggingNode, dropNode, type) {
-            // 允许drop条件
-            // if (dropNode.data.label === '二级 3-1') {
-            //     return type !== 'inner'
-            // } else {
-            //     return true
-            // }
-            return true
-        },
-        allowDrag(draggingNode) {
-            // return draggingNode.data.label.indexOf('三级 3-2-2') === -1
-            return true
-        },
 
         // 后台数据转成可用tree数组1
         /**
@@ -437,6 +389,16 @@ export default {
 .edit-menu .title {
     position: relative;
     line-height: 26px;
+
+}
+.lev2 .title {
+    padding-left: 2em;
+}
+.title {
+    display: flex;
+}
+.title .hide {
+    opacity: 0;
 }
 .edit-menu .title:hover {
     background: #dce6fa;
@@ -458,8 +420,14 @@ export default {
 
 /* .lev1 > li > .title > span { */
 /* } */
+.lev1 > li > div .label {
+    min-width: 5em;
+}
+.lev2 > li > div .label {
+    min-width: 7em;
+}
 .lev2 {
-    margin-left: 10px;
+    box-sizing: border-box;
     font-size: 12px;
     /* text-align: left; */
 }
@@ -469,12 +437,8 @@ export default {
     display: inline-block;
     margin-top: 6px;
 }
-.title {
-    display: flex;
-}
-.title .hide {
-    opacity: 0;
-}
+
+
 .checkbox-head {
     font-weight: bold;
     font-size: 16px;

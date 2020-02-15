@@ -170,7 +170,7 @@ export default {
         statusSwitch(row) {
             this.curr_row = row
             this.mod_title = row.status === 1 ? '禁用' : '启用'
-            this.mod_cont = '是否确定禁用该游戏分类？'
+            this.mod_cont = `是否确定${this.mod_title}该游戏分类？`
             this.mod_status = 'switch'
             this.mod_show = true
         },
@@ -178,7 +178,7 @@ export default {
             this.curr_row = row
             this.mod_status = 'del'
             this.mod_title = '删除'
-            this.mod_cont = '是否确定禁用该游戏分类？'
+            this.mod_cont = '是否确定该游戏分类？'
             this.mod_show = true
         },
 

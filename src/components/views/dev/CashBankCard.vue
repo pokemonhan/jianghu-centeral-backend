@@ -22,8 +22,8 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.name}}</td>
                     <td>{{row.code}}</td>
+                    <td>{{row.name}}</td>
                     <td>{{row.author&&row.author.name}}</td>
                     <td>{{row.created_at}}</td>
                     <td>{{row.last_editor&&row.last_editor.name}}</td>

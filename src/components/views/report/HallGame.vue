@@ -12,7 +12,7 @@
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
-                    <button class="btn-blue" @click="clear">清除</button>
+                    <button class="btn-red" @click="clear">清除</button>
                 </li>
             </ul>
         </div>

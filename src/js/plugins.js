@@ -66,18 +66,17 @@ export default {
                 propsData: opt
             }).$mount().$el;
             let toastDom = document.querySelector('#toast-box')
-
-            function noHadToast() {
+            // 判断 toast-box 是否已有同样的消息
+            function noSameToast() {
                 for (let child of toastDom.children) {
                     if (child.innerText === opt.message) return false
                 }
                 return true
             }
             // 当前 toast-box 没有该消息 则添加
-            noHadToast() && toastDom.appendChild(tpl)
+            noSameToast() && toastDom.appendChild(tpl)
             if (opt.duration) {
                 setTimeout(function () {
-                    // debugger
                     tpl.tagName && document.querySelector('#toast-box').removeChild(tpl)
                 }, opt.duration)
             }

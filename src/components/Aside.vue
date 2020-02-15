@@ -226,6 +226,7 @@ export default {
     font-size: 15px;
     font-weight: 600;
     text-align: center;
+    border-top: 1px solid rgb(253, 253, 253);
     /* color: rgb(63, 62, 62); */
 }
 

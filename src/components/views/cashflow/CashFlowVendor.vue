@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <!-------------------- 金流厂商 ------------------------->
+        <!-- ------------------ 厂商管理 ----------------------- -->
         <div class="filter p10">
             <ul class="left">
                 <li>
@@ -27,7 +27,10 @@
                     <td>{{row.last_editor &&row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
-                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <button
+                            :class="[row.status?'btns-red':'btns-green']"
+                            @click="statusSwitch(row)"
+                        >{{row.status===1?'禁用':'启用'}}</button>
                     </td>
                 </template>
             </Table>
@@ -70,22 +73,7 @@ export default {
                 '最后更新时间',
                 '操作'
             ],
-            list: [
-                {
-                    a1: '64646466',
-                    a2: '1',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                },
-                {
-                    a1: '64646466',
-                    a2: '0',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                }
-            ],
+            list: [],
             status_obj: {
                 '1': '禁用',
                 '0': '启用'
@@ -101,13 +89,6 @@ export default {
         }
     },
     methods: {
-        updateNo() {
-            this.getList()
-        },
-        updateSize() {
-            this.pageNo = 1
-            this.getList()
-        },
         statusSwitch(row) {
             this.mod_show = true
             this.curr_row = row
@@ -141,7 +122,6 @@ export default {
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
-            let self = this
             let params = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.finance_vendor_list
             this.$http({
@@ -150,24 +130,24 @@ export default {
                 params: params
             }).then(res => {
                 if (res && res.code === '200') {
-                    self.total = res.data.total
-                    self.list = res.data.data
-                } else {
-                    if (res && res.message !== '') {
-                        self.toast.error(res.message)
-                    }
+                    this.total = res.data.total
+                    this.list = res.data.data
                 }
             })
+        },
+        updateNo() {
+            this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            this.getList()
         }
     },
     mounted() {
         this.getList()
     }
 }
-</script> <style scoped>
+</script>
 
-.p10 {
-    padding: 10px;
-}
-
+<style scoped>
 </style>

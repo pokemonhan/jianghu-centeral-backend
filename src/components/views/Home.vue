@@ -1,10 +1,10 @@
 <template>
     <div class="home">
         <ul class="row1">
-            <!-- 今日盈利 -->
+            <!-- 今日总盈利 -->
             <li>
                 <div class="head bg-red">
-                    <span>今日盈利</span>
+                    <span>今日总盈利</span>
                 </div>
                 <div class="cont">
                     <div>
@@ -17,10 +17,10 @@
                     </div>
                 </div>
             </li>
-            <!-- 今日首充 -->
+            <!-- 今日总首充 -->
             <li>
                 <div class="head bg-blue">
-                    <span>今日首充</span>
+                    <span>今日总首充</span>
                 </div>
                 <div class="cont">
                     <div>
@@ -31,32 +31,32 @@
                     </div>
 
                     <div class="bottom-10">
-                        <span>充值人数:</span>
+                        <span>充值总人数:</span>
                         <span>{{'0'}}</span>
                         <span>人</span>
                     </div>
                 </div>
             </li>
-            <!-- 今日提现 -->
+            <!-- 今日总提现 -->
             <li>
                 <div class="head bg-green">
-                    <span>今日提现</span>
+                    <span>今日总提现</span>
                 </div>
                 <div class="cont">
                     <div>
                         <span class="number">{{'0.00'}}</span>
                     </div>
                     <div class="bottom-10">
-                        <span>提现人数:</span>
+                        <span>提现总人数:</span>
                         <span>{{'0'}}</span>
                         <span>人</span>
                     </div>
                 </div>
             </li>
-            <!-- 今日彩金优惠 -->
+            <!-- 今日总彩金优惠 -->
             <li>
                 <div class="head bg-orange">
-                    <span>今日彩金优惠</span>
+                    <span>今日总彩金优惠</span>
                 </div>
                 <div class="cont">
                     <div>
@@ -64,7 +64,7 @@
                     </div>
 
                     <div class="bottom-10">
-                        <span>领取人数:</span>
+                        <span>领取总人数:</span>
                         <span>{{'0'}}</span>
                         <span>人</span>
                     </div>
@@ -83,7 +83,7 @@
             </div>
             <div class="body">
                 <div class="left">
-                    <div class="circle-title">登录总人数</div>
+                    <div class="circle-title">{{['登录总人数','注册总人数'][peopleIdx]}}</div>
                     <div class="circle-body"></div>
                     <div class="circle-inner">
                         <div>登录人数</div>
@@ -108,7 +108,7 @@
             </div>
             <div class="body">
                 <div class="left">
-                    <div class="circle-title">总充值</div>
+                    <div class="circle-title">{{['总充值','总提款', '总盈利', '总优惠'][amountIdx]}}</div>
                     <div class="circle-body"></div>
                     <div class="circle-inner">
                         <div style="margin-top:5px;">{{'100000.00'}}</div>
@@ -135,6 +135,7 @@ export default {
     methods: {
         searchPeople(item, index) {
             this.peopleIdx = index
+
         },
         searchAmount(item, index) {
             this.amountIdx = index

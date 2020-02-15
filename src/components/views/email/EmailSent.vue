@@ -70,7 +70,7 @@
         <!-- 详情 -->
         <Dialog :show.sync="dia_show" title="已发邮件详情">
             <div class="dia-inner">
-                <Detail isSend :row="curr_row" @close="dia_show=false" />
+                <Detail class="email-detail" isSend :row="curr_row" @close="dia_show=false" />
             </div>
         </Dialog>
         <!-- 删除确认 -->
@@ -219,8 +219,13 @@ export default {
     cursor: not-allowed;
 }
 .dia-inner {
-    max-width: 1200px;
-    max-height: 800px;
+    min-width: 1000px;
+    max-width: 80vw;
+    max-height: 80vh;
     overflow: auto;
 }
+/* .email-detail {
+    min-width: 800px;
+    width: 100vw;
+} */
 </style>

@@ -329,12 +329,12 @@ export default {
 
     // -------- 路由 -------
 
-    //  总控菜单管理-路由-列表
+    //  9.1.7 总控菜单管理-路由-列表
     route_all_list: {
         url: '/headquarters-api/headquarters-route/index',
         method: 'get'
     },
-    //  总控菜单管理-路由-添加
+    //  9.1.8 总控菜单管理-路由-添加
     route_add: {
         url: '/headquarters-api/headquarters-route/do-add',
         method: 'post'

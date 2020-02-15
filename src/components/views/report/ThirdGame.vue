@@ -20,6 +20,9 @@
                     <button class="btn-blue">查询</button>
                     <button class="btn-blue">导出Excel</button>
                 </li>
+                <li>
+                    <button class="btn-red" @click="clear">清除</button>
+                </li>
             </ul>
         </div>
      
@@ -91,6 +94,13 @@ export default {
         timeUpdate() {
             //同步快捷查询按钮状态
             this.quick_query = this.filter.dates
+        },
+        clear() {
+            this.quick_query = []
+            this.filter = {
+                name: '',
+                dates: []
+            }
         },
         updateNo() {
             // this.getList()

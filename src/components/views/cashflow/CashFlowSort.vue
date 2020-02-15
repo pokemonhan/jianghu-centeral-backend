@@ -16,16 +16,21 @@
                 </li>
             </ul>
         </div>
-        <div class="table">
+        <div class="table mt10">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.name}}</td>
                     <td>{{row.last_editor?row.last_editor.name:'--'}}</td>
                     <td>{{row.updated_at}}</td>
-                    <td :class="[row.status===1?'green':'red']">{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td>
+                    <td
+                        :class="[row.status===1?'green':'red']"
+                    >{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td>
                     <td>
-                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <button
+                            :class="[row.status?'btns-red':'btns-green']"
+                            @click="statusSwitch(row)"
+                        >{{row.status===1?'禁用':'启用'}}</button>
                     </td>
                 </template>
             </Table>
@@ -84,16 +89,9 @@ export default {
         }
     },
     methods: {
-        updateNo() {
-            this.getList()
-        },
-        updateSize() {
-            this.pageNo = 1
-            this.getList()
-        },
         statusSwitch(row) {
             this.mod_show = true
-            this.curr_row =row
+            this.curr_row = row
             if (row.status === 1) {
                 this.mod_title = '禁用'
                 this.mod_cont = '是否确认禁用该分类!'
@@ -103,9 +101,11 @@ export default {
             }
         },
         modConf() {
-            let data = {}
-            data.status = this.curr_row.status === 1 ? 0 : 1
-            data.id = this.curr_row.id
+            let data = {
+                status: this.curr_row.status === 1 ? 0 : 1,
+                id: this.curr_row.id
+            }
+       
             let { url, method } = this.$api.finance_sort_set
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
@@ -141,6 +141,13 @@ export default {
                     }
                 }
             })
+        },
+        updateNo() {
+            this.getList()
+        },
+        updateSize() {
+            this.pageNo = 1
+            this.getList()
         }
     },
     mounted() {
@@ -151,10 +158,4 @@ export default {
 
 <style scoped>
 
-.p10 {
-    padding: 10px;
-}
-.table {
-    margin-top: 10px;
-}
 </style>

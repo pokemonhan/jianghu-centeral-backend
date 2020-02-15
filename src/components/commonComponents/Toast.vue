@@ -49,7 +49,7 @@ export default {
     position: relative;
     opacity: 0;
     transform: translateY(-30px);
-    z-index: 100;
+    
 }
 .toast-leave-to {
     margin-top: -55px;

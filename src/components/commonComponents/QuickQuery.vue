@@ -163,7 +163,6 @@ export default {
     padding-left: 15px;
     padding-right: 15px;
     outline: none;
-    border: none;
     /* box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); */
     cursor: pointer;
     box-sizing: border-box;

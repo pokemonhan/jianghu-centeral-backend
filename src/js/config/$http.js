@@ -130,7 +130,6 @@ http.interceptors.request.use(req => {
 
 // 后台返回数据 全局预设 ---
 http.interceptors.response.use(res => {
-    console.log('res: ', res);
     // let data = res.data
     let toastErr = window.__vm__.$toast.error
     // 503 请求频繁 

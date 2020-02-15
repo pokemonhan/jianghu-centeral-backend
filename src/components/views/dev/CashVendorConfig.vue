@@ -179,7 +179,7 @@ export default {
             this.mod_status = 'switch'
             this.curr_row = row
             this.mod_title = row.status === 1 ? '禁用' : '启用'
-            this.mod_cont = `是否确定${this.mod_title}该支付产商？`
+            this.mod_cont = `是否确定${this.mod_title}该支付厂商？`
 
             this.mod_show = true
         },
@@ -187,7 +187,7 @@ export default {
             this.mod_status = 'del'
             this.curr_row = row
             this.mod_title = '删除'
-            this.mod_cont = '是否确定删除该支付产商？'
+            this.mod_cont = '是否确定删除该支付厂商？'
 
             this.mod_show = true
         },

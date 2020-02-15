@@ -124,7 +124,7 @@ export default {
         //   }
 
         objToArr(obj, pre_idx = '') {
-            let list = []
+            // let list = []
             return Object.keys(obj).map((key, index) => {
                 let item = obj[key]
                 
@@ -134,6 +134,8 @@ export default {
                     path: item.route,
                     display: item.display,
                     pre_idx: pre_idx + index,
+                    type: '',
+                    sort: item.sort,
                 }
 
                 // TODO: 后期改为以其他关键字作为匹配. 
@@ -147,7 +149,7 @@ export default {
                 return template
             })
             // }
-            return list
+            // return list
         },
         getMenuList() {
             // let { method, url } = this.$api.menu_all_list

@@ -208,7 +208,7 @@ export default {
             this.curr_row = row
             this.mod_status = 'del'
             this.mod_title = '删除'
-            this.mod_cont = '是否删除该分类'
+            this.mod_cont = '是否删除该分类名称'
             this.mod_show = true
         },
         //dialog confirm

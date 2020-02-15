@@ -33,8 +33,10 @@
                     <td>{{row.updated_at}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
-                        <!-- <button class="btns-blue" @click="switchStatus(row)">禁用</button> -->
-                        <button :class="[row.status?'btns-red':'btns-green']" @click="switchStatus(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <button
+                            :class="[row.status?'btns-red':'btns-green']"
+                            @click="switchStatus(row)"
+                        >{{row.status===1?'禁用':'启用'}}</button>
                         <button class="btns-blue" @click="del(row)">删除</button>
                     </td>
                 </template>
@@ -65,7 +67,11 @@
                         </li>
                         <li>
                             <span>白名单:</span>
-                            <textarea class="textarea" placeholder="格式例子: 2.2.2.2, 5.5.3.5" v-model="form.whitelist_ips"></textarea>
+                            <textarea
+                                class="textarea"
+                                placeholder="格式例子: 2.2.2.2, 5.5.3.5"
+                                v-model="form.whitelist_ips"
+                            ></textarea>
                         </li>
                         <li>
                             <span>状态选择:</span>
@@ -100,7 +106,7 @@ export default {
         return {
             filter: {
                 name: '',
-                status: '',
+                status: ''
             },
             status_opt: [
                 { label: '全部', value: '' },
@@ -167,7 +173,7 @@ export default {
             }
 
             if (row.whitelist_ips) {
-                this.form.whitelist_ips = row.whitelist_ips.replace( /["\[\]]/g, '' )
+                this.form.whitelist_ips = row.whitelist_ips.toString()
             }
             this.dia_status = 'edit'
             this.dia_title = '编辑'
@@ -188,15 +194,28 @@ export default {
             this.mod_cont = '是否确定删除该游戏产商！'
 
             this.mod_show = true
-
         },
         checkForm() {
-            if(this.form.name==='') return false
-            if(this.form.sign==='') return false
+            if (this.form.name === '') return false
+            if (this.form.sign === '') return false
+
+            if (this.form.whitelist_ips) {
+                // ip 正则
+                let reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+
+                let list = JSON.parse(this.ipFormat(this.form.whitelist_ips))
+                let iptest = list.every(item => {
+                    return reg.test(item)
+                })
+                if (!iptest) {
+                    this.$toast.warning('ip格式不对!')
+                    return false
+                }
+            }
             return true
         },
         diaCfm() {
-            if(!this.checkForm()) return
+            if (!this.checkForm()) return
             if (this.dia_status === 'add') {
                 this.addCfm()
             }
@@ -204,18 +223,23 @@ export default {
                 this.editCfm()
             }
         },
+        // 白名单ip 变成需要的格式
+        ipFormat(ip) {
+            if (!ip) {
+                return ''
+            }
+            let str = ip.replace('，', ',')
+            str = str.replace(/\s+/g, '')
+            return JSON.stringify(str.split(','))
+        },
         addCfm() {
             let data = {
                 name: this.form.name,
                 sign: this.form.sign,
-                whitelist_ips: this.form.whitelist_ips,
+                whitelist_ips: this.ipFormat(this.form.whitelist_ips),
                 status: this.form.status
             }
-            if (data.whitelist_ips) {
-                let str = data.whitelist_ips.replace('，', ',')
-                str = str.replace(/\s+/g, '')
-                data.whitelist_ips = JSON.stringify(str.split(','))
-            }
+
             data = window.all.tool.rmEmpty(data)
             let { url, method } = this.$api.dev_game_vendor_add
             this.$http({ method, url, data }).then(res => {
@@ -231,16 +255,16 @@ export default {
             })
         },
         editCfm() {
-            let data = JSON.parse(JSON.stringify(this.form))
-            if (data.whitelist_ips) {
-                let str = data.whitelist_ips.replace('，', ',')
-                str = str.replace(/\s+/g, '')
-                data.whitelist_ips = JSON.stringify(str.split(','))
-            }
 
+            let data = {
+                id: this.form.id,
+                name: this.form.name,
+                sign: this.form.sign,
+                whitelist_ips: this.ipFormat(this.form.whitelist_ips),
+            }
+            data = window.all.tool.rmEmpty(data)
             let { url, method } = this.$api.dev_game_vendor_set
             this.$http({ method, url, data }).then(res => {
-
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
                     this.dia_show = false
@@ -275,16 +299,15 @@ export default {
         },
         delCfm() {
             let data = {
-                id: this.curr_row.id,
+                id: this.curr_row.id
             }
-            
+
             let { url, method } = this.$api.dev_game_vendor_del
             this.$http({ method, url, data }).then(res => {
                 console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
-            
                     this.$toast.success(res && res.message)
-                    this.mod_show=false
+                    this.mod_show = false
                     this.getList()
                 } else {
                     if (res && res.message !== '') {
@@ -322,7 +345,6 @@ export default {
     }
 }
 </script> <style scoped>
-
 .dia-inner {
     display: flex;
     justify-content: center;

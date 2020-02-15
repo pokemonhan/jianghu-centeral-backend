@@ -2,8 +2,10 @@
     <div class="container">
         <!-- 厅主注单报表 -->
         <!-- 注单就是下注单 -->
-        <QuickQuery :date="quick_query" @update="qqUpd" />
-
+        <!-- <div class="date-select"> -->
+            <QuickQuery :date="quick_query" @update="qqUpd" />
+            
+        <!-- </div> -->
         <div class="filter p10">
             <ul class="left">
                 <li>
@@ -28,13 +30,20 @@
             <ul class="left">
                 <li>
                     <span>派彩状态</span>
-                    <Select style="width:100px;" v-model="filter.status" :options="status_opt"></Select>
+                    <Select v-model="filter.status" :options="status_opt"></Select>
                 </li>
                 <li>
                     <span>注单时间</span>
                     <Date v-model="filter.bet_dates[0]" @update="timeUpdate()" />
                     <span style="margin:0 5px;">~</span>
                     <Date v-model="filter.bet_dates[1]" @update="timeUpdate()" />
+                </li>
+                <li>
+                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue">导出Excel</button>
+                </li>
+                <li>
+                    <button class="btn-red" @click="Clear">清除</button>
                 </li>
             </ul>
         </div>
@@ -143,6 +152,17 @@ export default {
             this.filter.bet_dates = dates
             this.filter = Object.assign(this.filter)
         },
+        Clear() {
+            this.quick_query = []
+            this.filter = {
+                acc: '',
+                status: '',
+                name: '',
+                lottery_dates: [],
+                bet_dates: [],
+                warehouse_dates: []
+            }
+        },
         timeUpdate() {
             //同步快捷查询按钮状态
             this.quick_query = this.filter.bet_dates
@@ -163,12 +183,29 @@ export default {
 /*定义滚动条高宽及背景
  高宽分别对应横竖滚动条的尺寸*/
 ::-webkit-scrollbar {
-    width:8px;
-    height:8px;
+    width:10px;
+    height:10px;
     /* background-color:#F5F5F5; */
 }
-
-
+.date-select {
+    display: flex;
+    align-items: center;
+}
+.btn-clear {
+    height: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
+    color: #fff;
+    background: #4c8bfd;
+}
+.btn-clear:hover {
+    background: #6397f7;
+    transition: box-shadow 0.2s;
+}
+.btn-clear:active {
+    box-shadow: none;
+    background: #4c8bfd;
+}
 .filter-row2 {
     padding-left: 10px;
     padding-bottom: 10px;

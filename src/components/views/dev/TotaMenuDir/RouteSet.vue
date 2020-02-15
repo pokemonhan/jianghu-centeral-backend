@@ -1,5 +1,5 @@
 <template>
-    <div class="center-box">
+    <div class="center-box content">
         <div>
             <div class="search">
                 <Input placeholder="搜索" v-model="search" />
@@ -7,17 +7,17 @@
 
             <ul class="lev1">
                 <!-- 一级 -->
-                <li v-for="(lv1,lv1_idx) in routes" :key="lv1_idx">
+                <li v-for="(lv1,lv1_idx) in routesMenu" :key="lv1_idx">
                     <div class="title">
                         <span class="icons">
                             <i
                                 :class="['iconfont iconup',lv1.children?'':'hide']"
                                 @click="expand(lv1_idx)"
                             ></i>
-                            <i
+                            <!-- <i
                                 :class="['iconfont iconup',lv1.routes?'':'none']"
                                 @click="routeExpand(lv1_idx)"
-                            ></i>
+                            ></i>-->
                         </span>
                         <span class="title-cont">{{lv1.label}}</span>
                         <span v-if="!lv1.children" class="add-router" @click="add">添加路由</span>
@@ -27,9 +27,7 @@
                     <ul v-if="lv1.routes" class="route-lv2" :ref="lv1_idx">
                         <li v-for="(route, route_idx) in lv1.routes" :key="route_idx">
                             <i class="iconfont iconshezhi2"></i>
-                            <span
-                                :class="isShowRed(route)?'red':''"
-                            >{{route.title}}</span>
+                            <span :class="isShowRed(route)?'red':''">{{route.title}}</span>
                             <span class="a" @click="edit(lv1)">编辑</span>
                             <span></span>
                             <span class="a" @click="del(lv1)">删除</span>
@@ -46,10 +44,10 @@
                                         :class="['iconfont iconup',lv2.children?'':'hide']"
                                         @click="expand(lv1_idx+'-'+lv2_idx)"
                                     ></i>
-                                    <i
+                                    <!-- <i
                                         :class="['iconfont iconup',lv2.routes?'':'none']"
                                         @click="routeExpand(lv1_idx+'-'+lv2_idx)"
-                                    ></i>
+                                    ></i>-->
                                 </span>
 
                                 <span class="title-cont">{{lv2.label}}</span>
@@ -64,9 +62,7 @@
                                     :key="rout2_idx"
                                 >
                                     <i class="iconfont iconshezhi2"></i>
-                                    <span
-                                        :class="isShowRed(route2)?'red':''"
-                                    >{{route2.title}}</span>
+                                    <span :class="isShowRed(route2)?'red':''">{{route2.title}}</span>
                                     <span class="a" @click="edit(route2)">编辑</span>
                                     <span class="a" @click="del(route2)">删除</span>
                                     <Switchbox class="switch" v-model="route2.is_open" />
@@ -147,33 +143,44 @@
             <div class="dia-inner">
                 <div>
                     <ul class="form">
-
-                        <!-- 添加路由 -->
+                        <!-- 添加 编辑路由 -->
                         <li>
-                            <span>选择路由:</span>
-                            <Select
+                            <span>选择路由1:</span>
+                            <!-- <Select
                                 style="width:550px;margin-top:10px;"
                                 v-model="form.route"
                                 :options="add_route_opt"
                                 input
                                 @input="routeInput"
+                            ></Select>-->
+                            <Select
+                                style="width:550px;margin-top:10px;"
+                                v-model="form.route_name"
+                                :options="route_show_opt"
+                                input
+                                @input="routeInput"
+                                @update="routeSelect"
                             ></Select>
                         </li>
 
                         <!-- 编辑路由 -->
-                        <!-- <li >
-                            <span>选择路由:</span>
+                        <!-- <li>
+                            <span>选择路由(编辑):</span>
                             <Select
                                 style="width:550px;margin-top:10px;"
-                                v-model="form.route"
+                                v-model="form.route_name"
                                 :options="edit_route_opt"
                                 input
                                 @input="routeInput"
                             ></Select>
-                        </li> -->
+                        </li>-->
                         <li class="mt20">
                             <span class="mb10">标题</span>
                             <Input style="width:550px" v-model="form.title" />
+                        </li>
+                        <li class="mt20">
+                            <span>控制器</span>
+                            <span>{{form.controller}}</span>
                         </li>
                     </ul>
                     <div class="center-box mt50">
@@ -202,16 +209,16 @@ export default {
     data() {
         return {
             search: '',
-            routes: [],
+            routesMenu: [],
             // dialog
             dia_show: false,
             form: {
-                route: '',
+                route_name: '',
                 title: ''
             },
-            route_all: [], // 所有 select 选项框内容
-            add_route_opt: [], // 添加 select
-            edit_route_opt: [], // 编辑 select
+            route_all_opt: [], // 所有 select 下拉框内容
+            // 展示的下拉框内容
+            route_show_opt: [],
 
             route_obj: {}, // 目前路由_对象
             curr_route: [], // 目前路由_后端信息
@@ -220,61 +227,71 @@ export default {
             dia_title: '',
 
             // modal 框
-            mod_show: false
+            mod_show: false,
+            mod_status: ''
         }
     },
     methods: {
-        toTreeArray(menu) {
-            return menu.map(item => {
-                if (this.route_obj[item.id]) {
-                    item.routes = this.route_obj[item.id]
-                }
-                if (item.children) {
-                    item.children = this.toTreeArray(item.children)
-                }
-                return item
+        expand(index) {
+            let ele = this.$refs[index]
+            $(ele).slideToggle(200)
+        },
+        isShowRed(route) {
+            let search = this.search
+            let title = route && route.title
+            if (!title) return false
+            if (!search) return false
+            return title.indexOf(search) !== -1
+        },
+        // routeExpand(index) {
+        //     let ele = this.$refs[index]
+        //     $(ele).slideToggle(200)
+        // },
+        // 根据route_name 返回它的相关内容
+        getRouterNameObj(route_name) {
+            return this.route_all_opt.find(item => {
+                return item.route_name === route_name
             })
         },
-        /* 获取所有可选路由 (select内容) */
+
+        /* 获取所有可选路由 (即: 添加路由,编辑路由的select下拉框内容) */
         getRouteSelect() {
+            // 根据数组变成 需要的 option下拉框
+            let toRouteOpt = (arr = []) => {
+                return arr.map((item, index) => {
+                    return {
+                        label: item.route_name + '(' + item.url + ')',
+                        value: item.route_name,
+                        url: item.url, // 例如: headquarters-api/activity/index-do
+                        route_name: item.route_name, // 例如 headquarters-api.activity.index-do
+                        controller: item.controller
+                    }
+                })
+            }
             let data = { type: 0 }
             let { url, method } = this.$api.menu_date_list
             this.$http({ method, url, data }).then(res => {
-                // console.log('select 内容res: ', res);
-                // this.route_info = res.data.route_info
                 if (res && res.code === '200') {
-                    this.route_all = res.data.route_info.map((item, index) => {
-                        return {
-                            label: item.url,
-                            value: item.url,
-                            url: item.url,
-                            controller: item.controller
-                        }
-                    })
+                    this.route_all_opt = toRouteOpt(
+                        res.data && res.data.route_info
+                    )
                 }
             })
         },
-        // 获取包含路由菜单. 让菜单里面能显示路由
-        getRouteMenu() {
-            if (this.menu.length === 0) return
-            if (this.curr_route.length === 0) return
-            this.routes = this.toTreeArray(this.menu)
-        },
+
         initForm() {
             this.form = {}
         },
         add(row) {
-            // console.log('row: ', row);
+            console.log('添加row: ', row)
             this.initForm()
 
-            let route_arr = this.curr_route.map(item => item.route_name)
+            let route_arr = this.curr_route.map(item => item.route_name) // 已使用路由数组
             // 已使用路由不可再被使用
-            this.add_route_opt = this.route_all.filter(item => {
-                // 路由没有被使用就放进select,另外当前路由也需要放进去. ()
-                return (
-                    route_arr.indexOf(item.url) === -1 ||
-                    item.url === row.route_name
-                )
+            this.route_show_opt = this.route_all_opt.filter(item => {
+                // 路由没有被使用就放进select,另外当前路由虽然有使用也需要放进去.，以便展示自己
+                let not_used = route_arr.indexOf(item.route_name) === -1 // 1.路由没有被使用就放进select
+                return not_used
             })
 
             this.curr_row = row
@@ -283,19 +300,25 @@ export default {
             this.dia_show = true
         },
         edit(row) {
-            let route_arr = this.curr_route.map(item => item.route_name)
+            console.log('编辑row: ', row)
+
+            let route_arr = this.curr_route.map(item => item.route_name) // 已使用路由数组
             // // 已使用路由不可再被使用
-            this.add_route_opt = this.route_all.filter(item => {
-                // 路由没有被使用就放进select,另外当前路由也需要放进去. ()
-                return (
-                    route_arr.indexOf(item.url) === -1 ||
-                    item.url === row.route_name
-                )
+            this.route_show_opt = this.route_all_opt.filter(item => {
+                // 1.路由没有被使用就放进select, 2. 当前路由也需要放进去.
+                let not_used = route_arr.indexOf(item.route_name) === -1 // 1.路由没有被使用就放进select
+                let isCurrent = item.route_name === row.route_name // 2.当前路由也需要放进去.
+                return not_used || isCurrent
             })
 
-            this.form.route = row.route_name
-            this.form.title = row.title
-         
+            this.form = {
+                route_name: row.route_name,
+                title: row.title,
+                controller:
+                    this.getRouterNameObj(row.route_name) &&
+                    this.getRouterNameObj(row.route_name).controller
+            }
+
             this.form = Object.assign(this.form)
             this.curr_row = row
             this.dia_status = 'edit'
@@ -304,37 +327,15 @@ export default {
         },
         del(row) {
             this.curr_row = row
+            this.mod_status = 'del'
             this.mod_show = true
         },
-        expand(index) {
-            let ele = this.$refs[index]
-            $(ele).slideToggle(200)
-        },
-        isShowRed(route) {
-            let search = this.search
-            let title = route && route.title
-            if(!title) return false
-            if(!search) return false
-            return title.indexOf(search) !== -1
-        },
-        routeExpand(index) {
-            let ele = this.$refs[index]
-            $(ele).slideToggle(200)
-        },
+
         modConf() {
             // 删除 确认
-            let data = {
-                id: this.curr_row.id
+            if (this.mod_status === 'del') {
+                this.delCfm()
             }
-
-            let { url, method } = this.$api.route_del
-            this.$http({ method, url, data }).then(res => {
-                if (res && res.code === '200') {
-                    this.$toast.success(res && res.message)
-                    this.mod_show = false
-                    this.getRouteList()
-                }
-            })
         },
 
         diaCfm() {
@@ -345,45 +346,58 @@ export default {
                 this.editCfm()
             }
         },
+        // select 下拉框点击更新时
+        routeSelect() {
+            let routeObj = this.getRouterNameObj(this.form.route_name) || ''
+            this.$set(this.form, 'controller', routeObj.controller)
+        },
+        // 当路由input输入时 ,
+        routeInput: function(val) {
+            // 更新select里面的内容
+            // function
+        },
 
-        // 当路由输入时 ,更新select里面的内容
         routeInput(val) {
             let route_arr = this.curr_route.map(item => item.route_name)
+            this.route_show_opt = this.route_all_opt.filter(item => {
+                let not_used = route_arr.indexOf(item.route_name) === -1 // 1.路由没有被使用就放进select
+                let isCurrent = item.route_name === this.curr_row.route_name // 2.当前路由也需要放进去.
+                let inputfilter = item.label.indexOf(val) !== -1 // 3.并且根据input内容筛选
 
-            this.add_route_opt = this.route_all.filter(item=>{
-
-                 // 1.路由没有被使用就放进select 2.当前路由也需要放进去. 3.并且根据input内容筛选
-                let isNothad = route_arr.indexOf(item.url) === -1
-                let isCurrent = item.url === this.curr_row.route_name
-                let inputfilter = item.url.indexOf(val)!== -1
-                return (isNothad || isCurrent) && inputfilter
-         
+                return (not_used || isCurrent) && inputfilter
             })
         },
         checkForm() {
-            let route_temp = this.route_all.filter(item=>item.url===this.form.route)[0]
+            let route_temp = this.route_all_opt.find(
+                item => item.route_name === this.form.route_name
+            )
             if(!route_temp) {
-                this.$toast.warning('请检查路由内容!')
+                this.$toast.warning('路由不匹配!')
                 return false
             }
-            if(!this.form.title) {
+            if (!this.form.route_name) {
+                this.$toast.warning('请检查路由!')
+                return false
+            }
+            if (!this.form.title) {
                 this.$toast.warning('请检查标题!')
                 return false
             }
-                return true
-          
+            return true
         },
         addCfm() {
-            if(!this.checkForm()) return
-            let route_temp = this.route_all.filter(item=>item.url===this.form.route)[0]
-            console.log('route_temp: ', route_temp);
+            if (!this.checkForm()) return
+            let route_temp = this.route_all_opt.find(
+                item => item.route_name === this.form.route_name
+            )
+            console.log('route_temp: ', route_temp)
             let controller = route_temp.controller.split('\\')
             controller = controller[controller.length - 1].split('@')[0]
 
             let data = {
                 menu_group_id: this.curr_row.id,
                 title: this.form.title,
-                route_name: route_temp.url,
+                route_name: this.form.route_name,
                 controller: controller, // 后端不方便获取,所以这里再返还给他
                 method: route_temp.controller.split('@')[1] // 同上
             }
@@ -398,10 +412,10 @@ export default {
             })
         },
         editCfm() {
-            
-          
-            if(!this.checkForm()) return
-            let route_temp = this.route_all.filter(item=>item.url===this.form.route)[0]
+            if (!this.checkForm()) return
+            let route_temp = this.route_all_opt.find(item => {
+                return item.value === this.form.route_name
+            })
             let controller = route_temp.controller.split('\\')
             controller = controller[controller.length - 1].split('@')[0]
 
@@ -409,7 +423,7 @@ export default {
                 id: this.curr_row.id,
                 menu_group_id: this.curr_row.menu_group_id,
                 title: this.form.title,
-                route_name: route_temp.url,
+                route_name: this.form.route_name,
                 controller: controller,
                 method: route_temp.controller.split('@')[1]
             }
@@ -423,36 +437,77 @@ export default {
                 }
             })
         },
-        // 获取目前路由内容， __路由是根据id 知道在哪个菜单的子项
+        delCfm() {
+            let data = {
+                id: this.curr_row.id
+            }
+
+            let { url, method } = this.$api.route_del
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === '200') {
+                    this.$toast.success(res && res.message)
+                    this.mod_show = false
+                    // this.getRouteList()
+                }
+                this.getRouteList()
+            })
+        },
+        // 获取当前路由对象,方便调用 . 以id 为key 保存所有信息到route_obj 里面
+        // 这样就方便查找该菜单id 下的所有路由数组. 例如: 发邮件页面id为5 ,它下面有 列表,删除,最近联系人等api接口信息
+        getRouteObj(arr) {
+            let route_obj = {}
+
+            arr.forEach(item => {
+                // 对象属性下为空, 就设置为数组类型
+                if (!route_obj[item.menu_group_id]) {
+                    route_obj[item.menu_group_id] = []
+                }
+                // 并push 到数组下
+                route_obj[item.menu_group_id].push(item)
+            })
+            return route_obj
+        },
+        // 获取包含路由的菜单. (让菜单里面能显示路由)
+        setRouteMenu() {
+            if (this.menu.length === 0) return
+            if (this.curr_route.length === 0) return
+            let self = this
+
+            let toTreeArray = function(menu) {
+                return menu.map(item => {
+                    // 根据菜单id 得知它自身api路由有哪些,
+                    // 例如: 登录记录 id为5，  api路由 (routes）有 登录记录-列表api
+                    if (self.route_obj[item.id]) {
+                        item.routes = self.route_obj[item.id]
+                    }
+                    if (item.children) {
+                        item.children = toTreeArray(item.children)
+                    }
+                    return item
+                })
+            }
+            let menu = JSON.parse(JSON.stringify(this.menu))
+            this.routesMenu = toTreeArray(menu)
+        },
+        // 获取目前api路由内容，( __路由是根据菜单id 知道在哪个菜单的子项)
         getRouteList() {
+            console.log('刷新页面')
             let { url, method } = this.$api.route_all_list
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
                     if (!res.data) return
                     this.curr_route = res.data
-                    this.setRouteObj(res.data)
-                  
-                    this.getRouteMenu()
-                }
-            })
-        },
-        // 设置当前路由对象,方便调用
-        setRouteObj(arr) {
-            this.route_obj = {}
+                    // console.log('this.curr_route: ', this.curr_route);
+                    this.route_obj = this.getRouteObj(res.data)
 
-            arr.forEach(item => {
-                if (!this.route_obj[item.menu_group_id]) {
-                    // 转换为对象列表 方便使用
-                    this.route_obj[item.menu_group_id] = []
+                    this.setRouteMenu()
                 }
-                this.route_obj[item.menu_group_id].push(item)
             })
         }
     },
     watch: {
         menu(menu) {
-
-            this.getRouteMenu()
+            this.setRouteMenu()
         }
     },
     mounted() {
@@ -463,7 +518,7 @@ export default {
 </script>
 
 <style scoped>
-.center-box div .search {
+.content div .search {
     width: 250px;
     margin: 0 auto;
     margin-top: 20px;
@@ -473,10 +528,10 @@ export default {
     display: flex;
     justify-content: center;
 }
-.center-box li {
+/* .center-box li {
     margin-top: 3px;
     margin-bottom: 3px;
-}
+} */
 .lev1 > li {
     /* margin-top: 10px; */
     padding-top: 10px;
@@ -541,7 +596,7 @@ export default {
 /* 编辑路由 */
 .form > li {
     display: flex;
-    align-items: center;
+    align-items: baseline;
 }
 .form > li > span:first-child {
     width: 5em;
@@ -551,34 +606,11 @@ export default {
 .dia-inner {
     padding: 0 50px;
 }
-.mt20 {
-    margin-top: 20px;
-}
-.mb10 {
-    margin-bottom: 10px;
-}
+
 .iconshezhi2 {
     margin-right: 5px;
 }
-.ml5 {
-    margin-left: 5px;
-}
-.ml10 {
-    margin-left: 10px;
-}
-.ml20 {
-    margin-left: 20px;
-}
-.mt50 {
-    margin-top: 50px;
-}
-.center-box {
-    display: flex;
-    justify-content: center;
-}
-.ml50 {
-    margin-left: 50px;
-}
+
 .flex {
     display: flex;
 }
@@ -602,7 +634,7 @@ export default {
 .route-lv2 > li,
 .route-lv3 > li {
     /* margin: 2px 0; */
-    
+
     font-size: 12px;
     color: rgb(118, 135, 155);
 }
@@ -612,8 +644,5 @@ export default {
 .icons {
     width: 3em;
     text-align: right;
-}
-.mt20 {
-    margin-top: 20px;
 }
 </style>

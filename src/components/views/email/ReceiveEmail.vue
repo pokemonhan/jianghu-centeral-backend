@@ -224,6 +224,9 @@ export default {
     cursor: pointer;
 }
 .dia-inner {
-    max-width: 1200px;
+    min-width: 1000px;
+    max-width: 80vw;
+    max-height: 80vh;
+    overflow: auto;
 }
 </style>
