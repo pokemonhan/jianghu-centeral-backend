@@ -229,10 +229,6 @@ export default {
                     this.$toast.info(res && res.message)
                     this.dia_show = false
                     this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
                 }
             })
         },
@@ -269,7 +265,6 @@ export default {
             let { url, method } = this.$api.dev_sys_bank_del
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
-            
                     this.$toast.success(res && res.message)
                     this.mod_show=false
                     this.getList()
@@ -290,10 +285,6 @@ export default {
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
                 }
             })
         },

@@ -371,7 +371,6 @@ export default {
             this.dia_show = true
         },
         edit(row) {
-
             this.form = {
                 id: row.id,
                 vendor_id: row.vendor_id,
@@ -585,19 +584,19 @@ export default {
             })
             return array.concat(opt)
         },
-        // 这个名字就是value // TODO:
-        gameToSelectOpt(arr) {
-            let array = [
-                {
-                    label: '全部',
-                    value: ''
-                }
-            ]
-            let opt = arr.map(item => {
-                return { label: item.name, value: item.name }
-            })
-            return array.concat(opt)
-        },
+        // 这个名字就是value // 
+        // gameToSelectOpt(arr) {
+        //     let array = [
+        //         {
+        //             label: '全部',
+        //             value: ''
+        //         }
+        //     ]
+        //     let opt = arr.map(item => {
+        //         return { label: item.name, value: item.name }
+        //     })
+        //     return array.concat(opt)
+        // },
         getSelectOpt() {
             let { url, method } = this.$api.dev_game_search_condition_get
 
@@ -608,14 +607,11 @@ export default {
                     this.vendor_opt = this.toSelectOpt(res.data.vendors)
                     this.type_opt = this.toSelectOpt(res.data.types)
                     // 初始化 filter 筛选内容
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
                 }
             })
         },
         getList() {
+            console.log('请求了')
             let para = {
                 game_id: this.filter.game_id,
                 vendor_id: this.filter.vendor_id,
@@ -627,7 +623,6 @@ export default {
 
             let { url, method } = this.$api.dev_game_list
             this.$http({ method, url, params }).then(res => {
-                console.log('游戏管理配置列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data

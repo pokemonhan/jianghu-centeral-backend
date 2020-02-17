@@ -283,7 +283,6 @@ export default {
             this.form = {}
         },
         add(row) {
-            console.log('添加row: ', row)
             this.initForm()
 
             let route_arr = this.curr_route.map(item => item.route_name) // 已使用路由数组
@@ -300,7 +299,6 @@ export default {
             this.dia_show = true
         },
         edit(row) {
-            console.log('编辑row: ', row)
 
             let route_arr = this.curr_route.map(item => item.route_name) // 已使用路由数组
             // // 已使用路由不可再被使用
@@ -352,12 +350,8 @@ export default {
             this.$set(this.form, 'controller', routeObj.controller)
         },
         // 当路由input输入时 ,
-        routeInput: function(val) {
-            // 更新select里面的内容
-            // function
-        },
 
-        routeInput(val) {
+        routeInput: window.all.tool.debounce(function(val) {
             let route_arr = this.curr_route.map(item => item.route_name)
             this.route_show_opt = this.route_all_opt.filter(item => {
                 let not_used = route_arr.indexOf(item.route_name) === -1 // 1.路由没有被使用就放进select
@@ -366,12 +360,13 @@ export default {
 
                 return (not_used || isCurrent) && inputfilter
             })
-        },
+        }, 300),
+
         checkForm() {
             let route_temp = this.route_all_opt.find(
                 item => item.route_name === this.form.route_name
             )
-            if(!route_temp) {
+            if (!route_temp) {
                 this.$toast.warning('路由不匹配!')
                 return false
             }

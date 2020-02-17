@@ -128,10 +128,6 @@ export default {
                     // console.log('%cres: ', 'color:red;font-size:18px;', res)
                     if (res && res.code === '200') { self.total = res.data.total; self.list = res.data.data; } else { if (res && res.message !== '') { self.$toast.error(res.message); } }
                 })
-                .catch(err => {
-                    // console.log('错误内容:', err)
-                    // alert(err)
-                })
         },
         modConf() {
             let id = this.curr_row.id

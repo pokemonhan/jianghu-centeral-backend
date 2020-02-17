@@ -6,7 +6,7 @@
                 <i v-else-if="type==='success'" class="toast-success iconfont iconchenggong-"></i>
                 <i v-else-if="type==='error'" class="toast-error iconfont iconcuowuguanbi-"></i>
                 <i v-else-if="type==='info'" class="toast-info iconfont iconinfor"></i>
-                <span>{{message}}</span>
+                <span class="message">{{message}}</span>
             </div>
         </div>
     </transition>

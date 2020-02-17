@@ -722,4 +722,8 @@ button:hover {
 .bold {
     font-weight: bold;
 }
+.t-center-center {
+  display: table-cell;
+  vertical-align: middle;
+}
 </style>

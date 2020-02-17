@@ -46,30 +46,51 @@ const Tool = {
         return `${arr1.join('-')} ${arr2.join(':')}`
     },
     // 节流
-    throttle(fn, interval = 300) {
-        let canRun = true;
+    now(){
+        return new Date().valueOf()
+    },
+    throttle(fn, delay) {
+        var lastTime;
+        var timer;
+        var delay = delay || 200;
         return function () {
-            if (!canRun) return;
-            canRun = false;
-            setTimeout(() => {
-                fn.apply(this, arguments);
-                canRun = true;
-            }, interval);
-        };
+            var args = arguments;
+            // 记录当前函数触发的时间
+            var nowTime = Date.now();
+            var self = this;
+
+            if (lastTime && nowTime - lastTime < delay) {
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    // 记录上一次函数触发的时间
+                    lastTime = nowTime;
+                    // 修正this指向问题
+                    fn.apply(self, args);
+                }, delay);
+            } else {
+                lastTime = nowTime;
+                fn.apply(self, args);
+            }
+        }
     },
 
     // 防抖
-    debounce(fun, delay) {
-        return function (args) {
-            let that = this
-            let _args = args
-            clearTimeout(fun.id)
-            fun.id = setTimeout(function () {
-                fun.call(that, _args)
-            }, delay)
+    debounce(fn, delay) {
+        // 记录上一次的延时器
+        var timer = null;
+        var delay = delay || 200;
+        return function () {
+            var args = arguments;
+            var that = this;
+            // 清除上一次延时器
+            clearTimeout(timer)
+            timer = setTimeout(function () {
+                fn.apply(that, args)
+            }, delay);
         }
     },
-    // 去除为param空的 属性 (不支持空对象。。)
+  
+    // 去除为param空的 属性
     rmEmpty(obj) {
         let params = {}
         for (const key in obj) {

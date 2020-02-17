@@ -117,7 +117,9 @@ export default {
                 }
             })
         },
-        getList() {
+        getList: window.all.tool.debounce(function() {
+            // console.log('执行')
+        // getList() {
             let self = this
             let para = {
                 name: this.filter.name,
@@ -140,8 +142,8 @@ export default {
                         self.toast.error(res.message)
                     }
                 }
-            })
-        },
+            },2000)
+        }),
         updateNo() {
             this.getList()
         },

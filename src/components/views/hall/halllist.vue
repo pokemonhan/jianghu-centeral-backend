@@ -333,6 +333,7 @@ export default {
                 url: url,
                 data: data
             }).then(res => {
+                console.log('res真正的结果😍: ', res);
                 if (res && res.code === '200') {
                     self.total = res.data.total
                     self.list = res.data.data

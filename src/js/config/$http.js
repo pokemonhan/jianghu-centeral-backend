@@ -131,7 +131,7 @@ http.interceptors.request.use(req => {
 // 后台返回数据 全局预设 ---
 http.interceptors.response.use(res => {
     // let data = res.data
-    let toastErr = window.__vm__.$toast.error
+    let toastErr = window.__vm__.$toast.info
     // 503 请求频繁 
     if (res.status === 503) {
         toastErr('请求次数过于频繁，请稍后再试')
@@ -179,7 +179,7 @@ http.interceptors.response.use(res => {
 
     return res.data
 }, (error) => {
-    let toastErr = window.__vm__.$toast.error
+    let toastErr = window.__vm__.$toast.info
     if (error && error.response) {
         toastErr(error.response)
     } else {

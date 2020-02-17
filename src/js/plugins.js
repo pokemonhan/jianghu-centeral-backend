@@ -48,7 +48,7 @@ const components = {
     // DragTree
 }
 
-let toastTimer = []
+let requestObj = {}
 export default {
     install(Vue) {
         // 相同提示 5s内不再提示
@@ -66,15 +66,15 @@ export default {
                 propsData: opt
             }).$mount().$el;
             let toastDom = document.querySelector('#toast-box')
-            // 判断 toast-box 是否已有同样的消息
-            function noSameToast() {
-                for (let child of toastDom.children) {
-                    if (child.innerText === opt.message) return false
+
+            // 判断 toast-box 是否已有同样的消息 有就关闭之前的
+            for (let child of toastDom.children) {
+                if (child.innerText === opt.message) {
+                    document.querySelector('#toast-box').removeChild(child)
                 }
-                return true
             }
-            // 当前 toast-box 没有该消息 则添加
-            noSameToast() && toastDom.appendChild(tpl)
+
+            toastDom.appendChild(tpl)
             if (opt.duration) {
                 setTimeout(function () {
                     tpl.tagName && document.querySelector('#toast-box').removeChild(tpl)
@@ -92,10 +92,10 @@ export default {
         // $notice 注册
         Vue.prototype.$notice = function (option) {
             let NoticeConstructor = Vue.extend(Notice)
-            let tpl2 = new NoticeConstructor({
+            let tpl = new NoticeConstructor({
                 propsData: option
             }).$mount().$el
-            document.querySelector('#notice-box').appendChild(tpl2)
+            document.querySelector('#notice-box').appendChild(tpl)
 
             if (option.duration) {
                 setTimeout(function () {
@@ -134,7 +134,42 @@ export default {
         }
 
         // 4. axios
-        Vue.prototype.$http = $http;
+        Vue.prototype.$http = function (opt) {
+            // 以url 作为key
+
+            let url = opt.url
+            let now = window.all.tool.now()
+
+            if (requestObj[url]) {
+                let lastTime = requestObj[url]
+                let delay = now - lastTime
+                // 同一接口时间大于1500毫秒 就请求
+                if (delay > 1500) {
+                    requestObj[url] = now
+                    return $http(opt)
+                } else {
+                    let data = {
+                        // "code": "100004",
+                        "message": "请求过快！！"
+                    }
+                    data = JSON.stringify(data)
+                    // 能toast 的情况
+                    let canToast = function () {
+                        let arr = ['/headquarters-api/finance-channel/get-search-condition', '/headquarters-api/game/get-search-condition']
+                        return arr.indexOf(url) === -1
+                    }
+                    canToast() && window.__vm__.$toast.warning('请求太频繁！')
+                    return new Promise(function (resolve, reject) {
+                        resolve(data)
+                    })
+                }
+            } else {
+                requestObj[url] = now
+                return $http(opt)
+            }
+
+
+        };
         Vue.prototype.$api = $api;
         Vue.prototype.$socket = $socket;
     }

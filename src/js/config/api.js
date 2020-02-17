@@ -121,7 +121,14 @@ export default {
     },
 
     /*=========================== 活动管理 ===========================--*/
-
+    active_manage_list: {
+        url:'/headquarters-api/activity/index-do',
+        method: 'get',
+    },
+    active_manage_status_set: {
+        url:'/headquarters-api/activity/status-do',
+        method: 'post',
+    },
 
 
 
