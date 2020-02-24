@@ -48,6 +48,12 @@
 </template> 
 <script>
 export default {
+    props: {
+        platform_sign: {
+            type: String,
+            default: ''
+        }
+    },
     data() {
         return {
             filterLeft: {
@@ -76,9 +82,33 @@ export default {
         }
     },
     methods: {
-      
+        getAssignedList() {
+            let para = {
+                platform_sign: this.platform_sign,
+                name: this.name,
+                pageSize: this.pageSize,
+                page: this.pageNo
+            }
+            let params = window.all.tool.rmEmpty(para)
+        
+            let { url, method } = this.$api.active_manage_assigned_list
+            this.$http({ method, url, params }).then(res => {
+        console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.total = res.data.total
+                    this.list = res.data.data
+        
+                } else {
+                    if (res && res.message !== '') {
+                        this.$toast.error(res.message)
+                    }
+                }
+            })
+        },
     },
-    mounted() {}
+    mounted() {
+        this.getAssignedList()
+    }
 }
 </script>
 

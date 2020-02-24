@@ -354,6 +354,9 @@ button {
 button:hover {
     box-shadow: none;
 }
+button:focus {
+    outline: 1px dotted #4c8bfd;
+}
 /* button :disabled{
     padding: 4px 8px;
     color:#ccc;

@@ -16,6 +16,7 @@ import TwoTable from '../components/commonComponents/TwoTable.vue'
 import Toast from '../components/commonComponents/Toast.vue'
 import Notice from '../components/commonComponents/Notice.vue'
 import Loading from '../components/commonComponents/Loading.vue'
+import Tooltip from '../components/commonComponents/Tooltip.vue'
 // import DragTree from '../components/commonComponents/dragtree/index.js'
 
 // 指令
@@ -44,7 +45,8 @@ const components = {
     Radio,
     QuickQuery,
     TwoTable,
-    Loading
+    Loading,
+    Tooltip,
     // DragTree
 }
 
@@ -144,7 +146,7 @@ export default {
                 let lastTime = requestObj[url]
                 let delay = now - lastTime
                 // 同一接口时间大于1500毫秒 就请求
-                if (delay > 1500) {
+                if (delay > 300) {
                     requestObj[url] = now
                     return $http(opt)
                 } else {
@@ -153,7 +155,7 @@ export default {
                         "message": "请求过快！！"
                     }
                     data = JSON.stringify(data)
-                    // 能toast 的情况
+                    // 能toast 的情况 这两个接口同步弹出,所以例外
                     let canToast = function () {
                         let arr = ['/headquarters-api/finance-channel/get-search-condition', '/headquarters-api/game/get-search-condition']
                         return arr.indexOf(url) === -1

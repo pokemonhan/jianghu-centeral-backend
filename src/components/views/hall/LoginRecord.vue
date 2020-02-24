@@ -4,21 +4,20 @@
             <ul class="left">
                 <li>
                     <span>账号:</span>
-                    <Input class="w100" v-model="filter.acc" />
+                    <Input class="w100" v-model="filter.email" />
                 </li>
                 <li>
                     <span>登录日期</span>
-                    <Input class="w100" v-model="filter.dates[0]" />
-                    <span style="margin:0 5px;">~</span>
-                    <Input class="w100" v-model="filter.dates[1]" />
+                  
+                    <Date type="daterange" v-model="filter.createAt" />
                 </li>
                 <li>
                     <span>登录ip</span>
-                    <Input class="w100" v-model="filter.login_ip" />
+                    <Input class="w100" v-model="filter.loginIp" />
                 </li>
             </ul>
             <div>
-                <button class="btn-blue">查询</button>
+                <button class="btn-blue" @click="getList">查询</button>
                 <button class="btn-blue" @click="exportExcel">导出EXcel</button>
             </div>
         </div>
@@ -49,33 +48,22 @@ export default {
     data() {
         return {
             filter: {
-                acc: '',
-                dates: ['', ''],
-                login_ip: ''
+                email: '',
+                createAt: ['', ''],
+                loginIp: ''
             },
             total: 0,
             pageNo: 1,
             pageSize: 25,
             headers: ['账号', '登录IP', '登录日期'],
-            list: [
-                {
-                    a1: '13256564589',
-                    a2: '192.168.1.1(中国.广州）',
-                    a3: '2019/12/15 12:12:00'
-                },
-                {
-                    a1: '13256564589',
-                    a2: '192.168.1.1(中国.广州）',
-                    a3: '2019/12/15 12:12:00'
-                }
-            ]
+            list: []
         }
     },
     methods: {
         exportExcel() {
             // console.log('触发')
             import('../../../js/config/Export2Excel').then(excel => {
-                console.log('触发2')
+                // console.log('触发2')
                 const tHeader = this.headers
                 const data = this.list.map(item=>{
                     return [item.email, item.ip, item.created_at]
@@ -98,15 +86,24 @@ export default {
             this.getList()
         },
         getList() {
+            let createAt = ''
+            if(this.filter.createAt[0]&&this.filter.createAt[1]) {
+                let start = this.filter.createAt[0]+ ' 00:00:00'
+                let end = this.filter.createAt[1]+ ' 23:59:59'
+                createAt = JSON.stringify([start,end])
+            }
             let para = {
+                email:this.filter.email,
+                createAt: createAt,
+                loginIp: this.filter.loginIp,
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
+            
             let params = window.all.tool.rmEmpty(para)
 
             let { url, method } = this.$api.login_record_list
             this.$http({ method, url, params }).then(res => {
-                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data
@@ -121,10 +118,5 @@ export default {
 </script>
 
 <style scoped>
-.p10 {
-    padding: 10px;
-}
-.mt20 {
-    margin-top: 20px;
-}
+
 </style>

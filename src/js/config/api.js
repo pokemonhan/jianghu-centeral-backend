@@ -70,11 +70,55 @@ export default {
     },
 
     // 登录记录
-    login_record_list:{
+    login_record_list: {
         url: '/headquarters-api/login-log/index',
         method: 'post',
     },
-    //
+    // 游戏管理 - 添加
+    game_manage_add: {
+        url: '/headquarters-api/platform/assign-games',
+        method: 'post',
+    },
+    // 游戏管理 - 未分配的游戏列表
+    game_manage_unsign_list: {
+        url: '/headquarters-api/platform/unassign-games',
+        method: 'get',
+    },
+    // 游戏管理 - 已分配的游戏列表
+    game_manage_assigned_list: {
+        url: '/headquarters-api/platform/assigned-games',
+        method: 'get',
+    },
+    // 游戏管理 - 获取列表的查询数据
+    game_manage_opt_list: {
+        url: '/headquarters-api/platform/get-search-data-of-assign-game',
+        method: 'get',
+    },
+    // 游戏管理 - 移除
+    game_manage_del: {
+        url: '/headquarters-api/platform/assigned-game-cancel',
+        method: 'post',
+    },
+    // 活动管理 - 添加
+    active_manage_add: {
+        url: '/headquarters-api/platform/assign-activities',
+        method: 'post',
+    },
+    // 活动管理 - 已分配的活动列表
+    active_manage_assigned_list: {
+        url: '/headquarters-api/platform/assigned-activities',
+        method: 'get',
+    },
+    // 活动管理 - 未分配的活动列表
+    active_manage_unassign_list: {
+        url: '/headquarters-api/platform/unassign-activities',
+        method: 'get',
+    },
+    // 活动管理 - 移除
+    active_manage_del: {
+        url: '/headquarters-api/platform/assigned-activity-cancel',
+        method: 'post',
+    },
 
     /*=========================== 3.游戏管理 ===========================--*/
 
@@ -122,11 +166,11 @@ export default {
 
     /*=========================== 活动管理 ===========================--*/
     active_manage_list: {
-        url:'/headquarters-api/activity/index-do',
+        url: '/headquarters-api/activity/index-do',
         method: 'get',
     },
     active_manage_status_set: {
-        url:'/headquarters-api/activity/status-do',
+        url: '/headquarters-api/activity/status-do',
         method: 'post',
     },
 
@@ -333,6 +377,11 @@ export default {
         url: '/headquarters-api/menu/get-all-menu',
         method: 'get'
     },
+    //  9.1.7 总控菜单管理-显示按钮
+    menu_display_set: {
+        url: '/headquarters-api/menu/display',
+        method: 'post'
+    },
 
     // -------- 路由 -------
 
@@ -346,14 +395,20 @@ export default {
         url: '/headquarters-api/headquarters-route/do-add',
         method: 'post'
     },
-    //  总控菜单管理-路由-删除
+    //  9.1.10 总控菜单管理-路由-编辑
+    route_set: {
+        url: '/headquarters-api/headquarters-route/edit',
+        method: 'post'
+    },
+    //  9.1.11 总控菜单管理-路由-删除
     route_del: {
         url: '/headquarters-api/headquarters-route/delete',
         method: 'post'
     },
-    //  总控菜单管理-路由-编辑
-    route_set: {
-        url: '/headquarters-api/headquarters-route/edit',
+
+    //  9.1.12 总控菜单管理-路由-是否开发
+    route_is_open_set: {
+        url: '/headquarters-api/headquarters-route/is-open',
         method: 'post'
     },
 
@@ -568,28 +623,28 @@ export default {
 
     /*=========================== 代理后台菜单管理 ===========================--*/
     //  获取代理后台所有菜单
-    merchant_menu_all_list: {
-        url: '/headquarters-api/merchant-menu/get-all-menu',
-        method: 'get'
-    },
-    //  添加代理后台菜单
-    merchant_menu_add: {
-        url: '/headquarters-api/merchant-menu/add',
-        method: 'post'
-    },
-    //  编辑代理后台菜单
-    merchant_menu_set: {
-        url: '/headquarters-api/merchant-menu/edit',
-        method: 'post'
-    },
-    //  删除代理后台菜单
-    merchant_menu_del: {
-        url: '/headquarters-api/merchant-menu/delete',
-        method: 'post'
-    },
-    //  菜单拖拽分父组
-    merchant_menu_parent_sort: {
-        url: '/headquarters-api/merchant-menu/change-parent',
-        method: 'post'
-    },
+    // merchant_menu_all_list: {
+    //     url: '/headquarters-api/merchant-menu/get-all-menu',
+    //     method: 'get'
+    // },
+    // //  添加代理后台菜单
+    // merchant_menu_add: {
+    //     url: '/headquarters-api/merchant-menu/add',
+    //     method: 'post'
+    // },
+    // //  编辑代理后台菜单
+    // merchant_menu_set: {
+    //     url: '/headquarters-api/merchant-menu/edit',
+    //     method: 'post'
+    // },
+    // //  删除代理后台菜单
+    // merchant_menu_del: {
+    //     url: '/headquarters-api/merchant-menu/delete',
+    //     method: 'post'
+    // },
+    // //  菜单拖拽分父组
+    // merchant_menu_parent_sort: {
+    //     url: '/headquarters-api/merchant-menu/change-parent',
+    //     method: 'post'
+    // },
 }

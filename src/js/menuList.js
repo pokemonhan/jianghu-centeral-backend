@@ -12,7 +12,7 @@ const menuList = [
         // path: 'hall',
         icon: 'iconaccount',
 
-        child: [
+        children: [
             {
                 label: '厅主列表',
                 path: '/hall/halllist',
@@ -29,7 +29,7 @@ const menuList = [
         label: '游戏管理',
         // path: 'game',
         icon: 'icongame',
-        child: [
+        children: [
             {
                 label: '厂商管理',
                 path: '/game/vendormanage',
@@ -50,7 +50,7 @@ const menuList = [
         label: '活动管理',
         // path: 'active',
         icon: 'iconhuodong',
-        child: [
+        children: [
             {
                 label: '活动列表',
                 path: '/active/activelist',
@@ -63,7 +63,7 @@ const menuList = [
         label: '邮件系统',
         // path: 'email',
         icon: 'icon185078emailmailstreamline',
-        child: [
+        children: [
             {
                 label: '发邮件',
                 path: '/email/sendemail',
@@ -84,7 +84,7 @@ const menuList = [
         label: '报表管理',
         // path: 'report',
         icon: 'iconassistant_lefticon_Statisticalreportforms',
-        child: [
+        children: [
             {
                 label: '厅主注单报表',
                 path: '/report/hallregist',
@@ -109,7 +109,7 @@ const menuList = [
         label: '金流配置',
         // path: 'cashflow',
         icon: 'iconmoneybag',
-        child: [
+        children: [
             {
                 label: '厂商管理',
                 path: '/cashflow/cashflowvendor',
@@ -131,7 +131,7 @@ const menuList = [
         // path: 'set',
         icon: 'iconshezhi2',
 
-        child: [
+        children: [
             {
                 label: '管理员分组',
                 path: '/set/adminsort',
@@ -152,7 +152,7 @@ const menuList = [
         label: '开发管理',
         // path: 'dev',
         icon: 'iconkaifa',
-        child: [
+        children: [
             {
                 label: '总控菜单管理',
                 path: '/dev/totalmenu',

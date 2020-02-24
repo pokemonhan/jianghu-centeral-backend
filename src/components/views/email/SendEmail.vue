@@ -78,8 +78,8 @@
         <Dialog :show.sync="dia_show" title="定时发送">
             <div class="dia-inner">
                 <div>
-                    <div>选择定时发送的时间:</div>
-                    <div class="date-pick">
+                    <div class="title">选择定时发送的时间:</div>
+                    <div class="date-pick mt20">
                         <Select v-model="send_time[0]" :options="year_opt"></Select>
                         <span>年</span>
                         <Select v-model="send_time[1]" :options="month_opt"></Select>
@@ -91,13 +91,13 @@
                         <Select v-model="send_time[4]" :options="minute_opt"></Select>
                         <span>分</span>
                     </div>
-                    <div style="margin-top:10px;">
+                    <div class="fs15 mt20">
                         <span>该邮件将在</span>
                         <span class="green">{{date_show}}</span>
                         <span>发送到对方</span>
                     </div>
                 </div>
-                <div class="mt100">
+                <div class="mt80">
                     <button class="btn-plain-large" @click="dia_show=false">取消</button>
                     <button class="btn-blue-large ml20" @click="sendEmail">发送</button>
                 </div>
@@ -468,18 +468,24 @@ export default {
 }
 .dia-inner {
     position: relative;
-    width: 600px;
+    min-width: 600px;
     height: 320px;
     padding-top: 80px;
     z-index: 200002;
 }
-.mt100 {
-    margin-top: 100px;
+.dia-inner .title {
+    font-size: 15px;
+}
+.fs15 {
+    font-size: 15px
+}
+.mt80 {
+    margin-top: 8s0px;
     text-align: right;
 }
-.ml20 {
+/* .ml20 {
     margin-left: 20px;
-}
+} */
 .dia-inner .date-pick {
     display: flex;
     align-items: center;

@@ -35,7 +35,7 @@
                     <td>{{row.last_editor && row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
-                        <button class="btns-blue" @click="edit(row)">编辑</button>
+                        <!-- <button class="btns-blue" @click="edit(row)">编辑</button> -->
                         <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
 
                         <button class="btns-blue" @click="detail(row)">编辑详情</button>
@@ -55,7 +55,7 @@
 
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
             <div class="dia-inner">
-                <div v-if="dia_show==='edit'" class="edit-form">
+                <!-- <div v-if="dia_show==='edit'" class="edit-form">
                     <ul class="form">
                         <li>
                             <span>游戏名称</span>
@@ -91,7 +91,7 @@
                         <button class="btn-plain-large" @click="dia_show=''">取消</button>
                         <button class="btn-blue-large ml50" @click="editConf">确定</button>
                     </div>
-                </div>
+                </div> -->
                 <div v-if="dia_show==='detail'" class="dia-detail">
                     <GameManageDetail :id="curr_row.id" />
                 </div>
@@ -200,46 +200,46 @@ export default {
         typeUpd(val) {
             this.filterNameOpt()
         },
-        edit(row) {
+        // edit(row) {
 
-            this.form = {
-                id: row.id,
-                name: row.name,
-                merchant_secret: row.merchant_secret,
-                private_key: row.private_key,
-                public_key: row.public_key,
-                merchant_code: row.merchant_code,
-                app_id: row.app_id,
-                authorization_code: row.authorization_code
-            }
-            this.curr_row = row
-            this.dia_show = 'edit'
-            this.dia_title = '编辑'
-        },
+        //     this.form = {
+        //         id: row.id,
+        //         name: row.name,
+        //         merchant_secret: row.merchant_secret,
+        //         private_key: row.private_key,
+        //         public_key: row.public_key,
+        //         merchant_code: row.merchant_code,
+        //         app_id: row.app_id,
+        //         authorization_code: row.authorization_code
+        //     }
+        //     this.curr_row = row
+        //     this.dia_show = 'edit'
+        //     this.dia_title = '编辑'
+        // },
         checkForm() {
             if(this.form.name==='') {
                 return false
             }
             return true
         },
-        editConf() {
-            if(!this.checkForm()) return
-            let data = window.all.tool.rmEmpty(this.form)
-            let { url, method } = this.$api.game_set
-            this.$http({ url, method, data }).then(res => {
-                if (res && res.code === '200') {
-                    this.$toast.success(res.message)
-                    this.getList()
-                    this.dia_show = ''
-                } else {
-                    if (res && res.message) {
-                        this.$toast.error(res.message)
-                    } else {
-                        this.$toast.error('更新失败')
-                    }
-                }
-            })
-        },
+        // editConf() {
+        //     if(!this.checkForm()) return
+        //     let data = window.all.tool.rmEmpty(this.form)
+        //     let { url, method } = this.$api.game_set
+        //     this.$http({ url, method, data }).then(res => {
+        //         if (res && res.code === '200') {
+        //             this.$toast.success(res.message)
+        //             this.getList()
+        //             this.dia_show = ''
+        //         } else {
+        //             if (res && res.message) {
+        //                 this.$toast.error(res.message)
+        //             } else {
+        //                 this.$toast.error('更新失败')
+        //             }
+        //         }
+        //     })
+        // },
         statusSwitch(row) {
             this.curr_row = row
             this.mod_show = true
@@ -340,20 +340,20 @@ export default {
     font-size: 12px;
     color: rgb(255, 38, 0);
 }
-.w250 {
+/* .w250 {
     width: 250px;
-}
+} */
 .form-btns {
     margin-top: 50px;
     text-align: center;
 }
-.ml50 {
+/* .ml50 {
     margin-left: 50px;
-}
+} */
 .table {
     margin-top: 10px;
 }
-.mt20 {
+/* .mt20 {
     margin-top: 20px;
-}
+} */
 </style>

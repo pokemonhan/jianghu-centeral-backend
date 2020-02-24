@@ -11,7 +11,7 @@
                 :ref="item.path"
                 @contextmenu.prevent="contextmenu($event,item)"
                 @mousemove="setPosition($event,item)"
-                @mouseout="closeTooltip(item)"
+                @mouseleave="closeTooltip(item)"
             >
                 <span class="title" @click="jumpRouter(item)">{{item.label}}</span>
                 <span class="close" @click="closeCurrent(item,index)">X</span>
@@ -61,7 +61,7 @@ export default {
         ...mapState(['tab_nav_list'])
     },
     methods: {
-        ...mapMutations(['updatetab_nav_list']),
+        ...mapMutations(['updateTab_nav_list']),
         scrollLeft() {
             let ul = this.$refs.ul
             if (!ul) return
@@ -110,18 +110,18 @@ export default {
                 let list = this.tab_nav_list.filter(
                     item => item.path === this.curr_tab.path
                 )
-                this.updatetab_nav_list(list)
+                this.updateTab_nav_list(list)
                 this.$router.push(this.curr_tab.path)
             }
             if (val === 'all') {
                 let list = []
-                this.updatetab_nav_list(list)
+                this.updateTab_nav_list(list)
             }
             if (val === 'current') {
                 let list = this.tab_nav_list.filter(
                     item => item.path !== this.curr_tab.path
                 )
-                this.updatetab_nav_list(list)
+                this.updateTab_nav_list(list)
 
                 // 如果关闭当前,跳转到最后一个tab
                 if (this.tab_nav_list.length > 1) {
@@ -142,7 +142,7 @@ export default {
                 let list = self.tab_nav_list.filter(
                     item => item.path !== tab.path
                 )
-                self.updatetab_nav_list(list)
+                self.updateTab_nav_list(list)
                 self.need_close = -1
             }, 200)
             if (this.tab_nav_list.length < 2) return

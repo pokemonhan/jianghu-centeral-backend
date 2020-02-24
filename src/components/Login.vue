@@ -131,11 +131,12 @@ export default {
                 let template = {
                     id: item.id,
                     label: item.label,
+                    en_name: item.en_name,
                     path: item.route,
                     display: item.display,
                     pre_idx: pre_idx + index,
-                    type: '',
-                    sort: item.sort,
+                    // type: '',
+                    level: item.level,
                 }
 
                 // TODO: 后期改为以其他关键字作为匹配. 

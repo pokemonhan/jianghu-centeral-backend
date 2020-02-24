@@ -6,7 +6,7 @@
             <ul class="left">
                 <li>
                     <span>更新人</span>
-                    <Input v-model="filter.acc" />
+                    <Input v-model="filter.name" />
                 </li>
                 <li>
                     <span>更新日期</span>
@@ -117,7 +117,7 @@ export default {
     data() {
         return {
             filter: {
-                acc: '',
+                name: '',
                 dates: [],
                 status: ''
             },
@@ -149,7 +149,7 @@ export default {
             dia_status: '',
             form: {
                 name: '',
-                sign: '', //    TODO: 关于是否有标识
+                sign: '',
                 merchant_code: '',
                 merchant_secret: '',
                 public_key: '',
@@ -243,10 +243,6 @@ export default {
                     this.mod_show = false
                     this.dia_show = false
                     this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
                 }
             })
         },
@@ -292,16 +288,24 @@ export default {
         },
         getList() {
             let para = {
-                // name: this.filter.vendor,
-                // status: this.filter.status,
+                name: this.filter.name,
+                
+                
+                status: this.filter.status,
+
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
+                console.log('para: ', para);
+            if(this.filter.dates[0]&&this.filter.dates[1]){
+                para.updatedAt = JSON.stringify(this.filter.dates)
+            }
             let params = window.all.tool.rmEmpty(para)
+
+            console.log('params: ', params);
 
             let { url, method } = this.$api.sms_config_list
             this.$http({ method, url, params }).then(res => {
-                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data

@@ -110,7 +110,7 @@ let http = axios.create({
 // 请求预设 ---
 
 http.interceptors.request.use(req => {
-    let requestUrl = req.url
+    // let requestUrl = req.url
     let Authorization = window.all.tool.getLocal('Authorization')
     // let expires = new Date(window.all.tool.getLocal('expires_at')).getTime()
     // let now = new Date().getTime()
@@ -124,6 +124,8 @@ http.interceptors.request.use(req => {
         //     // alert('token已经超时,请重新登陆..')
         // window._Vue_.$router.push('/login')
         // }
+    }else {
+        router.push('/login')
     }
     return req
 })
@@ -131,11 +133,11 @@ http.interceptors.request.use(req => {
 // 后台返回数据 全局预设 ---
 http.interceptors.response.use(res => {
     // let data = res.data
-    let toastErr = window.__vm__.$toast.info
+    let toastErr = window.__vm__.$toast.error
     // 503 请求频繁 
     if (res.status === 503) {
         toastErr('请求次数过于频繁，请稍后再试')
-        return req
+        return res
     }
     // 401 跳转到login 登录
     if (res.status === 401) {
@@ -147,7 +149,7 @@ http.interceptors.response.use(res => {
             toastErr('出现服务问题或被禁止')
         }
         router.push('/login')
-        return req
+        return res
     }
     if (res && res.data) {
 

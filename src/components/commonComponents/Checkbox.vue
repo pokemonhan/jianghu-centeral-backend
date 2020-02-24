@@ -82,7 +82,7 @@ export default {
 
 <style scoped>
 .v-checkbox {
-    display: inline-block;
+    /* display: inline-block; */
     cursor: pointer;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -176,7 +176,7 @@ export default {
     height: 9px;
 }
 .v-checkbox.small .icon span.active:after {
-    top: 0px;
+    top: 0;
     left: 3px;
 }
 </style>

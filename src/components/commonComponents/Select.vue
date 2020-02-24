@@ -90,7 +90,6 @@ export default {
             }
         },
         select(item) {
-            console.log('item: ', item)
             this.isShow = false
             let ele = this.$refs.sections
             $(ele).slideUp(200)

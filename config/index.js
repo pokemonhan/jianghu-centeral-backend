@@ -23,7 +23,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: '10.10.50.194', // can be overwritten by process.env.HOST
+    host: '10.10.50.198', // can be overwritten by process.env.HOST
     port: 8081, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,
     errorOverlay: true,

@@ -4,7 +4,9 @@ import Vue from 'vue'
 import App from './App'
 import router from './js/router'
 import store from './js/vuex'
-Vue.config.productionTip = false
+
+Vue.config.productionTip = true // TODO: false 生产设置为false
+Vue.config.devtools = false // TODO: false 生产设置为false
 
 
 import tool from './js/tool'                  // 常用工具
@@ -28,7 +30,7 @@ window.all = {
   router,
   menu_list,
   echarts,
-  wangeditor  // 暂时没用,可能以后要用
+  wangeditor
 }
 // 防止xss 攻击
 Object.defineProperty(Vue.prototype, '$xss', {

@@ -18,9 +18,9 @@
                 </li>
                 <li>
                     <span>站点添加时间</span>
-                    <Date v-model="filter.add_dates[0]" />
-                    <span class="mh-5">至</span>
-                    <Date v-model="filter.add_dates[1]" />
+                    <Date type="daterange" v-model="filter.add_dates" />
+                    <!-- <span class="mh-5">至</span> -->
+                    <!-- <Date v-model="filter.add_dates[1]" /> -->
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -33,8 +33,8 @@
                 <template v-slot:item="{row}">
                     <!-- '厅主账号', '站点名称', '短信数量', '站点状态', '维护状态', '站点有效日期', '站点维护日期', '站点添加日期', '操作'  -->
                     <td>{{row.owner &&row.owner.email}}</td>
-                    <td>{{row.name}}</td>
-                    <td>{{'??'}}</td>
+                    <td>{{row.cn_name}}</td>
+                    <td>{{row.sms_num}}</td>
                     <td>
                         <i
                             :class="[row.status===1?'iconfont icongou green':'iconfont iconcha red']"
@@ -45,15 +45,23 @@
                             :class="[row.a5==='1'?'orange':'gray']"
                         >{{row.a5==='1'?'维护中??':'未维护??'}}</span>
                     </td>
-                    <td style="font-size:12px;padding:5px;">
-                        <div>{{String(row.a6).split('~')[0]}}</div>
+                    <!-- <td style="font-size:12px;padding:5px;">
+                        <div>{{row.a6&&tring(row.a6).split('~')[0]}}</div>
                         <div>~??</div>
-                        <div>{{String(row.a6).split('~')[1]}}</div>
+                        <div>{{ row.a6&&String(row.a6).split('~')[1]}}</div>
                     </td>
                     <td style="font-size:12px;padding:5px;">
-                        <div>{{String(row.a7).split('-')[0]}}</div>
+                        <div>{{row.a7&&String(row.a7).split('-')[0]}}</div>
                         <div>~??</div>
-                        <div>{{String(row.a7).split('-')[1]}}</div>
+                        <div>{{row.a7&&String(row.a7).split('-')[1]}}</div>
+                    </td> -->
+                    <td>
+                        <div>{{row.start_time}}</div>
+                        <div>{{row.end_time}}</div>
+                    </td>
+                    <td>
+                        <div>{{row.maintain_start}}</div>
+                        <div>{{row.maintain_end}}</div>
                     </td>
                     <td>{{row.created_at}}</td>
                     <td style="padding:5px 0;">
@@ -205,9 +213,9 @@
                 <!-- 域名管理 -->
                 <Domain v-if="dia_show==='domain'" :sign="curr_row.sign" />
                 <!-- 游戏管理 -->
-                <Gamemanage v-if="dia_show==='game'" :id="curr_row.id" />
+                <Gamemanage v-if="dia_show==='game'" class="dia-game" :platform_sign="curr_row.sign" />
                 <!-- 活动管理 -->
-                <ActiveManage v-if="dia_show==='active'" :id="curr_row.id" />
+                <ActiveManage v-if="dia_show==='active'" :platform_sign="curr_row.sign" />
             </div>
         </Dialog>
         <Loading :show.sync="loading" />
@@ -231,8 +239,7 @@ export default {
         return {
             filter: {
                 status: '',
-                acc: '',
-                website: '',
+                email: '',
                 maintain: '',
                 add_dates: []
             },
@@ -333,7 +340,6 @@ export default {
                 url: url,
                 data: data
             }).then(res => {
-                console.log('res真正的结果😍: ', res);
                 if (res && res.code === '200') {
                     self.total = res.data.total
                     self.list = res.data.data
@@ -424,13 +430,17 @@ export default {
              */
 
             // this.loading = true
-
+            let createdAt = [
+                this.filter.add_dates[0] + ' 00:00:00',
+                this.filter.add_dates[1] + ' 00:00:00',
+            ]
             let para = {
                 email: this.filter.email,
                 status: this.filter.status,
-                createAt: JSON.stringify(this.filter.add_dates),
-                pageSize: this.pageSize,
-                page: this.pageNo
+                maintain: this.filter.maintain,
+                createdAt: JSON.stringify(createdAt),
+                // pageSize: this.pageSize,
+                // page: this.pageNo
             }
             // if(this.filter.add_dates)
 
@@ -453,11 +463,13 @@ export default {
         }
     },
     mounted() {
-        this.getList()
         // 初始化时间
         let date = this.filter.add_dates
-        date[0] = '2000-01-01'
+        date[0] = '2010-01-01'
         date[1] = window.all.tool.formatDate(new Date())
+        date[1] = '2020-02-25' // TODO: 时间要改回来
+        this.getList()
+
     }
 }
 </script>
@@ -491,19 +503,7 @@ export default {
 .text-center {
     text-align: center;
 }
-.mh-5 {
-    margin-left: 5px;
-    margin-right: 5px;
-}
-.mt10 {
-    margin-top: 10px;
-}
-.mt20 {
-    margin-top: 20px;
-}
-.w250 {
-    width: 250px;
-}
+
 .gray {
     color: rgb(152, 155, 158);
 }
@@ -521,18 +521,12 @@ export default {
     margin-top: 40px;
     text-align: center;
 }
-.ml50 {
-    margin-left: 50px;
-}
 
 .center-box {
     display: flex;
     justify-content: center;
 }
-.mt50 {
-    margin-top: 50px;
-}
-.ml50 {
-    margin-left: 50px;
+.dia-game {
+    padding-bottom: 35px;
 }
 </style>

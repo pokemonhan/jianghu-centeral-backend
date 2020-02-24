@@ -32,14 +32,16 @@ export default {
     methods:{
         toggle(){
             this.me_checked = !this.me_checked;
+            this.$emit('update', this.me_checked);
         }
     },
     watch:{
-        me_checked(val){
-            this.$emit('update', val);
-        },
+        // me_checked(val){
+            
+        // },
         value(val){
             this.value = val
+            this.me_checked = val
         }
     },
     mounted(){

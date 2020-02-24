@@ -51,23 +51,22 @@ export default {
         return {
             screenWidth: document.body.clientWidth, // 屏幕高度
             menu_list: [],
-            chain: [] // 父子级关系，格式[0,2,3]// 第下标 0 个的第 2 个子级 的第3个子子级
+            chain: [], // 父子级关系，格式[0,2,3]// 第下标 0 个的第 2 个子级 的第3个子子级
+            count: 0
         }
     },
     computed: {
         ...mapState(['tab_nav_list'])
     },
     methods: {
-        ...mapMutations(['updatetab_nav_list']),
+        ...mapMutations(['updateTab_nav_list']),
 
-        // 是否是当前路由的父级, 是返回true
+        // 是否是当前路由的父级 ul, 是返回true
         curr_ul(lev1) {
-           
             if (lev1.children) {
                 // 子项有当前路由返回true
                 let havePath = lev1.children.find(item => {
                     return item.path === this.$route.path
-
                 })
                 return havePath ? true : false
             }
@@ -87,7 +86,7 @@ export default {
                         label: item.label,
                         path: item.path
                     })
-                    this.updatetab_nav_list(list)
+                    this.updateTab_nav_list(list)
                 }
 
                 // 没有 children 就是父级菜单,就下滑打开该菜单
@@ -148,10 +147,12 @@ export default {
             // console.log('锁链', this.chain)
         },
         getMenu() {
+            // this.menu_list = window.all.menu_list
             if (this.menu_list.length) {
-                this.getFather()
+                // this.getFather()
             } else {
-                let menu = window.all.tool.getLocal('menu')
+                let menu = JSON.parse(localStorage.getItem('menu'))
+                // console.log('menu: ', menu);
                 if (menu) {
                     this.menu_list = menu
                 }
@@ -170,6 +171,7 @@ export default {
              *
              */
             // 当前没有菜单就 localStorage找
+            this.getFather()
             if (from.path === '/login') {
                 this.getMenu()
             }
@@ -206,7 +208,6 @@ export default {
     overflow: auto;
     background: #fff;
 
-
     /* user-select: none; */
     -ms-overflow-style: none;
     overflow: -moz-scrollbars-none;
@@ -239,11 +240,11 @@ export default {
 .lev1-active {
     border-left: 3px solid #2569e9;
     color: #4c8bfd;
-    transition: border .2s;
+    transition: border 0.2s;
 }
 .active-ul {
     border-left: 3px solid #2569e9;
-    transition: border .2s;
+    transition: border 0.2s;
 }
 
 .level2 > li > .title {

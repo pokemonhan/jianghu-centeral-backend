@@ -95,7 +95,7 @@ const Tool = {
         let params = {}
         for (const key in obj) {
             if (Array.isArray(obj[key])) {
-                if (obj.length > 0) {
+                if (obj[key].length > 0) {
                     params[key] = obj[key]
                 }
             } else if (obj[key] !== '' && obj[key] !== null) {

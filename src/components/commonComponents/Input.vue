@@ -9,6 +9,8 @@
             @input="input"
             @keyup.enter="pressEnter"
             @keyup="keyup"
+            @focus="$emit('focus')"
+            @blur="$emit('blur')"
             :maxlength="maxlength"
             :disabled="disabled"
             :autocomplete="autocomplete"
@@ -37,7 +39,7 @@ export default {
             default: ""
         },
         placeholder: String,
-        value: String,
+        value: [String, Number],
         maxlength: [Number,String],
         autocomplete:{
             type: String,

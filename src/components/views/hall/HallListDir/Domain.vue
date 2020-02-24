@@ -28,7 +28,7 @@
                     <Date v-model="filter.dates[1]" />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="add">添加</button>
                 </li>
             </ul>
@@ -202,10 +202,6 @@ export default {
                     this.$toast.success(res && res.message)
                     this.dia_show = false
                     this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
                 }
             })
         },
@@ -241,10 +237,6 @@ export default {
                     this.$toast.success(res && res.message)
                     this.mod_show = false
                     this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
                 }
             })
         },
@@ -261,10 +253,6 @@ export default {
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
                 }
             })
         },
@@ -288,6 +276,7 @@ export default {
 }
 .cont {
     width: 900px;
+    min-height: 500px;
 }
 .p10 {
     padding: 10px;

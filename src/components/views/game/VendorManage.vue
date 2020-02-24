@@ -25,7 +25,11 @@
                     <td>{{row.last_editor && row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
-                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <button class="btns-blue" @click="edit(row)">编辑??</button>
+                        <button
+                            :class="[row.status?'btns-red':'btns-green']"
+                            @click="statusSwitch(row)"
+                        >{{row.status===1?'禁用':'启用'}}</button>
                     </td>
                 </template>
             </Table>
@@ -39,6 +43,50 @@
                 @updateSize="updateSize"
             />
         </div>
+        <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
+            <div class="dia-inner">
+                <div class="edit-form">
+                    <ul class="form">
+                        <li>
+                            <span>游戏名称</span>
+                            <Input class="w250" v-model="form.name" />
+                            <span v-show="!form.name" class="err-tips">游戏名称不可为空!</span>
+                        </li>
+                        <li>
+                            <span>商户秘钥:</span>
+                            <Input class="w250" v-model="form.merchant_secret" />
+                        </li>
+                        <li>
+                            <span>商户私钥:</span>
+                            <Input class="w250" v-model="form.private_key" />
+                        </li>
+                        <li>
+                            <span>商户公钥:</span>
+                            <Input class="w250" v-model="form.public_key" />
+                        </li>
+                        <li>
+                            <span>商户号:</span>
+                            <Input class="w250" v-model="form.merchant_code" />
+                        </li>
+                        <li>
+                            <span>APPID:</span>
+                            <Input class="w250" v-model="form.app_id" />
+                        </li>
+                        <li>
+                            <span>授权码:</span>
+                            <Input class="w250" v-model="form.authorization_code" />
+                        </li>
+                    </ul>
+                    <div class="form-btns">
+                        <button class="btn-plain-large" @click="dia_show=''">取消</button>
+                        <button class="btn-blue-large ml50" @click="editConf">确定</button>
+                    </div>
+                </div>
+                <!-- <div v-if="dia_show==='detail'" class="dia-detail">
+                    <GameManageDetail :id="curr_row.id" />
+                </div>-->
+            </div>
+        </Dialog>
         <Modal
             :show.sync="mod_show"
             title="厂商管理"
@@ -47,7 +95,9 @@
             @confirm="modConf"
         ></Modal>
     </div>
-</template> <script>
+</template>
+
+<script>
 export default {
     data() {
         return {
@@ -77,6 +127,18 @@ export default {
                 '操作'
             ],
             list: [],
+            // dialog
+            dia_show: '',
+            dia_title: '',
+            form: {
+                name: '',
+                merchant_secret: '',
+                private_key: '',
+                public_key: '',
+                merchant_code: '',
+                app_id: '',
+                authorization_code: ''
+            },
             mod_show: false,
             mod_cont: '',
             // 当前需要更改的 row对象
@@ -123,31 +185,77 @@ export default {
                 method: method,
                 url: url,
                 params: params
+            }).then(res => {
+                // console.log('%cres: ', 'color:red;font-size:18px;', res)
+                if (res && res.code === '200') {
+                    self.total = res.data.total
+                    self.list = res.data.data
+                } else {
+                    if (res && res.message !== '') {
+                        self.$toast.error(res.message)
+                    }
+                }
             })
-                .then(res => {
-                    // console.log('%cres: ', 'color:red;font-size:18px;', res)
-                    if (res && res.code === '200') { self.total = res.data.total; self.list = res.data.data; } else { if (res && res.message !== '') { self.$toast.error(res.message); } }
-                })
+        },
+        edit(row) {
+            this.form = {
+                id: row.id,
+                name: row.name,
+                merchant_secret: row.merchant_secret,
+                private_key: row.private_key,
+                public_key: row.public_key,
+                merchant_code: row.merchant_code,
+                app_id: row.app_id,
+                authorization_code: row.authorization_code
+            }
+            this.curr_row = row
+            this.dia_show = 'edit'
+            this.dia_title = '编辑'
         },
         modConf() {
             let id = this.curr_row.id
-            let status = this.curr_row.status === 1 ? 0: this.curr_row.status === 0 ? 1:this.curr_row.status
-            let data ={
-                id:id,
-                status:status
+            let status = this.curr_row.status === 1 ? 0 : 1
+                   
+            let data = {
+                id: id,
+                status: status
             }
             let { url, method } = this.$api.game_vendor_status_set
             this.$http({
                 method: method,
                 url: url,
-                data:data
-            }).then(res=>{
-                if(res && res.code==='200'){
+                data: data
+            }).then(res => {
+                if (res && res.code === '200') {
                     this.mod_show = false
                     this.$toast.success(res.message)
                     this.getList()
-                }else{
+                } else {
                     this.$toast.error(res.message)
+                }
+            })
+        },
+        checkForm() {
+            if (this.form.name === '') {
+                return false
+            }
+            return true
+        },
+        editConf() {
+            if (!this.checkForm()) return
+            let data = window.all.tool.rmEmpty(this.form)
+            let { url, method } = this.$api.game_set
+            this.$http({ url, method, data }).then(res => {
+                if (res && res.code === '200') {
+                    this.$toast.success(res.message)
+                    this.getList()
+                    this.dia_show = ''
+                } else {
+                    if (res && res.message) {
+                        this.$toast.error(res.message)
+                    } else {
+                        this.$toast.error('更新失败')
+                    }
                 }
             })
         },
@@ -157,7 +265,7 @@ export default {
         updateSize() {
             this.pageNo = 1
             this.getList()
-        },
+        }
     },
     mounted() {
         this.getList()
@@ -167,4 +275,38 @@ export default {
 /* .table {
     margin-top: 20px;
 } */
+.edit-form {
+    position: relative;
+    width: 700px;
+    height: 400px;
+}
+.form {
+    width: 350px;
+    margin: 0 auto;
+}
+.form > li {
+    display: flex;
+    position: relative;
+    align-items: baseline;
+}
+.form > li > span:first-child {
+    min-width: 4.1em;
+    margin-right: 10px;
+    margin-top: 20px;
+    text-align: right;
+}
+.err-tips {
+    position: absolute;
+    bottom: -15px;
+    left: 7em;
+    font-size: 12px;
+    color: rgb(255, 38, 0);
+}
+/* .w250 {
+    width: 250px;
+} */
+.form-btns {
+    margin-top: 50px;
+    text-align: center;
+}
 </style>

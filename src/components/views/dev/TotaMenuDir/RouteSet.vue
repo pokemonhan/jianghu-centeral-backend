@@ -11,11 +11,11 @@
                     <div class="title">
                         <span class="icons">
                             <i
-                                :class="['iconfont iconup',lv1.children?'':'hide']"
+                                :class="['iconfont ',lv1.children?'iconfolder-fill':'iconfeeds-fill']"
                                 @click="expand(lv1_idx)"
                             ></i>
                             <!-- <i
-                                :class="['iconfont iconup',lv1.routes?'':'none']"
+                                :class="['iconfont iconfolder-fill',lv1.routes?'':'hide']"
                                 @click="routeExpand(lv1_idx)"
                             ></i>-->
                         </span>
@@ -28,9 +28,9 @@
                         <li v-for="(route, route_idx) in lv1.routes" :key="route_idx">
                             <i class="iconfont iconshezhi2"></i>
                             <span :class="isShowRed(route)?'red':''">{{route.title}}</span>
-                            <span class="a" @click="edit(lv1)">编辑</span>
+                            <button class="btns-plain-blue" @click="edit(lv1)">编辑</button>
                             <span></span>
-                            <span class="a" @click="del(lv1)">删除</span>
+                            <button class="btns-plain-red" @click="del(lv1)">删除</button>
                             <Switchbox class="switch" v-model="route.is_open" />
                         </li>
                     </ul>
@@ -41,11 +41,11 @@
                             <div class="title">
                                 <span class="icons">
                                     <i
-                                        :class="['iconfont iconup',lv2.children?'':'hide']"
+                                        :class="['iconfont ',lv2.children?'iconfolder-fill':'iconfeeds-fill']"
                                         @click="expand(lv1_idx+'-'+lv2_idx)"
                                     ></i>
                                     <!-- <i
-                                        :class="['iconfont iconup',lv2.routes?'':'none']"
+                                        :class="['iconfont iconfolder-fill',lv2.routes?'':'hide']"
                                         @click="routeExpand(lv1_idx+'-'+lv2_idx)"
                                     ></i>-->
                                 </span>
@@ -63,9 +63,13 @@
                                 >
                                     <i class="iconfont iconshezhi2"></i>
                                     <span :class="isShowRed(route2)?'red':''">{{route2.title}}</span>
-                                    <span class="a" @click="edit(route2)">编辑</span>
-                                    <span class="a" @click="del(route2)">删除</span>
-                                    <Switchbox class="switch" v-model="route2.is_open" />
+                                    <button class="btns-plain-blue" @click="edit(route2)">编辑</button>
+                                    <button class="btns-plain-red" @click="del(route2)">删除</button>
+                                    <Switchbox
+                                        class="switch"
+                                        v-model="route2.is_open"
+                                        @update="isOpenSwitch($event,route2)"
+                                    />
                                 </li>
                             </ul>
                             <!-- 三级 菜单 -->
@@ -73,13 +77,13 @@
                                 <li v-for="(lv3, lv3_idx) in lv2.children" :key="lv3_idx">
                                     <div class="title">
                                         <i
-                                            :class="['iconfont iconup',lv3.children?'':'hide']"
+                                            :class="['iconfont',lv1.children?'iconfolder-fill':'iconfeeds-fill']"
                                             @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx)"
                                         ></i>
-                                        <i
-                                            :class="['iconfont iconup',lv3.routes?'':'none']"
+                                        <!-- <i
+                                            :class="['iconfont iconfolder-fill',lv3.routes?'':'hide']"
                                             @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx)"
-                                        ></i>
+                                        ></i>-->
                                         <span class="title-cont">{{lv3.label}}</span>
                                         <span
                                             v-if="!lv3.children"
@@ -105,8 +109,8 @@
                                                 :class="isShowRed(route3)?'red':''"
                                             >{{route3.title}}</span>
 
-                                            <span class="a" @click="edit(route3)">编辑</span>
-                                            <span class="a" @click="del(route3)">删除</span>
+                                            <button class="btns-plain-blue" @click="edit(route3)">编辑</button>
+                                            <button class="btns-plain-red" @click="del(route3)">删除</button>
                                             <Switchbox class="switch" v-model="route3.is_open" />
                                         </li>
                                     </ul>
@@ -119,7 +123,7 @@
                                         <li v-for="(lv4, lv4_idx) in lv3.children" :key="lv4_idx">
                                             <div class="title">
                                                 <i
-                                                    :class="['iconfont iconup',lv3.children?'':'hide']"
+                                                    :class="['iconfont iconfolder-fill',lv3.children?'':'hide']"
                                                     @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx+'-'+lv4_idx)"
                                                 ></i>
                                                 <span class="title-cont">{{lv4.label}}</span>
@@ -194,7 +198,7 @@
         <Modal
             :show.sync="mod_show"
             title="删除"
-            content="是否删除该路由"
+            :content="mod_content"
             @cancel="mod_show=false"
             @confirm="modConf"
         ></Modal>
@@ -228,7 +232,8 @@ export default {
 
             // modal 框
             mod_show: false,
-            mod_status: ''
+            mod_status: '',
+            mod_content: ''
         }
     },
     methods: {
@@ -243,10 +248,10 @@ export default {
             if (!search) return false
             return title.indexOf(search) !== -1
         },
-        // routeExpand(index) {
-        //     let ele = this.$refs[index]
-        //     $(ele).slideToggle(200)
-        // },
+        routeExpand(index) {
+            let ele = this.$refs[index]
+            $(ele).slideToggle(200)
+        },
         // 根据route_name 返回它的相关内容
         getRouterNameObj(route_name) {
             return this.route_all_opt.find(item => {
@@ -268,13 +273,15 @@ export default {
                     }
                 })
             }
-            let data = { type: 0 }
+            let data = { type: 1 } // 0全部 ，这里1:总后台 ，2. 代理后台，3. App
             let { url, method } = this.$api.menu_date_list
             this.$http({ method, url, data }).then(res => {
+                // console.log('res: ', res);
                 if (res && res.code === '200') {
                     this.route_all_opt = toRouteOpt(
                         res.data && res.data.route_info
                     )
+                    // console.log('this.route_all_opt: ', this.route_all_opt);
                 }
             })
         },
@@ -286,20 +293,20 @@ export default {
             this.initForm()
 
             let route_arr = this.curr_route.map(item => item.route_name) // 已使用路由数组
+            // console.log('已使用路由: ', route_arr)
             // 已使用路由不可再被使用
             this.route_show_opt = this.route_all_opt.filter(item => {
                 // 路由没有被使用就放进select,另外当前路由虽然有使用也需要放进去.，以便展示自己
                 let not_used = route_arr.indexOf(item.route_name) === -1 // 1.路由没有被使用就放进select
                 return not_used
             })
-
+            // console.log('this.route_show_opt: ', this.route_show_opt)
             this.curr_row = row
             this.dia_status = 'add'
             this.dia_title = '添加路由'
             this.dia_show = true
         },
         edit(row) {
-
             let route_arr = this.curr_route.map(item => item.route_name) // 已使用路由数组
             // // 已使用路由不可再被使用
             this.route_show_opt = this.route_all_opt.filter(item => {
@@ -325,10 +332,28 @@ export default {
         },
         del(row) {
             this.curr_row = row
+            // console.log('row: ', row)
             this.mod_status = 'del'
+            this.mod_content = `是否删除 ${row && row.title}`
+            // this.mod_content = '是否删除该路由'
             this.mod_show = true
         },
+        isOpenSwitch(val, route) {
+            // console.log('route: ', route)
+            let data = {
+                id: route.id,
+                is_open: val ? 1 : 0
+            }
 
+            let { url, method } = this.$api.route_is_open_set
+            this.$http({ method, url, data }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.$toast.success(res && res.message)
+                    this.getRouteList()
+                }
+            })
+        },
         modConf() {
             // 删除 确认
             if (this.mod_status === 'del') {
@@ -385,7 +410,7 @@ export default {
             let route_temp = this.route_all_opt.find(
                 item => item.route_name === this.form.route_name
             )
-            console.log('route_temp: ', route_temp)
+            // console.log('route_temp: ', route_temp)
             let controller = route_temp.controller.split('\\')
             controller = controller[controller.length - 1].split('@')[0]
 
@@ -486,7 +511,7 @@ export default {
         },
         // 获取目前api路由内容，( __路由是根据菜单id 知道在哪个菜单的子项)
         getRouteList() {
-            console.log('刷新页面')
+            // console.log('刷新页面')
             let { url, method } = this.$api.route_all_list
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
@@ -513,6 +538,9 @@ export default {
 </script>
 
 <style scoped>
+.content {
+    font-size: 14px;
+}
 .content div .search {
     width: 250px;
     margin: 0 auto;
@@ -527,9 +555,9 @@ export default {
     margin-top: 3px;
     margin-bottom: 3px;
 } */
-.lev1 > li {
-    /* margin-top: 10px; */
-    padding-top: 10px;
+.lev1 > li > .title{
+    line-height: 20px;
+    font-size: 15px;
 }
 .add-router {
     color: #4c8bfd;
@@ -540,8 +568,7 @@ export default {
 /* } */
 .lev2 {
     color: #777;
-    font-size: 13px;
-    /* text-align: left; */
+    /* font-size: 13px; */
     margin-left: 2em;
 }
 /* .lev2 > li {
@@ -558,18 +585,25 @@ export default {
 }
 .title .hide {
     /* opacity: .2; */
-    display: none;
+    visibility: hidden;
 }
 .title .none {
     display: none;
 }
 .checkbox-head {
     font-weight: bold;
-    font-size: 16px;
+    /* font-size: 16px; */
 }
-.iconup {
+
+.iconfont {
     margin-right: 5px;
     cursor: pointer;
+    color: #88a6df;
+}
+.iconfolder-fill {
+    margin-right: 5px;
+    cursor: pointer;
+    color: #fad002;
 }
 .lev2 .checkbox {
     /* margin-top: 10px; */
@@ -623,21 +657,48 @@ export default {
     white-space: nowrap;
 }
 .route-lv3 {
-    margin-left: 3em;
+    margin-left: 2em;
     /* border: 1px solid #000; */
 }
 .route-lv2 > li,
 .route-lv3 > li {
-    /* margin: 2px 0; */
-
-    font-size: 12px;
+    height: 22px;
+    /* font-size: 14px; */
     color: rgb(118, 135, 155);
 }
 .route-lv4 {
     margin-left: 3em;
 }
 .icons {
-    width: 3em;
+    /* width: 3em; */
     text-align: right;
+}
+.btns-plain-blue,
+.btns-plain-red {
+    display: inline-block;
+    height: 20px;
+    vertical-align: middle;
+    margin-left: 5px;
+    padding: 0 2px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.btns-plain-blue:active,
+.btns-plain-red:active {
+    transform: scale(.9);
+}
+.btns-plain-blue {
+    background: #ecf5ff;
+    color: #4c8bfd;
+    border: 1px solid #b3d8ff;
+    border-radius: 3px;
+    box-shadow: 1px 1px 3px rgba(102, 158, 255, 0.2);
+}
+.btns-plain-red {
+    background: #fef0f0;
+    color: #ec5946;
+    border: 1px solid #fbc4c4;
+    border-radius: 3px;
+    box-shadow: 1px 1px 3px rgba(250, 179, 174, 0.2);
 }
 </style>

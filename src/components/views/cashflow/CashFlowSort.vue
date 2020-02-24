@@ -105,21 +105,19 @@ export default {
                 status: this.curr_row.status === 1 ? 0 : 1,
                 id: this.curr_row.id
             }
-       
+
             let { url, method } = this.$api.finance_sort_set
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
                     this.mod_show = false
                     this.getList()
-                } else {
-                    res && this.$toast(res.message)
                 }
             })
         },
-        getList: window.all.tool.debounce(function() {
-            // console.log('执行')
-        // getList() {
+        // getList: window.all.tool.debounce(function() {
+        // console.log('执行')
+        getList() {
             let self = this
             let para = {
                 name: this.filter.name,
@@ -137,13 +135,9 @@ export default {
                 if (res && res.code === '200') {
                     self.total = res.data.total
                     this.list = res.data.data
-                } else {
-                    if (res && res.message !== '') {
-                        self.toast.error(res.message)
-                    }
                 }
-            },2000)
-        }),
+            })
+        },
         updateNo() {
             this.getList()
         },
@@ -159,5 +153,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

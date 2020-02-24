@@ -14,7 +14,10 @@
         >
             <input v-model="startDate" type="hidden" />
             <span v-if="dateStr" class="date-str">{{dateStr}}</span>
-            <span v-else style="color:#ccc;display:pre;">{{type==='datetime'?'年 / 月 /日&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  --: --':'年 / 月 /日'}}</span>
+            <span
+                v-else
+                style="color:#ccc;display:pre;"
+            >{{type==='datetime'?'年 / 月 /日&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --: --':'年 / 月 /日'}}</span>
             <!-- <i 
                 v-if="clearable && isClear"
                 @click.stop="clear"
@@ -37,14 +40,23 @@
                             ></i>
                         </span>
                         <span>
-                            
-                            <span class="change-btn change-year" @click="changeStep(2)">{{startYear}}年</span>&nbsp;
-                            <span v-show="step==1" class="change-btn change-month" @click.stop="changeStep(3)">{{startMonth}}月</span>
+                            <span
+                                class="change-btn change-year"
+                                @click="changeStep(2)"
+                            >{{startYear}}年</span>&nbsp;
+                            <span
+                                v-show="step==1"
+                                class="change-btn change-month"
+                                @click.stop="changeStep(3)"
+                            >{{startMonth}}月</span>
                         </span>
                         <span v-show="type==='daterange' || type==='datetimerange'">
-                            
                             <span class="change-btn change-year" @click="changeStep(2)">{{endYear}}年</span>&nbsp;
-                            <span v-show="step==1" class="change-btn change-month" @click.stop="changeStep(3)">{{endMonth}}月</span>
+                            <span
+                                v-show="step==1"
+                                class="change-btn change-month"
+                                @click.stop="changeStep(3)"
+                            >{{endMonth}}月</span>
                         </span>
                         <span>
                             <i
@@ -90,6 +102,7 @@
                                 </ul>
                             </div>
                             <!-- 日期 -->
+
                             <!-- 年份 -->
                             <div v-show="step===2" class="year-list">
                                 <ul>
@@ -102,6 +115,7 @@
                                 </ul>
                             </div>
                             <!-- 年份 -->
+                            
                             <!-- 月份 -->
                             <div v-show="step===3" class="month-list">
                                 <ul>
@@ -772,6 +786,7 @@ export default {
             scroll(from, to, step)
         },
         formatDateString(val) {
+            // console.log('val: ', val);
             let arr = [],
                 date = ''
             if (!val) {
@@ -793,8 +808,18 @@ export default {
                     this.curEndDate = Number(arr1[2])
 
                     if (this.type === 'datetimerange') {
-                        let arr2 = val[0].split(' ')[1].split(':'),
-                            arr3 = val[0].split(' ')[1].split(':')
+                        let startTime = val[0].split(' ')[1]
+                        console.log('startTime: ', startTime)
+                        let endTime = val[1].split(' ')[1]
+                        console.log('endTime: ', endTime)
+                        if (!startTime || !endTime) {
+                            console.error(
+                                "注意时间格式,格式例子: ['2020-01-01 00:00:00', '2020-02-17 00:00:00']"
+                            )
+                            return
+                        }
+                        let arr2 = startTime.split(':'),
+                            arr3 = endTime.split(':')
                         this.startHour = Number(arr2[0])
                         this.startMinute = Number(arr2[1])
                         this.startSecond = Number(arr2[2])
@@ -873,6 +898,11 @@ export default {
                 this.$refs.timeBox.getBoundingClientRect().bottom
             this.pickerClassName = y < 295 ? 'top-expand' : 'bottom-expand'
         }
+        if (Array.isArray(this.value)) {
+            if (this.value[0] === '' && this.value[1] === '') {
+                this.clear()
+            }
+        }
         if (!this.value) {
             this.clear()
         }
@@ -909,7 +939,8 @@ export default {
     width: 160px;
 }
 .daterange {
-    width: 180px;
+    min-width: 180px;
+    width: 14em;
 }
 .datetimerange {
     width: 280px;
@@ -1001,11 +1032,11 @@ export default {
 .date-box .date-info i:first-child {
     margin-right: 10px;
 }
-.date-box .date-info .change-btn{
-        cursor: pointer;
-    } 
-.date-box .date-info .change-btn:hover{
-        color: #4c8bfd;
+.date-box .date-info .change-btn {
+    cursor: pointer;
+}
+.date-box .date-info .change-btn:hover {
+    color: #4c8bfd;
 }
 .date-box .list-box {
     padding: 10px;
