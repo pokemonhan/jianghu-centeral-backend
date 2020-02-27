@@ -63,6 +63,7 @@
                         >
                             <Tree style="width:fit-content" :list.sync="tree_list" @change="treeUpd" />
                         </div>
+                        <AuthorityTree style="width:500px;" :menutree="tree_list" v-model="tagList" @update="treeListUpd"/>
                     </div>
 
                     <div v-if="!(curr_group.id===1 &&right_show!=='add')" class="mt50 t-center">
@@ -102,10 +103,12 @@
 </template> <script>
 import Tree from '../../commonComponents/Tree'
 import AdminTable from './AdminSortDir/AdminTable'
+import AuthorityTree from '../../commonComponents/AuthorityTree'
 export default {
     components: {
         Tree: Tree,
-        AdminTable: AdminTable
+        AdminTable: AdminTable,
+        AuthorityTree: AuthorityTree,
     },
     data() {
         return {
@@ -124,27 +127,15 @@ export default {
             // table
             admin_id: '',
 
-            // dia_show: '',
-
-            // dia_title: '',
-            // /* 添加成员 */
-            // add_member_form: {
-            //     acc: '',
-            //     email: '',
-            //     pwd: '',
-            //     cfm_pwd: ''
-            // },
-            // // 修改密码
-            // edit_member_form: {
-            //     pwd: '',
-            //     cfm_pwd: ''
-            // },
             // 启用 禁用modal
             mod_show: false,
             curr_group: {},
             mod_status: '',
             mod_title: '',
-            mod_cont: ''
+            mod_cont: '',
+
+            // 以下测试
+            tagList: [],
         }
     },
     computed: {},
@@ -169,7 +160,9 @@ export default {
             this.mod_title = ''
             this.mod_cont = ''
         },
-
+        treeListUpd(val) {
+            console.log('tag展示更新',val);
+        },
         // 根据group 展示勾选 tree中此项
         treeSelectShow(group) {
             // 当前权限数组
@@ -179,10 +172,9 @@ export default {
             // id 是否在选择项数组中
             let isSelect = function(id) {
                 return authority_arr.indexOf(id) !== -1
-                return false
             }
 
-            let listSetCheked = function(arr) {
+            function listSetCheked(arr) {
                 let list = arr.map(item => {
                     item.checked = isSelect(item.id)
                     item.child && listSetCheked(item.child)
@@ -206,14 +198,19 @@ export default {
 
         // 查看其中一组
         check(group) {
+            console.log('group: ', group);
             this.right_show = 'check'
             this.curr_group = Object.assign({}, group)
 
             this.form.group_name = group.group_name
             this.admin_id = group.id
             this.treeSelectShow(group)
+            this.setTagList(group)
         },
-
+        setTagList(group){
+            this.tagList = group.detail.map(item=>item.menu_id)
+            console.log('this.tagList: ', this.tagList);
+        },
         // 删除分组列表 按钮
         del(group) {
             this.mod_show = true
@@ -316,7 +313,7 @@ export default {
                 })
             }
             isSelectAll(this.tree_list)
-            this.tree_list = this.tree_list.slice()
+            this.tree_list = (this.tree_list||[]).slice()
         },
         // 点击组权限框, 下拉打开 tree
         openTree() {
@@ -419,7 +416,6 @@ export default {
 
         // 删除群组
         delGroup(group) {
-            console.log('group: ', group)
             let data = {
                 id: group.id,
                 group_name: group.group_name

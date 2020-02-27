@@ -206,8 +206,8 @@
 // import css from 'ant-design-vue/lib/tree/style/css' // 加载 ant CSS
 // import { Tree } from 'element-ui'
 // import Vue from 'vue';
-import RouteSet from './totaMenuDir/RouteSet'
-import MenuSort from './totaMenuDir/MenuSort'
+import RouteSet from './totaMenuDir/RouteSet.vue'
+import MenuSort from './totaMenuDir/MenuSort.vue'
 export default {
     // name: 'vue-draggable-tree-demo',
     components: {

@@ -95,17 +95,29 @@ export default {
                 $(ele).slideToggle(200)
             }
         },
+
         objToArr(obj, pre_idx = '') {
-            let list = []
+            // let list = []
             return Object.keys(obj).map((key, index) => {
                 let item = obj[key]
+
                 let template = {
                     id: item.id,
                     label: item.label,
+                    en_name: item.en_name,
                     path: item.route,
-
                     display: item.display,
-                    pre_idx: pre_idx + index
+                    pre_idx: pre_idx + index,
+                    // type: '',
+                    level: item.level
+                }
+
+                // TODO: 后期改为以其他关键字作为匹配. 设置icon
+                let curr_menu = window.all.menu_list.filter(
+                    menu => menu.label === item.label
+                )
+                if (curr_menu.length) {
+                    template.icon = curr_menu[0].icon
                 }
                 if (item.child) {
                     template.children = this.objToArr(
@@ -113,12 +125,29 @@ export default {
                         pre_idx + index + '-'
                     )
                 }
-
                 return template
             })
-            return list
+            // }
+            // return list
         },
+        getMenuList() {
+            if(!window.all.tool.getLocal('Authorization')){
+                return
+            }
+            if (window.all.tool.getLocal('menu')) {
+                this.menu_list = window.all.tool.getLocal('menu')||[]
+            } else {
+                let { method, url } = this.$api.current_admin_menu
 
+                this.$http({ method, url }).then(res => {
+                    if (res && res.code === '200') {
+                        let menu = this.objToArr(res.data)
+                        this.menu_list = menu
+                        window.all.tool.setLocal('menu', menu)
+                    }
+                })
+            }
+        },
         // 获取当前路由的父级或祖先级
         getFather() {
             let curr_path = this.$route.path
@@ -145,18 +174,6 @@ export default {
             this.chain = (chain_temp || '').split('-')
             // console.log('menu: ', menu)
             // console.log('锁链', this.chain)
-        },
-        getMenu() {
-            // this.menu_list = window.all.menu_list
-            if (this.menu_list.length) {
-                // this.getFather()
-            } else {
-                let menu = JSON.parse(localStorage.getItem('menu'))
-                // console.log('menu: ', menu);
-                if (menu) {
-                    this.menu_list = menu
-                }
-            }
         }
     },
     watch: {
@@ -171,14 +188,14 @@ export default {
              *
              */
             // 当前没有菜单就 localStorage找
-            this.getFather()
+            // this.getFather()
             if (from.path === '/login') {
-                this.getMenu()
+                this.getMenuList()
             }
         }
     },
     mounted() {
-        this.getMenu()
+        this.getMenuList()
         let self = this
         let setHeight = function() {
             let height = document.documentElement.clientHeight // 可视 页面高度

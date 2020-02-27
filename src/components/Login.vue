@@ -2,7 +2,7 @@
     <div class="login">
         <div class="inner">
             <!-- <div class="left"> -->
-                <img class="left" src="../assets/image/login/left.jpg" alt="图片刷新加载...">
+            <img class="left" src="../assets/image/login/left.jpg" alt="图片刷新加载..." />
             <!-- </div> -->
             <div class="right login-box">
                 <div>
@@ -123,46 +123,53 @@ export default {
         //       return false
         //   }
 
-        objToArr(obj, pre_idx = '') {
-            // let list = []
-            return Object.keys(obj).map((key, index) => {
-                let item = obj[key]
-                
-                let template = {
-                    id: item.id,
-                    label: item.label,
-                    en_name: item.en_name,
-                    path: item.route,
-                    display: item.display,
-                    pre_idx: pre_idx + index,
-                    // type: '',
-                    level: item.level,
-                }
+        // objToArr(obj, pre_idx = '') {
+        //     // let list = []
+        //     return Object.keys(obj).map((key, index) => {
+        //         let item = obj[key]
 
-                // TODO: 后期改为以其他关键字作为匹配. 
-                let curr_menu = window.all.menu_list.filter(menu=>menu.label===item.label)
-                if(curr_menu.length){
-                    template.icon = curr_menu[0].icon
-                }
-                if (item.child) {
-                    template.children = this.objToArr(item.child, pre_idx+index + '-')
-                }
-                return template
-            })
-            // }
-            // return list
-        },
-        getMenuList() {
-            // let { method, url } = this.$api.menu_all_list
-            let { method, url } = this.$api.current_admin_menu
+        //         let template = {
+        //             id: item.id,
+        //             label: item.label,
+        //             en_name: item.en_name,
+        //             path: item.route,
+        //             display: item.display,
+        //             pre_idx: pre_idx + index,
+        //             // type: '',
+        //             level: item.level
+        //         }
 
-            this.$http({ method, url }).then(res => {
-                if (res && res.code === '200') {
-                    let menu = this.objToArr(res.data)
-                    window.all.tool.setLocal('menu', menu)
-                }
-            })
-        },
+        //         // TODO: 后期改为以其他关键字作为匹配.
+        //         let curr_menu = window.all.menu_list.filter(
+        //             menu => menu.label === item.label
+        //         )
+        //         if (curr_menu.length) {
+        //             template.icon = curr_menu[0].icon
+        //         }
+        //         if (item.child) {
+        //             template.children = this.objToArr(
+        //                 item.child,
+        //                 pre_idx + index + '-'
+        //             )
+        //         }
+        //         return template
+        //     })
+          
+        // },
+        // getMenuList() {
+        //     // let { method, url } = this.$api.menu_all_list
+        //     let { method, url } = this.$api.current_admin_menu
+
+        //     this.$http({ method, url }).then(res => {
+        //         if (res && res.code === '200') {
+        //             let menu = this.objToArr(res.data)
+        //             window.all.tool.setLocal('menu', menu)
+
+        //             // 获取到列表数据在跳转
+        //             this.$router.push('/home')
+        //         }
+        //     })
+        // },
         login() {
             let self = this
             setTimeout(() => {
@@ -189,16 +196,9 @@ export default {
                         window.all.tool.setLocal('name', res.data.name)
                         window.all.tool.setLocal('email', res.data.email)
                         self.$toast.success('登陆成功')
-                        setTimeout(() => {
-                            // TODO: 可能有些不能查看首页
-                            self.$router.push('/home')
-                        }, 200)
-
-                        // 获取客户菜单内容
-                        this.getMenuList()
-                    } else {
-                        // console.log(res)
-                        // self.$toast.warning(res.message)
+                        // TODO: 可能有些不能查看首页
+                        this.$router.push('/home')
+                       
                     }
                 })
             }

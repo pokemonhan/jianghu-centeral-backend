@@ -2,7 +2,7 @@
     <div>
         <!-- 展示tab [x] -->
         <div class="show-selected" @click="openTree">
-            <span class="sel-item" v-for="(item, index) in tab_list" :key="index" @click.stop>
+            <span class="sel-item" v-for="(item, index) in tagList" :key="index" @click.stop>
                 <span>{{item.label}}</span>
                 <i class="iconfont iconcuowuguanbi-" @click.stop="tabClose(item)"></i>
             </span>
@@ -23,15 +23,39 @@ export default {
     components: {
         Tree: Tree
     },
-    props: {},
+    props: {
+        menutree: Array,
+        value: {
+            type: Array,
+            default: []
+        }
+    },
+    model: {
+        prop: 'value',
+        event: 'update'
+    },
     data() {
         return {
             tree_show: true,
-            tab_list: [],
+            tagList: [],
             tree_list: []
         }
     },
     methods: {
+        // 点击组权限框, 下拉打开 tree
+        openTree() {
+            if (!this.tree_show) {
+                setTimeout(() => {
+                    this.tree_show = true
+                    $(this.$refs.tree).slideDown(200)
+                }, 0)
+            }
+        },
+        // 关闭 tree 下拉内容
+        closeTree() {
+            if (!this.tree_show) return
+            this.tree_show = false
+        },
         // 关闭 tab 框(点击tab里那个叉叉时触发..)
         tabClose(sel_item) {
             this.tree_list = this.tree_list.map((item, index) => {
@@ -48,28 +72,24 @@ export default {
                 return item
             })
 
-            this.getTabList()
+            this.tagList = this.getTabList()
             this.isChildSelAll()
         },
 
         // tree 点击更新时
         treeUpd(bool, index, list) {
-            // console.log('index: ', index);
-            // console.log('外部获取里面反馈: ', list);
             // 重新赋值让其能检测到
             this.tree_list = list.map(item => item)
-            // console.log('this.tree_list: ', this.tree_list);
-            this.getTabList()
+            this.tagList = this.getTabList()
         },
 
         // 返回已选中权限数组 （有[x]的tab框子）
         getTabList() {
             let tem_arr = []
-
-            let getCheckedArr = function(arr) {
+            function getCheckedArr(arr) {
                 arr.forEach(item => {
                     if (!item.child) {
-                        // 没有子项，且选中，放入 tem_arr中，方便展示
+                        // 没有子项，就是路由,当选中，放入 tem_arr中，方便展示
                         item.checked &&
                             tem_arr.push({ label: item.label, id: item.id })
                     } else {
@@ -79,7 +99,11 @@ export default {
             }
             getCheckedArr(this.tree_list)
 
-            this.tab_list = tem_arr
+            this.$emit(
+                'update',
+                tem_arr.map(item => item.id)
+            )
+            return tem_arr
         },
 
         // 子集全选,则父级选中 。
@@ -96,20 +120,6 @@ export default {
             this.tree_list = this.tree_list.slice()
         },
 
-        // 点击组权限框, 下拉打开 tree
-        openTree() {
-            if (!this.tree_show) {
-                setTimeout(() => {
-                    this.tree_show = true
-                    $(this.$refs.tree).slideDown(200)
-                }, 0)
-            }
-        },
-        // 关闭 tree 下拉内容
-        closeTree() {
-            if (!this.tree_show) return
-            this.tree_show = false
-        },
         // 后台res 转化为 tree 数组
         resToTree(list) {
             let arr = []
@@ -126,34 +136,44 @@ export default {
             })
             return arr
         },
-        // 获取后台所有权限树
-        getTreeList() {
-            // this.tree_list = JSON.parse(JSON.stringify(window.all.menu_list))
-            // console.log('想要的tree_list: ', this.tree_list);
-            // this.tree_list.forEach((item, index) => {
-            //     item.id = index
-            // })
-            let self = this
-            let { url, method } = this.$api.menu_all_list
-            this.$http({
-                method: method,
-                url: url
-            }).then(res => {
-                // console.log('res👌: ', res);
-                if (res && res.code === '200') {
-                    self.total = res.data.total
-                    self.tree_list = this.resToTree(res.data)
-                } else {
-                    if (res && res.message !== '') {
-                        self.toast.error(res.message)
+        // 根据选中的数组 展示勾选 tree中此项
+        treeSelectShow(arr) {
+            // 当前权限数组
+            let authority_arr = arr
+
+            // id 是否在选择项数组中
+            let isSelect = function(id) {
+                return authority_arr.indexOf(id) !== -1
+            }
+
+            function setMenuChecked(arr) {
+                let temp_list = arr.map(item => {
+                    item.checked = isSelect(item.id)
+                    if (item.child) {
+                        setMenuChecked(item.child)
+                        item.checked = item.child.every(item => item.checked)
                     }
-                }
-            })
-            // this.getTabList()
+                    return item
+                })
+                return temp_list
+            }
+
+            this.tree_list = setMenuChecked(this.tree_list)
+        }
+    },
+    watch: {
+        value(val) {
+            this.treeSelectShow(val)
+        },
+        menutree(list) {
+            this.tree_list = list
+            this.tagList = this.getTabList()
         }
     },
     mounted() {
         // this.getTreeList()
+        this.tree_list = this.menutree
+        this.tagList = this.getTabList()
     }
 }
 </script>

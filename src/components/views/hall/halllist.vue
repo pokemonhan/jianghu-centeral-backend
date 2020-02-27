@@ -45,16 +45,6 @@
                             :class="[row.a5==='1'?'orange':'gray']"
                         >{{row.a5==='1'?'维护中??':'未维护??'}}</span>
                     </td>
-                    <!-- <td style="font-size:12px;padding:5px;">
-                        <div>{{row.a6&&tring(row.a6).split('~')[0]}}</div>
-                        <div>~??</div>
-                        <div>{{ row.a6&&String(row.a6).split('~')[1]}}</div>
-                    </td>
-                    <td style="font-size:12px;padding:5px;">
-                        <div>{{row.a7&&String(row.a7).split('-')[0]}}</div>
-                        <div>~??</div>
-                        <div>{{row.a7&&String(row.a7).split('-')[1]}}</div>
-                    </td> -->
                     <td>
                         <div>{{row.start_time}}</div>
                         <div>{{row.end_time}}</div>
@@ -222,11 +212,12 @@
     </div>
 </template> 
 <script>
+import AuthorityTree from '../../commonComponents/AuthorityTree'
+
 import SiteManage from './HallListDir/SiteManage'
 import Domain from './HallListDir/Domain'
 import Gamemanage from './HallListDir/Gamemanage'
 import ActiveManage from './HallListDir/ActiveManage'
-import AuthorityTree from '../../commonComponents/AuthorityTree'
 export default {
     components: {
         SiteManage: SiteManage,
@@ -251,7 +242,7 @@ export default {
                 platform_name: '',
                 domains: '',
                 agency_method: [],
-                role: '', // 权限选择
+                role: [], // 权限选择
                 sms_num: '',
                 platform_sign: '', // 站点标识
                 status: '1'

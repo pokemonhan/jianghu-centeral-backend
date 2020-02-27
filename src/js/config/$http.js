@@ -105,8 +105,6 @@ let http = axios.create({
     },
 })
 
-// 设置时间函数对象,判断这个url有在5秒内请求过吗
-// TODO:
 // 请求预设 ---
 
 http.interceptors.request.use(req => {
@@ -118,7 +116,7 @@ http.interceptors.request.use(req => {
     // console.log('url: ', url);
     // let not_login = req.url.indexOf('/headquarters-api/login') === -1     // 并非 /login页面
     // let not_login =  window.location.pathname !== '/login' && eq.url.indexOf('/headquarters-api/login') === -1
-    if (Authorization && true) {
+    if (Authorization) {
         req.headers.Authorization = Authorization   // 这是token+token_type
         // if (expires && now > expires) {
         //     // alert('token已经超时,请重新登陆..')

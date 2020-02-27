@@ -5,7 +5,7 @@ import App from './App'
 import router from './js/router'
 import store from './js/vuex'
 
-Vue.config.productionTip = true // TODO: false 生产设置为false
+Vue.config.productionTip = false // TODO: false 生产设置为false
 Vue.config.devtools = false // TODO: false 生产设置为false
 
 
