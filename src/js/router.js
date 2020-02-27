@@ -109,6 +109,9 @@ r.keys().forEach(file_name => {
     // let length = file_name.split('/').length
     // let name = file_name.split('/')[length - 1].replace('.vue', '')
     // console.log(name)
+    // if(){
+
+    // }
     route_add.push({
         path: path,
         // 懒加载
