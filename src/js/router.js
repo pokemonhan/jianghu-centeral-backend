@@ -108,16 +108,24 @@ r.keys().forEach(file_name => {
 
     // let length = file_name.split('/').length
     // let name = file_name.split('/')[length - 1].replace('.vue', '')
+    function exclude(path) {
+        // console.log('path: ', path);
+        let excludeArr = ['/dev/totalmenudir/routeset']
+        return excludeArr.indexOf(path)!==-1
+    }
     // console.log(name)
-    // if(){
-
-    // }
-    route_add.push({
-        path: path,
-        // 懒加载
-        component: () => r(file_name),
-        // meta:{}
-    })
+    if(!exclude(path)){
+        route_add.push({
+            path: path,
+            // 懒加载
+            component: () => r(file_name),
+            // meta:{}
+        })
+    }else {
+        console.log(path);
+        
+    }
+    
 
 })
 route_add.push({
