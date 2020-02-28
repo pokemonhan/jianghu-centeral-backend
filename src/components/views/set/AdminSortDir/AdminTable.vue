@@ -1,6 +1,6 @@
 <template>
     <div class="table">
-        <div class="mb20">
+        <div class="mb20" v-show="!isSearch">
             <span>成员列表：</span>
             <button class="btn-blue" @click="addMember">添加成员</button>
         </div>
@@ -22,6 +22,7 @@
         </Table>
 
         <Page
+            v-show="!isSearch"
             class="table-page"
             :total="total"
             :pageNo.sync="pageNo"
@@ -29,6 +30,8 @@
             @updateNo="updateNo"
             @updateSize="updateSize"
         />
+       
+
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
             <div class="dia-inner">
                 <div v-if="dia_show==='add_member'">
@@ -99,17 +102,22 @@
     </div>
 </template>
 
-
 <script>
+import Pagefront from '../../../commonComponents/PageFront'
+
 export default {
     props: {
         group_id: {
             type: [Number, String]
         }
     },
+    components:{
+        Pagefront
+    },
     data() {
         return {
             // table
+            isSearch: false, // 是否是点击搜索按钮的结果(而不是点击查看或者编辑)
             headers: ['名称', '邮箱', '状态', '操作'],
             list: [],
             total: 0,
@@ -140,10 +148,16 @@ export default {
                 cfm_pwd: ''
             },
             edit_conf_pwd: '',
-            mod_show: false
+            mod_show: false,
         }
     },
     methods: {
+        // 给父组件调用此方法
+        setList(list,total=0) {
+            this.isSearch = true
+            this.list = list
+            this.total = total
+        },
         getList() {
             let params = {
                 id: this.group_id,
@@ -156,15 +170,12 @@ export default {
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data
-                } else {
-                    if (res && res.message !== '') {
-                        this.toast.error(res.message)
-                    }
                 }
             })
         },
         addMember() {
             this.dia_show = 'add_member'
+            this.dia_title = '添加成员'
             this.addForm = {
                 name: '',
                 email: '',
@@ -216,7 +227,7 @@ export default {
             let val = this.addForm.cfm_pwd
 
             if (val !== this.addForm.pwd) {
-                console.log('this.addForm.pwd: ', this.addForm.pwd)
+                // console.log('this.addForm.pwd: ', this.addForm.pwd)
                 this.add_err_msg.cfm_pwd = '两次密码不一致!'
                 return false
             } else {
@@ -274,7 +285,7 @@ export default {
         checkEditPwd() {
             let regExp = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/
             let val = this.editForm.cfm_pwd
-            console.log('val: ', val)
+            // console.log('val: ', val)
             if (val === '') {
                 this.edit_conf_pwd = '内容不能为空!'
                 return false
@@ -301,7 +312,7 @@ export default {
             }
             let { method, url } = this.$api.admin_user_other_pwd_set
             this.$http({ method, url, data }).then(res => {
-                console.log('res: ', res)
+                // console.log('res: ', res)
                 if (res && res.code === '200') {
                     res.message && this.$toast.success(res.message)
                     this.dia_show = ''
@@ -311,7 +322,7 @@ export default {
                 }
             })
         },
-
+        // 目前里面只有禁用
         modConf() {
             let data = {
                 id: this.curr_row.id,
@@ -320,15 +331,16 @@ export default {
         
             let { url, method } = this.$api.admin_user_status_set
             this.$http({ method, url, data }).then(res => {
-        console.log('列表👌👌👌👌: ', res)
+            // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
         
                     this.$toast.success(res && res.message)
                     this.mod_show=false
-                    this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
+                    
+                    if(this.isSearch) {
+                        this.$emit('search')
+                    }else {
+                        this.getList()
                     }
                 }
             })
@@ -339,12 +351,13 @@ export default {
         updateSize() {
             this.pageNo = 1
             this.getList()
-        }
+        },
     },
 
     watch: {
         group_id(val) {
-            console.log('val: ', val)
+            // console.log('val: ', val)
+            this.isSearch = false
             this.getList()
         }
     },

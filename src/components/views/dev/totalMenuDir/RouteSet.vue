@@ -2,7 +2,7 @@
     <div class="center-box content">
         <div>
             <div class="search">
-                <Input placeholder="搜索" v-model="search" />
+                <Input placeholder="搜索" v-model="search" @update="searchUpd" />
             </div>
 
             <ul class="lev1">
@@ -19,7 +19,7 @@
                                 @click="routeExpand(lv1_idx)"
                             ></i>-->
                         </span>
-                        <span class="title-cont">{{lv1.label}}</span>
+                        <span :class="[(search&&lv1.is_open)?'search-item':'','title-cont']">{{lv1.label}}</span>
                         <span v-if="!lv1.children" class="add-router" @click="add">添加路由</span>
                     </div>
 
@@ -27,9 +27,9 @@
                     <ul v-if="lv1.routes" class="route-lv2" :ref="lv1_idx">
                         <li v-for="(route, route_idx) in lv1.routes" :key="route_idx">
                             <i class="iconfont iconshezhi2"></i>
-                            <span :class="isShowRed(route)?'red':''">{{route.title}}</span>
+                            <span :class="(search&&route.isSelect)?'search-item':''">{{route.title}}</span>
                             <button class="btns-plain-blue" @click="edit(lv1)">编辑</button>
-                            <span></span>
+   
                             <button class="btns-plain-red" @click="del(lv1)">删除</button>
                             <Switchbox class="switch" v-model="route.is_open" />
                         </li>
@@ -50,7 +50,7 @@
                                     ></i>-->
                                 </span>
 
-                                <span class="title-cont">{{lv2.label}}</span>
+                                <span :class="[(search&&lv2.is_open)?'search-item':'','title-cont']">{{lv2.label}}</span>
                                 <span v-if="!lv2.children" class="add-router" @click="add(lv2)">添加路由</span>
                             </div>
 
@@ -62,7 +62,9 @@
                                     :key="rout2_idx"
                                 >
                                     <i class="iconfont iconshezhi2"></i>
-                                    <span :class="isShowRed(route2)?'red':''">{{route2.title}}</span>
+                                    <span
+                                        :class="(search&&route2.isSelect)?'search-item':''"
+                                    >{{route2.title}}</span>
                                     <button class="btns-plain-blue" @click="edit(route2)">编辑</button>
                                     <button class="btns-plain-red" @click="del(route2)">删除</button>
                                     <Switchbox
@@ -84,7 +86,7 @@
                                             :class="['iconfont iconfolder-fill',lv3.routes?'':'hide']"
                                             @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx)"
                                         ></i>-->
-                                        <span class="title-cont">{{lv3.label}}</span>
+                                        <span :class="[(search&&lv3.is_open)?'search-item':'','title-cont']">{{lv3.label}}</span>
                                         <span
                                             v-if="!lv3.children"
                                             class="add-router"
@@ -106,7 +108,7 @@
                                             <i class="iconfont iconshezhi2"></i>
                                             <!-- <span>{{route3.title}}</span> -->
                                             <span
-                                                :class="isShowRed(route3)?'red':''"
+                                                :class="isSearchItem(route3)?'search-item':''"
                                             >{{route3.title}}</span>
 
                                             <button class="btns-plain-blue" @click="edit(route3)">编辑</button>
@@ -148,7 +150,7 @@
                 <div>
                     <ul class="form">
                         <!-- 添加 编辑路由 -->
-                        <li>
+                        <li v-if="route_show_opt.length">
                             <span>选择路由1:</span>
                             <!-- <Select
                                 style="width:550px;margin-top:10px;"
@@ -166,7 +168,9 @@
                                 @update="routeSelect"
                             ></Select>
                         </li>
-
+                        <li v-else class="no-router">
+                            <span>sorry,没有可以使用的路由....</span>
+                        </li>
                         <!-- 编辑路由 -->
                         <!-- <li>
                             <span>选择路由(编辑):</span>
@@ -206,6 +210,7 @@
 </template> 
 
 <script>
+let count = 0
 export default {
     props: {
         menu: Array
@@ -224,8 +229,8 @@ export default {
             // 展示的下拉框内容
             route_show_opt: [],
 
-            route_obj: {}, // 目前路由_对象
-            curr_route: [], // 目前路由_后端信息
+            route_obj: {}, // 已使用路由_对象 ,方便调用
+            curr_route: [], // 当前已使用的路由信息
             // dia
             dia_status: '',
             dia_title: '',
@@ -237,53 +242,60 @@ export default {
         }
     },
     methods: {
+        searchUpd: window.all.tool.debounce(function(search) {
+            // console.log('search: ', search);
+            let self = this
+            function isMatch(item) {
+                if (item.title && item.title.indexOf(search) !== -1) {
+                    return true
+                } else if (
+                    item.route_name &&
+                    item.route_name.indexOf(search) !== -1
+                ) {
+                    return true
+                } else if (item.url && item.url.indexOf(search) !== -1) {
+                    return true
+                }
+                return false
+            }
+            // if (!search) return
+            function setCss(arr = [], isRoute = false, prefix = '') {
+                let is_open = false
+                arr.forEach((item, index) => {
+                    item.isSelect = false
+                    item.is_open = false
+                    item.prefix = prefix + index
+                    if (isRoute && isMatch(item)) {
+                        item.isSelect = true
+                        is_open = true
+                    }
+                    if (item.children) {
+                        item.is_open = setCss( item.children, false, item.prefix + '-' )
+                    } else if (item.routes) {
+                        item.is_open = setCss( item.routes, true, item.prefix + '-' )
+                    }
+                    if (item.is_open) {
+                        is_open = true
+                        $(self.$refs[item.prefix]).slideDown()
+                    }else {
+                        $(self.$refs[item.prefix]).slideUp()
+                    }
+                  
+                })
+                return is_open
+            }
+            setCss(this.routesMenu)
+            this.routesMenu = this.routesMenu.slice()
+            // console.log('查看前缀this.routesMenu: ', this.routesMenu)
+        }, 200),
         expand(index) {
             let ele = this.$refs[index]
             $(ele).slideToggle(200)
         },
-        isShowRed(route) {
-            let search = this.search
-            let title = route && route.title
-            if (!title) return false
-            if (!search) return false
-            return title.indexOf(search) !== -1
-        },
+
         routeExpand(index) {
             let ele = this.$refs[index]
             $(ele).slideToggle(200)
-        },
-        // 根据route_name 返回它的相关内容
-        getRouterNameObj(route_name) {
-            return this.route_all_opt.find(item => {
-                return item.route_name === route_name
-            })
-        },
-
-        /* 获取所有可选路由 (即: 添加路由,编辑路由的select下拉框内容) */
-        getRouteSelect() {
-            // 根据数组变成 需要的 option下拉框
-            let toRouteOpt = (arr = []) => {
-                return arr.map((item, index) => {
-                    return {
-                        label: item.route_name + '(' + item.url + ')',
-                        value: item.route_name,
-                        url: item.url, // 例如: headquarters-api/activity/index-do
-                        route_name: item.route_name, // 例如 headquarters-api.activity.index-do
-                        controller: item.controller
-                    }
-                })
-            }
-            let data = { type: 1 } // 0全部 ，这里1:总后台 ，2. 代理后台，3. App
-            let { url, method } = this.$api.menu_date_list
-            this.$http({ method, url, data }).then(res => {
-                // console.log('res: ', res);
-                if (res && res.code === '200') {
-                    this.route_all_opt = toRouteOpt(
-                        res.data && res.data.route_info
-                    )
-                    // console.log('this.route_all_opt: ', this.route_all_opt);
-                }
-            })
         },
 
         initForm() {
@@ -324,7 +336,7 @@ export default {
                     this.getRouterNameObj(row.route_name).controller
             }
 
-            this.form = Object.assign(this.form)
+            this.form = Object.assign({}, this.form)
             this.curr_row = row
             this.dia_status = 'edit'
             this.dia_title = '编辑路由'
@@ -332,10 +344,8 @@ export default {
         },
         del(row) {
             this.curr_row = row
-            // console.log('row: ', row)
             this.mod_status = 'del'
             this.mod_content = `是否删除 ${row && row.title}`
-            // this.mod_content = '是否删除该路由'
             this.mod_show = true
         },
         isOpenSwitch(val, route) {
@@ -472,31 +482,79 @@ export default {
                 this.getRouteList()
             })
         },
+        // 根据route_name 返回它的相关内容
+        getRouterNameObj(route_name) {
+            return (
+                this.route_all_opt.find(item => {
+                    return item.route_name === route_name
+                }) || {}
+            )
+        },
+
+        /* 获取所有可选路由 (即: 添加路由,编辑路由的select下拉框内容) */
+        getRouteSelect() {
+            // 根据数组变成 需要的 option下拉框
+            let toRouteOpt = (arr = []) => {
+                return arr.map((item, index) => {
+                    return {
+                        label: item.route_name + '(' + item.url + ')',
+                        value: item.route_name,
+                        url: item.url, // 例如: headquarters-api/activity/index-do
+                        route_name: item.route_name, // 例如 headquarters-api.activity.index-do
+                        controller: item.controller
+                    }
+                })
+            }
+            let data = { type: 1 } // 0全部 ，这里1:总后台 ，2. 代理后台，3. App
+            let { url, method } = this.$api.menu_date_list
+            this.$http({ method, url, data }).then(res => {
+                // console.log('res: ', res);
+                if (res && res.code === '200') {
+                    this.route_all_opt = toRouteOpt(
+                        res.data && res.data.route_info
+                    )
+                    // 获取路由信息, (成功后设置菜单)
+                    this.getRouteList()
+                }
+            })
+        },
         // 获取当前路由对象,方便调用 . 以id 为key 保存所有信息到route_obj 里面
         // 这样就方便查找该菜单id 下的所有路由数组. 例如: 发邮件页面id为5 ,它下面有 列表,删除,最近联系人等api接口信息
         getRouteObj(arr) {
-            let route_obj = {}
+            let RouteObj = {}
 
             arr.forEach(item => {
+                // console.log('路由对象item: ', item);
                 // 对象属性下为空, 就设置为数组类型
-                if (!route_obj[item.menu_group_id]) {
-                    route_obj[item.menu_group_id] = []
+                if (!RouteObj[item.menu_group_id]) {
+                    RouteObj[item.menu_group_id] = []
                 }
                 // 并push 到数组下
-                route_obj[item.menu_group_id].push(item)
+                let child = {
+                    id: item.id,
+                    route_name: item.route_name,
+                    menu_group_id: item.menu_group_id,
+                    title: item.title,
+                    description: item.description,
+                    is_open: item.is_open,
+                    url: this.getRouterNameObj(item.route_name).url
+                    // controller: this.getRouterNameObj(item.route_name),
+                }
+                RouteObj[item.menu_group_id].push(child)
             })
-            return route_obj
+            return RouteObj
         },
         // 获取包含路由的菜单. (让菜单里面能显示路由)
         setRouteMenu() {
             if (this.menu.length === 0) return
             if (this.curr_route.length === 0) return
+            if (this.route_all_opt.length === 0) return
             let self = this
 
             let toTreeArray = function(menu) {
                 return menu.map(item => {
                     // 根据菜单id 得知它自身api路由有哪些,
-                    // 例如: 登录记录 id为5，  api路由 (routes）有 登录记录-列表api
+                    // 例如: 登录记录 id为5，  路由 (routes）有 登录记录-列表(api)
                     if (self.route_obj[item.id]) {
                         item.routes = self.route_obj[item.id]
                     }
@@ -532,7 +590,6 @@ export default {
     },
     mounted() {
         this.getRouteSelect()
-        this.getRouteList()
     }
 }
 </script>
@@ -555,7 +612,10 @@ export default {
     margin-top: 3px;
     margin-bottom: 3px;
 } */
-.lev1 > li > .title{
+.lev1 ul {
+    display: none;
+}
+.lev1 > li > .title {
     line-height: 20px;
     font-size: 15px;
 }
@@ -635,7 +695,13 @@ export default {
 .dia-inner {
     padding: 0 50px;
 }
-
+.no-router {
+    display: flex;
+    justify-content: center;
+    color: #4c8bfd;
+    font-size: 22px;
+    margin-left: -50px;
+}
 .iconshezhi2 {
     margin-right: 5px;
 }
@@ -685,7 +751,7 @@ export default {
 }
 .btns-plain-blue:active,
 .btns-plain-red:active {
-    transform: scale(.9);
+    transform: scale(0.9);
 }
 .btns-plain-blue {
     background: #ecf5ff;
@@ -700,5 +766,14 @@ export default {
     border: 1px solid #fbc4c4;
     border-radius: 3px;
     box-shadow: 1px 1px 3px rgba(250, 179, 174, 0.2);
+}
+.search-item {
+    padding-left: 5px;
+    line-height: 21px;
+    font-weight: bold;
+    color: rgb(253, 95, 55);
+
+    background: rgb(243, 242, 242);
+    transition: all 0.2s;
 }
 </style>

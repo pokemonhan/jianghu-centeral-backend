@@ -116,7 +116,7 @@ export default {
 /* fade-transform */
 .fade-transform-leave-active,
 .fade-transform-enter-active {
-    transition: all 0.4s;
+    transition: all 0.3s;
 }
 
 .fade-transform-enter {
@@ -133,7 +133,7 @@ export default {
 } */
 .tab-nav {
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     padding-right: 20px;
 }
 #toast-box {

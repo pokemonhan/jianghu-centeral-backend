@@ -244,7 +244,7 @@ export default {
     font-size: 15px;
     font-weight: 600;
     text-align: center;
-    border-top: 1px solid rgb(253, 253, 253);
+    /* border-top: 1px solid rgb(253, 253, 253); */
     /* color: rgb(63, 62, 62); */
 }
 
@@ -296,8 +296,9 @@ li .title:hover {
     color: #fff;
 }
 .active-menu {
-    background: #4c8bfd;
+    background: linear-gradient(to top, #4c8bfd, #2d70ea);
     color: #fff;
+    box-shadow: 0 1px 3px #dbdbdb;
 }
 /* .contain > ul > li {
   

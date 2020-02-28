@@ -311,6 +311,11 @@ export default {
         url: '/headquarters-api/headquarters-admin-user/switch-admin',
         method: 'post'
     },
+    //  8.1.12 查找管理员
+    search_admin_list: {
+        url: '/headquarters-api/headquarters-admin-user/search-admin',
+        method: 'post'
+    },
     /*   --------    操作日志    -------- */
 
 

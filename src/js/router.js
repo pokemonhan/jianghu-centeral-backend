@@ -110,10 +110,9 @@ r.keys().forEach(file_name => {
     // let name = file_name.split('/')[length - 1].replace('.vue', '')
     function exclude(path) {
         // console.log('path: ', path);
-        let excludeArr = ['/dev/totalmenudir/routeset']
+        let excludeArr = ['/dev/totalmenudir/routeset'] // 不需要添加的路由path
         return excludeArr.indexOf(path)!==-1
     }
-    // console.log(name)
     if(!exclude(path)){
         route_add.push({
             path: path,
@@ -121,9 +120,6 @@ r.keys().forEach(file_name => {
             component: () => r(file_name),
             // meta:{}
         })
-    }else {
-        console.log(path);
-        
     }
     
 

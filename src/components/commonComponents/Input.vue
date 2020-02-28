@@ -72,6 +72,7 @@ export default {
     methods: {
         input() {
             this.$emit("input", this.val);
+            this.$emit("update", this.val);
         },
         pressEnter() {
             this.$emit("enter");
@@ -80,6 +81,7 @@ export default {
             this.regs[this.limit] && (this.val = this.val.toString().replace(this.regs[this.limit], ""));
             // console.log(this.val)
             this.$emit("keyup", this.val);
+            this.$emit("update", this.val);
         }
     },
     mounted() {
@@ -98,7 +100,7 @@ export default {
     /* background: #fff; */
 }
 .disabled {
-    color: #666;
+    color: #888;
     cursor: not-allowed;
 }
 input::placeholder{

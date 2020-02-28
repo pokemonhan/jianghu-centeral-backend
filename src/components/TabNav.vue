@@ -235,7 +235,7 @@ export default {
     height: 26px;
     line-height: 26px;
     margin-left: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
     padding-left: 6px;
     background: #fff;
     font-size: 13px;

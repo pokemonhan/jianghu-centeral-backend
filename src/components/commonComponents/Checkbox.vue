@@ -25,7 +25,7 @@ export default {
         },
         disabled: {
             type: Boolean,
-            default: () => false
+            default: () => true
         },
         val: {
             type: [Boolean, String, Number],
@@ -143,6 +143,10 @@ export default {
     border-color: #2d8cf0;
     background-color: #2d8cf0;
 }
+/* .disabled .icon span.active {
+    border-color: #4674a5;
+    background-color: #3e71a8;
+} */
 .v-checkbox .icon span.active:after {
     content: '';
     display: table;

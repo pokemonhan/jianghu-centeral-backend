@@ -8,6 +8,7 @@
                         class="checkbox-head"
                         :label="lev1.label"
                         v-model="lev1.checked"
+                        :disabled="disabled"
                         @update="checkBoxUpd($event, lev1_idx)"
                     />
                 </div>
@@ -25,6 +26,7 @@
                                 class="checkbox"
                                 :label="lev2.label"
                                 v-model="lev2.checked"
+                                :disabled="disabled"
                                 @update="checkBoxUpd($event, lev1_idx+'-'+lev2_idx)"
                             />
                         </div>
@@ -41,6 +43,7 @@
                                         class="checkbox"
                                         :label="lev3.label"
                                         v-model="lev3.checked"
+                                        :disabled="disabled"
                                         @update="checkBoxUpd($event, lev1_idx+'-'+lev2_idx+'-'+lev3_idx)"
                                     />
                                 </div>
@@ -59,6 +62,10 @@ export default {
     props: {
         list: {
             type: Array
+        },
+        disabled: {
+            type: Boolean,
+            default: false
         }
     },
     data() {

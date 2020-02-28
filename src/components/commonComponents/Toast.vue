@@ -1,12 +1,12 @@
 <template>
     <transition name="toast">
-        <div v-if="show" class="vue-toast">
+        <div v-show="show" class="vue-toast">
             <div>
                 <i v-if="type==='warning'" class="toast-warning iconfont iconjinggao1-"></i>
                 <i v-else-if="type==='success'" class="toast-success iconfont iconchenggong-"></i>
                 <i v-else-if="type==='error'" class="toast-error iconfont iconcuowuguanbi-"></i>
                 <i v-else-if="type==='info'" class="toast-info iconfont iconinfor"></i>
-                <span class="message">{{message}}</span>
+                <p class="message">{{message.slice(0,50)}}</p>
             </div>
         </div>
     </transition>
@@ -18,8 +18,7 @@ export default {
     props: {
         message: {
             type: String,
-            // required:
-            default: () => '$toast is null'
+            required: true
         },
         type: {
             type: String,
@@ -27,7 +26,7 @@ export default {
         },
         duration: {
             type: Number,
-            default: () => 4500
+            default: () => 3000
         }
     },
     data() {
@@ -46,10 +45,8 @@ export default {
 
 <style scoped>
 .toast-enter {
-    position: relative;
     opacity: 0;
     transform: translateY(-30px);
-    
 }
 .toast-leave-to {
     margin-top: -55px;
@@ -99,5 +96,8 @@ export default {
 }
 .vue-toast .toast-error {
     color: #ed4014;
+}
+.message {
+    max-width: 400px;
 }
 </style>

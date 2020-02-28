@@ -122,7 +122,7 @@ http.interceptors.request.use(req => {
         //     // alert('token已经超时,请重新登陆..')
         // window._Vue_.$router.push('/login')
         // }
-    }else {
+    } else {
         router.push('/login')
     }
     return req
@@ -130,61 +130,29 @@ http.interceptors.request.use(req => {
 
 // 后台返回数据 全局预设 ---
 http.interceptors.response.use(res => {
-    // let data = res.data
+    // console.log('后台预设: ', res);
     let toastErr = window.__vm__.$toast.error
-    // 503 请求频繁 
-    if (res.status === 503) {
-        toastErr('请求次数过于频繁，请稍后再试')
+    let message = res.message || res.data.message || '出现服务问题或被禁止'
+    if (!res.data) {
+        toastErr(message)
         return res
     }
-    // 401 跳转到login 登录
-    if (res.status === 401) {
-        // res.data.message && toastErr(res.data.message)
-        let message = res.message || res.data.message
-        if (message) {
+    
+    if (res.status !== 200) {
+        if (res.status === 503) { // 503 请求频繁 
+            message = '503 请求次数过于频繁，请稍后再试'
+        }else if (res.status === 401) { 
+            // 401 跳转到login 登录
+            router.push('/login')
+        }
+        toastErr(message)
+       
+    }else {
+        if (res.data.code !== '200') {
             toastErr(message)
-        } else {
-            toastErr('出现服务问题或被禁止')
-        }
-        router.push('/login')
-        return res
-    }
-    if (res && res.data) {
-
-        if (res.status !== 200) {
-            if (res.data.code !== '200') {
-
-                let message = res.message || res.data.message
-                if (message) {
-                    toastErr(message)
-                } else {
-                    toastErr('出现服务问题或被禁止..')
-                }
-                // console.log(res)
-            }
-        }
-        // 正常
-    } else {
-
-        let message = res.message
-        if (message) {
-            toastErr(message)
-        } else {
-            toastErr('出现服务问题或被禁止.')
-        }
-        if (res) {
-            console.log('错误信息未知?', res)
         }
     }
-
     return res.data
-}, (error) => {
-    let toastErr = window.__vm__.$toast.info
-    if (error && error.response) {
-        toastErr(error.response)
-    } else {
-        toastErr('出现服务问题或请求频繁!')
-    }
 })
 
 export default http

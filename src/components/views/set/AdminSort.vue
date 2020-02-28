@@ -2,17 +2,24 @@
     <div class="container">
         <div class="filter p10">
             <ul class="left">
-              
                 <li>
                     <!-- <button class="btn-blue">查找</button> -->
                     <button class="btn-blue" @click="addsort">创建分组</button>
+                </li>
+                <li>
+                    <Input class="filter-input ml50" v-model="filter.searchStr" @enter="search" />
+                    <button class="btn-blue" @click="search">搜索</button>
                 </li>
             </ul>
         </div>
         <div class="cont">
             <div class="cont-left">
                 <ul>
-                    <li v-for="(group,index) in group_list" :key="index">
+                    <li
+                        :class="[searchGroup.indexOf(group.id)>-1?'had-search':'']"
+                        v-for="(group,index) in group_list"
+                        :key="index"
+                    >
                         <div class="li-left">
                             <p class="li-hd">
                                 <span @click="check(group)">{{group.group_name}}</span>
@@ -28,7 +35,8 @@
                 </ul>
                 <div class="vertical-line"></div>
             </div>
-            <!-- 右边的 页面 -->
+
+            <!--------- 右边的 页面 ---------->
             <div class="cont-right">
                 <div class="edit-form">
                     <div>
@@ -38,12 +46,16 @@
                     </div>
                     <div class="edit-name">
                         <p class="mb10">组名称:</p>
-                        <Input style="width:300px;" v-model="form.group_name" />
+                        <Input
+                            style="width:300px;"
+                            :disabled="form.id===1"
+                            v-model="form.group_name"
+                        />
                         <span v-show="!form.group_name" class="err-tips">组名称不可为空</span>
                     </div>
                     <div class="edit-authority">
                         <p class="mb10">选择组权限:</p>
-                        <div class="show-selected" @click="openTree">
+                        <!-- <div class="show-selected" @click="openTree">
                             <span
                                 class="sel-item"
                                 v-for="(item, index) in authority_list"
@@ -53,17 +65,23 @@
                                 <span>{{item.label}}</span>
                                 <i class="iconfont iconcuowuguanbi-" @click.stop="tabClose(item)"></i>
                             </span>
-                        </div>
+                        </div>-->
                         <!-- v-clickoutside="closeTree" -->
-                        <div
+                        <!-- <div
                             v-show="tree_show"
                             ref="tree"
                             class="drop-list"
                             v-clickoutside="closeTree"
                         >
                             <Tree style="width:fit-content" :list.sync="tree_list" @change="treeUpd" />
-                        </div>
-                        <AuthorityTree style="width:500px;" :menutree="tree_list" v-model="tagList" @update="treeListUpd"/>
+                        </div>-->
+                        <AuthorityTree
+                            style="width:500px;"
+                            :menutree="tree_list"
+                            :disabled="form.id===1"
+                            v-model="form.tagList"
+                            @update="treeListUpd"
+                        />
                     </div>
 
                     <div v-if="!(curr_group.id===1 &&right_show!=='add')" class="mt50 t-center">
@@ -92,7 +110,7 @@
                 <div v-if="right_show==='check'" class="mt20">
                     <!-- table 内容 -->
                     <div class="table">
-                        <AdminTable :group_id="admin_id" />
+                        <AdminTable ref="adminTable" :group_id="admin_id" @search="search" />
                     </div>
                 </div>
             </div>
@@ -108,34 +126,36 @@ export default {
     components: {
         Tree: Tree,
         AdminTable: AdminTable,
-        AuthorityTree: AuthorityTree,
+        AuthorityTree: AuthorityTree
     },
     data() {
         return {
             right_show: 'add', // 默认右侧为添加组
-            // filter: {
-            //     group: ''
-            // },
+            filter: {
+                searchStr: ''
+            },
+            searchGroup: [],
             group_list: [], // 展示列表
             form: {
-                group_name: ''
+                group_name: '',
+                tagList: []
             },
             tree_list: [],
-            authority_list: [],
+            // authority_list: [],
             tree_show: false,
 
             // table
-            admin_id: '',
+            admin_id: '', // 展示成员table所需要的id
 
             // 启用 禁用modal
             mod_show: false,
             curr_group: {},
             mod_status: '',
             mod_title: '',
-            mod_cont: '',
+            mod_cont: ''
 
             // 以下测试
-            tagList: [],
+            // tagList: []
         }
     },
     computed: {},
@@ -160,8 +180,43 @@ export default {
             this.mod_title = ''
             this.mod_cont = ''
         },
+
+        search() {
+            if (!this.filter.searchStr) return
+            let data = {
+                searchStr: this.filter.searchStr
+            }
+
+            let { url, method } = this.$api.search_admin_list
+            this.$http({ method, url, data }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    // console.log('res: ', res);
+
+                    this.searchGroup = (res.data || []).map(
+                        item => item.group_id
+                    ) // 管理员所在的分组
+
+                    // 展示搜索结果中,第一个的名字,权限,id
+                    let firstGroup = this.group_list.find(item => {
+                        return item.id === this.searchGroup[0]
+                    })
+                    if (firstGroup) {
+                        this.form.group_name = firstGroup.group_name
+                        this.form.id = firstGroup.id
+                        this.form.tagList = firstGroup.detail.map(
+                            item => item.menu_id
+                        )
+                    }
+
+                    this.$refs.adminTable.setList(res.data, res.data.length)
+                    // console.log('adminTable: ', adminTable);
+                    // this.$toast.success(res && res.message)
+                }
+            })
+        },
         treeListUpd(val) {
-            console.log('tag展示更新',val);
+            // console.log('tag展示更新', val)
         },
         // 根据group 展示勾选 tree中此项
         treeSelectShow(group) {
@@ -184,33 +239,33 @@ export default {
             }
 
             this.tree_list = listSetCheked(this.tree_list)
-            this.getAuthorityList()
-            this.isChildSelAll()
+            // this.getAuthorityList()
+            // this.isChildSelAll()
         },
 
         // 创建按钮
         addsort() {
             this.right_show = 'add'
             this.form.group_name = ''
-            this.initTree(this.tree_list)
-            this.getAuthorityList()
+            this.form.tagList = []
+            // this.initTree(this.tree_list)
+            // this.getAuthorityList()
         },
 
         // 查看其中一组
         check(group) {
-            console.log('group: ', group);
+            // console.log('group: ', group);
+            this.searchGroup = []
             this.right_show = 'check'
             this.curr_group = Object.assign({}, group)
 
             this.form.group_name = group.group_name
+            this.form.id = group.id
             this.admin_id = group.id
-            this.treeSelectShow(group)
-            this.setTagList(group)
+
+            this.form.tagList = group.detail.map(item => item.menu_id)
         },
-        setTagList(group){
-            this.tagList = group.detail.map(item=>item.menu_id)
-            console.log('this.tagList: ', this.tagList);
-        },
+
         // 删除分组列表 按钮
         del(group) {
             this.mod_show = true
@@ -264,86 +319,6 @@ export default {
             })
         },
 
-        // 返回已选中权限数组 （有[x]的tab框子）
-        getAuthorityList() {
-            let tem_arr = []
-
-            let getCheckedArr = function(arr) {
-                arr.forEach(item => {
-                    if (!item.child) {
-                        // 没有子项，且选中，放入 tem_arr中，方便展示
-                        item.checked &&
-                            tem_arr.push({ label: item.label, id: item.id })
-                    } else {
-                        item.child && getCheckedArr(item.child)
-                    }
-                })
-            }
-            getCheckedArr(this.tree_list)
-
-            this.authority_list = tem_arr
-        },
-
-        // 关闭 tree 下拉内容
-        closeTree() {
-            if (!this.tree_show) return
-            this.tree_show = false
-
-        },
-
-        // tree 点击更新时
-        treeUpd(bool, index, list) {
-            // console.log('index: ', index);
-            // console.log('外部获取里面反馈: ', list);
-            // 重新赋值让其能检测到
-            this.tree_list = list.slice()
-            // console.log('this.tree_list: ', this.tree_list);
-            this.getAuthorityList()
-        },
-
-
-        // 子集全选,则父级选中 。
-        isChildSelAll() {
-            let isSelectAll = function(arr) {
-                arr.forEach(item => {
-                    if (item.child) {
-                        item.checked = item.child.every(item => item.checked)
-                        isSelectAll(item.child)
-                    }
-                })
-            }
-            isSelectAll(this.tree_list)
-            this.tree_list = (this.tree_list||[]).slice()
-        },
-        // 点击组权限框, 下拉打开 tree
-        openTree() {
-            if (!this.tree_show) {
-                setTimeout(() => {
-                    this.tree_show = true
-                    $(this.$refs.tree).slideDown(200)
-                }, 0)
-            }
-        },
-        // 关闭 tab 框(点击tab里那个[x]时触发..)
-        tabClose(sel_item) {
-
-            this.tree_list = this.tree_list.map((item, index) => {
-                if (item.child) {
-                    item.child.forEach((child_item, child_index) => {
-                        if (child_item.id === sel_item.id) {
-                            child_item.checked = false
-                        }
-                    })
-                }
-                if (item.id === sel_item.id) {
-                    item.checked = false
-                }
-                return item
-            })
-
-            this.getAuthorityList()
-            this.isChildSelAll()
-        },
         cancel() {
             let group = Object.assign({}, this.curr_group)
             this.form.group_name = group.group_name
@@ -356,12 +331,9 @@ export default {
                 return this.$toast.error('组名称不可以为空！')
             }
 
-            let role = this.authority_list.map(item => {
-                return item.id
-            })
             let data = {
                 group_name: this.form.group_name,
-                role: '[' + role.join(',') + ']'
+                role: JSON.stringify(this.form.tagList || [])
             }
 
             let { url, method } = this.$api.admin_class_add
@@ -370,8 +342,6 @@ export default {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
                     this.getGroupList() // 刷新分组列表
-                } else {
-                    // self.$toast.error(res.message)
                 }
             })
         },
@@ -382,17 +352,14 @@ export default {
                 return this.$toast.error('组名称不可以为空！')
             }
 
-            let role = this.authority_list.map(item => {
-                return item.id
-            })
             let data = {
                 id: this.curr_group.id,
                 group_name: this.form.group_name,
-                role: '[' + role.join(',') + ']'
+                role: JSON.stringify(this.form.tagList || [])
             }
             let { method, url } = this.$api.admin_class_set
             this.$http({ method, url, data }).then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.code === '200') {
                     this.$toast.success(res.message)
                 }
@@ -440,17 +407,35 @@ export default {
                     this.group_list = res.data
                 }
             })
+        },
+        // 初次进去展示check 页面
+        firstView() {
+            let { url, method } = this.$api.admin_class_list
+
+            this.$http({ method, url }).then(res => {
+                // console.log('res: ', res)
+                if (res && res.code === '200') {
+                    this.group_list = res.data
+                    this.group_list &&
+                        this.$nextTick(() => {
+                            let self = this
+                            // setTimeout(()=>{
+                            self.check(self.group_list[0])
+                            // },1000)
+                        })
+                }
+            })
         }
     },
     mounted() {
-        this.getGroupList()
+        // this.getGroupList()
+        this.firstView()
         this.getTreeList()
     }
 }
 </script>
 
 <style scoped>
-
 .cont {
     display: flex;
     margin-top: 20px;
@@ -459,6 +444,9 @@ export default {
     display: flex;
     /* todo */
     margin-left: 40px;
+}
+.filter-input {
+    width: 15em;
 }
 .cont .cont-left li {
     display: flex;
@@ -469,10 +457,16 @@ export default {
     padding: 10px;
 }
 .cont-left li:nth-child(2n) {
-    background: #e5f7ff;
+    background: #f6fcff;
 }
 .cont-left li:nth-child(2n-1) {
     background: #f9fbfc;
+}
+.cont .cont-left .had-search {
+    border: 1px solid rgb(250, 207, 195);
+
+    background: rgb(248, 222, 215);
+    transition: background-color 0.2s;
 }
 .cont .li-left .li-hd span {
     font-size: 16px;
