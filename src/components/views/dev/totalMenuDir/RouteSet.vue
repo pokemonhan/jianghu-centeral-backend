@@ -245,21 +245,28 @@ export default {
         searchUpd: window.all.tool.debounce(function(search) {
             // console.log('search: ', search);
             let self = this
+            
             function isMatch(item) {
+                // 路由中文名称匹配时
                 if (item.title && item.title.indexOf(search) !== -1) {
                     return true
+                // 路由名称匹配时
                 } else if (
                     item.route_name &&
                     item.route_name.indexOf(search) !== -1
                 ) {
                     return true
+                // url 匹配时
                 } else if (item.url && item.url.indexOf(search) !== -1) {
+                    return true
+                // 菜单文字匹配时
+                } else if (item.label && item.label.indexOf(search) !== -1) {
                     return true
                 }
                 return false
             }
             // if (!search) return
-            function setCss(arr = [], isRoute = false, prefix = '') {
+            function setCss(arr = [], isRoute = true, prefix = '') {
                 let is_open = false
                 arr.forEach((item, index) => {
                     item.isSelect = false
@@ -267,10 +274,11 @@ export default {
                     item.prefix = prefix + index
                     if (isRoute && isMatch(item)) {
                         item.isSelect = true
-                        is_open = true
+                        // is_open = true
+                        item.is_open = true
                     }
                     if (item.children) {
-                        item.is_open = setCss( item.children, false, item.prefix + '-' )
+                        item.is_open = setCss( item.children, true, item.prefix + '-' )
                     } else if (item.routes) {
                         item.is_open = setCss( item.routes, true, item.prefix + '-' )
                     }
@@ -285,7 +293,8 @@ export default {
                 return is_open
             }
             setCss(this.routesMenu)
-            this.routesMenu = this.routesMenu.slice()
+            // this.routesMenu = this.routesMenu.slice()
+            this.$forceUpdate();
             // console.log('查看前缀this.routesMenu: ', this.routesMenu)
         }, 200),
         expand(index) {

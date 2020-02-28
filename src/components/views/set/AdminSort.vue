@@ -247,6 +247,7 @@ export default {
         addsort() {
             this.right_show = 'add'
             this.form.group_name = ''
+            this.form.id = ''
             this.form.tagList = []
             // this.initTree(this.tree_list)
             // this.getAuthorityList()
