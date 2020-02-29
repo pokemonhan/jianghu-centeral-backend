@@ -19,7 +19,7 @@
                                 @click="routeExpand(lv1_idx)"
                             ></i>-->
                         </span>
-                        <span :class="[(search&&lv1.is_open)?'search-item':'','title-cont']">{{lv1.label}}</span>
+                        <span :class="[(search&&lv1.isMenuOpen)?'search-item':'','title-cont']">{{lv1.label}}</span>
                         <span v-if="!lv1.children" class="add-router" @click="add">添加路由</span>
                     </div>
 
@@ -50,7 +50,7 @@
                                     ></i>-->
                                 </span>
 
-                                <span :class="[(search&&lv2.is_open)?'search-item':'','title-cont']">{{lv2.label}}</span>
+                                <span :class="[(search&&lv2.isMenuOpen)?'search-item':'','title-cont']">{{lv2.label}}</span>
                                 <span v-if="!lv2.children" class="add-router" @click="add(lv2)">添加路由</span>
                             </div>
 
@@ -86,7 +86,7 @@
                                             :class="['iconfont iconfolder-fill',lv3.routes?'':'hide']"
                                             @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx)"
                                         ></i>-->
-                                        <span :class="[(search&&lv3.is_open)?'search-item':'','title-cont']">{{lv3.label}}</span>
+                                        <span :class="[(search&&lv3.isMenuOpen)?'search-item':'','title-cont']">{{lv3.label}}</span>
                                         <span
                                             v-if="!lv3.children"
                                             class="add-router"
@@ -267,30 +267,30 @@ export default {
             }
             // if (!search) return
             function setCss(arr = [], isRoute = true, prefix = '') {
-                let is_open = false
+                let isMenuOpen = false
                 arr.forEach((item, index) => {
                     item.isSelect = false
-                    item.is_open = false
+                    item.isMenuOpen = false
                     item.prefix = prefix + index
                     if (isRoute && isMatch(item)) {
                         item.isSelect = true
-                        // is_open = true
-                        item.is_open = true
+                        // isMenuOpen = true
+                        item.isMenuOpen = true
                     }
                     if (item.children) {
-                        item.is_open = setCss( item.children, true, item.prefix + '-' )
+                        item.isMenuOpen = setCss( item.children, true, item.prefix + '-' )
                     } else if (item.routes) {
-                        item.is_open = setCss( item.routes, true, item.prefix + '-' )
+                        item.isMenuOpen = setCss( item.routes, true, item.prefix + '-' )
                     }
-                    if (item.is_open) {
-                        is_open = true
+                    if (item.isMenuOpen) {
+                        isMenuOpen = true
                         $(self.$refs[item.prefix]).slideDown()
                     }else {
                         $(self.$refs[item.prefix]).slideUp()
                     }
                   
                 })
-                return is_open
+                return isMenuOpen
             }
             setCss(this.routesMenu)
             // this.routesMenu = this.routesMenu.slice()

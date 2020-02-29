@@ -1,17 +1,5 @@
 <template>
     <div class="content">
-        <!-- <el-tree
-            :data="menuList"
-            node-key="id"
-            default-expand-all
-            @node-drag-start="handleDragStart"
-            @node-drag-enter="handleDragEnter"
-            @node-drag-leave="handleDragLeave"
-            @node-drag-end="handleDragEnd"
-            draggable
-            :allow-drop="allowDrop"
-            :allow-drag="allowDrag"
-        ></el-tree>-->
         <el-tree
             :data="menu"
             node-key="id"
