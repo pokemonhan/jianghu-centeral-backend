@@ -6,6 +6,20 @@
   "description": "test something",
   "glyphs": [
     {
+      "icon_id": "836561",
+      "name": "file",
+      "font_class": "file",
+      "unicode": "e6f4",
+      "unicode_decimal": 59124
+    },
+    {
+      "icon_id": "963367",
+      "name": " file",
+      "font_class": "wenjian",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
       "icon_id": "11488256",
       "name": "folder-fill",
       "font_class": "folder-fill",

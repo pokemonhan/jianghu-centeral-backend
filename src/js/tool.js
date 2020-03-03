@@ -45,10 +45,11 @@ const Tool = {
         arr2.push(`0${date.getSeconds()}`.slice(-2))
         return `${arr1.join('-')} ${arr2.join(':')}`
     },
-    // 节流
-    now(){
+
+    now() {
         return new Date().valueOf()
     },
+    // 节流
     throttle(fn, delay) {
         var lastTime;
         var timer;
@@ -89,7 +90,7 @@ const Tool = {
             }, delay);
         }
     },
-  
+
     // 去除为param空的 属性
     rmEmpty(obj) {
         let params = {}
@@ -98,13 +99,82 @@ const Tool = {
                 if (obj[key].length > 0) {
                     params[key] = obj[key]
                 }
-            } else if (obj[key] !== '' && obj[key] !== null) {
+            } else if (obj[key] !== '' && obj[key] !== null && obj[key] !== undefined) {
                 params[key] = obj[key]
             }
         }
         return params
     },
+    // 简单的下拉slide
+    slideDown(ele, time=200) {
+        // let ele = this.$refs.ul
+        if (!ele) return
+        if (!(ele instanceof Element)) {
+            ele = ele[0]
+        }
+        ele.style.maxHeight = 'none'
+        let offsetHeight = ele.offsetHeight
+        ele.style.maxHeight = '0'
+        setTimeout(() => {
+            ele.style.maxHeight = offsetHeight + 'px'
+        }, 20)
+        setTimeout(() => {
+            ele.style.maxHeight = 'none'
+            ele.style.display = 'block'
 
+        }, time+20)
+    },
+    slideUp(ele,time=20) {
+        // let ele = this.$refs.ul
+        if (!ele) return
+        if (!(ele instanceof Element)) {
+            ele = ele[0]
+            // if(!(ele instanceof Element)) {
+            //     return
+            // }
+        }
+        ele.style.maxHeight = ele.offsetHeight + 'px'
+        setTimeout(() => {
+            ele.style.maxHeight = '0'
+        }, 20)
+        setTimeout(() => {
+            ele.style.maxHeight = 'none'
+            ele.style.display = 'none'
+
+        }, time+20)
+    },
+    slideToggle(ele,time=200) {
+        if (!ele) return
+        if (!(ele instanceof Element)) {
+            ele = ele[0]
+        }
+        let offsetHeight = ele.clientHeight
+        // this.offsetHeight || this.initMaxHeight()
+        // 如果有就slideUp
+        if (offsetHeight) {
+            ele.style.maxHeight = ele.offsetHeight + 'px'
+            setTimeout(() => {
+                ele.style.maxHeight = '0'
+            }, 20)
+            setTimeout(() => {
+                ele.style.display = 'none'
+                ele.style.maxHeight = 'none'
+            }, time+20)
+            // 没有就 slideDown
+        } else {
+            ele.style.maxHeight = 'none'
+            ele.style.display = 'block'
+            let offsetHeight = ele.offsetHeight
+            ele.style.maxHeight = '0'
+            setTimeout(() => {
+                ele.style.maxHeight = offsetHeight + 'px'
+            }, 20)
+            setTimeout(() => {
+                ele.style.maxHeight = 'none'
+                ele.style.display = 'block'
+            }, time+20)
+        }
+    }
 
 };
 export default Tool;

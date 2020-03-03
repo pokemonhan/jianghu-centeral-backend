@@ -288,8 +288,10 @@
             @confirm="modConf"
         ></Modal>
     </div>
-</template> <script>
+</template>
+<script>
 export default {
+    name: 'GameManaConfig',
     data() {
         return {
             filter: {

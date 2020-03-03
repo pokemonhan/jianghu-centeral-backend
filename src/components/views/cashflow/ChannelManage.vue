@@ -65,6 +65,7 @@
 <script>
 import ChannelManageDetail from './ChannelManageDetail'
 export default {
+    name: 'ChannelManage',
     components: {
         ChannelManageDetail: ChannelManageDetail
     },

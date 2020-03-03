@@ -54,6 +54,7 @@
     </div>
 </template> <script>
 export default {
+    name: 'CashFlowVendor',
     data() {
         return {
             filter: {

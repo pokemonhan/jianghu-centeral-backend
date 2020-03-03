@@ -123,6 +123,7 @@ import Tree from '../../commonComponents/Tree'
 import AdminTable from './AdminSortDir/AdminTable'
 import AuthorityTree from '../../commonComponents/AuthorityTree'
 export default {
+    name: 'AdminSort',
     components: {
         Tree: Tree,
         AdminTable: AdminTable,

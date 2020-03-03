@@ -102,6 +102,7 @@
     </div>
 </template> <script>
 export default {
+    name: 'CashVendorConfig',
     data() {
         return {
             filter: {

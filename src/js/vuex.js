@@ -10,7 +10,11 @@ const state = {
     tab_nav_list: [],         // 顶部导航菜单 顶部导航菜单 顶部导航菜单 
 
 };
-const getters = {}
+const getters = {
+    keepAliveInclude(state){
+        return state.tab_nav_list.map(item => item.name)
+    }
+}
 const mutations = {};
 for (let key in state) {
     getters[key] = state => {

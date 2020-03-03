@@ -42,6 +42,7 @@
     </div>
 </template> <script>
 export default {
+    name: 'HallGame',
     data() {
         return {
             quick_query: [],

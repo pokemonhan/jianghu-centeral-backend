@@ -99,6 +99,7 @@
 
 <script>
 export default {
+    name: 'VendorManage',
     data() {
         return {
             filter: {

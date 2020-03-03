@@ -38,6 +38,7 @@
 
         可绑定 v-model
      */
+import Slide from '../../js/config/slide'
 export default {
     name: 'Select',
     props: {
@@ -84,15 +85,18 @@ export default {
 
                 this.sectionsDir = y < 150 ? 'top-upfold' : 'bottom-upfold'
 
-                $(ele).slideDown(200)
+                // $(ele).slideDown(200)
+                Slide.slideDown(ele)
             } else {
-                $(ele).slideUp(200)
+                // $(ele).slideUp(200)
+                Slide.slideDown(ele)
             }
         },
         select(item) {
             this.isShow = false
             let ele = this.$refs.sections
-            $(ele).slideUp(200)
+            // $(ele).slideUp(200)
+            Slide.slideUp(ele)
             if (item.value === this.selectedValue) return
             this.selectedValue = item.value
             this.selectedLabel = item.label
@@ -108,7 +112,8 @@ export default {
         closeSections() {
             this.isShow = false
             let ele = this.$refs.sections
-            $(ele).slideUp(200)
+            // $(ele).slideUp(200)
+            Slide.slideUp(ele)
         },
         updateClearState(bool) {
             this.isClear = bool

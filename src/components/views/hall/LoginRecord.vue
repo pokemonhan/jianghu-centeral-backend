@@ -45,6 +45,7 @@
 
 <script>
 export default {
+    name: 'LoginRecord',
     data() {
         return {
             filter: {

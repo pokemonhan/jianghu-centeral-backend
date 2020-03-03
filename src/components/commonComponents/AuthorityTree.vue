@@ -63,8 +63,8 @@ export default {
                 setTimeout(() => {
                     this.tree_show = true
                     let ele = document.getElementsByClassName('authority-tree')[0]
-                    $(this.$refs.tree).slideDown(200)
-                    // Slide.slideDown(ele)
+                    // $(this.$refs.tree).slideDown(200)
+                    Slide.slideDown(ele)
                 }, 0)
             }
         },

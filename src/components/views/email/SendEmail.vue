@@ -111,6 +111,7 @@
 import Tree from '../../commonComponents/Tree.vue'
 import E from 'wangeditor'
 export default {
+    name: 'SendEmail',
     components: {
         Tree: Tree
     },

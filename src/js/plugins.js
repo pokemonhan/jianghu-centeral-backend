@@ -157,8 +157,8 @@ export default {
                     data = JSON.stringify(data)
                     // 能toast 的情况 这两个接口同步弹出,所以例外
                     let canToast = function () {
-                        let arr = ['/headquarters-api/finance-channel/get-search-condition', '/headquarters-api/game/get-search-condition']
-                        return arr.indexOf(url) === -1
+                        let excludeArr = ['/headquarters-api/finance-channel/get-search-condition', '/headquarters-api/game/get-search-condition']
+                        return excludeArr.indexOf(url) === -1
                     }
                     canToast() && window.__vm__.$toast.warning('请求太频繁！')
                     return new Promise(function (resolve, reject) {

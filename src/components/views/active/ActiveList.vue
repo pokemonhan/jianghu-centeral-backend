@@ -56,6 +56,7 @@
 
 <script>
 export default {
+    name: 'ActiveList',
     data() {
         return {
             filter: {

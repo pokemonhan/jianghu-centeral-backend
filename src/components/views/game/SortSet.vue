@@ -46,6 +46,7 @@
     </div>
 </template> <script>
 export default {
+    name: 'SortSet',
     data() {
         return {
             filter: {

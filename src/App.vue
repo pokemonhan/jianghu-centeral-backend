@@ -3,7 +3,7 @@
         <!-- 顶部 -->
         <Header class="app-header"></Header>
         <!-- <div style="border:1px solid red;width:10rem;">10rem</div>
-        <div style="border:1px solid red;width:10em;">10em</div> -->
+        <div style="border:1px solid red;width:10em;">10em</div>-->
 
         <div class="app-content">
             <!-- 侧边栏 -->
@@ -13,7 +13,9 @@
             <div class="app-main">
                 <TabNav class="tab-nav"></TabNav>
                 <transition name="fade-transform" mode="out-in">
-                    <router-view class="router-view" />
+                    <keep-alive :include="keepAliveList">
+                        <router-view class="router-view" />
+                    </keep-alive>
                 </transition>
             </div>
         </div>
@@ -24,11 +26,11 @@
         <!-- <div class="modal-mask" v-if="showMask"></div> -->
         <!-- <div id="message-box"> </div> -->
         <div id="notice-box"></div>
-        
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Header from './components/Header.vue'
 import Aside from './components/Aside.vue'
 import TabNav from './components/TabNav.vue'
@@ -42,12 +44,19 @@ export default {
     },
     data() {
         return {
-            play: true
+            play: true,
+            excludeRouteName: []
         }
     },
     computed: {
-        // ...mapGetters(['showMask'])
+        ...mapGetters(['tab_nav_list']),
+        keepAliveList() {
+            // tab_nav_list 中的每一个都保持keep-alive 还有home
+            let home = 'Home'
+            return this.tab_nav_list.map(item => item.name).concat(home)
+        }
     },
+
     methods: {
         playMusic() {
             //方式1
@@ -98,7 +107,6 @@ export default {
     min-width: 1200px;
     max-width: 2220px;
     margin: 10px auto 0 auto;
-    
 }
 
 .app-aside {
@@ -412,13 +420,13 @@ button:focus {
 /* 绿色 按钮 */
 .btn-green {
     padding: 5px 16px;
-    box-shadow: 1px 1px 2px rgba(250, 170, 11, 0.2);
+    box-shadow: 1px 1px 2px rgba(5, 65, 37, 0.2);
     color: #fff;
     background: #07d184;
 }
 
 .btn-green:hover {
-    background: #00cc33;
+    background: #1ad48d;
     transition: box-shadow 0.2s;
 }
 .btn-green:active {
@@ -726,7 +734,7 @@ button:focus {
     font-weight: bold;
 }
 .t-center-center {
-  display: table-cell;
-  vertical-align: middle;
+    display: table-cell;
+    vertical-align: middle;
 }
 </style>

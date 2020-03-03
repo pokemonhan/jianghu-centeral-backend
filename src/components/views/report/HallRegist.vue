@@ -84,6 +84,7 @@
     </div>
 </template> <script>
 export default {
+    name: 'HallRegist',
     data() {
         return {
             filter: {

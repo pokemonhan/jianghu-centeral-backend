@@ -3,7 +3,7 @@
         <ul class="lev1">
             <li v-for="(lev1, lev1_idx) in list" :key="lev1_idx">
                 <div class="title">
-                    <i :class="['iconfont iconup',lev1.child?'':'hide']" @click="expand(lev1_idx)"></i>
+                    <i :class="['iconfont iconup',lev1.child?'':'hide']" @click="expand(lev1,lev1_idx)"></i>
                     <Checkbox
                         class="checkbox-head"
                         :label="lev1.label"
@@ -20,7 +20,7 @@
                         <div class="title">
                             <i
                                 :class="['iconfont iconup',lev2.child?'':'hide']"
-                                @click="expand(lev2_idx)"
+                                @click="expand(lev2,lev2_idx)"
                             ></i>
                             <Checkbox
                                 class="checkbox"
@@ -37,7 +37,7 @@
                                 <div>
                                     <i
                                         :class="['iconfont iconup',lev3.child?'':'hide']"
-                                        @click="expand(lev3_idx)"
+                                        @click="expand(lev1,lev3_idx)"
                                     ></i>
                                     <Checkbox
                                         class="checkbox"
@@ -58,6 +58,7 @@
 
 
 <script>
+import Slide from '../../js/config/slide'
 export default {
     props: {
         list: {
@@ -74,9 +75,11 @@ export default {
         }
     },
     methods: {
-        expand(index) {
-            let ele = this.$refs[index]
-            $(ele).slideToggle(200)
+        expand(lev1,index) {
+            // console.log('lev1: ', lev1);
+            let ele = this.$refs[index][0]
+            // $(ele).slideToggle(200)
+            Slide.slideToggle(ele)
         },
         
         checkBoxUpd(bool, idx) {

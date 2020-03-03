@@ -12,7 +12,7 @@
                 </span>
 
                 <!-- 二级菜单 -->
-                <ul :ref="lev1_index" :class="['level2',curr_ul(lev1)?'active-ul':'']">
+                <ul :ref="lev1.pre_idx" :class="['level2',curr_ul(lev1)?'active-ul':'']">
                     <li v-for="(lev2, lev2_index) in lev1.children" :key="lev2_index">
                         <!-- 标题 -->
                         <span
@@ -25,7 +25,7 @@
                         </span>
 
                         <!-- ---------    三级菜单 ------------------------->
-                        <ul :ref="lev2_index" class="level3">
+                        <ul :ref="lev2.pre_idx" class="level3">
                             <li v-for="(lev3, lev3_index) in lev2.children" :key="lev3_index">
                                 <span
                                     :class="['title',$route.path == lev3.path?'active-menu':'']"
@@ -46,6 +46,7 @@
 
 <script>
 import { mapState, mapMutations, mapGetters } from 'vuex'
+import Slide from '../js/config/slide'
 export default {
     data() {
         return {
@@ -76,28 +77,48 @@ export default {
             // console.log("该元素item", item);
             // console.log("这个index", index);
             if (!item.children) {
+                // 获取该path 的所有数据
+                function getMenuData(path,arr) {
+                    let template_data
+                    arr.forEach(item=>{
+                        if(item.path===path) {
+                            template_data = item
+                        }else if(item.children){
+                            if(getMenuData(path,item.children)) {
+                                template_data = getMenuData(path,item.children)
+                            }
+                        }
+                    })
+                    return template_data
+                }
+
+                let data = getMenuData(item.path, window.all.menu_list) ||{}
                 this.$router.push(item.path)
 
                 let list = this.tab_nav_list
                 // 导航条没有该页面 就添加进去
                 let isHadTab = list.find(tab => tab.path === item.path)
-                if (!isHadTab) {
+                if (!isHadTab && item.path !== '/home') {
                     list.push({
                         label: item.label,
-                        path: item.path
+                        path: item.path,
+                        name: data.name
                     })
                     this.updateTab_nav_list(list)
                 }
 
                 // 没有 children 就是父级菜单,就下滑打开该菜单
             } else {
-                let ele = this.$refs[index]
-                $(ele).slideToggle(200)
+                let ele = this.$refs[item.pre_idx][0]
+                // $(ele).slideToggle(200)
+                Slide.slideToggle(ele)
+                // Slide.slideUp(ele)
             }
         },
 
         objToArr(obj, pre_idx = '') {
             // let list = []
+            if (!obj) return
             return Object.keys(obj).map((key, index) => {
                 let item = obj[key]
 
@@ -127,15 +148,13 @@ export default {
                 }
                 return template
             })
-            // }
-            // return list
         },
         getMenuList() {
-            if(!window.all.tool.getLocal('Authorization')){
+            if (!window.all.tool.getLocal('Authorization')) {
                 return
             }
             if (window.all.tool.getLocal('menu')) {
-                this.menu_list = window.all.tool.getLocal('menu')||[]
+                this.menu_list = window.all.tool.getLocal('menu') || []
             } else {
                 let { method, url } = this.$api.current_admin_menu
 
@@ -296,7 +315,7 @@ li .title:hover {
     color: #fff;
 }
 .active-menu {
-    background: linear-gradient(to top, #4c8bfd, #2d70ea);
+    background: linear-gradient(0deg, #4c8bfd, #5c96ff);
     color: #fff;
     box-shadow: 0 1px 3px #dbdbdb;
 }

@@ -157,6 +157,7 @@
 
 <script>
 export default {
+    name: 'CashChannel',
     data() {
         return {
             selectOpt: {},

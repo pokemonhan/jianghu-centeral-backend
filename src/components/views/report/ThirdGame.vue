@@ -49,8 +49,10 @@
             />
         </div>
     </div>
-</template> <script>
+</template>
+<script>
 export default {
+    name: 'ThirdGame',
     data() {
         return {
             filter: {

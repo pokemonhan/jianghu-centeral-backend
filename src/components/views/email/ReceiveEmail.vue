@@ -91,6 +91,7 @@
 <script>
 import Detail from './EmailDetail'
 export default {
+    name: 'ReceiveEmail',
     components: {
         Detail: Detail
     },

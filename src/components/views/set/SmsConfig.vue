@@ -114,6 +114,7 @@
     </div>
 </template> <script>
 export default {
+    name: 'SmsConfig',
     data() {
         return {
             filter: {

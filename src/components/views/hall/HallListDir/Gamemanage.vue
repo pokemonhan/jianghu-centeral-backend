@@ -47,15 +47,17 @@
                         <tr>
                             <th>游戏平台</th>
                             <th>游戏名称</th>
-                            <th class="th-checkbox">
-                                <span>操作</span>
-                                <span>
-                                    <Checkbox
-                                        label="全选"
-                                        v-model="left.allChecked"
-                                        @update="leftCheckBoxUpd('all')"
-                                    />
-                                </span>
+                            <th>
+                                <div class="th-checkbox">
+                                    <span>操作</span>
+                                    <span>
+                                        <Checkbox
+                                            label="全选"
+                                            v-model="left.allChecked"
+                                            @update="leftCheckBoxUpd('all')"
+                                        />
+                                    </span>
+                                </div>
                             </th>
                         </tr>
                     </thead>
@@ -63,13 +65,13 @@
                         <tr v-for="(row, index) in left.list" :key="index">
                             <td>{{plantform_obj[row.vendor_id]}}</td>
                             <td>{{row.name}}</td>
-                            <td >
+                            <td>
                                 <div class="select-center">
                                     <Checkbox
-                                    label
-                                    v-model="row.checked"
-                                    @update="leftCheckBoxUpd(index)"
-                                />
+                                        label
+                                        v-model="row.checked"
+                                        @update="leftCheckBoxUpd(index)"
+                                    />
                                 </div>
                             </td>
                         </tr>
@@ -330,7 +332,8 @@ export default {
 
 <style scoped>
 .cont {
-    min-width: 1000px;
+    min-width: 900px;
+    /* width: 99%; */
 }
 
 .table {
@@ -342,11 +345,12 @@ export default {
     width: 510px;
 }
 .table table {
-    table-layout: auto;
+    /* table-layout: auto; */
     border-collapse: collapse;
+    box-sizing: border-box;
 }
 .tab-right {
-    margin-left: 100px;
+    margin-left: 50px;
 }
 .btn-save {
     margin-top: 50px;
@@ -378,7 +382,6 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
 tbody tr:nth-child(2n) {
     /* background: #F7F7F7FF; */
@@ -394,6 +397,7 @@ tbody tr:hover {
     /* padding: 7px 4px; */
     height: 2.8rem;
     font-weight: 400;
+    border: 1px solid #6fa2fe;
     color: #ffffff;
     background: #70a1fd;
 }

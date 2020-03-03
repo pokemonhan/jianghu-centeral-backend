@@ -61,6 +61,7 @@
     </div>
 </template> <script>
 export default {
+    name: 'OperatLog',
     data() {
         return {
             filter: {

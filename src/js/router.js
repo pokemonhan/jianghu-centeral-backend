@@ -8,8 +8,7 @@ import Login from '@/components/Login.vue'
 // import HalList from '../components/views/hall/Halllist'
 // import LoginRecord from '../components/views/hall/LoginRecord'
 
-// /*------------------- 厂商管理 --------------------*/
-// // import hehe from '../components/views/hall/hehe'
+// /*------------------- 游戏管理 --------------------*/
 // import VendorManage from '../components/views/game/VendorManage'
 // import SortSet from '../components/views/game/SortSet'
 // import GameManage from '../components/views/game/GameManage'
@@ -76,7 +75,6 @@ Router.prototype.push = function push(location) {
 
 
 // 自动加载路由
-
 const routes = new Router({
     mode: 'history',
     routes: [
@@ -84,18 +82,20 @@ const routes = new Router({
             path: '/',
             redirect: 'login'
         },
-        {
-            path: '/home',
-            component: Home
-        },
+        // {
+        //     path: '/home',
+        //     component: Home,
+        //     name: 'Home'
+        // },
         {
             path: '/login',
-            component: Login
+            component: Login,
+            name: 'Login'
         },
     ]
 })
 routes.beforeEach((to, from, next) => {
-
+    // console.log('to: ', to);
     if (to.path !== from.path) { next() }
 })
 let route_add = []
@@ -106,27 +106,28 @@ r.keys().forEach(file_name => {
     // 路径
     let path = file_name.slice(1).replace('.vue', '').toLowerCase()
 
-    // let length = file_name.split('/').length
-    // let name = file_name.split('/')[length - 1].replace('.vue', '')
+    let length = file_name.split('/').length
+    let name = file_name.split('/')[length - 1].replace('.vue', '')
     function exclude(path) {
-        // console.log('path: ', path);
         let excludeArr = ['/dev/totalmenudir/routeset'] // 不需要添加的路由path
-        return excludeArr.indexOf(path)!==-1
+        let length = path.split('/').length // 目前只到自动注册一,二级菜单的组件
+        return excludeArr.indexOf(path) !== -1 && length < 4
     }
-    if(!exclude(path)){
+    if (!exclude(path)) {
         route_add.push({
             path: path,
             // 懒加载
             component: () => r(file_name),
+            name: name
             // meta:{}
         })
     }
-    
+
 
 })
 route_add.push({
     path: '/page404',
-    component: ()=>import('../components/views/page404/page404.vue')
+    component: () => import('../components/views/page404/page404.vue')
 })
 route_add.push({
     path: '*',

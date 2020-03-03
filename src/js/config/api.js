@@ -377,7 +377,7 @@ export default {
         url: '/headquarters-api/menu/change-parent',
         method: 'post'
     },
-    //  总控菜单管理 - 所有菜单列表
+    //  9.1.6 总控菜单管理 - 所有菜单列表
     menu_all_list: {
         url: '/headquarters-api/menu/get-all-menu',
         method: 'get'
@@ -414,6 +414,65 @@ export default {
     //  9.1.12 总控菜单管理-路由-是否开发
     route_is_open_set: {
         url: '/headquarters-api/headquarters-route/is-open',
+        method: 'post'
+    },
+
+    //  获取厅主所有菜单
+    merchant_menu_all_list: {
+        url: '/headquarters-api/merchant-menu/get-all-menu',
+        method: 'get'
+    },
+
+    /* -------- 厅主菜单管理 -----------------*/
+
+    //  添加厅主菜单
+    merchant_menu_add: {
+        url: '/headquarters-api/merchant-menu/add',
+        method: 'post'
+    },
+    //  编辑厅主菜单
+    merchant_menu_set: {
+        url: '/headquarters-api/merchant-menu/edit',
+        method: 'post'
+    },
+    //  删除厅主菜单
+    merchant_menu_del: {
+        url: '/headquarters-api/merchant-menu/delete',
+        method: 'post'
+    },
+    //  厅主菜单 显示按钮 -switch
+    merchant_menu_display_set: {
+        url: '/headquarters-api/merchant-menu/display',
+        method: 'post'
+    },
+    //  9.2.5 厅主菜单菜单管理-菜单拖拽分组
+    merchant_menu_parent_sort: {
+        url: '/headquarters-api/merchant-menu/change-parent',
+        method: 'post'
+    },
+    //  9.2.6 厅主菜单管理-路由-列表
+    merchant_route_list: {
+        url: '/headquarters-api/merchant-route/index',
+        method: 'get'
+    },
+    //  9.2.8 厅主菜单管理-路由-添加
+    merchant_route_add: {
+        url: '/headquarters-api/merchant-route/do-add',
+        method: 'post'
+    },
+    //  9.2.9 厅主菜单管理-路由-编辑
+    merchant_route_edit: {
+        url: '/headquarters-api/merchant-route/edit',
+        method: 'post'
+    },
+    //  9.2.10 厅主菜单管理-路由-删除
+    merchant_route_del: {
+        url: '/headquarters-api/merchant-route/delete',
+        method: 'post'
+    },
+    //  9.2.11 厅主菜单管理-路由-是否开放
+    merchant_route_isopen_set: {
+        url: '/headquarters-api/merchant-route/is-open',
         method: 'post'
     },
 
@@ -626,30 +685,6 @@ export default {
 
 
 
-    /*=========================== 代理后台菜单管理 ===========================--*/
-    //  获取代理后台所有菜单
-    // merchant_menu_all_list: {
-    //     url: '/headquarters-api/merchant-menu/get-all-menu',
-    //     method: 'get'
-    // },
-    // //  添加代理后台菜单
-    // merchant_menu_add: {
-    //     url: '/headquarters-api/merchant-menu/add',
-    //     method: 'post'
-    // },
-    // //  编辑代理后台菜单
-    // merchant_menu_set: {
-    //     url: '/headquarters-api/merchant-menu/edit',
-    //     method: 'post'
-    // },
-    // //  删除代理后台菜单
-    // merchant_menu_del: {
-    //     url: '/headquarters-api/merchant-menu/delete',
-    //     method: 'post'
-    // },
-    // //  菜单拖拽分父组
-    // merchant_menu_parent_sort: {
-    //     url: '/headquarters-api/merchant-menu/change-parent',
-    //     method: 'post'
-    // },
+
+
 }

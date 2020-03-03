@@ -14,13 +14,13 @@
                 @mouseleave="closeTooltip(item)"
             >
                 <span class="title" @click="jumpRouter(item)">{{item.label}}</span>
-                <span class="close" @click="closeCurrent(item,index)">X</span>
+                <span class="close" @click="clickClose(item,index)">X</span>
             </li>
         </ul>
         <button class="btn-arrow" @click="scrollRight">
             <i class="iconfont iconyoufanyeyouhua"></i>
         </button>
-
+        <button class="btn-green refresh" @click="refresh">刷新</button>
         <div
             v-show="true"
             ref="tooltip"
@@ -62,6 +62,25 @@ export default {
     },
     methods: {
         ...mapMutations(['updateTab_nav_list']),
+        refresh() {
+            // this.tab_nav_list
+            // this.$route
+            console.log('this.$route: ', this.$router);
+            console.log('this.tab_nav_list: ', this.tab_nav_list);
+            // let path = this.$route.path
+            // this.$router.replace('/kong')
+            // setTimeout(()=>{
+            //     this.$router.replace({
+            //     path: path,
+
+            //     query: {
+            //         t: Date.now()
+            //     }
+
+            // })
+            // },1)
+            // this.$router.go(0)
+        },
         scrollLeft() {
             let ul = this.$refs.ul
             if (!ul) return
@@ -133,7 +152,7 @@ export default {
             }
             this.menu_show = false
         },
-        closeCurrent(tab, index) {
+        clickClose(tab, index) {
             // 长度为1,或者0 ,跳出
             this.need_close = index //设置需要马上关闭的 index
             let self = this
@@ -159,9 +178,20 @@ export default {
             let path = route.fullPath
             let ul = this.$refs.ul
             if (!ul) return
+            console.log('ul: ', [ul]);
             let parent_left = ul.offsetLeft
             let curr_li = this.$refs[path] && this.$refs[path][0]
             let left = curr_li && curr_li.offsetLeft
+            // if(left-ul.scrollLeft-parent_left>0&&left-ul.offsetWidth-ul.scrollLeft-100<0) {
+                
+            //     console.log('left: ', left);
+            //     console.log('ul.scrollLeft: ', ul.scrollLeft);
+            //     console.log('里面');
+            // }else {
+            //     console.log('外面');
+            // }
+            // console.log('left-ul.offsetWidth-ul.scrollLeft-100: ', left-ul.offsetWidth-ul.scrollLeft-parent_left);
+              
             ul.scrollTo({
                 top: 0,
                 left: left - parent_left,
@@ -218,6 +248,11 @@ export default {
 .iconfont {
     font-size: 24px;
 }
+.refresh {
+    height: 26px;
+    white-space: nowrap;
+    line-height: 12px;
+}
 .tab-nav ul {
     width: 100%;
     display: flex;
@@ -247,7 +282,7 @@ export default {
 .tab-nav ul li .title {
     display: inline-block;
     width: 100px;
-    line-height: 21px
+    line-height: 21px;
 }
 .tab-nav ul > li:hover {
     background: #679cff;

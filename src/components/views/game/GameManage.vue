@@ -103,6 +103,7 @@
 </template> <script>
 import GameManageDetail from './GameManageDetail'
 export default {
+    name: 'GameManage',
     components: {
         GameManageDetail: GameManageDetail
     },

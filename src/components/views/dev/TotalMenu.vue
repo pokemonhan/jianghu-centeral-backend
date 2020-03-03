@@ -16,9 +16,9 @@
                         >
                             <i
                                 :class="['iconfont iconup',lev1.children?'':'hide']"
-                                @click="expand(lev1.pre_idx)"
+                                @click="expand(lev1)"
                             ></i>
-                            <span class="title-cont label">{{lev1.label}}</span>
+                            <span class="title-cont label" @click="expand(lev1)">{{lev1.label}}</span>
                             <Switchbox
                                 class="switch"
                                 :value="lev1.display"
@@ -27,7 +27,7 @@
                         </div>
 
                         <!-- 内容 -->
-                        <ul v-if="lev1.children" class="lev2" :ref="lev1.pre_idx">
+                        <ul v-if="lev1.children" class="lev2" :ref="lev1.id">
                             <li v-for="(lev2, lev2_idx) in lev1.children" :key="lev2_idx">
                                 <div
                                     :class="[active_title_id===lev2.id?'active-title':'','title']"
@@ -35,19 +35,18 @@
                                 >
                                     <i
                                         :class="['iconfont iconup',lev2.children?'':'hide']"
-                                        @click="expand(lev2.pre_idx)"
+                                        @click="expand(lev2)"
                                     ></i>
-                                    <span class="label">{{lev2.label}}</span>
+                                    <span class="label" @click="expand(lev2)">{{lev2.label}}</span>
 
                                     <Switchbox
                                         class="switch"
                                         :value="lev2.display"
                                         @update="switchDisplay($event,lev2)"
                                     />
-                               
                                 </div>
 
-                                <ul v-if="lev2.children" class="lev3" :ref="lev2.pre_idx">
+                                <ul v-if="lev2.children" class="lev3" :ref="lev2.id">
                                     {{lev2.pre_idx}}
                                     <li v-for="(lev3, lev3_idx) in lev2.children" :key="lev3_idx">
                                         <div
@@ -56,9 +55,9 @@
                                         >
                                             <i
                                                 :class="['iconfont iconup',lev3.children?'':'hide']"
-                                                @click="expand(lev3.pre_idx)"
+                                                @click="expand(lev3)"
                                             ></i>
-                                            <span class="label">{{lev3.label}}</span>
+                                            <span class="label" @click="expand(lev3)">{{lev3.label}}</span>
                                             <Switchbox
                                                 class="switch"
                                                 :value="lev3.display"
@@ -66,19 +65,14 @@
                                             />
                                         </div>
 
-                                        <ul
-                                            v-if="lev3.children"
-                                            class="lev4"
-                                            :ref="lev3.pre_idx"
-                                            @click="expand(lev4.pre_idx)"
-                                        >
+                                        <ul v-if="lev3.children" class="lev4" :ref="lev3.id">
                                             <li
                                                 v-for="(lev4, lev4_idx) in lev3.children"
                                                 :key="lev4_idx"
                                             >
                                                 <i
                                                     :class="['iconfont iconup',lev4.children?'':'hide']"
-                                                    @click="expand(lev4.pre_idx)"
+                                                    @click="expand(lev4)"
                                                 ></i>
                                                 <span class="label">{{lev4.label}}</span>
                                             </li>
@@ -208,8 +202,9 @@
 // import Vue from 'vue';
 import RouteSet from './totalMenuDir/RouteSet'
 import MenuSort from './totalMenuDir/MenuSort'
+import Slide from '../../../js/config/slide'
 export default {
-
+    name: 'TotalMenu',
     components: {
         // [Tree.name]: Tree,
         RouteSet: RouteSet,
@@ -259,9 +254,12 @@ export default {
             this.dia_title = '添加一级菜单'
             this.dia_show = true
         },
-        expand(index) {
-            let ele = this.$refs[index]
-            $(ele).slideToggle(200)
+        expand(item) {
+            if (!item) return
+            let ele = (this.$refs[item.id] && this.$refs[item.id][0]) || ''
+            // $(ele).slideToggle(200)
+            if (!ele) return
+            Slide.slideToggle(ele)
         },
 
         contextmenu(e, row) {
@@ -323,8 +321,9 @@ export default {
                 console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.dia_show = false
+                    this.mod_show = false
                     // this.getList()
+                    this.getMenuList()
                 }
             })
         },
@@ -423,12 +422,12 @@ export default {
         toTreeArray(list, pre_idx = '') {
             return Object.keys(list).map((key, index) => {
                 let item = list[key]
-                
-                item.key = pre_idx + index // 方便下拉框使用
+
+                item.prefix = pre_idx + index // 方便下拉框使用
                 if (list[key].child) {
                     item.children = this.toTreeArray(
                         list[key].child,
-                        item.key + '-'
+                        item.prefix + '-'
                     )
                     delete item.child
                 }
@@ -441,14 +440,13 @@ export default {
             let { url, method } = this.$api.menu_all_list
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
-                    console.log('res全部列表: ', res);
-                    Object.keys(res.data).forEach(item=>{
+                    console.log('res全部列表: ', res)
+                    Object.keys(res.data).forEach(item => {
                         // console.log(item);
                     })
                     let menu = res.data
                     this.menu = this.toTreeArray(menu)
                     // console.log('外层menu: ', this.menu)
-
                 }
             })
             // this.menu = JSON.parse(localStorage.getItem('menu'))
@@ -463,7 +461,6 @@ export default {
 </script>
 
 <style scoped>
-
 .total-menu {
     display: flex;
     min-width: 1200px;
@@ -472,11 +469,21 @@ export default {
 .total-menu .tol-left,
 .total-menu .tol-center,
 .total-menu .tol-right {
-    width: 33%;
+    /* width: 33.33%; */
     padding-bottom: 20px;
     /* min-width: 350px; */
     min-height: 700px;
     border: 1px solid #70a2fd;
+}
+/* TODO: */
+.total-menu .tol-center {
+    width: 30%;
+}
+.total-menu .tol-left {
+    width: 30%;
+}
+.total-menu .tol-right {
+    width: 40%;
 }
 /* .total-menu .tol-left {
 

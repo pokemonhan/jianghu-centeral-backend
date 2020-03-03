@@ -95,6 +95,7 @@
     </div>
 </template> <script>
 export default {
+    name: 'CashBankCard',
     data() {
         return {
             filter: {

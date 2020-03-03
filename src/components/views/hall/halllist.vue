@@ -219,6 +219,7 @@ import Domain from './HallListDir/Domain'
 import Gamemanage from './HallListDir/Gamemanage'
 import ActiveManage from './HallListDir/ActiveManage'
 export default {
+    name:'HallList',
     components: {
         SiteManage: SiteManage,
         Domain: Domain,
@@ -466,9 +467,9 @@ export default {
 </script>
 <style scoped>
 
-.container {
+/* .container {
     min-width: 1040px;
-}
+} */
 .filter {
     padding-top: 10px;
     padding-bottom: 10px;
@@ -500,7 +501,7 @@ export default {
 }
 .dia-inner {
     max-height: 80vh;
-    overflow: auto;
+    overflow-y: auto;
 }
 .dia-maintain {
     display: flex;

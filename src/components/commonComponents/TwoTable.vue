@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import Slide from '../../js/config/slide'
 export default {
     props: {
         css: Object,
@@ -76,7 +77,10 @@ export default {
     methods: {
         expand(i) {
             this.is_show.splice(i, 1, !this.is_show[i])
-            $(this.$refs['table_' + i]).slideToggle(200)
+            // $(this.$refs['table_' + i]).slideToggle(200)
+            let ele = this.$refs['table_' + i][0]
+            // Slide.slideToggle(ele)
+            Slide.slideToggle(ele)
         }
     },
     mounted() {

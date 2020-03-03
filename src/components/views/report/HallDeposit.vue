@@ -41,6 +41,7 @@
     </div>
 </template> <script>
 export default {
+    name: 'HallDeposit',
     data() {
         return {
             quick_query: [],

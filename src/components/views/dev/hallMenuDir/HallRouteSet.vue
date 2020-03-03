@@ -2,13 +2,7 @@
     <div class="center-box content">
         <div>
             <div class="search">
-                <Input style="width:250px;" placeholder="搜索" v-model="search" @update="searchUpd" />
-                <Select
-                    style="width:30px;margin-left:5px;"
-                    v-model="is_open_status"
-                    :options="is_open_opt"
-                    @update="selectUpdate"
-                ></Select>
+                <Input placeholder="搜索" v-model="search" @update="searchUpd" />
             </div>
 
             <ul class="lev1">
@@ -17,8 +11,8 @@
                     <div class="title">
                         <span class="icons">
                             <i
-                                :class="['iconfont',lv1.isMenuOpen?'iconwenjian':'iconfolder-fill']"
-                                @click="expand(lv1_idx,lv1)"
+                                :class="['iconfont ',lv1.children?'iconfolder-fill':'iconfeeds-fill']"
+                                @click="expand(lv1_idx)"
                             ></i>
                             <!-- <i
                                 :class="['iconfont iconfolder-fill',lv1.routes?'':'hide']"
@@ -26,8 +20,8 @@
                             ></i>-->
                         </span>
                         <span
-                            :class="[(search&&lv1.isSelect)?'search-item':'','title-cont']"
-                            @click="expand(lv1_idx, lv1)"
+                            :class="[(search&&lv1.isMenuOpen)?'search-item':'','title-cont']"
+                            @click="expand(lv1_idx)"
                         >{{lv1.label}}</span>
                         <span v-if="!lv1.children" class="add-router" @click="add">添加路由</span>
                     </div>
@@ -50,14 +44,18 @@
                             <div class="title">
                                 <span class="icons">
                                     <i
-                                        :class="['iconfont ',lv2.isMenuOpen?'iconfile':'iconfeeds-fill']"
-                                        @click="expand(lv1_idx+'-'+lv2_idx,lv2)"
+                                        :class="['iconfont ',lv2.children?'iconfolder-fill':'iconfeeds-fill']"
+                                        @click="expand(lv1_idx+'-'+lv2_idx)"
                                     ></i>
+                                    <!-- <i
+                                        :class="['iconfont iconfolder-fill',lv2.routes?'':'hide']"
+                                        @click="routeExpand(lv1_idx+'-'+lv2_idx)"
+                                    ></i>-->
                                 </span>
 
                                 <span
-                                    :class="[(search&&lv2.isSelect)?'search-item':'','title-cont']"
-                                    @click="expand(lv1_idx+'-'+lv2_idx,lv2)"
+                                    :class="[(search&&lv2.isMenuOpen)?'search-item':'','title-cont']"
+                                    @click="expand(lv1_idx+'-'+lv2_idx)"
                                 >{{lv2.label}}</span>
                                 <span v-if="!lv2.children" class="add-router" @click="add(lv2)">添加路由</span>
                             </div>
@@ -88,15 +86,15 @@
                                     <div class="title">
                                         <i
                                             :class="['iconfont',lv1.children?'iconfolder-fill':'iconfeeds-fill']"
-                                            @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx,lv3)"
+                                            @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx)"
                                         ></i>
                                         <!-- <i
                                             :class="['iconfont iconfolder-fill',lv3.routes?'':'hide']"
                                             @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx)"
                                         ></i>-->
                                         <span
-                                            :class="[(search&&lv3.isSelect)?'search-item':'','title-cont']"
-                                            @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx,lv3)"
+                                            :class="[(search&&lv3.isMenuOpen)?'search-item':'','title-cont']"
+                                            @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx)"
                                         >{{lv3.label}}</span>
                                         <span
                                             v-if="!lv3.children"
@@ -137,7 +135,7 @@
                                             <div class="title">
                                                 <i
                                                     :class="['iconfont iconfolder-fill',lv3.children?'':'hide']"
-                                                    @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx+'-'+lv4_idx,lv4)"
+                                                    @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx+'-'+lv4_idx)"
                                                 ></i>
                                                 <span class="title-cont">{{lv4.label}}</span>
                                                 <span
@@ -163,6 +161,13 @@
                         <!-- 添加 编辑路由 -->
                         <li v-if="route_show_opt.length">
                             <span>选择路由1:</span>
+                            <!-- <Select
+                                style="width:550px;margin-top:10px;"
+                                v-model="form.route"
+                                :options="add_route_opt"
+                                input
+                                @input="routeInput"
+                            ></Select>-->
                             <Select
                                 style="width:550px;margin-top:10px;"
                                 v-model="form.route_name"
@@ -175,6 +180,17 @@
                         <li v-else class="no-router">
                             <span>sorry,没有可以使用的路由....</span>
                         </li>
+                        <!-- 编辑路由 -->
+                        <!-- <li>
+                            <span>选择路由(编辑):</span>
+                            <Select
+                                style="width:550px;margin-top:10px;"
+                                v-model="form.route_name"
+                                :options="edit_route_opt"
+                                input
+                                @input="routeInput"
+                            ></Select>
+                        </li>-->
                         <li class="mt20">
                             <span class="mb10">标题</span>
                             <Input style="width:550px" v-model="form.title" />
@@ -203,7 +219,8 @@
 </template> 
 
 <script>
-let count = 0
+// let count = 0
+import Slide from '../../../../js/config/slide'
 export default {
     props: {
         menu: Array
@@ -211,12 +228,6 @@ export default {
     data() {
         return {
             search: '',
-            is_open_status: '',
-            is_open_opt: [
-                { label: '全部', value: '' },
-                { label: '封闭式', value: 0 },
-                { label: '开放式', value: 1 }
-            ],
             routesMenu: [],
             // dialog
             dia_show: false,
@@ -242,78 +253,82 @@ export default {
     },
     methods: {
         searchUpd: window.all.tool.debounce(function(search) {
+            // console.log('search: ', search);
+            // if(!search) return
             let self = this
 
             function isMatch(item) {
-                /**
-                 * 1. 路由中文名称 : title
-                 * 2. 路由名称 : route_name
-                 * 3. url : url
-                 * 4.菜单文字标题 : label
-                 */
-                // 是否匹配input条件其中一个
-                let matchInput
-                
-                let match_open = false // 匹配是否开放式
-                let keyArr = ['title', 'route_name', 'url', 'label']
-                matchInput = keyArr.some(key => {
-
-                    return item[key] && item[key].indexOf(search) !== -1
-                })
-                if(matchInput ||search===''){
-                    matchInput = true
+                // 路由中文名称匹配时
+                if (item.title && item.title.indexOf(search) !== -1) {
+                    return true
+                    // 路由名称匹配时
+                } else if (
+                    item.route_name &&
+                    item.route_name.indexOf(search) !== -1
+                ) {
+                    return true
+                    // url 匹配时
+                } else if (item.url && item.url.indexOf(search) !== -1) {
+                    return true
+                    // 菜单文字匹配时
+                } else if (item.label && item.label.indexOf(search) !== -1) {
+                    return true
                 }
-                 // 匹配结果为空格, 或者 等于当前,为true
-                if (self.is_open_status === ''||self.is_open_status === item.is_open) {
-                    match_open = true
-                }
-                return matchInput && match_open
+                return false
             }
-            // 根据匹配结果 打开菜单,
-            function setCss(arr = [], isRoute = true) {
+            // if (!search) return
+            // 设置是否打开菜单
+            function setCss(arr = [], isRoute = true, prefix = '') {
                 let isMenuOpen = false
                 arr.forEach((item, index) => {
                     item.isSelect = false
                     item.isMenuOpen = false
-
+                    item.prefix = prefix + index
                     if (isRoute && isMatch(item)) {
                         item.isSelect = true
                         // isMenuOpen = true
                         item.isMenuOpen = true
                     }
                     if (item.children) {
-                        // 子集有父级就有
-                        item.isSelect=item.isMenuOpen = setCss(item.children, true)
+                        item.isMenuOpen = setCss(
+                            item.children,
+                            true,
+                            item.prefix + '-'
+                        )
                     } else if (item.routes) {
-                        // 子集有父级就有
-                        item.isSelect=item.isMenuOpen = setCss(item.routes, true)
+                        item.isMenuOpen = setCss(
+                            item.routes,
+                            true,
+                            item.prefix + '-'
+                        )
                     }
+
                     if (item.isMenuOpen) {
                         isMenuOpen = true
-                        
                         // $(self.$refs[item.prefix]).slideDown()
+
                         let ele = self.$refs[item.prefix]
-                        // console.log('ele: ', ele)
-                        window.all.tool.slideDown(ele, 400)
+                        //     self.$refs[item.prefix + ''][0]
+                        window.all.tool.slideDown(ele)
                     } else {
                         // $(self.$refs[item.prefix]).slideUp()
                         let ele = self.$refs[item.prefix]
-                        window.all.tool.slideUp(ele, 400)
+                        window.all.tool.slideUp(ele)
                     }
                 })
                 return isMenuOpen
             }
             setCss(this.routesMenu)
+            // this.routesMenu = this.routesMenu.slice()
             this.$forceUpdate()
+            // console.log('查看前缀this.routesMenu: ', this.routesMenu)
         }, 200),
-        selectUpdate(){
-            this.searchUpd('')
-        },
-        expand(index, item) {
+        expand(index) {
+            // console.log('index: ', index);
             let ele = this.$refs[index]
             // $(ele).slideToggle(200)
-            item.isMenuOpen = !item.isMenuOpen
-            let slideToggle = window.all.tool.slideToggle(ele)
+            // Slide.slideToggle(ele)
+            window.all.tool.slideToggle(ele)
         },
 
         // routeExpand(index) {
@@ -328,6 +343,7 @@ export default {
             this.initForm()
 
             let route_arr = this.curr_route.map(item => item.route_name) // 已使用路由数组
+            // console.log('已使用路由: ', route_arr)
             // 已使用路由不可再被使用
             this.route_show_opt = this.route_all_opt.filter(item => {
                 // 路由没有被使用就放进select,另外当前路由虽然有使用也需要放进去.，以便展示自己
@@ -377,7 +393,7 @@ export default {
                 is_open: val ? 1 : 0
             }
 
-            let { url, method } = this.$api.route_is_open_set
+            let { url, method } = this.$api.merchant_route_isopen_set
             this.$http({ method, url, data }).then(res => {
                 // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
@@ -454,7 +470,7 @@ export default {
                 method: route_temp.controller.split('@')[1] // 同上
             }
 
-            let { url, method } = this.$api.route_add
+            let { url, method } = this.$api.merchant_route_add
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
@@ -480,7 +496,7 @@ export default {
                 method: route_temp.controller.split('@')[1]
             }
 
-            let { url, method } = this.$api.route_set
+            let { url, method } = this.$api.merchant_route_edit
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
@@ -494,7 +510,7 @@ export default {
                 id: this.curr_row.id
             }
 
-            let { url, method } = this.$api.route_del
+            let { url, method } = this.$api.merchant_route_del
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
@@ -527,7 +543,7 @@ export default {
                     }
                 })
             }
-            let data = { type: 1 } // 0全部 ，这里1:总后台 ，2. 代理后台，3. App
+            let data = { type: 2 } // 0全部  1:总后台 ，2. 代理后台，3. App
             let { url, method } = this.$api.menu_date_list
             this.$http({ method, url, data }).then(res => {
                 // console.log('res: ', res);
@@ -573,16 +589,17 @@ export default {
             if (this.route_all_opt.length === 0) return
             let self = this
 
-            function toTreeArray(menu) {
-                return menu.map((item, index) => {
+            function toTreeArray(menu, prefix = '') {
+                return menu.map((item,index) => {
                     // 根据菜单id 得知它自身api路由有哪些,
                     // 例如: 登录记录 id为5，  路由 (routes）有 登录记录-列表(api)
                     if (self.route_obj[item.id]) {
                         item.routes = self.route_obj[item.id]
                     }
+                    item.prefix = prefix +index
                     item.isMenuOpen = true
                     if (item.children) {
-                        item.children = toTreeArray(item.children)
+                        item.children = toTreeArray(item.children, item.prefix+'-')
                     }
                     return item
                 })
@@ -593,7 +610,7 @@ export default {
         // 获取目前api路由内容，( __路由是根据菜单id 知道在哪个菜单的子项)
         getRouteList() {
             // console.log('刷新页面')
-            let { url, method } = this.$api.route_all_list
+            let { url, method } = this.$api.merchant_route_list
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
                     if (!res.data) return
@@ -622,10 +639,8 @@ export default {
     font-size: 14px;
 }
 .content div .search {
-    /* width: 250px; */
-    /* margin: 0 auto; */
-    display: flex;
-    justify-content: center;
+    width: 250px;
+    margin: 0 auto;
     margin-top: 20px;
 }
 
@@ -639,8 +654,8 @@ export default {
 } */
 .lev1 ul {
     /* display: none; */
+    transition: max-height 0.3s;
     overflow: hidden;
-    transition: max-height 0.4s;
 }
 .lev1 > li > .title {
     line-height: 20px;
@@ -687,15 +702,7 @@ export default {
     cursor: pointer;
     color: #88a6df;
 }
-.title-cont {
-    cursor: pointer;
-}
 .iconfolder-fill {
-    margin-right: 5px;
-    cursor: pointer;
-    color: #fad002;
-}
-.iconwenjian {
     margin-right: 5px;
     cursor: pointer;
     color: #fad002;
@@ -810,5 +817,8 @@ export default {
 
     background: rgb(243, 242, 242);
     transition: all 0.2s;
+}
+.title-cont {
+    cursor: pointer;
 }
 </style>

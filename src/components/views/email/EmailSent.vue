@@ -88,6 +88,7 @@
 <script>
 import Detail from './EmailDetail'
 export default {
+    name: 'EmailSent',
     components: {
         Detail: Detail
     },
