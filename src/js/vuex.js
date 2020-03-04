@@ -7,12 +7,19 @@ Vue.use(Vuex);
 const state = {
     isShowLoading: false,
     showMask: false,
-    tab_nav_list: [],         // 顶部导航菜单 顶部导航菜单 顶部导航菜单 
-
+    tab_nav_list: [],         // 顶部导航菜单 顶部导航菜单 顶部导航菜单
+    // keepAliveList
+    keepAliveExclude: [],
 };
 const getters = {
-    keepAliveInclude(state){
-        return state.tab_nav_list.map(item => item.name)
+    keepAliveInclude(state) {
+        let home = ['Home']
+        // 使导航条的路由 保持keepalive 
+        let arr = (state.tab_nav_list || []).map(item => {
+            return item.name
+        })
+        return arr.concat(home)
+
     }
 }
 const mutations = {};

@@ -122,7 +122,7 @@ const Tool = {
             ele.style.maxHeight = 'none'
             ele.style.display = 'block'
 
-        }, time+20)
+        }, time+100)
     },
     slideUp(ele,time=20) {
         // let ele = this.$refs.ul
@@ -141,7 +141,7 @@ const Tool = {
             ele.style.maxHeight = 'none'
             ele.style.display = 'none'
 
-        }, time+20)
+        }, time+100)
     },
     slideToggle(ele,time=200) {
         if (!ele) return
@@ -159,7 +159,7 @@ const Tool = {
             setTimeout(() => {
                 ele.style.display = 'none'
                 ele.style.maxHeight = 'none'
-            }, time+20)
+            }, time+100)
             // 没有就 slideDown
         } else {
             ele.style.maxHeight = 'none'
@@ -172,7 +172,7 @@ const Tool = {
             setTimeout(() => {
                 ele.style.maxHeight = 'none'
                 ele.style.display = 'block'
-            }, time+20)
+            }, time+100)
         }
     }
 

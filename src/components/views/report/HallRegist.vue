@@ -14,15 +14,17 @@
                 </li>
                 <li>
                     <span>派彩时间</span>
-                    <Date v-model="filter.lottery_dates[0]" @update="timeUpdate()" />
+                    <!-- <Date v-model="filter.lottery_dates[0]" @update="timeUpdate()" />
                     <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.lottery_dates[1]" @update="timeUpdate()" />
+                    <Date v-model="filter.lottery_dates[1]" @update="timeUpdate()" /> -->
+                    <Date type="daterange" v-model="filter.lottery_dates" />
                 </li>
                 <li>
                     <span>入库时间</span>
-                    <Date v-model="filter.warehouse_dates[0]" @update="timeUpdate()" />
+                    <!-- <Date v-model="filter.warehouse_dates[0]" @update="timeUpdate()" />
                     <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.warehouse_dates[1]" @update="timeUpdate()" />
+                    <Date v-model="filter.warehouse_dates[1]" @update="timeUpdate()" /> -->
+                    <Date type="daterange" v-model="filter.warehouse_dates" />
                 </li>
             </ul>
         </div>
@@ -34,9 +36,10 @@
                 </li>
                 <li>
                     <span>注单时间</span>
-                    <Date v-model="filter.bet_dates[0]" @update="timeUpdate()" />
+                    <!-- <Date v-model="filter.bet_dates[0]" @update="timeUpdate()" />
                     <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.bet_dates[1]" @update="timeUpdate()" />
+                    <Date v-model="filter.bet_dates[1]" @update="timeUpdate()" /> -->
+                    <Date type="daterange" v-model="filter.dates" />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>

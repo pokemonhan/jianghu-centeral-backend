@@ -10,9 +10,10 @@
                 </li>
                 <li>
                     <span>更新日期</span>
-                    <Date v-model="filter.dates[0]" />
+                    <!-- <Date v-model="filter.dates[0]" />
                     <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" />
+                    <Date v-model="filter.dates[1]" /> -->
+                    <Date type="daterange" v-model="filter.dates" />
                 </li>
                 <li>
                     <span>启用状态:</span>

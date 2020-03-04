@@ -12,9 +12,11 @@
                 </li>
                 <li>
                     <span>日期选择</span>
-                    <Date v-model="filter.dates[0]" />
+                    <!-- <Date v-model="filter.dates[0]" />
                     <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" />
+                    <Date v-model="filter.dates[1]" /> -->
+                    <Date type="daterange" v-model="filter.dates" />
+
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
@@ -74,7 +76,7 @@ export default {
                 vendor: '',
                 name: '',
                 sort: '',
-                dates: []
+                dates: ['','']
             },
             vendor_opt: [
                 {

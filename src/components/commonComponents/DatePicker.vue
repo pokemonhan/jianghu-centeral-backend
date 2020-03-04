@@ -115,7 +115,7 @@
                                 </ul>
                             </div>
                             <!-- 年份 -->
-                            
+
                             <!-- 月份 -->
                             <div v-show="step===3" class="month-list">
                                 <ul>
@@ -349,7 +349,8 @@ export default {
             showPanel: false,
             pickerClassName: 'bottom-expand',
             beginStartYear: 0,
-            beginEndYear: 0
+            beginEndYear: 0,
+            time_obj: {}, // 时间相关参数
         }
     },
     methods: {
@@ -529,7 +530,7 @@ export default {
             } else {
                 if (this.resultTime[0] && this.resultTime[1]) {
                     this.dateStr =
-                        this.resultTime[0] + ' - ' + this.resultTime[1]
+                        this.resultTime[0] + ' ~ ' + this.resultTime[1]
                     this.$emit('update', this.resultTime)
                     this.type === 'daterange' && (this.showPanel = false)
                 }
@@ -572,7 +573,7 @@ export default {
                     this.startSecond
                 ]
             }
-            this.dateStr = this.resultTime.join(' - ')
+            this.dateStr = this.resultTime.join(' ~ ')
         },
         changeMonth(num) {
             if (num === '-') {
@@ -674,7 +675,7 @@ export default {
                 ).slice(-2)}:${('0' + this.endMinute).slice(-2)}:${(
                     '0' + this.endSecond
                 ).slice(-2)}`
-                this.dateStr = this.resultTime.join(' - ')
+                this.dateStr = this.resultTime.join(' ~ ')
                 this.$emit('update', this.resultTime)
             }
             this.scrollTop(
@@ -717,6 +718,85 @@ export default {
             month = parseInt(month, 10)
             let d = new Date(year, month, 0)
             return d.getDate()
+        },
+        setTimeObj() {
+            let formatDate = window.all.tool.formatDate
+            var now = new Date() //当前日期
+
+            var nowYear = now.getFullYear() // 当前年
+            var nowMonth = now.getMonth() // 当前月
+            var nowDay = now.getDate() // 当前日
+
+            var nowDayOfWeek = now.getDay() // 今天是本周的第几天
+            // (周日获取的是第0天,设置为7天)
+            if (nowDayOfWeek === 0) {
+                nowDayOfWeek = 7
+            }
+
+            // 今天
+            function getToday() {
+                return [new Date(), new Date().valueOf() + 1000 * 60 * 60 * 24]
+            }
+            // 昨天
+            function getYesterday() {
+                let yesterday = new Date().valueOf() - 1000 * 60 * 60 * 24
+                let start = new Date(yesterday)
+                let end = new Date()
+                return [start, end]
+            }
+            // 上周
+            function getLastweek() {
+                let start = new Date(
+                    nowYear,
+                    nowMonth,
+                    nowDay - nowDayOfWeek - 6
+                )
+                let end = new Date(nowYear, nowMonth, nowDay - nowDayOfWeek + 1)
+                return [start, end]
+            }
+            // 本周
+            function getThisweek() {
+                let start = new Date(
+                    nowYear,
+                    nowMonth,
+                    nowDay - nowDayOfWeek + 1
+                )
+                let end = new Date(
+                    nowYear,
+                    nowMonth,
+                    nowDay + (7 - nowDayOfWeek) + 1
+                )
+                return [start, end]
+            }
+            //  获得某月的天数 下面备用
+            function getMonthDays(myMonth) {
+                var monthStartDate = new Date(nowYear, myMonth, 1)
+                var monthEndDate = new Date(nowYear, myMonth + 1, 1)
+                var days =
+                    (monthEndDate - monthStartDate) / (1000 * 60 * 60 * 24)
+                return days
+            }
+            // 上月
+            function getLastmonth() {
+                let start = new Date(nowYear, nowMonth - 1, 1)
+                let end = new Date(nowYear, nowMonth, 1)
+                return [start, end]
+            }
+            // 本月
+            function getThismonth() {
+                let start = new Date(nowYear, nowMonth, 1)
+                let end = new Date(nowYear, nowMonth + 1, 1)
+                return [start, end]
+            }
+            this.time_obj = {
+                today: getToday(),
+                yesterday: getYesterday(),
+                lastweek: getLastweek(),
+                thisweek: getThisweek(),
+                lastmonth: getLastmonth(),
+                thismonth: getThismonth()
+            }
+            // return time_obj
         },
         chooseTime(type) {
             if (this.step === 4) {
@@ -809,9 +889,9 @@ export default {
 
                     if (this.type === 'datetimerange') {
                         let startTime = val[0].split(' ')[1]
-                        console.log('startTime: ', startTime)
+                        // console.log('startTime: ', startTime)
                         let endTime = val[1].split(' ')[1]
-                        console.log('endTime: ', endTime)
+                        // console.log('endTime: ', endTime)
                         if (!startTime || !endTime) {
                             console.error(
                                 "注意时间格式,格式例子: ['2020-01-01 00:00:00', '2020-02-17 00:00:00']"
@@ -828,8 +908,9 @@ export default {
                         this.endSecond = Number(arr3[2])
                     }
                     this.resultTime = val
-                    this.dateStr = val.join(' - ')
+                    this.dateStr = val.join(' ~ ')
                 }
+                // 非数组单个
             } else {
                 arr = val.split(' ')[0].split('-')
                 date = new Date(val)
@@ -866,12 +947,14 @@ export default {
                     this.resultTime[1] = this.value[1]
                 } else {
                     let str = ''
-                    str = window.all.tool.formatDate(new Date(), false)
+                    // 目前不初始化时间
+                    // str = window.all.tool.formatDate(new Date(), false)
                     if (this.type === 'daterange') {
                         this.resultTime[0] = this.resultTime[1] = str
                     } else {
-                        this.resultTime[0] = str + ' 00:00:00'
-                        this.resultTime[1] = str + ' 23:59:59'
+                        // this.resultTime[0] = str + ' 00:00:00'
+                        // this.resultTime[1] = str + ' 00:00:00'
+                        this.resultTime[0] = this.resultTime[1] = str
                     }
                     this.$emit('update', this.resultTime)
                 }
@@ -899,13 +982,16 @@ export default {
             this.pickerClassName = y < 295 ? 'top-expand' : 'bottom-expand'
         }
         if (Array.isArray(this.value)) {
-            if (this.value[0] === '' && this.value[1] === '') {
+            if (this.value.length === 0) {
+                this.clear()
+            } else if (this.value[0] === '' && this.value[1] === '') {
                 this.clear()
             }
         }
         if (!this.value) {
             this.clear()
         }
+        this.setTimeObj()
     },
     watch: {
         value(val, old) {
@@ -913,6 +999,14 @@ export default {
 
             if (!this.value) {
                 this.clear()
+            }
+            if (this.type === 'daterange' || this.type === 'datetimerange') {
+                if (
+                    (this.value[0] == '' && this.value[1] == '') ||
+                    this.value.length === 0
+                ) {
+                    this.clear()
+                }
             }
         }
     }

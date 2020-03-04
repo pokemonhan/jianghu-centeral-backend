@@ -61,25 +61,21 @@ export default {
         ...mapState(['tab_nav_list'])
     },
     methods: {
-        ...mapMutations(['updateTab_nav_list']),
+        ...mapMutations(['updateTab_nav_list','updateKeepAliveExclude']),
         refresh() {
-            // this.tab_nav_list
-            // this.$route
-            console.log('this.$route: ', this.$router);
-            console.log('this.tab_nav_list: ', this.tab_nav_list);
-            // let path = this.$route.path
-            // this.$router.replace('/kong')
-            // setTimeout(()=>{
-            //     this.$router.replace({
-            //     path: path,
+            // 刷新机制: 改变keep-alive 的exclude,使其不缓存
+            // 然后页面跳转,实现刷新页面
 
-            //     query: {
-            //         t: Date.now()
-            //     }
-
-            // })
-            // },1)
-            // this.$router.go(0)
+            let path = this.$route.path
+            // 设置当前 路由不保持 keepalive
+            let curr_tab = this.tab_nav_list.find(item => item.path===this.$route.path)
+            this.updateKeepAliveExclude([curr_tab.name])
+            
+            this.$router.replace('/kong') // 跳转到空页面,
+            setTimeout(() => {
+                this.$router.replace({ path: path})
+                this.updateKeepAliveExclude([])
+            }, 10)
         },
         scrollLeft() {
             let ul = this.$refs.ul
@@ -109,6 +105,7 @@ export default {
             menuDom.style.top = top + 'px'
             this.menu_show = true
         },
+        // 设置tooltip位置
         setPosition(e, row) {
             clearTimeout(this.tooltipTimer)
             this.hover_curr_tab = row.label
@@ -153,8 +150,7 @@ export default {
             this.menu_show = false
         },
         clickClose(tab, index) {
-            // 长度为1,或者0 ,跳出
-            this.need_close = index //设置需要马上关闭的 index
+            this.need_close = index //设置需要马上关闭的 index,实现动画效果
             let self = this
             setTimeout(() => {
                 // 把当前tab 从中去除
@@ -173,17 +169,19 @@ export default {
             }
         },
         // 根据当前路由 自动滚动
-        autoScroll(route) {
+        autoScroll(path) {
+            // console.log('path: ', path);
+            
             if (this.tab_nav_list.length < 2) return
-            let path = route.fullPath
+            
             let ul = this.$refs.ul
             if (!ul) return
-            console.log('ul: ', [ul]);
+            // console.log('ul: ', [ul]);
             let parent_left = ul.offsetLeft
             let curr_li = this.$refs[path] && this.$refs[path][0]
             let left = curr_li && curr_li.offsetLeft
             // if(left-ul.scrollLeft-parent_left>0&&left-ul.offsetWidth-ul.scrollLeft-100<0) {
-                
+
             //     console.log('left: ', left);
             //     console.log('ul.scrollLeft: ', ul.scrollLeft);
             //     console.log('里面');
@@ -191,7 +189,7 @@ export default {
             //     console.log('外面');
             // }
             // console.log('left-ul.offsetWidth-ul.scrollLeft-100: ', left-ul.offsetWidth-ul.scrollLeft-parent_left);
-              
+
             ul.scrollTo({
                 top: 0,
                 left: left - parent_left,
@@ -204,7 +202,8 @@ export default {
     },
     watch: {
         $route(route) {
-            this.autoScroll(route)
+            if(route.path==='/kong'||route.path==='/page404') return
+            this.autoScroll(route.path)
         }
     },
     mounted() {

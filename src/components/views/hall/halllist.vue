@@ -143,7 +143,7 @@
                             <span>权限选择</span>
                             <!-- // TODO: -->
                             <!-- <Input class="w250" v-model="form.role" /> -->
-                            <AuthorityTree v-model="form.role" style="width:500px;"/>
+                            <AuthorityTree v-model="form.role" style="width:500px;" />
                         </li>
                         <li>
                             <span>短信数量</span>
@@ -189,7 +189,7 @@
                                 v-model="maintain_dates[1]"
                             />
                         </div>
-                        <div class="mt50"> 提示: 不传时间代表取消维护状态. </div>
+                        <div class="mt50">提示: 不传时间代表取消维护状态.</div>
                         <div class="maintain-btns">
                             <button class="btn-plain-large" @click="dia_show=''">取消</button>
                             <button class="btn-blue-large ml50" @click="maintainCfm">确定</button>
@@ -203,7 +203,11 @@
                 <!-- 域名管理 -->
                 <Domain v-if="dia_show==='domain'" :sign="curr_row.sign" />
                 <!-- 游戏管理 -->
-                <Gamemanage v-if="dia_show==='game'" class="dia-game" :platform_sign="curr_row.sign" />
+                <Gamemanage
+                    v-if="dia_show==='game'"
+                    class="dia-game"
+                    :outRow="curr_row"
+                />
                 <!-- 活动管理 -->
                 <ActiveManage v-if="dia_show==='active'" :platform_sign="curr_row.sign" />
             </div>
@@ -219,7 +223,7 @@ import Domain from './HallListDir/Domain'
 import Gamemanage from './HallListDir/Gamemanage'
 import ActiveManage from './HallListDir/ActiveManage'
 export default {
-    name:'HallList',
+    name: 'HallList',
     components: {
         SiteManage: SiteManage,
         Domain: Domain,
@@ -315,15 +319,15 @@ export default {
             let data = {
                 email: this.form.email,
                 password: this.form.password,
-                start_time: this.form.dates &&this.form.dates[0], // 有效日期
-                end_time: this.form.dates &&this.form.dates[1],
+                start_time: this.form.dates && this.form.dates[0], // 有效日期
+                end_time: this.form.dates && this.form.dates[1],
                 platform_name: this.form.platform_name,
                 domains: this.form.domains.split(/[\,\，]/), // TODO: 是数组吗?
                 agency_method: this.form.agency_method.join(','), // 1,2,3
                 role: '[1,2]', // TODO:
-                sms_num: this.form.sms_num, 
-                platform_sign: this.form.platform_sign, 
-                status: this.form.status,
+                sms_num: this.form.sms_num,
+                platform_sign: this.form.platform_sign,
+                status: this.form.status
             }
 
             let { url, method } = this.$api.platform_add
@@ -339,7 +343,7 @@ export default {
                 }
             })
         },
-        
+
         // 【禁用】或【启用】站点
         operateMod(row) {
             this.curr_row = row
@@ -374,7 +378,7 @@ export default {
         },
         // 站点管理
         siteManageShow(row) {
-            console.log('row: ', row);
+            console.log('row: ', row)
             this.curr_row = row
             this.dia_show = 'site'
             this.dia_title = '站点管理'
@@ -389,6 +393,7 @@ export default {
         },
         // 游戏管理
         gameShow(row) {
+            console.log('row: ', row)
             this.curr_row = row
             this.dia_show = 'game'
             this.dia_title = '游戏管理'
@@ -403,7 +408,7 @@ export default {
             let data = {
                 id: this.curr_row.id,
                 start_time: this.maintain_dates[0],
-                end_time: this.maintain_dates[1],
+                end_time: this.maintain_dates[1]
             }
             // TODO:
             let { url, method } = this.$api.platform_maintain_set
@@ -424,13 +429,13 @@ export default {
             // this.loading = true
             let createdAt = [
                 this.filter.add_dates[0] + ' 00:00:00',
-                this.filter.add_dates[1] + ' 00:00:00',
+                this.filter.add_dates[1] + ' 00:00:00'
             ]
             let para = {
                 email: this.filter.email,
                 status: this.filter.status,
                 maintain: this.filter.maintain,
-                createdAt: JSON.stringify(createdAt),
+                createdAt: JSON.stringify(createdAt)
                 // pageSize: this.pageSize,
                 // page: this.pageNo
             }
@@ -461,12 +466,10 @@ export default {
         date[1] = window.all.tool.formatDate(new Date())
         date[1] = '2020-02-25' // TODO: 时间要改回来
         this.getList()
-
     }
 }
 </script>
 <style scoped>
-
 /* .container {
     min-width: 1040px;
 } */

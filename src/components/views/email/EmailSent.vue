@@ -11,9 +11,10 @@
                 </li>
                 <li>
                     <span>发件时间</span>
-                    <Date v-model="filter.dates[0]" @update="timeUpdate()" />
+                    <!-- <Date v-model="filter.dates[0]" @update="timeUpdate()" />
                     <span style="margin: 0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" @update="timeUpdate()" />
+                    <Date v-model="filter.dates[1]" @update="timeUpdate()" /> -->
+                    <Date type="daterange" v-model="filter.dates" />
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -167,7 +168,7 @@ export default {
             }
             let para = {
                 name: this.filter.vendor,
-                created_at: this.filter.created_at,
+                created_at: created_at,
                 pageSize: this.pageSize,
                 page: this.pageNo
             }

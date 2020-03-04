@@ -13,7 +13,7 @@
             <div class="app-main">
                 <TabNav class="tab-nav"></TabNav>
                 <transition name="fade-transform" mode="out-in">
-                    <keep-alive :include="keepAliveList">
+                    <keep-alive :include="keepAliveInclude" :exclude="keepAliveExclude">
                         <router-view class="router-view" />
                     </keep-alive>
                 </transition>
@@ -49,12 +49,12 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['tab_nav_list']),
-        keepAliveList() {
-            // tab_nav_list 中的每一个都保持keep-alive 还有home
-            let home = 'Home'
-            return this.tab_nav_list.map(item => item.name).concat(home)
-        }
+        ...mapGetters(['keepAliveInclude','keepAliveExclude']),
+        // keepAliveList() {
+        //     // tab_nav_list 中的每一个没有exclude的都保持keep-alive, 还有home
+        //     // let home = 'Home'
+        //     // return this.tab_nav_list.map(item => item.name &&(!item.exclude)).concat(home)
+        // }
     },
 
     methods: {

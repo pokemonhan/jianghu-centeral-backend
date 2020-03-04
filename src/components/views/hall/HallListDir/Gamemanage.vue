@@ -131,8 +131,8 @@
 <script>
 export default {
     props: {
-        platform_sign: {
-            type: String
+        outRow: {
+            type: Object
         }
     },
     data() {
@@ -239,7 +239,7 @@ export default {
                 }
             })
             let data = {
-                platform_sign: this.platform_sign,
+                plantform_id: this.plantform_id,
                 game_signs: JSON.stringify(game_signs)
             }
 
@@ -254,10 +254,10 @@ export default {
             })
         },
         remove(row) {
-            console.log('row: ', row)
+            console.log('inner row: ', row)
             let data = {
-                platform_sign: this.platform_sign,
-                game_signs: `["` + row.sign + `"]`
+                platform_id: this.outRow.id,
+                game_ids: `["` + row.id + `"]`
             }
 
             let { url, method } = this.$api.game_manage_del
@@ -270,13 +270,23 @@ export default {
                 }
             })
         },
-        leftUpdateNo(val) {},
-        leftUpdateSize(val) {},
-        rightUpdateNo(val) {},
-        rightUpdateSize(val) {},
+        leftUpdateNo(val) {
+            this.getUnsignList()
+        },
+        leftUpdateSize(val) {
+            this.left.pageNo = 1
+            this.getUnsignList()
+        },
+        rightUpdateNo(val) {
+            tihs.getAssignedList()
+        },
+        rightUpdateSize(val) {
+            this.right.pageNo = 1
+            tihs.getAssignedList()
+        },
         getUnsignList() {
             let para = {
-                platform_sign: this.platform_sign,
+                platform_id: this.outRow.id,
                 vendor_id: this.filterLeft.vendor_id,
 
                 game_id: this.filterLeft.game_id,
@@ -303,7 +313,7 @@ export default {
         },
         getAssignedList() {
             let para = {
-                platform_sign: this.platform_sign,
+                platform_id: this.outRow.id,
                 vendor_id: this.filterRight.vendor_id,
                 game_id: this.filterRight.game_id,
                 pageSize: this.right.pageSize,
@@ -326,6 +336,7 @@ export default {
         this.getAssignedList()
         // 获取下拉框内容
         this.getOpt()
+        console.log('this.outRow: ', this.outRow);
     }
 }
 </script>

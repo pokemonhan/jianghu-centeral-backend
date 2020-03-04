@@ -96,7 +96,8 @@ const routes = new Router({
 })
 routes.beforeEach((to, from, next) => {
     // console.log('to: ', to);
-    if (to.path !== from.path) { next() }
+    // if (to.path !== from.path) { next() }
+    next()
 })
 let route_add = []
 

@@ -12,9 +12,10 @@
                 </li>
                 <li>
                     <span>日期</span>
-                    <Date v-model="filter.dates[0]" @update="timeUpdate()" />
+                    <!-- <Date v-model="filter.dates[0]" @update="timeUpdate()" />
                     <span class="mh5">~</span>
-                    <Date v-model="filter.dates[1]" @update="timeUpdate()" />
+                    <Date v-model="filter.dates[1]" @update="timeUpdate()" /> -->
+                    <Date type="daterange" v-model="filter.dates" />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
