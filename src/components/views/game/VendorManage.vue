@@ -44,42 +44,158 @@
             />
         </div>
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
+        <!-- <Dialog :show="true" :title="dia_title" @close="dia_show=''"> -->
             <div class="dia-inner">
                 <div class="edit-form">
                     <ul class="form">
                         <li>
-                            <span>游戏名称</span>
-                            <Input class="w250" v-model="form.name" />
-                            <span v-show="!form.name" class="err-tips">游戏名称不可为空!</span>
+                            <div class="left">
+                                <span>厂商名称:</span>
+                                <Input class="w250" v-model="form.name" />
+                                <span v-show="!form.name" class="err-tips">游戏名称不可为空!</span>
+                            </div>
+                            <div class="right">
+                                <span>厂商标识:</span>
+                                <Input class="w250" v-model="form.sign" />
+                            </div>
+                        </li>
+
+                        <li>
+                            <div>
+                                <span>游戏类型id:</span>
+                                <Input class="w250" v-model="form.type_id" />
+                            </div>
+                            <div>
+                                <span>登录接口</span>
+                                <Input class="w250" v-model="form.urls.login" />
+                            </div>
+                        </li>
+                        <!-- <li>
+                            <span>白名单</span>
+                            <Input class="w250" v-model="form.whitelist_ips" />
+                        </li>-->
+                        <li>
+                            <div>
+                                <span>查询余额接口</span>
+                                <Input class="w250" v-model="form.urls.account_query_url" />
+                            </div>
+                            <div>
+                                <span>上分接口</span>
+                                <Input class="w250" v-model="form.urls.top_up_url" />
+                            </div>
                         </li>
                         <li>
-                            <span>商户秘钥:</span>
-                            <Input class="w250" v-model="form.merchant_secret" />
+                            <div>
+                                <span>下分接口</span>
+                                <Input class="w250" v-model="form.urls.draw_out_url" />
+                            </div>
+                            <div>
+                                <span>查询订单接口</span>
+                                <Input class="w250" v-model="form.urls.order_query_url" />
+                            </div>
                         </li>
                         <li>
-                            <span>商户私钥:</span>
-                            <Input class="w250" v-model="form.private_key" />
+                            <div>
+                                <span>查询玩家在线状态</span>
+                                <Input class="w250" v-model="form.urls.user_active_query_url" />
+                            </div>
+                            <div>
+                                <span>查询游戏注单</span>
+                                <Input class="w250" v-model="form.urls.game_order_query_url" />
+                            </div>
                         </li>
                         <li>
-                            <span>商户公钥:</span>
-                            <Input class="w250" v-model="form.public_key" />
+                            <div>
+                                <span>查询玩家总分</span>
+                                <Input
+                                    class="w250"
+                                    v-model="form.urls.user_total_status_query_url"
+                                />
+                            </div>
+                            <div>
+                                <span>踢玩家接口</span>
+                                <Input class="w250" v-model="form.urls.kick_out_url" />
+                            </div>
                         </li>
                         <li>
-                            <span>商户号:</span>
-                            <Input class="w250" v-model="form.merchant_code" />
+                            <div>
+                                <span>查询代理余额接口</span>
+                                <Input class="w250" v-model="form.urls.agent_account_query_url" />
+                            </div>
+                            <div>
+                                <span>存放三方调用测试urls</span>
+                                <Input class="w250" v-model="form.test_urls.login" />
+                            </div>
                         </li>
                         <li>
-                            <span>APPID:</span>
-                            <Input class="w250" v-model="form.app_id" />
+                            <div>
+                                <span>终端号</span>
+                                <Input class="w250" v-model="form.app_id" />
+                            </div>
+                            <div>
+                                <span>商户号:</span>
+                                <Input class="w250" v-model="form.merchant_id" />
+                            </div>
                         </li>
                         <li>
-                            <span>授权码:</span>
-                            <Input class="w250" v-model="form.authorization_code" />
+                            <div>
+                                <span>商户密钥:</span>
+                                <Input class="w250" v-model="form.merchant_secret" />
+                            </div>
+                            <div>
+                                <span>公钥:</span>
+                                <Input class="w250" v-model="form.public_key" />
+                            </div>
+                        </li>
+
+                        <li>
+                            <div>
+                                <span>私钥:</span>
+                                <Input class="w250" v-model="form.private_key" />
+                            </div>
+                            <div>
+                                <span>des密钥:</span>
+                                <Input class="w250" v-model="form.des_key" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <span>md5_key</span>
+                                <Input class="w250" v-model="form.md5_key" />
+                            </div>
+                            <div>
+                                <span>白名单:</span>
+                                <textarea
+                                    class="textarea ml10"
+                                    placeholder="格式例子: 2.2.2.2, 5.5.3.5"
+                                    v-model="form.whitelist_ips"
+                                ></textarea>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div>
+                                <span>状态:</span>
+                                <Radio
+                                    class="radio-left ml50"
+                                    label="开"
+                                    :value="form.status"
+                                    val="1"
+                                    v-model="form.status"
+                                />
+                                <Radio
+                                    class="radio-right ml10"
+                                    label="关"
+                                    :value="form.status"
+                                    val="0"
+                                    v-model="form.status"
+                                />
+                            </div>
                         </li>
                     </ul>
                     <div class="form-btns">
                         <button class="btn-plain-large" @click="dia_show=''">取消</button>
-                        <button class="btn-blue-large ml50" @click="editConf">确定</button>
+                        <button class="btn-blue-large ml50" @click="diaCfm">确定</button>
                     </div>
                 </div>
                 <!-- <div v-if="dia_show==='detail'" class="dia-detail">
@@ -130,15 +246,36 @@ export default {
             list: [],
             // dialog
             dia_show: '',
+            dia_status: '',
             dia_title: '',
             form: {
                 name: '',
-                merchant_secret: '',
-                private_key: '',
-                public_key: '',
-                merchant_code: '',
-                app_id: '',
-                authorization_code: ''
+                sign: '', // 厂商标识
+                type_id: '', // 游戏类型id
+                // whitelist_ips: '', //
+                urls: {
+                    login: '', // 登录接口
+                    account_query_url: '', //查询余额接口
+                    top_up_url: '', //上分接口
+                    draw_out_url: '', // 下分接口
+                    order_query_url: '', // 查询订单接口
+                    user_active_query_url: '', //查询玩家在线状态
+                    game_order_query_url: '', // 查询游戏注单
+                    user_total_status_query_url: '', // 查询玩家总分
+                    kick_out_url: '', // 踢玩家接口
+                    agent_account_query_url: '' // 查询代理余额接口
+                },
+                test_urls: {
+                    login: '' // 存放三方调用测试urls
+                },
+                app_id: '', //..终端号
+                merchant_id: '', //商户号
+                merchant_secret: '', // 商户密钥
+                public_key: '', // 公钥
+                private_key: '', // 私钥
+                des_key: '', // des 密钥
+                md5_key: '', // md5密钥
+                status: '' // 状态
             },
             mod_show: false,
             mod_cont: '',
@@ -198,25 +335,78 @@ export default {
                 }
             })
         },
-        edit(row) {
+        initForm() {
             this.form = {
-                id: row.id,
+                name: '',
+                sign: '', // 厂商标识
+                type_id: '', // 游戏类型id
+                // whitelist_ips: '', //
+                urls: {
+                    login: '', // 登录接口
+                    account_query_url: '', //查询余额接口
+                    top_up_url: '', //上分接口
+                    draw_out_url: '', // 下分接口
+                    order_query_url: '', // 查询订单接口
+                    user_active_query_url: '', //查询玩家在线状态
+                    game_order_query_url: '', // 查询游戏注单
+                    user_total_status_query_url: '', // 查询玩家总分
+                    kick_out_url: '', // 踢玩家接口
+                    agent_account_query_url: '' // 查询代理余额接口
+                },
+                test_urls: {
+                    login: '' // 存放三方调用测试urls
+                },
+                app_id: '', //..终端号
+                merchant_id: '', //商户号
+                merchant_secret: '', // 商户密钥
+                public_key: '', // 公钥
+                private_key: '', // 私钥
+                des_key: '', // des 密钥
+                md5_key: '', // md5密钥
+                status: '' // 状态
+            }
+        },
+        edit(row) {
+            console.log('row: ', row)
+            if(!row) return
+            this.form = {
                 name: row.name,
-                merchant_secret: row.merchant_secret,
-                private_key: row.private_key,
-                public_key: row.public_key,
-                merchant_code: row.merchant_code,
-                app_id: row.app_id,
-                authorization_code: row.authorization_code
+                sign: row.sign, // 厂商标识
+                type_id: row.type_id, // 游戏类型id
+                // whitelist_ips: '', //
+                urls: {
+                    login: row.urls.login, // 登录接口
+                    account_query_url: row.urls.account_query_url, //查询余额接口
+                    top_up_url: row.urls.top_up_url, //上分接口
+                    draw_out_url: row.urls.draw_out_url, // 下分接口
+                    order_query_url: row.urls.order_query_url, // 查询订单接口
+                    user_active_query_url: row.urls.user_active_query_url, //查询玩家在线状态
+                    game_order_query_url: row.urls.game_order_query_url, // 查询游戏注单
+                    user_total_status_query_url: row.urls.user_total_status_query_url, // 查询玩家总分
+                    kick_out_url: row.urls.kick_out_url, // 踢玩家接口
+                    agent_account_query_url: row.urls.agent_account_query_url // 查询代理余额接口
+                },
+                test_urls: {
+                    login: row.test_urls.login // 存放三方调用测试urls
+                },
+                app_id: row.app_id, //..终端号
+                merchant_id: row.merchant_secret, //商户号
+                merchant_secret: row.merchant_secret, // 商户密钥
+                public_key: row.public_key, // 公钥
+                private_key: row.private_key, // 私钥
+                des_key: row.des_key, // des 密钥
+                md5_key: row.md5_key, // md5密钥
+                status: row.status // 状态
             }
             this.curr_row = row
             this.dia_show = 'edit'
+            this.dia_status = 'edit'
             this.dia_title = '编辑'
         },
         modConf() {
             let id = this.curr_row.id
             let status = this.curr_row.status === 1 ? 0 : 1
-                   
+
             let data = {
                 id: id,
                 status: status
@@ -242,21 +432,110 @@ export default {
             }
             return true
         },
-        editConf() {
+        diaCfm() {
             if (!this.checkForm()) return
-            let data = window.all.tool.rmEmpty(this.form)
-            let { url, method } = this.$api.game_set
-            this.$http({ url, method, data }).then(res => {
+            // let data = window.all.tool.rmEmpty(this.form)
+            // let { url, method } = this.$api.game_set
+            // this.$http({ url, method, data }).then(res => {
+            //     if (res && res.code === '200') {
+            //         this.$toast.success(res.message)
+            //         this.getList()
+            //         this.dia_show = ''
+            //     }
+            // })
+            if (this.dia_status === 'add') {
+                this.addCfm()
+            }
+            console.log('this.dia_status: ', this.dia_status);
+            if (this.dia_status === 'edit') {
+                
+                this.editCfm()
+            }
+        },
+        addCfm() {
+            console.log('添加');
+            let data = {
+                name: this.form.name,
+                sign: this.form.sign, // 厂商标识
+                type_id: this.form.type_id, // 游戏类型id
+                urls: {
+                    login: this.form.urls.login, // 登录接口
+                    account_query_url: this.form.urls.account_query_url, //查询余额接口
+                    top_up_url: this.form.urls.top_up_url, //上分接口
+                    draw_out_url: this.form.urls.draw_out_url, // 下分接口
+                    order_query_url: this.form.urls.order_query_url, // 查询订单接口
+                    user_active_query_url: this.form.urls.user_active_query_url, //查询玩家在线状态
+                    game_order_query_url: this.form.urls.game_order_query_url, // 查询游戏注单
+                    user_total_status_query_url: this.form.urls
+                        .user_total_status_query_url, // 查询玩家总分
+                    kick_out_url: this.form.urls.kick_out_url, // 踢玩家接口
+                    agent_account_query_url: this.form.urls
+                        .agent_account_query_url // 查询代理余额接口
+                },
+                test_urls: {
+                    login: this.form.test_urls.login // 存放三方调用测试urls
+                },
+                app_id: this.form.app_id, //..终端号
+                merchant_id: this.form.merchant_id, //商户号
+                merchant_secret: this.merchant_secret, // 商户密钥
+                public_key: this.form.public_key, // 公钥
+                private_key: this.form.private_key, // 私钥
+                des_key: this.form.des_key, // des 密钥
+                md5_key: this.form.md5_key, // md5密钥
+                status: this.status // 状态
+            }
+
+            let { url, method } = this.$api.game_vendor_set
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
-                    this.$toast.success(res.message)
+                    this.$toast.success(res && res.message)
+                    this.dia_show = false
                     this.getList()
-                    this.dia_show = ''
-                } else {
-                    if (res && res.message) {
-                        this.$toast.error(res.message)
-                    } else {
-                        this.$toast.error('更新失败')
-                    }
+                }
+            })
+        },
+        editCfm() {
+            console.log('编辑');
+            let data = {
+                id: this.curr_row.id,
+                name: this.form.name,
+                sign: this.form.sign, // 厂商标识
+                type_id: this.form.type_id, // 游戏类型id
+                urls: {
+                    login: this.form.urls.login, // 登录接口
+                    account_query_url: this.form.urls.account_query_url, //查询余额接口
+                    top_up_url: this.form.urls.top_up_url, //上分接口
+                    draw_out_url: this.form.urls.draw_out_url, // 下分接口
+                    order_query_url: this.form.urls.order_query_url, // 查询订单接口
+                    user_active_query_url: this.form.urls.user_active_query_url, //查询玩家在线状态
+                    game_order_query_url: this.form.urls.game_order_query_url, // 查询游戏注单
+                    user_total_status_query_url: this.form.urls
+                        .user_total_status_query_url, // 查询玩家总分
+                    kick_out_url: this.form.urls.kick_out_url, // 踢玩家接口
+                    agent_account_query_url: this.form.urls
+                        .agent_account_query_url // 查询代理余额接口
+                },
+                test_urls: {
+                    login: this.form.test_urls.login // 存放三方调用测试urls
+                },
+                app_id: this.form.app_id, //..终端号
+                merchant_id: this.form.merchant_id, //商户号
+                merchant_secret: this.merchant_secret, // 商户密钥
+                public_key: this.form.public_key, // 公钥
+                private_key: this.form.private_key, // 私钥
+                des_key: this.form.des_key, // des 密钥
+                md5_key: this.form.md5_key, // md5密钥
+                status: this.status // 状态
+            }
+
+            let { url, method } = this.$api.game_vendor_set
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.$toast.success(res && res.message)
+                    this.dia_show = false
+                    this.getList()
                 }
             })
         },
@@ -272,34 +551,51 @@ export default {
         this.getList()
     }
 }
-</script> <style scoped>
+</script>
+<style scoped>
 /* .table {
     margin-top: 20px;
 } */
 .edit-form {
     position: relative;
-    width: 700px;
-    height: 400px;
+    /* width: 700px; */
+    /* height: 400px; */
 }
 .form {
-    width: 350px;
+    /* width: 650px; */
     margin: 0 auto;
 }
 .form > li {
     display: flex;
     position: relative;
     align-items: baseline;
+    margin-top: 20px;
 }
-.form > li > span:first-child {
+.form > li > div {
+    display: flex;
+    align-items: baseline;
+}
+.form > li > div:first-child {
+    margin-right: 10px;
+}
+.form > li > div > span:first-child {
+    width: 9em;
+    text-align: right;
+}
+
+.form > li > div .v-input {
+    margin-left: 10px;
+}
+/* .form > li > span:first-child {
     min-width: 4.1em;
     margin-right: 10px;
     margin-top: 20px;
     text-align: right;
-}
+} */
 .err-tips {
     position: absolute;
-    bottom: -15px;
-    left: 7em;
+    bottom: -16px;
+    left: 13em;
     font-size: 12px;
     color: rgb(255, 38, 0);
 }
@@ -309,5 +605,9 @@ export default {
 .form-btns {
     margin-top: 50px;
     text-align: center;
+}
+.textarea {
+    width: 250px;
+    height: 100px;
 }
 </style>

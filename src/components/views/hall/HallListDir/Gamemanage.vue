@@ -11,7 +11,7 @@
                         @update="plantformLeftUpd"
                     ></Select>
                 </li>
-                <li v-show="name_left_show">
+                <li v-show="true">
                     <span>游戏名称</span>
                     <Select v-model="filterLeft.game_id" :options="game_opt"></Select>
                 </li>
@@ -19,7 +19,7 @@
                     <button class="btn-blue" @click="getUnsignList">查找</button>
                     <!-- <button class="btn-blue">全部添加</button> -->
                 </li>
-
+    
                 <!-- 右边的 right -->
             </ul>
             <ul class="right">
@@ -31,7 +31,7 @@
                         @update="plantformRightUpd"
                     ></Select>
                 </li>
-                <li v-show="name_right_show">
+                <li v-show="true">
                     <span>游戏名称</span>
                     <Select v-model="filterRight.game_id" :options="game_opt"></Select>
                 </li>
@@ -68,7 +68,7 @@
                             <td>
                                 <div class="select-center">
                                     <Checkbox
-                                        label
+                                        label=""
                                         v-model="row.checked"
                                         @update="leftCheckBoxUpd(index)"
                                     />
@@ -212,10 +212,12 @@ export default {
             })
         },
         leftCheckBoxUpd(val) {
+            console.log('val: ', val);
             // checkbox全选
             if (val === 'all') {
-                this.left.list.forEach(item => {
+                this.left.list = this.left.list.map(item => {
                     item.checked = this.left.allChecked
+                    return item
                 })
             } else {
                 let self = this
@@ -232,15 +234,15 @@ export default {
             if (list.length < 1) {
                 return
             }
-            let game_signs = []
+            let game_ids = []
             list.forEach(item => {
                 if (item.checked) {
-                    game_signs.push(item.sign)
+                    game_ids.push(item.id)
                 }
             })
             let data = {
-                plantform_id: this.plantform_id,
-                game_signs: JSON.stringify(game_signs)
+                platform_id: this.outRow.id,
+                game_ids: JSON.stringify(game_ids)
             }
 
             let { url, method } = this.$api.game_manage_add
@@ -249,7 +251,7 @@ export default {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
                     this.getUnsignList()
-                    this.getAssignedList()
+                    this.getAssignedList() // TODO: 测试完 删除这里， 需要刷新已分配
                 }
             })
         },
@@ -262,10 +264,9 @@ export default {
 
             let { url, method } = this.$api.game_manage_del
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.getUnsignList()
+                    this.getUnsignList() // TODO: 测试完 删除这里， 需要刷新未分配
                     this.getAssignedList()
                 }
             })
@@ -305,8 +306,8 @@ export default {
                         this.left.list.forEach(item => {
                             item.checked = false
                         })
-                        this.left.list
-                        console.log('this.left.list: ', this.left.list)
+                        // this.left.list
+                        // console.log('this.left.list: ', this.left.list)
                     }
                 }
             })
@@ -326,7 +327,7 @@ export default {
                 console.log('右边: ', res)
                 if (res && res.code === '200') {
                     this.right.total = res.data.total
-                    this.right.list = res.data.data
+                    this.right.list = res.data.data||[]
                 }
             })
         }

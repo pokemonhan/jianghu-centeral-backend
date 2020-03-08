@@ -23,9 +23,7 @@
                 </li>
                 <li>
                     <span>日期</span>
-                    <Date v-model="filter.dates[0]" />
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" />
+                    <Date type="daterange" v-model="filter.dates" />
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -128,26 +126,11 @@ export default {
             },
             status_opt: [
                 { label: '全部', value: '' },
-                { label: '开启', value: 0 },
-                { label: '关闭', value: 1 }
+                { label: '开启', value: 1 },
+                { label: '关闭', value: 0 }
             ],
             headers: ['域名', '添加时间', '状态', '操作'],
-            list: [
-                {
-                    a1: 'www.sdfsdfsdfsf.com.',
-                    a2: 'sdfsdfdsf',
-                    a3: '1',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                },
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '0',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25,
@@ -197,7 +180,6 @@ export default {
 
             let { url, method } = this.$api.platform_domain_add
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
                     this.dia_show = false
@@ -242,11 +224,17 @@ export default {
         },
         getList() {
             console.log('getlist', this.sign)
-            let params = {
+            let para = {
                 sign: this.sign,
-                type: this.domain_idx
-            }
+                type: this.domain_idx,
+                domain: this.filter.domain,
+                status: this.filter.status,
 
+            }
+            if(this.filter.dates[0]&&this.filter.dates[1]) {
+                para.createdAt = JSON.stringify(this.filter.dates)
+            }
+            let params = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.platform_domain_list
             this.$http({ method, url, params }).then(res => {
                 console.log('域名列表?👌: ', res)

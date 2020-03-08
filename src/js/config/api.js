@@ -134,6 +134,21 @@ export default {
         url: '/headquarters-api/game-vendor/opt-status-do',
         method: 'post'
     },
+    // 厂商管理 - 编辑
+    game_vendor_set: {
+        url: '/headquarters-api/game-vendor/opt-edit-do',
+        method: 'post'
+    },
+    // 厂商管理 - 添加
+    game_vendor_add: {
+        url: '/headquarters-api/game-vendor/opt-add-do',
+        method: 'post'
+    },
+    // 厂商管理 - 删除
+    game_vendor_del: {
+        url: '/headquarters-api/game-vendor/opt-del-do',
+        method: 'post'
+    },
 
     /* 3.2 分类设置 --------- */
 

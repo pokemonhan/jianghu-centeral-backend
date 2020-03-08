@@ -25,7 +25,7 @@ export default {
         },
         disabled: {
             type: Boolean,
-            default: () => true
+            default: () => false
         },
         val: {
             type: [Boolean, String, Number],

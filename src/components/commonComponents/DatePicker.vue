@@ -1264,5 +1264,3 @@ export default {
     border-radius: 3px;
 }
 </style>
-
-
