@@ -8,19 +8,22 @@
             <template v-slot:item="{row}">
                 <td>{{row.name}}</td>
                 <td>{{row.email}}</td>
-                <td
+                <!-- <td
                     :class="[row.status?'green':'red']"
-                >{{row.status===1?'启用':row.status===0?'禁用':'出错!!!'}}</td>
+                >{{row.status===1?'启用':row.status===0?'禁用':'出错!!!'}}</td>-->
+                <td>
+                    <Switchbox v-model="row.status" @update="memberStatusSwitch(row)" />
+                </td>
                 <td>
                     <button class="btns-blue" @click="editPwd(row)">修改密码</button>
-                    <button
+                    <!-- <button
                         :class="[row.status?'btns-red':'btns-green']"
                         @click="memberStatusSwitch(row)"
-                    >{{row.status===1?'禁用':row.status===0?'启用':'出错'}}</button>
+                    >{{row.status===1?'禁用':row.status===0?'启用':'出错'}}</button>-->
                 </td>
             </template>
         </Table>
-
+<!-- 
         <Page
             v-show="!isSearch"
             class="table-page"
@@ -29,9 +32,8 @@
             :pageSize.sync="pageSize"
             @updateNo="updateNo"
             @updateSize="updateSize"
-        />
-       
-
+        /> -->
+        <Pagefront class="mt20" :page-config="pageConfig" @update="updatePage"></Pagefront>
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
             <div class="dia-inner">
                 <div v-if="dia_show==='add_member'">
@@ -111,7 +113,7 @@ export default {
             type: [Number, String]
         }
     },
-    components:{
+    components: {
         Pagefront
     },
     data() {
@@ -119,11 +121,13 @@ export default {
             // table
             isSearch: false, // 是否是点击搜索按钮的结果(而不是点击查看或者编辑)
             headers: ['名称', '邮箱', '状态', '操作'],
+            total_list: [], // 未分页前的所有内容
             list: [],
-            total: 0,
-            pageNo: 1,
-            pageSize: 25,
-
+            // total: 0,
+            // pageNo: 1,
+            // pageSize: 25,
+            // pageNo
+            pageConfig: { total: 0, pageSize: 25, pageNo: 1 },
             // 添加 成员
             curr_row: {},
             dia_show: '',
@@ -148,15 +152,25 @@ export default {
                 cfm_pwd: ''
             },
             edit_conf_pwd: '',
-            mod_show: false,
+            mod_show: false
         }
     },
     methods: {
         // 给父组件调用此方法
-        setList(list,total=0) {
+        setList(list, total = 0) {
             this.isSearch = true
             this.list = list
             this.total = total
+        },
+        // updatePage(val) {
+        //     console.log('val: ', val);
+
+        // },
+        updatePage(val) {
+            let p = (val || this.pageConfig.pageNo) - 1
+            let size = this.pageConfig.pageSize
+
+            this.list = this.total_list.slice(p * size, (p + 1) * size)
         },
         getList() {
             let params = {
@@ -168,8 +182,10 @@ export default {
             this.$http({ method, url, params }).then(res => {
                 // console.log('成语列表呢res: ', res)
                 if (res && res.code === '200') {
-                    this.total = res.data.total
-                    this.list = res.data.data
+                    // this.total = res.data.total
+                    this.pageConfig.total = res.data.total
+                    this.total_list = res.data.data
+                    this.updatePage()
                 }
             })
         },
@@ -179,7 +195,7 @@ export default {
             this.addForm = {
                 name: '',
                 email: '',
-                pwd: '',
+                pwd: ''
                 // cfm_pwd: ''
             }
         },
@@ -267,18 +283,19 @@ export default {
             this.dia_show = 'edit_pwd'
         },
         memberStatusSwitch(row) {
-            let status = row.status
+            // let status = row.status
             this.curr_row = row
-            if (status === 1) {
-                this.mod_title = '禁用'
-                this.mod_status = 'turnOff'
-                this.mod_cont = '是否确认禁用该成员!'
-            } else if (status === 0) {
-                this.mod_status = 'turnOn'
-                this.mod_title = '启用'
-                this.mod_cont = '是否确认启用该成员!'
-            }
-            this.mod_show = true
+            // if (status === 1) {
+            //     this.mod_title = '禁用'
+            //     this.mod_status = 'turnOff'
+            //     this.mod_cont = '是否确认禁用该成员!'
+            // } else if (status === 0) {
+            //     this.mod_status = 'turnOn'
+            //     this.mod_title = '启用'
+            //     this.mod_cont = '是否确认启用该成员!'
+            // }
+            // this.mod_show = true
+            this.modConf()
         },
 
         // 检查编辑 密码
@@ -326,20 +343,19 @@ export default {
         modConf() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status ? 0 : 1
+                status: this.curr_row.status ? 1 : 0
             }
-        
+
             let { url, method } = this.$api.admin_user_status_set
             this.$http({ method, url, data }).then(res => {
-            // console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
-        
                     this.$toast.success(res && res.message)
-                    this.mod_show=false
-                    
-                    if(this.isSearch) {
+                    this.mod_show = false
+
+                    if (this.isSearch) {
                         this.$emit('search')
-                    }else {
+                    } else {
                         this.getList()
                     }
                 }
@@ -351,7 +367,7 @@ export default {
         updateSize() {
             this.pageNo = 1
             this.getList()
-        },
+        }
     },
 
     watch: {

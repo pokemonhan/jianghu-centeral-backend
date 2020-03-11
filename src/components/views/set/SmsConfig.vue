@@ -32,17 +32,21 @@
                     <td>{{row.sms_num}}</td>
                     <td>{{row.admin&&row.admin.name}}</td>
                     <td>{{row.updated_at}}</td>
-                    <td
+                    <!-- <td
                         :class="[row.status?'green':'red']"
                     >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
+                    <td>{{row.created_at}}</td> -->
+                     <td>
+                        <Switchbox v-model="row.status" @update="statusSwitch(row)" />
+                    </td>
                     <td>{{row.created_at}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
-                        <button
+                        <!-- <button
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
-                        >{{row.status===1?'禁用':'启用'}}</button>
-                        <button class="btns-blue" @click="del(row)">删除</button>
+                        >{{row.status===1?'禁用':'启用'}}</button> -->
+                        <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -188,15 +192,16 @@ export default {
 
         statusSwitch(row) {
             this.curr_row = row
-            this.mod_status = 'switch'
-            if (row.status === 1) {
-                this.mod_title = '禁用'
-                this.mod_cont = '是否确定禁用该厂商!'
-            } else {
-                this.mod_title = '启用'
-                this.mod_cont = '是否确定启用该厂商!'
-            }
-            this.mod_show = true
+            // this.mod_status = 'switch'
+            // if (row.status === 1) {
+            //     this.mod_title = '禁用'
+            //     this.mod_cont = '是否确定禁用该厂商!'
+            // } else {
+            //     this.mod_title = '启用'
+            //     this.mod_cont = '是否确定启用该厂商!'
+            // }
+            // this.mod_show = true
+            this.switchCfm()
         },
         del(row) {
             this.curr_row = row
@@ -248,10 +253,19 @@ export default {
                 }
             })
         },
+
+        modConf() {
+            if (this.mod_status === 'switch') {
+                this.switchCfm()
+            }
+            if (this.mod_status === 'del') {
+                this.delCfm()
+            }
+        },
         switchCfm() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status === 1 ? 0 : 1
+                status: this.curr_row.status? 1 : 0
             }
 
             let { url, method } = this.$api.sms_config_status_set
@@ -263,14 +277,6 @@ export default {
                     this.getList()
                 }
             })
-        },
-        modConf() {
-            if (this.mod_status === 'switch') {
-                this.switchCfm()
-            }
-            if (this.mod_status === 'del') {
-                this.delCfm()
-            }
         },
         delCfm() {
             let data = {

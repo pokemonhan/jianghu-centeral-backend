@@ -29,9 +29,12 @@
                     <td>{{row.vendor?row.vendor.name:'--'}}</td>
                     <td>{{row.name}}</td>
                     <td>{{row.type&&row.type.name}}</td>
-                    <td
+                    <!-- <td
                         :class="[row.status===1?'green':'red']"
-                    >{{row.status===1?'开启':row.status===0?'关闭':row.status}}</td>
+                    >{{row.status===1?'开启':row.status===0?'关闭':row.status}}</td> -->
+                    <td>
+                        <Switchbox v-model="row.status" @update="statusSwitch(row)" />
+                    </td>
                     <td>{{row.last_editor && row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
@@ -241,21 +244,24 @@ export default {
         //         }
         //     })
         // },
-        statusSwitch(row) {
+        statusSwitch(status,row) {
+
             this.curr_row = row
-            this.mod_show = true
-            if (row.status === 1) {
-                this.mod_title = '禁用'
-                this.mod_cont = '是否确定禁用该游戏？'
-            } else {
-                this.mod_title = '启用'
-                this.mod_cont = '是否确定启用该游戏？'
-            }
+            // this.mod_show = true
+            // if (row.status) {
+            //     this.mod_title = '启用'
+            //     this.mod_cont = '是否确定启用该游戏？'
+            // } else {
+                
+            //     this.mod_title = '禁用'
+            //     this.mod_cont = '是否确定禁用该游戏？'
+            // }
+            this.modConf()
         },
         modConf() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status === 1 ? 0 : 1 // 状态反转
+                status: this.curr_row.status? 1 : 0 // 状态
             }
             let { url, method } = this.$api.game_status_set
             this.$http({ url, method, data }).then(res => {

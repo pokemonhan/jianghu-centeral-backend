@@ -283,44 +283,33 @@ export default {
             this.treeSelectShow(group)
         },
 
-        // 后台res 转化为 tree 数组
-        resToTree(list) {
-            let arr = []
-            arr = Object.keys(list).map(key => {
-                let item = {}
-
-                item.label = list[key].label
-                item.id = list[key].id
-                item.checked = false
-                if (list[key].child) {
-                    item.child = this.resToTree(list[key].child)
-                }
-                return item
-            })
-            return arr
-        },
+        // ,
 
         // 获取后台所有权限树
         getTreeList() {
-            // this.tree_list = JSON.parse(JSON.stringify(window.all.menu_list))
-            // console.log('想要的tree_list: ', this.tree_list);
-            // this.tree_list.forEach((item, index) => {
-            //     item.id = index
-            // })
-            let self = this
+            // 后台res 转化为 tree 数组
+            function resToTree(list) {
+                return Object.keys(list).map(key => {
+                    let item = {}
+                    item.label = list[key].label
+                    item.id = list[key].id
+                    item.checked = false
+                    if (list[key].child) {
+                        item.child = resToTree(list[key].child)
+                    }
+                    return item
+                })
+            }
             let { url, method } = this.$api.menu_all_list
-            this.$http({
-                method: method,
-                url: url
-            }).then(res => {
+            this.$http({ method, url }).then(res => {
                 // console.log('所有权限树: ', res)
                 if (res && res.code === '200') {
-                    self.total = res.data.total
-                    self.tree_list = this.resToTree(res.data)
+                    this.total = res.data.total
+                    this.tree_list = resToTree(res.data)
                 }
             })
         },
-
+        treeListUpd(val) {},
         cancel() {
             let group = Object.assign({}, this.curr_group)
             this.form.group_name = group.group_name

@@ -53,6 +53,7 @@
 // 使用方法
 //  <Pagefront :page-config="pageConfig" @update="updatePage"></Pagefront>
 //             pageConfig: {total:2,pageSize:10,pageNo:1}
+// 0-10 10-20, (pageNo-1)*5 >>> pageNo*5 (+1) // 第几个
 export default {
     name: 'Pagefront',
     props: {

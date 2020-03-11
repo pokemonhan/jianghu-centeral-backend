@@ -89,7 +89,7 @@ export default {
                 Slide.slideDown(ele)
             } else {
                 // $(ele).slideUp(200)
-                Slide.slideDown(ele)
+                Slide.slideUp(ele)
             }
         },
         select(item) {

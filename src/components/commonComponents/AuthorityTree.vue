@@ -31,7 +31,7 @@ export default {
     props: {
         menutree: {
             type: Array,
-            default: []
+            default: ()=>[]
         },
         value: {
             type: Array,
@@ -181,6 +181,7 @@ export default {
             }
         },
         menutree(list) {
+            // console.log('里面的内容list: ', list);
             this.tree_list = list
             this.treeSelectShow(this.tagShow)
             this.setTabObj(list)
@@ -189,6 +190,7 @@ export default {
     mounted() {
 
         this.tree_list = this.menutree
+        // console.log('里面的.menutree: ', this.menutree);
         this.setTabObj(this.tree_list)
 
         this.tagShow = this.value.slice()

@@ -35,10 +35,13 @@
                     <td>{{row.owner &&row.owner.email}}</td>
                     <td>{{row.cn_name}}</td>
                     <td>{{row.sms_num}}</td>
-                    <td>
+                    <!-- <td>
                         <i
                             :class="[row.status===1?'iconfont icongou green':'iconfont iconcha red']"
                         ></i>
+                    </td>-->
+                    <td>
+                        <Switchbox v-model="row.status" @update="operateMod(row)" />
                     </td>
                     <td>
                         <span
@@ -57,10 +60,10 @@
                     <td style="padding:5px 0;">
                         <div>
                             <!-- <button class="btns-blue" @click="operateMod(row)">{{row.a5==='1'?'启用':'禁用'}}</button> -->
-                            <button
+                            <!-- <button
                                 :class="[row.status?'btns-red':'btns-green']"
                                 @click="operateMod(row)"
-                            >{{row.status===1?'禁用':'启用'}}</button>
+                            >{{row.status===1?'禁用':'启用'}}</button> -->
 
                             <button class="btns-blue" @click="maintainShow(row)">维护</button>
                             <button class="btns-blue" @click="siteManageShow(row)">站点管理</button>
@@ -73,7 +76,7 @@
                     </td>
                 </template>
             </Table>
-
+<!-- 
             <Page
                 class="table-page"
                 :total="total"
@@ -81,7 +84,7 @@
                 :pageSize.sync="pageSize"
                 @updateNo="updateNo"
                 @updateSize="updateSize"
-            />
+            /> -->
         </div>
         <!-- 禁用 启用 -->
         <Modal
@@ -143,7 +146,13 @@
                             <span>权限选择</span>
                             <!-- // TODO: -->
                             <!-- <Input class="w250" v-model="form.role" /> -->
-                            <AuthorityTree v-model="form.role" style="width:500px;" />
+                            <!-- <AuthorityTree v-model="form.role" style="width:500px;" /> -->
+                            <AuthorityTree
+                                style="width:500px;"
+                                :menutree="tree_list"
+                                v-model="form.role"
+                                @update="treeListUpd"
+                            />
                         </li>
                         <li>
                             <span>短信数量</span>
@@ -198,16 +207,12 @@
                 </div>
 
                 <!-- 站点管理 -->
-                <SiteManage v-if="dia_show==='site'" :id="curr_row.id" />
+                <SiteManage v-if="dia_show==='site'" :id="curr_row.id" :tree_list="tree_list" />
 
                 <!-- 域名管理 -->
                 <Domain v-if="dia_show==='domain'" :sign="curr_row.sign" />
                 <!-- 游戏管理 -->
-                <Gamemanage
-                    v-if="dia_show==='game'"
-                    class="dia-game"
-                    :outRow="curr_row"
-                />
+                <Gamemanage v-if="dia_show==='game'" class="dia-game" :outRow="curr_row" />
                 <!-- 活动管理 -->
                 <ActiveManage v-if="dia_show==='active'" :platform_sign="curr_row.sign" />
             </div>
@@ -243,7 +248,6 @@ export default {
                 email: '',
                 password: '',
                 dates: [],
-                site_name: '',
                 platform_name: '',
                 domains: '',
                 agency_method: [],
@@ -252,7 +256,8 @@ export default {
                 platform_sign: '', // 站点标识
                 status: '1'
             },
-            authorityList: [],
+            tree_list: [],
+            // authorityList: [],
             loading: false,
             website_opt: [
                 { label: '全部', value: '' },
@@ -298,11 +303,10 @@ export default {
                 email: '',
                 password: '',
                 dates: [],
-                site_name: '',
                 platform_name: '',
                 domains: '',
                 agency_method: [],
-                role: '', // 权限选择
+                role: [], // 权限选择
                 sms_num: '',
                 platform_sign: '', // 站点标识
                 status: '1'
@@ -313,33 +317,72 @@ export default {
             this.dia_title = '添加厅主'
             this.intiForm()
         },
+        treeListUpd() {},
+        checkForm() {
+            let checkArr = [
+                { key: 'email', message: '厅主账号不可为空!' },
+                { key: 'password', message: '登录密码不可为空!' },
+                { key: 'platform_name', message: '站点名称不可为空!' },
+                { key: 'domains', message: '主域名不可为空!' },
+                { key: 'sms_num', message: '短信数量不可为空!' },
+                { key: 'platform_sign', message: '站点标识不可为空!' }
+            ]
+            let EmptyItem = checkArr.find(item => this.form[item.key] === '')
+            if (EmptyItem) {
+                this.$toast.warning(EmptyItem.message)
+                return false
+            }
+            if (!this.form.dates[0] || !this.form.dates[1]) {
+                this.$toast.warning('有效日期不可为空!')
+                return false
+            }
+            if (!this.form.agency_method.some(item => item)) {
+                this.$toast.warning('代理方式不可为空!')
+                return false
+            }
+            if (!this.form.role.length) {
+                this.$toast.warning('权限选择不可为空!')
+                return false
+            }
 
+            return true
+        },
         // 确认添加厅主
         addHallCfm() {
+            if (!this.checkForm()) return
+            function getAgencyMethod(arr = []) {
+                if (arr.length === 0) return ''
+                let methods_arr = []
+                arr.forEach((item, index) => {
+                    if (item) {
+                        methods_arr.push(index + 1)
+                    }
+                })
+                return JSON.stringify(methods_arr)
+            }
+
             let data = {
                 email: this.form.email,
                 password: this.form.password,
-                start_time: this.form.dates && this.form.dates[0], // 有效日期
-                end_time: this.form.dates && this.form.dates[1],
-                platform_name: this.form.platform_name,
+                start_time: this.form.dates[0] || '', // 有效日期
+                end_time: this.form.dates[1] || '',
+                platform_name: this.form.platform_name, // 站点名称
                 domains: this.form.domains.split(/[\,\，]/), // TODO: 是数组吗?
-                agency_method: this.form.agency_method.join(','), // 1,2,3
-                role: '[1,2]', // TODO:
+                agency_method: getAgencyMethod(this.form.agency_method), // 1,2,3
+                role: JSON.stringify(this.form.role), // TODO:
                 sms_num: this.form.sms_num,
                 platform_sign: this.form.platform_sign,
                 status: this.form.status
             }
 
             let { url, method } = this.$api.platform_add
-            this.$http({
-                method: method,
-                url: url,
-                data: data
-            }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
-                    self.total = res.data.total
-                    self.list = res.data.data
+                    // self.total = res.data.total
+                    // self.list = res.data.data
                     this.$toast.success(res && res.message)
+                    this.dia_show = ''
+                    this.getList()
                 }
             })
         },
@@ -347,15 +390,16 @@ export default {
         // 【禁用】或【启用】站点
         operateMod(row) {
             this.curr_row = row
-            this.mod_status = 'switch'
-            this.mod_show = true
+            // this.mod_status = 'switch'
+            // this.mod_show = true
+            this.modConf()
         },
 
         // 禁用启用 确认
         modConf() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status === 1 ? 0 : 1
+                status: this.curr_row.status ? 1 : 0
             }
             let { url, method } = this.$api.platform_switch_set
             this.$http({
@@ -421,21 +465,51 @@ export default {
                 }
             })
         },
+        // 获取后台菜单树
+        getTreeList() {
+            // 后台res 转化为 tree 数组
+            function resToTree(list) {
+                return Object.keys(list).map(key => {
+                    let item = {}
+                    item.label = list[key].label
+                    item.id = list[key].id
+                    item.checked = false
+                    if (list[key].child) {
+                        item.child = resToTree(list[key].child)
+                    }
+                    return item
+                })
+            }
+            let { url, method } = this.$api.menu_all_list
+            this.$http({ method, url }).then(res => {
+                // console.log('所有权限树: ', res)
+                if (res && res.code === '200') {
+                    this.total = res.data.total
+                    this.tree_list = resToTree(res.data)
+                    console.log('this.tree_list: ', this.tree_list)
+                }
+            })
+        },
         getList() {
             /**
              * TODO 🎈
              */
 
             // this.loading = true
-            let createdAt = [
-                this.filter.add_dates[0] + ' 00:00:00',
-                this.filter.add_dates[1] + ' 00:00:00'
-            ]
+            let createdAt = ''
+            if (this.filter.add_dates[0] && this.filter.add_dates[1]) {
+                let dates = [
+                    this.filter.add_dates[0] + ' 00:00:00',
+                    this.filter.add_dates[1] + ' 00:00:00'
+                ]
+                createdAt = JSON.stringify(dates)
+            }
+
             let para = {
                 email: this.filter.email,
                 status: this.filter.status,
                 maintain: this.filter.maintain,
-                createdAt: JSON.stringify(createdAt)
+                createdAt: createdAt,
                 // pageSize: this.pageSize,
                 // page: this.pageNo
             }
@@ -461,11 +535,8 @@ export default {
     },
     mounted() {
         // 初始化时间
-        let date = this.filter.add_dates
-        date[0] = '2010-01-01'
-        date[1] = window.all.tool.formatDate(new Date())
-        date[1] = '2020-02-25' // TODO: 时间要改回来
         this.getList()
+        this.getTreeList()
     }
 }
 </script>

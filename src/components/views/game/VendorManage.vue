@@ -12,6 +12,7 @@
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
+                    <button class="btn-blue" @click="add">添加</button>
                 </li>
             </ul>
         </div>
@@ -21,11 +22,14 @@
                     <!-- '编号', '游戏厂商', '厂商状态', '最后更新人','最后更新时间','操作' -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.name}}</td>
-                    <td :class="[row.status===1?'green':'red']">{{status_txt[row.status]}}</td>
+                    <!-- <td :class="[row.status===1?'green':'red']">{{status_txt[row.status]}}</td> -->
+                    <td>
+                        <Switchbox :value="row.status" @update="statusSwitch(row)" />
+                    </td>
                     <td>{{row.last_editor && row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
-                        <button class="btns-blue" @click="edit(row)">编辑??</button>
+                        <button class="btns-blue" @click="edit(row)">编辑</button>
                         <button
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
@@ -44,7 +48,7 @@
             />
         </div>
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
-        <!-- <Dialog :show="true" :title="dia_title" @close="dia_show=''"> -->
+            <!-- <Dialog :show="true" :title="dia_title" @close="dia_show=''"> -->
             <div class="dia-inner">
                 <div class="edit-form">
                     <ul class="form">
@@ -249,10 +253,9 @@ export default {
             dia_status: '',
             dia_title: '',
             form: {
-                name: '',
+                name: '', // 厂商名称
                 sign: '', // 厂商标识
                 type_id: '', // 游戏类型id
-                // whitelist_ips: '', //
                 urls: {
                     login: '', // 登录接口
                     account_query_url: '', //查询余额接口
@@ -275,6 +278,7 @@ export default {
                 private_key: '', // 私钥
                 des_key: '', // des 密钥
                 md5_key: '', // md5密钥
+                whitelist_ips: '', // 白名单
                 status: '' // 状态
             },
             mod_show: false,
@@ -337,10 +341,10 @@ export default {
         },
         initForm() {
             this.form = {
-                name: '',
+                name: '', // 厂商名称
                 sign: '', // 厂商标识
                 type_id: '', // 游戏类型id
-                // whitelist_ips: '', //
+                whitelist_ips: '', //
                 urls: {
                     login: '', // 登录接口
                     account_query_url: '', //查询余额接口
@@ -363,12 +367,19 @@ export default {
                 private_key: '', // 私钥
                 des_key: '', // des 密钥
                 md5_key: '', // md5密钥
-                status: '' // 状态
+                whitelist_ips: '', // 白名单
+                status: '1' // 状态
             }
+        },
+        add() {
+            this.initForm()
+            this.dia_show = 'add'
+            this.dia_status = 'add'
+            this.dia_title = '添加'
         },
         edit(row) {
             console.log('row: ', row)
-            if(!row) return
+            if (!row) return
             this.form = {
                 name: row.name,
                 sign: row.sign, // 厂商标识
@@ -382,7 +393,8 @@ export default {
                     order_query_url: row.urls.order_query_url, // 查询订单接口
                     user_active_query_url: row.urls.user_active_query_url, //查询玩家在线状态
                     game_order_query_url: row.urls.game_order_query_url, // 查询游戏注单
-                    user_total_status_query_url: row.urls.user_total_status_query_url, // 查询玩家总分
+                    user_total_status_query_url:
+                        row.urls.user_total_status_query_url, // 查询玩家总分
                     kick_out_url: row.urls.kick_out_url, // 踢玩家接口
                     agent_account_query_url: row.urls.agent_account_query_url // 查询代理余额接口
                 },
@@ -390,13 +402,15 @@ export default {
                     login: row.test_urls.login // 存放三方调用测试urls
                 },
                 app_id: row.app_id, //..终端号
-                merchant_id: row.merchant_secret, //商户号
+                merchant_id: row.merchant_id, //商户号
                 merchant_secret: row.merchant_secret, // 商户密钥
                 public_key: row.public_key, // 公钥
                 private_key: row.private_key, // 私钥
                 des_key: row.des_key, // des 密钥
                 md5_key: row.md5_key, // md5密钥
-                status: row.status // 状态
+                status: row.status, // 状态
+                whitelist_ips:
+                    row.white_list && (row.white_list.ips || []).join(',') // 白名单
             }
             this.curr_row = row
             this.dia_show = 'edit'
@@ -421,15 +435,13 @@ export default {
                     this.mod_show = false
                     this.$toast.success(res.message)
                     this.getList()
-                } else {
-                    this.$toast.error(res.message)
                 }
             })
         },
         checkForm() {
-            if (this.form.name === '') {
-                return false
-            }
+            // if (this.form.name === '') {
+            //     return false
+            // }
             return true
         },
         diaCfm() {
@@ -446,15 +458,14 @@ export default {
             if (this.dia_status === 'add') {
                 this.addCfm()
             }
-            console.log('this.dia_status: ', this.dia_status);
             if (this.dia_status === 'edit') {
-                
                 this.editCfm()
             }
         },
         addCfm() {
-            console.log('添加');
+            console.log('添加')
             let data = {
+                // id: this.curr_row.id,
                 name: this.form.name,
                 sign: this.form.sign, // 厂商标识
                 type_id: this.form.type_id, // 游戏类型id
@@ -477,26 +488,31 @@ export default {
                 },
                 app_id: this.form.app_id, //..终端号
                 merchant_id: this.form.merchant_id, //商户号
-                merchant_secret: this.merchant_secret, // 商户密钥
+                merchant_secret: this.form.merchant_secret, // 商户密钥
                 public_key: this.form.public_key, // 公钥
                 private_key: this.form.private_key, // 私钥
                 des_key: this.form.des_key, // des 密钥
                 md5_key: this.form.md5_key, // md5密钥
-                status: this.status // 状态
+                status: this.form.status // 状态
+            }
+            if (this.form.whitelist_ips) {
+                let str = this.form.whitelist_ips.replace('，', ',')
+                str = str.replace(/\s+/g, '')
+                data.whitelist_ips = JSON.stringify(str.split(','))
             }
 
-            let { url, method } = this.$api.game_vendor_set
+            let { url, method } = this.$api.game_vendor_add
             this.$http({ method, url, data }).then(res => {
                 console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.dia_show = false
+                    this.dia_show = ''
                     this.getList()
                 }
             })
         },
         editCfm() {
-            console.log('编辑');
+            console.log('编辑')
             let data = {
                 id: this.curr_row.id,
                 name: this.form.name,
@@ -521,20 +537,24 @@ export default {
                 },
                 app_id: this.form.app_id, //..终端号
                 merchant_id: this.form.merchant_id, //商户号
-                merchant_secret: this.merchant_secret, // 商户密钥
+                merchant_secret: this.form.merchant_secret, // 商户密钥
                 public_key: this.form.public_key, // 公钥
                 private_key: this.form.private_key, // 私钥
                 des_key: this.form.des_key, // des 密钥
                 md5_key: this.form.md5_key, // md5密钥
-                status: this.status // 状态
+                status: this.form.status // 状态
             }
-
+            if (this.form.whitelist_ips) {
+                let str = this.form.whitelist_ips.replace('，', ',')
+                str = str.replace(/\s+/g, '')
+                data.whitelist_ips = JSON.stringify(str.split(','))
+            }
             let { url, method } = this.$api.game_vendor_set
             this.$http({ method, url, data }).then(res => {
                 console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.dia_show = false
+                    this.dia_show = ''
                     this.getList()
                 }
             })

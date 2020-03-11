@@ -6,11 +6,21 @@
             <ul class="left">
                 <li>
                     <span>厂商名称</span>
-                    <Select style="width:150px;" v-model="filter.vendor_id" :options="vendor_opt" @update="vendorUpd"></Select>
+                    <Select
+                        style="width:150px;"
+                        v-model="filter.vendor_id"
+                        :options="vendor_opt"
+                        @update="vendorUpd"
+                    ></Select>
                 </li>
                 <li>
                     <span>分类名称</span>
-                    <Select style="width:150px;" v-model="filter.type_id" :options="type_opt" @update="typeUpd"></Select>
+                    <Select
+                        style="width:150px;"
+                        v-model="filter.type_id"
+                        :options="type_opt"
+                        @update="typeUpd"
+                    ></Select>
                 </li>
                 <li>
                     <span>通道名称</span>
@@ -34,14 +44,20 @@
                     <td>{{row.created_at}}</td>
                     <td>{{row.last_editor&&row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
-                    <td
+                    <!-- <td
                         :class="[row.status?'green':'red']"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'--'}}</td>
+                    >{{row.status===1?'开启':row.status===0?'关闭':'--'}}</td>-->
+                    <td>
+                        <Switchbox v-model="row.status" @update="statusSwitch(row)" />
+                    </td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
-                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <!-- <button
+                            :class="[row.status?'btns-red':'btns-green']"
+                            @click="statusSwitch(row)"
+                        >{{row.status===1?'禁用':'启用'}}</button> -->
 
-                        <button class="btns-blue" @click="del(row)">删除</button>
+                        <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -106,10 +122,10 @@
                                 v-model="form.request_url"
                             />
                             <!-- <span v-show="!form.request_url" class="err-tips">请求地址不可为空</span> -->
-                             <span
-                                    v-show="!urlRegExp.test(form.request_url)"
-                                    class="err-tips"
-                                >请检查内容格式!</span>
+                            <span
+                                v-show="!urlRegExp.test(form.request_url)"
+                                class="err-tips"
+                            >请检查内容格式!</span>
                         </li>
                         <li>
                             <span>银行码:</span>
@@ -170,7 +186,19 @@ export default {
             type_opt: [],
             channel_opt: [],
 
-            headers: [ '编号', '厂商名称', '分类名称', '通道名称', '通道标识', '添加人', '添加时间', '最后更新人', '最后更新时间', '状态', '操作' ],
+            headers: [
+                '编号',
+                '厂商名称',
+                '分类名称',
+                '通道名称',
+                '通道标识',
+                '添加人',
+                '添加时间',
+                '最后更新人',
+                '最后更新时间',
+                '状态',
+                '操作'
+            ],
             list: [],
             total: 0,
             pageNo: 1,
@@ -191,7 +219,7 @@ export default {
                 desc: '',
                 status: '1'
             },
-            urlRegExp : /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/,
+            urlRegExp: /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/,
             // modal 确认modal
             mod_show: false,
             mod_status: '',
@@ -222,11 +250,11 @@ export default {
             })
         },
         vendorUpd() {
-            if(this.filter.vendor_id === '') return
+            if (this.filter.vendor_id === '') return
             this.filterChannel()
         },
         typeUpd() {
-            if(this.filter.type_id === '') return
+            if (this.filter.type_id === '') return
             this.filterChannel()
         },
         // 根据厂商,分类已选内容,筛选通道名称
@@ -234,12 +262,13 @@ export default {
             let vendor_id = this.filter.vendor_id
             let type_id = this.filter.type_id
             let opt = this.selectOpt.channels.filter(item => {
-
                 // 条件一：等于该厂商或者厂商id为空时 && 条件二：等于该游戏分类或者该分类筛选为空时
-                return (item.vendor_id === vendor_id || vendor_id==='') && (item.type_id ===type_id ||type_id==='')
+                return (
+                    (item.vendor_id === vendor_id || vendor_id === '') &&
+                    (item.type_id === type_id || type_id === '')
+                )
             })
             this.channel_opt = this.toSelectOpt(opt)
-
         },
         initForm() {
             this.form = {
@@ -278,10 +307,11 @@ export default {
         },
         statusSwitch(row) {
             this.curr_row = row
-            this.mod_status = 'switch'
-            this.mod_title = row.status === 1 ? '禁用' : '启用'
-            this.mod_cont = `是否确定${this.mod_title}该通道名称？`
-            this.mod_show = true
+            // this.mod_status = 'switch'
+            // this.mod_title = row.status === 1 ? '禁用' : '启用'
+            // this.mod_cont = `是否确定${this.mod_title}该通道名称？`
+            // this.mod_show = true
+            this.switchCfm()
         },
         del(row) {
             this.curr_row = row
@@ -360,9 +390,9 @@ export default {
             })
         },
         modConf() {
-            if (this.mod_status === 'switch') {
-                this.switchCfm()
-            }
+            // if (this.mod_status === 'switch') {
+            //     this.switchCfm()
+            // }
             if (this.mod_status === 'del') {
                 this.delCfm()
             }
@@ -370,7 +400,7 @@ export default {
         switchCfm() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status ? 0 : 1
+                status: this.curr_row.status ? 1 : 0
             }
 
             let { url, method } = this.$api.dev_finance_channel_status_set
@@ -437,7 +467,6 @@ export default {
 </script>
 
 <style scoped>
-
 .dia-maintain {
     padding: 0 150px;
 }

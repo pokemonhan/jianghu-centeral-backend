@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <!-- 分类管理 -->
-        
+
         <div class="filter p10">
             <ul class="left">
                 <li>
@@ -28,13 +28,19 @@
                     <td>{{row.created_at}}</td>
                     <td>{{row.last_editor&&row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
-                    <td
+                    <!-- <td
                         :class="[row.status?'green':'red']"
-                    >{{row.status===1?'启用':row.status===0?'关闭':'???'}}</td>
+                    >{{row.status===1?'启用':row.status===0?'关闭':'???'}}</td>-->
+                    <td>
+                        <Switchbox v-model="row.status" @update="statusSwitch(row)" />
+                    </td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
-                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
-                        <button class="btns-blue" @click="del(row)">删除</button>
+                        <!-- <button
+                            :class="[row.status?'btns-red':'btns-green']"
+                            @click="statusSwitch(row)"
+                        >{{row.status===1?'禁用':'启用'}}</button> -->
+                        <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -134,14 +140,24 @@ export default {
         return {
             filter: {
                 name: '',
-                status: '',
+                status: ''
             },
             status_opt: [
                 { label: '全部', value: '' },
                 { label: '启用', value: '1' },
                 { label: '关闭', value: '0' }
             ],
-            headers: [ '编号', '分类名称', '分类标识', '添加人', '添加时间', '最后更新人', '最后更新时间', '状态', '操作' ],
+            headers: [
+                '编号',
+                '分类名称',
+                '分类标识',
+                '添加人',
+                '添加时间',
+                '最后更新人',
+                '最后更新时间',
+                '状态',
+                '操作'
+            ],
             list: [],
             total: 0,
             pageNo: 1,
@@ -199,11 +215,12 @@ export default {
         },
         statusSwitch(row) {
             this.curr_row = row
-            this.mod_status = 'switch'
+            // this.mod_status = 'switch'
 
-            this.mod_title = row.status === 1 ? '禁用' : '启用'
-            this.mod_cont = `是否确认${this.mod_title}该分类!`
-            this.mod_show = true
+            // this.mod_title = row.status === 1 ? '禁用' : '启用'
+            // this.mod_cont = `是否确认${this.mod_title}该分类!`
+            // this.mod_show = true
+            this.switchCfm()
         },
         del(row) {
             this.curr_row = row
@@ -272,9 +289,9 @@ export default {
             })
         },
         modConf() {
-            if (this.mod_status === 'switch') {
-                this.switchCfm()
-            }
+            // if (this.mod_status === 'switch') {
+            //     this.switchCfm()
+            // }
             if (this.mod_status === 'del') {
                 this.delCfm()
             }
@@ -283,7 +300,7 @@ export default {
         switchCfm() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status === 1 ? 0 : 1
+                status: this.curr_row.status ? 1 : 0
             }
 
             let { url, method } = this.$api.dev_finance_sort_status_set
@@ -345,7 +362,6 @@ export default {
 }
 </script>
 <style scoped>
-
 /* dialog */
 .dia-inner {
     padding: 0 200px;

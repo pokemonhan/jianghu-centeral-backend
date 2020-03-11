@@ -161,8 +161,8 @@
                 <div>
                     <ul class="form">
                         <!-- 添加 编辑路由 -->
-                        <li v-if="route_show_opt.length">
-                            <span>选择路由1:</span>
+                        <li>
+                            <span>选择路由:</span>
                             <Select
                                 style="width:550px;margin-top:10px;"
                                 v-model="form.route_name"
@@ -172,7 +172,7 @@
                                 @update="routeSelect"
                             ></Select>
                         </li>
-                        <li v-else class="no-router">
+                        <li v-if="!route_show_opt.length" class="no-router">
                             <span>sorry,没有可以使用的路由....</span>
                         </li>
                         <li class="mt20">
@@ -253,18 +253,20 @@ export default {
                  */
                 // 是否匹配input条件其中一个
                 let matchInput
-                
+
                 let match_open = false // 匹配是否开放式
                 let keyArr = ['title', 'route_name', 'url', 'label']
                 matchInput = keyArr.some(key => {
-
                     return item[key] && item[key].indexOf(search) !== -1
                 })
-                if(matchInput ||search===''){
+                if (matchInput || search === '') {
                     matchInput = true
                 }
-                 // 匹配结果为空格, 或者 等于当前,为true
-                if (self.is_open_status === ''||self.is_open_status === item.is_open) {
+                // 匹配结果为空格, 或者 等于当前,为true
+                if (
+                    self.is_open_status === '' ||
+                    self.is_open_status === item.is_open
+                ) {
                     match_open = true
                 }
                 return matchInput && match_open
@@ -283,14 +285,20 @@ export default {
                     }
                     if (item.children) {
                         // 子集有父级就有
-                        item.isSelect=item.isMenuOpen = setCss(item.children, true)
+                        item.isSelect = item.isMenuOpen = setCss(
+                            item.children,
+                            true
+                        )
                     } else if (item.routes) {
                         // 子集有父级就有
-                        item.isSelect=item.isMenuOpen = setCss(item.routes, true)
+                        item.isSelect = item.isMenuOpen = setCss(
+                            item.routes,
+                            true
+                        )
                     }
                     if (item.isMenuOpen) {
                         isMenuOpen = true
-                        
+
                         // $(self.$refs[item.prefix]).slideDown()
                         let ele = self.$refs[item.prefix]
                         // console.log('ele: ', ele)
@@ -306,7 +314,7 @@ export default {
             setCss(this.routesMenu)
             this.$forceUpdate()
         }, 200),
-        selectUpdate(){
+        selectUpdate() {
             this.searchUpd('')
         },
         expand(index, item) {

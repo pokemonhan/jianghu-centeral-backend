@@ -23,9 +23,12 @@
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.name}}</td>
-                    <td
+                    <!-- <td
                         :class="[row.status?'green':'red']"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
+                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td> -->
+                     <td>
+                        <Switchbox v-model="row.status" @update="statusSwitch(row)" />
+                    </td>
                     <td>{{row.sign}}</td>
                     <td>{{row.author && row.author.name}}</td>
                     <td>{{row.created_at}}</td>
@@ -33,9 +36,9 @@
                     <td>{{row.updated_at}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
-                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <!-- <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button> -->
 
-                        <button class="btns-blue" @click="del(row)">删除</button>
+                        <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -170,10 +173,11 @@ export default {
         },
         statusSwitch(row) {
             this.curr_row = row
-            this.mod_title = row.status === 1 ? '禁用' : '启用'
-            this.mod_cont = `是否确定${this.mod_title}该游戏分类？`
-            this.mod_status = 'switch'
-            this.mod_show = true
+            // this.mod_title = row.status === 1 ? '禁用' : '启用'
+            // this.mod_cont = `是否确定${this.mod_title}该游戏分类？`
+            // this.mod_status = 'switch'
+            // this.mod_show = true
+            this.statusSet()
         },
         del(row) {
             this.curr_row = row
@@ -246,7 +250,7 @@ export default {
         statusSet() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status === 1 ? 0 : 1
+                status: this.curr_row.status? 1 : 0
             }
             let { url, method } = this.$api.dev_game_sort_status_set
             this.$http({ method, url, data }).then(res => {

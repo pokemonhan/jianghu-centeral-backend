@@ -49,7 +49,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['keepAliveInclude','keepAliveExclude']),
+        ...mapGetters(['keepAliveInclude', 'keepAliveExclude'])
         // keepAliveList() {
         //     // tab_nav_list 中的每一个没有exclude的都保持keep-alive, 还有home
         //     // let home = 'Home'
@@ -98,12 +98,20 @@ export default {
 </script>
 
 <style scoped>
+#app {
+    display: flex;
+    flex-direction: column;
+}
 .app-header {
+    height: 70px;
     width: 100%;
+    flex-basis: 70px;
 }
 .app-content {
+    flex: 0.8;
     display: flex;
     /* justify-content: center; */
+    width: 100%;
     min-width: 1200px;
     max-width: 2220px;
     margin: 10px auto 0 auto;
@@ -111,13 +119,16 @@ export default {
 
 .app-aside {
     /* width: 150px; */
+    /* height: 100%; */
+    height: calc(100vh - 90px);
     margin-left: 10px;
     /* overflow: scroll; */
 }
 .app-main {
-    margin-left: 10px;
-    /* width: 100%; */
+    height: 100%;
     width: 100%;
+    margin-left: 10px;
+    margin-right: 10px;
     overflow: hidden;
 }
 
@@ -292,7 +303,10 @@ export default {
     border: 1px solid #4c8bfd;
 }
 .container {
+    width: 100%;
+    height: calc(100vh - 120px);
     padding: 20px 8px 20px 8px;
+    overflow: auto;
     background: #fff;
     border: 1px solid #4c8bfd;
     margin-right: 10px;

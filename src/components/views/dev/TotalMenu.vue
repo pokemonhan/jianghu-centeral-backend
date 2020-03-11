@@ -464,6 +464,7 @@ export default {
 .total-menu {
     display: flex;
     min-width: 1200px;
+    height: 100%;
     padding: 0;
 }
 .total-menu .tol-left,

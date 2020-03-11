@@ -23,15 +23,16 @@
                     <td>{{row.name}}</td>
                     <td>{{row.last_editor?row.last_editor.name:'--'}}</td>
                     <td>{{row.updated_at}}</td>
-                    <td
+                    <!-- <td
                         :class="[row.status===1?'green':'red']"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td>
-                    <td>
+                    >{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td> -->
+                    <td><Switchbox v-model="row.status" @update="statusSwitch(row)" /></td>
+                    <!-- <td>
                         <button
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
                         >{{row.status===1?'禁用':'启用'}}</button>
-                    </td>
+                    </td> -->
                 </template>
             </Table>
 
@@ -72,7 +73,7 @@ export default {
                 '最后更新人',
                 '最后更新时间',
                 '状态',
-                '操作'
+                // '操作'
             ],
             list: [],
             status_obj: {
@@ -91,19 +92,20 @@ export default {
     },
     methods: {
         statusSwitch(row) {
-            this.mod_show = true
             this.curr_row = row
-            if (row.status === 1) {
-                this.mod_title = '禁用'
-                this.mod_cont = '是否确认禁用该分类!'
-            } else {
-                this.mod_title = '启用'
-                this.mod_cont = '是否确认启用该分类!'
-            }
+            // this.mod_show = true
+            // if (row.status === 1) {
+            //     this.mod_title = '禁用'
+            //     this.mod_cont = '是否确认禁用该分类!'
+            // } else {
+            //     this.mod_title = '启用'
+            //     this.mod_cont = '是否确认启用该分类!'
+            // }
+            this.modConf()
         },
         modConf() {
             let data = {
-                status: this.curr_row.status === 1 ? 0 : 1,
+                status: this.curr_row.status? 1 : 0,
                 id: this.curr_row.id
             }
 

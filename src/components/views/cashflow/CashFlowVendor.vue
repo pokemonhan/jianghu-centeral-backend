@@ -21,17 +21,20 @@
                 <template v-slot:item="{row,idx}">
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.name}}</td>
-                    <td
+                    <!-- <td
                         :class="[row.status?'green':'red']"
-                    >{{row.status===1?'启用':row.status===0?'禁用':row.status}}</td>
+                    >{{row.status===1?'启用':row.status===0?'禁用':row.status}}</td> -->
+                    <td>
+                        <Switchbox v-model="row.status" @update="statusSwitch(row)" />
+                    </td>
                     <td>{{row.last_editor &&row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
-                    <td>
+                    <!-- <td>
                         <button
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
                         >{{row.status===1?'禁用':'启用'}}</button>
-                    </td>
+                    </td> -->
                 </template>
             </Table>
 
@@ -72,7 +75,7 @@ export default {
                 '状态',
                 '最后更新人',
                 '最后更新时间',
-                '操作'
+                // '操作'
             ],
             list: [],
             status_obj: {
@@ -91,19 +94,20 @@ export default {
     },
     methods: {
         statusSwitch(row) {
-            this.mod_show = true
             this.curr_row = row
-            if (row.status === 1) {
-                this.mod_title = '禁用'
-                this.mod_cont = '是否确认禁用该支付厂商!'
-            } else {
-                this.mod_title = '启用'
-                this.mod_cont = '是否确认启用该支付厂商!'
-            }
+            // this.mod_show = true
+            // if (row.status === 1) {
+            //     this.mod_title = '禁用'
+            //     this.mod_cont = '是否确认禁用该支付厂商!'
+            // } else {
+            //     this.mod_title = '启用'
+            //     this.mod_cont = '是否确认启用该支付厂商!'
+            // }
+            this.modConf()
         },
         modConf() {
             let data = {}
-            data.status = this.curr_row.status === 1 ? 0 : 1
+            data.status = this.curr_row.status? 1 : 0
             data.id = this.curr_row.id
             let { url, method } = this.$api.finance_vendor_status_set
             this.$http({ method, url, data }).then(res => {

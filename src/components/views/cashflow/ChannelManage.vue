@@ -28,9 +28,10 @@
                     <td>{{row.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>{{row.last_editor?row.last_editor.name:'--'}}</td>
-                    <td :class="[row.status===1?'green':'red']">{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td>
+                    <!-- <td :class="[row.status===1?'green':'red']">{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td> -->
+                    <td><Switchbox v-model="row.status" @update="statusSwitch(row)" /></td>
                     <td>
-                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <!-- <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button> -->
                         <button class="btns-blue" @click="detail(row)">操作详情</button>
                     </td>
                 </template>
@@ -138,15 +139,17 @@ export default {
             return arr
         },
         statusSwitch(row) {
-            this.mod_show = true
             this.curr_row = row
-            if (row.status === 1) {
-                this.mod_title = '禁用'
-                this.mod_cont = '是否确定禁用该通道名称'
-            } else {
-                this.mod_title = '启用'
-                this.mod_cont = '是否确定启用该通道名称'
-            }
+            // this.mod_show = true
+
+            // if (row.status === 1) {
+            //     this.mod_title = '禁用'
+            //     this.mod_cont = '是否确定禁用该通道名称'
+            // } else {
+            //     this.mod_title = '启用'
+            //     this.mod_cont = '是否确定启用该通道名称'
+            // }
+            this.modConf()
         },
         detail() {
             this.dia_show = true
@@ -160,7 +163,7 @@ export default {
         },
         modConf() {
             let data = {}
-            data.status = this.curr_row.status === 1 ? 0 : 1
+            data.status = this.curr_row.status? 1 : 0
             data.id = this.curr_row.id
             let { url, method } = this.$api.finance_channel_status_set
             this.$http({ method, url, data }).then(res => {
@@ -168,8 +171,6 @@ export default {
                     this.$toast.success(res.message)
                     this.mod_show = false
                     this.getList()
-                } else {
-                    // res && this.$toast(res.message)
                 }
             })
         },

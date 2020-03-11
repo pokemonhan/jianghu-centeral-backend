@@ -33,11 +33,7 @@ export default {
         url: '/headquarters-api/platform/detail',
         method: 'post'
     },
-    // 厅主列表-站点管理
-    platform_set: {
-        url: '/headquarters-api/platform/edit',
-        method: 'post'
-    },
+
     // 厅主列表 - 添加厅主
     platform_add: {
         url: '/headquarters-api/platform/do-add',

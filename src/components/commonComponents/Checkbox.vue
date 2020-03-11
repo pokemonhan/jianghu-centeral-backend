@@ -111,6 +111,9 @@ export default {
     height: 14px;
     background: #fff;
 }
+.disabled .icon {
+    cursor: not-allowed;
+}
 .v-checkbox .item-label {
     margin-left: 5px;
 }
