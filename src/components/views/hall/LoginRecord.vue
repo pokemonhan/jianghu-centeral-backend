@@ -90,7 +90,7 @@ export default {
             let createAt = ''
             if(this.filter.createAt[0]&&this.filter.createAt[1]) {
                 let start = this.filter.createAt[0]+ ' 00:00:00'
-                let end = this.filter.createAt[1]+ ' 23:59:59'
+                let end = this.filter.createAt[1]+ ' 00:00:00'
                 createAt = JSON.stringify([start,end])
             }
             let para = {

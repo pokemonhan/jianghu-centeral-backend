@@ -304,12 +304,15 @@ export default {
 }
 .container {
     width: 100%;
-    height: calc(100vh - 120px);
-    padding: 20px 8px 20px 8px;
-    overflow: auto;
-    background: #fff;
-    border: 1px solid #4c8bfd;
+    min-height: calc(100vh - 120px);
     margin-right: 10px;
+
+    padding: 20px 8px 20px 8px;
+    border: 1px solid #4c8bfd;
+
+    background: #fff;
+    overflow: auto;
+
     /* min-width: 1040px; */
 }
 /* 背景遮罩层 */

@@ -22,7 +22,8 @@
                     </li>
                     <li>
                         <span>发件人:</span>
-                        <span>{{content.platform_sign}}</span>
+                        <!-- <span>{{content.platform_sign}}</span> -->
+                        <span>{{content.headquarters&&content.headquarters.name}}</span>
                     </li>
                     <li>
                         <span>发送时间:</span>
@@ -102,7 +103,7 @@ export default {
                 if (res && res.code === '200') {
                     let list = res.data && res.data.data
                     list.forEach((item, index) => {
-                        // 后台数据的第几个,存入content_obj 中.
+                        // 后台数据的第几个,存入content_obj 中. 
                         let idx = (para.page - 1) * this.pageSize + index + 1
                         this.content_obj[String(idx)] = item && item.email
                     })

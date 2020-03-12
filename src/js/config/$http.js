@@ -1,7 +1,7 @@
 'use strict';
 import axios from 'axios'
 import router from '../router'
-
+import { Loading } from 'element-ui'
 const ERROR_MAP = {
     //MenuController
     '300000': '编辑保存有误',
@@ -106,9 +106,11 @@ let http = axios.create({
 })
 
 // 请求预设 ---
+let loading = null
 
 http.interceptors.request.use(req => {
     // let requestUrl = req.url
+    loading = Loading.service({ text: '拼命加载中' })
     let Authorization = window.all.tool.getLocal('Authorization')
     // let expires = new Date(window.all.tool.getLocal('expires_at')).getTime()
     // let now = new Date().getTime()
@@ -131,28 +133,37 @@ http.interceptors.request.use(req => {
 // 后台返回数据 全局预设 ---
 http.interceptors.response.use(res => {
     // console.log('后台预设: ', res);
+    if (loading) {
+        loading.close()
+    }
     let toastErr = window.__vm__.$toast.error
     let message = res.message || res.data.message || '出现服务问题或被禁止'
     if (!res.data) {
         toastErr(message)
         return res
     }
-    
+
     if (res.status !== 200) {
         if (res.status === 503) { // 503 请求频繁 
             message = '503 请求次数过于频繁，请稍后再试'
-        }else if (res.status === 401) { 
+        } else if (res.status === 401) {
             // 401 跳转到login 登录
             router.push('/login')
         }
         toastErr(message)
-       
-    }else {
+
+    } else {
         if (res.data.code !== '200') {
             toastErr(message)
         }
     }
     return res.data
+}, error => {
+
+    if (loading) {
+        loading.close()
+    }
+    console.log('error: ', error);
 })
 
 export default http

@@ -31,7 +31,7 @@
                     <td>{{row.type&&row.type.name}}</td>
                     <!-- <td
                         :class="[row.status===1?'green':'red']"
-                    >{{row.status===1?'开启':row.status===0?'关闭':row.status}}</td> -->
+                    >{{row.status===1?'开启':row.status===0?'关闭':row.status}}</td>-->
                     <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
@@ -39,7 +39,7 @@
                     <td>{{row.updated_at}}</td>
                     <td>
                         <!-- <button class="btns-blue" @click="edit(row)">编辑</button> -->
-                        <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button>
+                        <!-- <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button> -->
 
                         <button class="btns-blue" @click="detail(row)">编辑详情</button>
                     </td>
@@ -94,7 +94,7 @@
                         <button class="btn-plain-large" @click="dia_show=''">取消</button>
                         <button class="btn-blue-large ml50" @click="editConf">确定</button>
                     </div>
-                </div> -->
+                </div>-->
                 <div v-if="dia_show==='detail'" class="dia-detail">
                     <GameManageDetail :id="curr_row.id" />
                 </div>
@@ -191,12 +191,14 @@ export default {
         },
         filterNameOpt() {
             // 根据《游戏厂商》和《游戏分类》筛选合格的游戏名称
-             let vendor_id = this.filter.vendor_id
+            let vendor_id = this.filter.vendor_id
             let type_id = this.filter.type_id
             let nameOpt = this.select.games.filter(item => {
-
                 // 条件一：等于该厂商或者厂商id为空时 && 条件二：等于该游戏分类或者该分类筛选为空时
-                return (item.vendor_id === vendor_id || vendor_id==='') && (item.type_id ===type_id ||type_id==='')
+                return (
+                    (item.vendor_id === vendor_id || vendor_id === '') &&
+                    (item.type_id === type_id || type_id === '')
+                )
             })
             // console.log('nameOpt: ', nameOpt);
             this.name_opt = this.backToSelOpt(nameOpt)
@@ -221,7 +223,7 @@ export default {
         //     this.dia_title = '编辑'
         // },
         checkForm() {
-            if(this.form.name==='') {
+            if (this.form.name === '') {
                 return false
             }
             return true
@@ -244,15 +246,14 @@ export default {
         //         }
         //     })
         // },
-        statusSwitch(status,row) {
-
+        statusSwitch(row) {
             this.curr_row = row
             // this.mod_show = true
             // if (row.status) {
             //     this.mod_title = '启用'
             //     this.mod_cont = '是否确定启用该游戏？'
             // } else {
-                
+
             //     this.mod_title = '禁用'
             //     this.mod_cont = '是否确定禁用该游戏？'
             // }
@@ -261,15 +262,13 @@ export default {
         modConf() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status? 1 : 0 // 状态
+                status: this.curr_row.status ? 1 : 0 // 状态
             }
             let { url, method } = this.$api.game_status_set
             this.$http({ url, method, data }).then(res => {
                 if (res && res.code === '200') {
                     res.message && this.$toast.success(res.message)
                     this.mod_show = false
-                } else {
-                    res && res.message && this.$toast.error(res.message)
                 }
                 this.getList()
             })
@@ -302,10 +301,6 @@ export default {
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data
-                } else {
-                    if (res && res.message !== '') {
-                        self.$toast.error(res.message)
-                    }
                 }
             })
         }
@@ -319,7 +314,6 @@ export default {
 </script>
 
 <style scoped>
-
 .edit-form {
     position: relative;
     width: 700px;

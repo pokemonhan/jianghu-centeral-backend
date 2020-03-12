@@ -3,10 +3,10 @@
         <!--------------------   发邮件   ----------------->
         <div class="body">
             <div class="left">
-                <div class="hd-btn">
+                <!-- <div class="hd-btn">
                     <button class="btn-plain" @click="sendNow">立即发送</button>
                     <button class="btn-plain ml20" @click="sendAtTime">定时发送</button>
-                </div>
+                </div> -->
                 <ul class="form">
                     <li v-show="recipient_show">
                         <span>收件人：</span>
@@ -22,7 +22,7 @@
                         <Input class="w500" v-model="title" />
                     </li>
                     <li>
-                        <Upload style="width:90px;" title="选择图片" @change="upPicChange" />
+                        <Upload style="width:90px;" title="选择图片?" @change="upPicChange" />
                         <span v-show="pic_data">
                             <img class="img-show" :src="pic_data" alt="没有图片" />
                             <button class="btns-red" @click="clearPic">清除</button>
@@ -260,21 +260,30 @@ export default {
             }
         },
         upPicChange(e) {
-            let self = this
-            let file = e.target.files[0]
-            let date = new FormData()
-
-            date.append('uploadimg', file)
-            console.log('文件的内容', date)
-            let reader = new FileReader()
-            reader.readAsDataURL(file)
-            reader.onerror = function() {
-                return
-            }
-            reader.onload = function() {
-                // self.src[index] = this.result
-                self.pic_data = this.result
-            }
+            let pic = e.target.files[0]
+            let basket = 'email/sendemail/uploads'
+            let formData = new FormData()
+            formData.append('file', pic, pic.name)
+            formData.append('basket', basket)
+            let { url, method } = this.$api.update_picture_database
+            let data = formData
+            let headers = { 'Content-Type': 'multipart/form-data' }
+            this.$http({ method, url, data, headers }).then(res => {
+                if (res && res.code == '200') {
+                    this.pic_data = res.data.path
+                    let imgHtml = `<img src="${this.protocol}//pic.jianghu.local/${this.pic_data}" alt="图片加载失败">`
+                    this.editor.txt.append(imgHtml)
+                }
+            })
+            // let reader = new FileReader()
+            // reader.readAsDataURL(file)
+            // reader.onerror = function() {
+            //     return
+            // }
+            // reader.onload = function() {
+            //     // self.src[index] = this.result
+            //     self.pic_data = this.result
+            // }
         },
         clearPic() {
             this.pic_data = ''

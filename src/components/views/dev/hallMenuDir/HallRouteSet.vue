@@ -2,7 +2,13 @@
     <div class="center-box content">
         <div>
             <div class="search">
-                <Input placeholder="搜索" v-model="search" @update="searchUpd" />
+                <Input style="width:250px;" placeholder="搜索" v-model="search" @update="searchUpd" />
+                <Select
+                    style="width:30px;margin-left:5px;"
+                    v-model="is_open_status"
+                    :options="is_open_opt"
+                    @update="selectUpdate"
+                ></Select>
             </div>
 
             <ul class="lev1">
@@ -228,6 +234,12 @@ export default {
     data() {
         return {
             search: '',
+            is_open_status: '',
+            is_open_opt: [
+                { label: '全部', value: '' },
+                { label: '封闭式', value: 0 },
+                { label: '开放式', value: 1 }
+            ],
             routesMenu: [],
             // dialog
             dia_show: false,
@@ -258,23 +270,29 @@ export default {
             let self = this
 
             function isMatch(item) {
-                // 路由中文名称匹配时
-                if (item.title && item.title.indexOf(search) !== -1) {
-                    return true
-                    // 路由名称匹配时
-                } else if (
-                    item.route_name &&
-                    item.route_name.indexOf(search) !== -1
-                ) {
-                    return true
-                    // url 匹配时
-                } else if (item.url && item.url.indexOf(search) !== -1) {
-                    return true
-                    // 菜单文字匹配时
-                } else if (item.label && item.label.indexOf(search) !== -1) {
-                    return true
+                let matchInput // 是否匹配input条件其中一个
+                let match_open = false // 匹配是否开放式
+                /**
+                 * 1. 路由中文名称 : title
+                 * 2. 路由名称 : route_name
+                 * 3. url : url
+                 * 4.菜单文字标题 : label
+                 */
+                let keyArr = ['title', 'route_name', 'url', 'label']
+                matchInput = keyArr.some(key => {
+                    return item[key] && item[key].indexOf(search) !== -1
+                })
+                if (matchInput || search === '') {
+                    matchInput = true
                 }
-                return false
+                // 匹配结果为空格, 或者 等于当前,为true
+                if (
+                    self.is_open_status === '' ||
+                    self.is_open_status === item.is_open
+                ) {
+                    match_open = true
+                }
+                return matchInput && match_open
             }
             // if (!search) return
             // 设置是否打开菜单
@@ -323,6 +341,9 @@ export default {
             this.$forceUpdate()
             // console.log('查看前缀this.routesMenu: ', this.routesMenu)
         }, 200),
+        selectUpdate() {
+            this.searchUpd('')
+        },
         expand(index) {
             // console.log('index: ', index);
             let ele = this.$refs[index]
@@ -590,16 +611,19 @@ export default {
             let self = this
 
             function toTreeArray(menu, prefix = '') {
-                return menu.map((item,index) => {
+                return menu.map((item, index) => {
                     // 根据菜单id 得知它自身api路由有哪些,
                     // 例如: 登录记录 id为5，  路由 (routes）有 登录记录-列表(api)
                     if (self.route_obj[item.id]) {
                         item.routes = self.route_obj[item.id]
                     }
-                    item.prefix = prefix +index
+                    item.prefix = prefix + index
                     item.isMenuOpen = true
                     if (item.children) {
-                        item.children = toTreeArray(item.children, item.prefix+'-')
+                        item.children = toTreeArray(
+                            item.children,
+                            item.prefix + '-'
+                        )
                     }
                     return item
                 })
@@ -639,8 +663,10 @@ export default {
     font-size: 14px;
 }
 .content div .search {
-    width: 250px;
-    margin: 0 auto;
+    /* width: 250px;
+    margin: 0 auto; */
+    display: flex;
+    justify-content: center;
     margin-top: 20px;
 }
 

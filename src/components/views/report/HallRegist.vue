@@ -96,7 +96,8 @@ export default {
                 name: '',
                 lottery_dates: [],
                 bet_dates: [],
-                warehouse_dates: []
+                warehouse_dates: [],
+                dates: [],
             },
             status_opt: [
                 { label: '全部', value: '' },

@@ -100,7 +100,7 @@ export default {
                 sender: '',
                 dates: []
             },
-            headers: ['发件人', '内容', '收件日期'],
+            headers: ['收件人', '内容', '收件日期'], // 发件人是自己,所以改为收件人
             list: [],
             total: 0,
             pageNo: 1,
