@@ -34,7 +34,7 @@
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
                         >{{row.status===1?'禁用':'启用'}}</button>
-                    </td> -->
+                    </td>-->
                 </template>
             </Table>
 
@@ -112,9 +112,9 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.mod_show = false
-                    this.getList()
+                    // this.mod_show = false
                 }
+                this.getList()
             })
         },
         getList() {

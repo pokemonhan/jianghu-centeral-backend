@@ -419,8 +419,8 @@ export default {
                 // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.getRouteList()
                 }
+                this.getRouteList()
             })
         },
         modConf() {

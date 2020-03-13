@@ -65,11 +65,7 @@
                                             />
                                         </div>
 
-                                        <ul
-                                            v-if="lev3.children"
-                                            class="lev4"
-                                            :ref="lev3.id"
-                                        >
+                                        <ul v-if="lev3.children" class="lev4" :ref="lev3.id">
                                             <li
                                                 v-for="(lev4, lev4_idx) in lev3.children"
                                                 :key="lev4_idx"
@@ -78,7 +74,10 @@
                                                     :class="['iconfont iconup',lev4.children?'':'hide']"
                                                     @click="expand(lev4)"
                                                 ></i>
-                                                <span class="label" @click="expand(lev4)">{{lev4.label}}</span>
+                                                <span
+                                                    class="label"
+                                                    @click="expand(lev4)"
+                                                >{{lev4.label}}</span>
                                             </li>
                                         </ul>
                                     </li>
@@ -200,7 +199,6 @@
 </template>
 
 <script>
-
 import RouteSet from './hallMenuDir/HallRouteSet'
 import MenuSort from './hallMenuDir/HallMenuSort'
 import slide from '../../../js/config/slide'
@@ -254,8 +252,8 @@ export default {
             this.dia_show = true
         },
         expand(item) {
-            let ele = this.$refs[item.id]&&this.$refs[item.id][0] ||''
-            if(!ele) return
+            let ele = (this.$refs[item.id] && this.$refs[item.id][0]) || ''
+            if (!ele) return
             // $(ele).slideToggle(200)
             // slide.slideToggle(ele)
             window.all.tool.slideToggle(ele)
@@ -396,8 +394,8 @@ export default {
         // },
         // 切换菜单显示状态
         switchDisplay(val, row) {
-            console.log('val: ', val)
-            console.log('row: ', row)
+            // console.log('val: ', val)
+            // console.log('row: ', row)
             let data = {
                 id: row.id,
                 display: val ? 1 : 0
@@ -408,8 +406,8 @@ export default {
                 // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.getMenuList()
                 }
+                this.getMenuList()
             })
         },
         // 后台数据转成可用tree数组1
@@ -512,7 +510,7 @@ export default {
 .lev1 ul {
     /* border: 1px solid #000; */
     overflow: hidden;
-    transition: max-height .2s;
+    transition: max-height 0.2s;
 }
 .lev2 .title {
     padding-left: 2em;

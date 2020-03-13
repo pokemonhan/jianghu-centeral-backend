@@ -409,8 +409,8 @@ export default {
                 // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.getMenuList()
                 }
+                this.getMenuList()
             })
         },
         // 后台数据转成可用tree数组1

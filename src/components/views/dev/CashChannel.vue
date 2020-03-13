@@ -55,7 +55,7 @@
                         <!-- <button
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
-                        >{{row.status===1?'禁用':'启用'}}</button> -->
+                        >{{row.status===1?'禁用':'启用'}}</button>-->
 
                         <button class="btns-red" @click="del(row)">删除</button>
                     </td>
@@ -407,9 +407,9 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.mod_show = false
-                    this.getList()
+                    // this.mod_show = false
                 }
+                this.getList()
             })
         },
         delCfm() {

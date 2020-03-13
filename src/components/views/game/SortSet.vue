@@ -159,7 +159,7 @@ export default {
             })
         },
         edit(row) {
-            console.log('row: ', row)
+            // console.log('row: ', row)
         },
         del() {},
         statusSwitch(row) {
@@ -173,6 +173,7 @@ export default {
             }
             this.mod_show = true
         },
+        // 功能改动
         modConf() {
             let { id, status } = this.curr_row
             let data = {
@@ -184,12 +185,8 @@ export default {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
                     this.mod_show = false
-                    this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
                 }
+                this.getList()
             })
         }
     },

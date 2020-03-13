@@ -12,7 +12,7 @@
                     <span>更新日期</span>
                     <!-- <Date v-model="filter.dates[0]" />
                     <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" /> -->
+                    <Date v-model="filter.dates[1]" />-->
                     <Date type="daterange" v-model="filter.dates" />
                 </li>
                 <li>
@@ -35,8 +35,8 @@
                     <!-- <td
                         :class="[row.status?'green':'red']"
                     >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
-                    <td>{{row.created_at}}</td> -->
-                     <td>
+                    <td>{{row.created_at}}</td>-->
+                    <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
                     <td>{{row.created_at}}</td>
@@ -45,7 +45,7 @@
                         <!-- <button
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
-                        >{{row.status===1?'禁用':'启用'}}</button> -->
+                        >{{row.status===1?'禁用':'启用'}}</button>-->
                         <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
@@ -216,21 +216,27 @@ export default {
             }
         },
         checkForm() {
-            let checkArr = ['name','merchant_code', 'merchant_secret', 'public_key','sms_num','authorization_code','url']
+            let checkArr = [
+                'name',
+                'merchant_code',
+                'merchant_secret',
+                'public_key',
+                'sms_num',
+                'authorization_code',
+                'url'
+            ]
             let pass = true
             checkArr.forEach(key => {
-                if(this.form[key]==='') {
+                if (this.form[key] === '') {
                     pass = false
                     this.$toast.warning('请检查表单内容!')
-                    
                 }
             })
-            
+
             return pass
-            
         },
         editCfm() {
-            if(!this.checkForm()) return
+            if (!this.checkForm()) return
             let data = {
                 id: this.form.id,
                 name: this.form.name,
@@ -255,9 +261,9 @@ export default {
         },
 
         modConf() {
-            if (this.mod_status === 'switch') {
-                this.switchCfm()
-            }
+            // if (this.mod_status === 'switch') {
+            //     this.switchCfm()
+            // }
             if (this.mod_status === 'del') {
                 this.delCfm()
             }
@@ -265,17 +271,17 @@ export default {
         switchCfm() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status? 1 : 0
+                status: this.curr_row.status ? 1 : 0
             }
 
             let { url, method } = this.$api.sms_config_status_set
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.mod_show = false
-                    this.dia_show = false
-                    this.getList()
+                    // this.mod_show = false
+                    // this.dia_show = false
                 }
+                this.getList()
             })
         },
         delCfm() {
@@ -297,20 +303,19 @@ export default {
         getList() {
             let para = {
                 name: this.filter.name,
-                
-                
+
                 status: this.filter.status,
 
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
-                console.log('para: ', para);
-            if(this.filter.dates[0]&&this.filter.dates[1]){
+            console.log('para: ', para)
+            if (this.filter.dates[0] && this.filter.dates[1]) {
                 para.updatedAt = JSON.stringify(this.filter.dates)
             }
             let params = window.all.tool.rmEmpty(para)
 
-            console.log('params: ', params);
+            console.log('params: ', params)
 
             let { url, method } = this.$api.sms_config_list
             this.$http({ method, url, params }).then(res => {
@@ -335,7 +340,6 @@ export default {
 </script>
 
 <style scoped>
-
 .mt20 {
     margin-top: 20px;
 }

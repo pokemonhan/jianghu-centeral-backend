@@ -25,8 +25,8 @@
                     <td>{{row.name}}</td>
                     <!-- <td
                         :class="[row.status?'green':'red']"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td> -->
-                     <td>
+                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>-->
+                    <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
                     <td>{{row.sign}}</td>
@@ -139,7 +139,7 @@ export default {
                 sign: '',
                 status: 1
             },
-        
+
             // mod 禁用删除框
             mod_show: false,
             mod_status: '',
@@ -166,7 +166,7 @@ export default {
             this.form = {
                 id: row.id,
                 name: row.name,
-                sign: row.sign,
+                sign: row.sign
                 // status: row.status
             }
             this.dia_status = 'edit'
@@ -177,7 +177,7 @@ export default {
             // this.mod_cont = `是否确定${this.mod_title}该游戏分类？`
             // this.mod_status = 'switch'
             // this.mod_show = true
-            this.statusSet()
+            this.switchCfm()
         },
         del(row) {
             this.curr_row = row
@@ -228,41 +228,37 @@ export default {
         editCfm() {
             if (!this.checkForm()) return
             let data = this.form
-        
+
             let { url, method } = this.$api.dev_game_type_set
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
-        
                     this.$toast.success(res && res.message)
-                    this.dia_show=false
+                    this.dia_show = false
                     this.getList()
                 }
             })
         },
         modConf() {
-            console.log('this.mod_status: ', this.mod_status)
-            if (this.mod_status === 'switch') {
-                this.statusSet()
-            } else if (this.mod_status === 'del') {
+            // console.log('this.mod_status: ', this.mod_status)
+            // if (this.mod_status === 'switch') {
+            //     this.switchCfm()
+            // }
+            if (this.mod_status === 'del') {
                 this.delSet()
             }
         },
-        statusSet() {
+        switchCfm() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status? 1 : 0
+                status: this.curr_row.status ? 1 : 0
             }
             let { url, method } = this.$api.dev_game_sort_status_set
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.mod_show = false
-                    this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
+                    // this.mod_show = false
                 }
+                this.getList()
             })
         },
         delSet() {
@@ -312,7 +308,6 @@ export default {
 </script>
 
 <style scoped>
-
 .dia-inner {
     display: flex;
     justify-content: center;

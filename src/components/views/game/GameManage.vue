@@ -268,7 +268,7 @@ export default {
             this.$http({ url, method, data }).then(res => {
                 if (res && res.code === '200') {
                     res.message && this.$toast.success(res.message)
-                    this.mod_show = false
+                    // this.mod_show = false
                 }
                 this.getList()
             })

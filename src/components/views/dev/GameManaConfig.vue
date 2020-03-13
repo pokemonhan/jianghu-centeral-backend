@@ -32,8 +32,8 @@
                     <td>{{row.app_id}}</td>
                     <!-- <td
                         :class="[row.status?'green':'red']"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td> -->
-                     <td>
+                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>-->
+                    <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
                     <td>{{row.author&&row.author.name}}</td>
@@ -45,7 +45,7 @@
                         <!-- <button
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
-                        >{{row.status===1?'禁用':'启用'}}</button> -->
+                        >{{row.status===1?'禁用':'启用'}}</button>-->
                         <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
@@ -432,7 +432,7 @@ export default {
         },
         checkForm() {
             let regExp = /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/
-            let noEmpty = {
+            let errInform = {
                 vendor_id: {
                     title: '厂商选择'
                 },
@@ -472,14 +472,14 @@ export default {
                     title: '状态选择'
                 }
             }
-            for (const key in noEmpty) {
+            for (const key in errInform) {
                 if (this.form[key] === '') {
-                    this.$toast.info(`${noEmpty[key].title}不可为空`)
+                    this.$toast.info(`${errInform[key].title}不可为空`)
                     return false
-                } else if (noEmpty[key].regExp) {
-                    let reg = noEmpty[key].regExp
+                } else if (errInform[key].regExp) {
+                    let reg = errInform[key].regExp
                     if (!reg.test(this.form[key])) {
-                        this.$toast.info(`请检查${noEmpty[key].title}的格式`)
+                        this.$toast.info(`请检查${errInform[key].title}的格式`)
                         return false
                     }
                 }
@@ -544,9 +544,9 @@ export default {
             })
         },
         modConf() {
-            if (this.mod_status === 'switch') {
-                this.switchStatus()
-            }
+            // if (this.mod_status === 'switch') {
+            //     this.switchStatus()
+            // }
             if (this.mod_status === 'del') {
                 this.delCfm()
             }
@@ -554,15 +554,15 @@ export default {
         switchStatus() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status? 1 : 0
+                status: this.curr_row.status ? 1 : 0
             }
             let { url, method } = this.$api.dev_game_status_set
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.mod_show = false
-                    this.getList()
+                    // this.mod_show = false
                 }
+                this.getList()
             })
         },
         delCfm() {
@@ -590,7 +590,7 @@ export default {
             })
             return array.concat(opt)
         },
-        // 这个名字就是value // 
+        // 这个名字就是value //
         // gameToSelectOpt(arr) {
         //     let array = [
         //         {

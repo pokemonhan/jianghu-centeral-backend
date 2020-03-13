@@ -288,6 +288,7 @@ export default {
         }
     },
     methods: {
+        // 待改动
         statusSwitch(row) {
             this.curr_row = row
             this.mod_show = true
@@ -332,10 +333,6 @@ export default {
                 if (res && res.code === '200') {
                     self.total = res.data.total
                     self.list = res.data.data
-                } else {
-                    if (res && res.message !== '') {
-                        self.$toast.error(res.message)
-                    }
                 }
             })
         },

@@ -23,7 +23,7 @@
                 </td>
             </template>
         </Table>
-<!-- 
+        <!-- 
         <Page
             v-show="!isSearch"
             class="table-page"
@@ -32,7 +32,7 @@
             :pageSize.sync="pageSize"
             @updateNo="updateNo"
             @updateSize="updateSize"
-        /> -->
+        />-->
         <Pagefront class="mt20" :page-config="pageConfig" @update="updatePage"></Pagefront>
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
             <div class="dia-inner">
@@ -351,13 +351,12 @@ export default {
                 // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.mod_show = false
-
-                    if (this.isSearch) {
-                        this.$emit('search')
-                    } else {
-                        this.getList()
-                    }
+                    // this.mod_show = false
+                }
+                if (this.isSearch) {
+                    this.$emit('search')
+                } else {
+                    this.getList()
                 }
             })
         },

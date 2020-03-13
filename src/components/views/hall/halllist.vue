@@ -41,12 +41,12 @@
                         ></i>
                     </td>-->
                     <td>
-                        <Switchbox v-model="row.status" @update="operateMod(row)" />
+                        <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
                     <td>
                         <span
-                            :class="[row.a5==='1'?'orange':'gray']"
-                        >{{row.a5==='1'?'维护中??':'未维护??'}}</span>
+                            :class="[isMaintain(row)?'orange':'gray']"
+                        >{{isMaintain(row)?'维护中':'未维护'}}</span>
                     </td>
                     <td>
                         <div>{{row.start_time}}</div>
@@ -59,11 +59,11 @@
                     <td>{{row.created_at}}</td>
                     <td style="padding:5px 0;">
                         <div>
-                            <!-- <button class="btns-blue" @click="operateMod(row)">{{row.a5==='1'?'启用':'禁用'}}</button> -->
+                            <!-- <button class="btns-blue" @click="statusSwitch(row)">{{row.a5==='1'?'启用':'禁用'}}</button> -->
                             <!-- <button
                                 :class="[row.status?'btns-red':'btns-green']"
-                                @click="operateMod(row)"
-                            >{{row.status===1?'禁用':'启用'}}</button> -->
+                                @click="statusSwitch(row)"
+                            >{{row.status===1?'禁用':'启用'}}</button>-->
 
                             <button class="btns-blue" @click="maintainShow(row)">维护</button>
                             <button class="btns-blue" @click="siteManageShow(row)">站点管理</button>
@@ -76,7 +76,7 @@
                     </td>
                 </template>
             </Table>
-<!-- 
+            <!-- 
             <Page
                 class="table-page"
                 :total="total"
@@ -84,7 +84,7 @@
                 :pageSize.sync="pageSize"
                 @updateNo="updateNo"
                 @updateSize="updateSize"
-            /> -->
+            />-->
         </div>
         <!-- 禁用 启用 -->
         <Modal
@@ -386,9 +386,20 @@ export default {
                 }
             })
         },
-
+        // 是否维护
+        isMaintain(row) {
+            // console.log('row: ', row);
+            let start = new Date(row.maintain_start).valueOf()
+            let end = new Date(row.maintain_end).valueOf()
+            let now = new Date().valueOf()
+            if (now > start && now < end) {
+                return true
+            } else {
+                return false
+            }
+        },
         // 【禁用】或【启用】站点
-        operateMod(row) {
+        statusSwitch(row) {
             this.curr_row = row
             // this.mod_status = 'switch'
             // this.mod_show = true
@@ -409,14 +420,16 @@ export default {
             }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.mod_show = false
-                    this.getList()
+                    // this.mod_show = false
                 }
+                this.getList()
             })
         },
         // 维护
         maintainShow(row) {
             this.curr_row = row
+            this.maintain_dates[0] = row.maintain_start
+            this.maintain_dates[1] = row.maintain_end
             this.dia_show = 'maintain'
             this.dia_title = '维护'
         },
@@ -451,10 +464,10 @@ export default {
         maintainCfm() {
             let data = {
                 id: this.curr_row.id,
-                start_time: this.maintain_dates[0],
-                end_time: this.maintain_dates[1]
+                maintain_start: this.maintain_dates[0],
+                maintain_end: this.maintain_dates[1]
             }
-            // TODO:
+            data = window.all.tool.rmEmpty(data)
             let { url, method } = this.$api.platform_maintain_set
             this.$http({ method, url, data }).then(res => {
                 console.log('列表👌👌👌👌: ', res)
@@ -509,7 +522,7 @@ export default {
                 email: this.filter.email,
                 status: this.filter.status,
                 maintain: this.filter.maintain,
-                createdAt: createdAt,
+                createdAt: createdAt
                 // pageSize: this.pageSize,
                 // page: this.pageNo
             }

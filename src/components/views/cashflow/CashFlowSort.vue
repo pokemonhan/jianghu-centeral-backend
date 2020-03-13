@@ -25,14 +25,16 @@
                     <td>{{row.updated_at}}</td>
                     <!-- <td
                         :class="[row.status===1?'green':'red']"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td> -->
-                    <td><Switchbox v-model="row.status" @update="statusSwitch(row)" /></td>
+                    >{{row.status===1?'开启':row.status===0?'关闭':'---?'}}</td>-->
+                    <td>
+                        <Switchbox v-model="row.status" @update="statusSwitch(row)" />
+                    </td>
                     <!-- <td>
                         <button
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
                         >{{row.status===1?'禁用':'启用'}}</button>
-                    </td> -->
+                    </td>-->
                 </template>
             </Table>
 
@@ -72,7 +74,7 @@ export default {
                 '分类名称',
                 '最后更新人',
                 '最后更新时间',
-                '状态',
+                '状态'
                 // '操作'
             ],
             list: [],
@@ -105,7 +107,7 @@ export default {
         },
         modConf() {
             let data = {
-                status: this.curr_row.status? 1 : 0,
+                status: this.curr_row.status ? 1 : 0,
                 id: this.curr_row.id
             }
 
@@ -113,9 +115,9 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
-                    this.mod_show = false
-                    this.getList()
+                    // this.mod_show = false
                 }
+                this.getList()
             })
         },
         // getList: window.all.tool.debounce(function() {

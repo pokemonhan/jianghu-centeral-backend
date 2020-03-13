@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <!-- 金流厂商配置 -->
-        
+
         <div class="filter p10">
             <ul class="left">
                 <li>
@@ -31,8 +31,8 @@
                     <td>{{row.updated_at}}</td>
                     <!-- <td
                         :class="[row.status?'green':'red']"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'----'}}</td> -->
-                     <td>
+                    >{{row.status===1?'开启':row.status===0?'关闭':'----'}}</td>-->
+                    <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
                     <td>
@@ -68,7 +68,11 @@
                         </li>
                         <li>
                             <span>白名单</span>
-                            <textarea class="textarea" placeholder="多个ip用都逗号隔开,例如: 1.1.1.1, 2.2.2.2" v-model="form.whitelist_ips"></textarea>
+                            <textarea
+                                class="textarea"
+                                placeholder="多个ip用都逗号隔开,例如: 1.1.1.1, 2.2.2.2"
+                                v-model="form.whitelist_ips"
+                            ></textarea>
                         </li>
                         <li v-if="dia_status==='add'">
                             <span>状态选择</span>
@@ -169,9 +173,12 @@ export default {
         },
         edit(row) {
             this.form = Object.assign({}, row)
-            
-            if(this.form.whitelist_ips) {
-                this.form.whitelist_ips = this.form.whitelist_ips.replace(/["\[\]]/g, '')
+
+            if (this.form.whitelist_ips) {
+                this.form.whitelist_ips = this.form.whitelist_ips.replace(
+                    /["\[\]]/g,
+                    ''
+                )
             }
             this.dia_status = 'edit'
             this.dia_title = '编辑'
@@ -224,9 +231,9 @@ export default {
                 status: this.form.status
             }
             if (this.form.whitelist_ips) {
-                let str =  this.form.whitelist_ips.replace('，',',')
-                str = str.replace(/\s+/g,'')
-                data.whitelist_ips = JSON.stringify( str.split(',') )
+                let str = this.form.whitelist_ips.replace('，', ',')
+                str = str.replace(/\s+/g, '')
+                data.whitelist_ips = JSON.stringify(str.split(','))
             }
             /// <reference path="../../../main.js" />
             /// <reference path="../../../js/plugins.js" />
@@ -252,8 +259,8 @@ export default {
                 status: this.form.status
             }
             if (this.form.whitelist_ips) {
-                let str =  this.form.whitelist_ips.replace('，',',')
-                str = str.replace(/\s+/g,'')
+                let str = this.form.whitelist_ips.replace('，', ',')
+                str = str.replace(/\s+/g, '')
                 data.whitelist_ips = JSON.stringify(str.split(','))
             }
             let { url, method } = this.$api.dev_finance_vendor_set
@@ -266,9 +273,9 @@ export default {
             })
         },
         modConf() {
-            if (this.mod_status === 'switch') {
-                this.switchStatus()
-            }
+            // if (this.mod_status === 'switch') {
+            //     this.switchStatus()
+            // }
             if (this.mod_status === 'del') {
                 this.delConfirm()
             }
@@ -276,32 +283,27 @@ export default {
         switchStatus() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status? 1 : 0
+                status: this.curr_row.status ? 1 : 0
             }
 
             let { url, method } = this.$api.dev_finance_vendor_status_set
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
-                    this.$toast.success(res && res.message)
-                    this.mod_show = false
-                    this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        this.$toast.error(res.message)
-                    }
+                    this.$toast.success(res.message)
+                    // this.mod_show = false
                 }
+                this.getList()
             })
         },
         delConfirm() {
             let data = {
-                id: this.curr_row.id,
+                id: this.curr_row.id
             }
-        
+
             let { url, method } = this.$api.dev_finance_vendor_del
             this.$http({ method, url, data }).then(res => {
                 console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
-        
                     this.$toast.success(res && res.message)
                     this.mod_show = false
                     this.getList()
@@ -344,7 +346,6 @@ export default {
 </script>
 
 <style scoped>
-
 .dia-inner {
     display: flex;
     justify-content: center;

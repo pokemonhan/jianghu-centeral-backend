@@ -23,7 +23,7 @@
                     <td>{{row.name}}</td>
                     <!-- <td
                         :class="[row.status?'green':'red']"
-                    >{{row.status===1?'启用':row.status===0?'禁用':row.status}}</td> -->
+                    >{{row.status===1?'启用':row.status===0?'禁用':row.status}}</td>-->
                     <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
@@ -34,7 +34,7 @@
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
                         >{{row.status===1?'禁用':'启用'}}</button>
-                    </td> -->
+                    </td>-->
                 </template>
             </Table>
 
@@ -74,7 +74,7 @@ export default {
                 '厂商名称',
                 '状态',
                 '最后更新人',
-                '最后更新时间',
+                '最后更新时间'
                 // '操作'
             ],
             list: [],
@@ -107,17 +107,15 @@ export default {
         },
         modConf() {
             let data = {}
-            data.status = this.curr_row.status? 1 : 0
+            data.status = this.curr_row.status ? 1 : 0
             data.id = this.curr_row.id
             let { url, method } = this.$api.finance_vendor_status_set
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
-                    this.mod_show = false
-                    this.getList()
-                } else {
-                    res && this.$toast(res.message)
+                    // this.mod_show = false
                 }
+                this.getList()
             })
         },
         getList() {

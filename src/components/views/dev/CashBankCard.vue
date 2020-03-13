@@ -29,7 +29,7 @@
                     <td>{{row.last_editor&&row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <!-- <td :class="[row.status?'green':'red']" >{{row.status===1?'开启':row.status===0?'关闭':'--'}}</td> -->
-                     <td>
+                    <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
                     <td>
@@ -190,16 +190,16 @@ export default {
             }
         },
         checkForm() {
-            if(this.form.name==='') {
+            if (this.form.name === '') {
                 return false
             }
-            if(this.form.code==='') {
+            if (this.form.code === '') {
                 return false
             }
             return true
         },
         addConfirm() {
-            if(!this.checkForm()) return
+            if (!this.checkForm()) return
             let data = {
                 name: this.form.name,
                 code: this.form.code,
@@ -220,7 +220,7 @@ export default {
             })
         },
         EditConfirm() {
-            if(!this.checkForm()) return
+            if (!this.checkForm()) return
             let data = {
                 id: this.form.id,
                 name: this.form.name,
@@ -248,30 +248,26 @@ export default {
         switchConfirm() {
             let data = {
                 id: this.curr_row.id,
-                status: this.curr_row.status? 1 : 0
+                status: this.curr_row.status ? 1 : 0
             }
 
             let { url, method } = this.$api.dev_sys_bank_status_set
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
-                    this.$toast.success(res && res.message)
-                    this.mod_show = false
-                    this.getList()
-                } else {
-                    if (res && res.message !== '') {
-                        // this.$toast.error(res.message)
-                    }
+                    this.$toast.success(res.message)
+                    // this.mod_show = false
                 }
+                this.getList()
             })
         },
         delConfirm() {
             let data = { id: this.curr_row.id }
-            
+
             let { url, method } = this.$api.dev_sys_bank_del
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.mod_show=false
+                    this.mod_show = false
                     this.getList()
                 }
             })
