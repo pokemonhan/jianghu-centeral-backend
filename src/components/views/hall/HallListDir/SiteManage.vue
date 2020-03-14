@@ -16,9 +16,9 @@
                     <li>
                         <span>有效日期:</span>
                         <div class="text-center">
-                            <Date type="datetime" v-model="dates[0]" />
+                            <Date style="width:200px;" type="datetime" v-model="dates[0]" />
                             <span>~</span>
-                            <Date type="datetime" v-model="dates[1]" />
+                            <Date style="width:200px;" type="datetime" v-model="dates[1]" />
                             <p v-show="!(dates[0]&&dates[1])" class="red mt5">开始时间和结束都不可为空!</p>
                         </div>
                     </li>
@@ -42,8 +42,10 @@
                 <ul class="form">
                     <li>
                         <span>修改短信数量:</span>
-                        <Input class="w280" limit="p-integer" v-model="sms" />
-                        <span class="ml20">剩余短信数量: {{'1000'}}</span>
+                        <Select v-model="type" :options="[{label:'增加',value:1},{label:'减少',value:0}]" ></Select>
+                        <Input class="w280" limit="p-integer" v-model="sms_num" />
+
+                        <span class="ml20">剩余短信数量: {{last_sms_num}}</span>
                     </li>
                     <li>
                         <span>权限选项:</span>
@@ -71,7 +73,10 @@
 import AuthorityTree from '../../../commonComponents/AuthorityTree'
 export default {
     props: {
-        id: [String, Number],
+        row: {
+            type: Object,
+            default: {}
+        },
         tree_list: Array
     },
     components: {
@@ -79,8 +84,8 @@ export default {
     },
     data() {
         return {
-            show_black_list_conf: true,
-            agency_method: [],
+            // show_black_list_conf: true,
+            agency_method: [false,false,false],
             dates: [],
             pc_skin_id: 0,
             h5_skin_id: 0,
@@ -103,36 +108,57 @@ export default {
                 { label: '皮肤二', value: 2 },
                 { label: '皮肤三', value: 3 }
             ],
-            sms: '',
+            type: 1, // 短信操作方式  0减少 1增加
+            last_sms_num: '', // 剩余短信数量
+            sms_num: '',
             authority: '',
             // authorityList: []
             role: [] // 权限内容
         }
     },
     methods: {
-        treeListUpd() {},
         initial() {
-            this.agency_method = []
-            this.dates = []
-            this.pc_skin_id = ''
-            this.h5_skin_id = ''
-            this.app_skin_id = ''
-            this.sms = ''
-            this.role = []
+            let row = this.row
+            if (row) {
+                let agency_method = (row.agency_method||'').split(',')
+                let arr = agency_method || []
+                this.agency_method = []
+
+                arr.forEach((item, index) => {
+                    // 使代理方式checkbox 选中
+                    this.agency_method[item - 1] = true // 代理方式
+                    
+                })
+                // console.log('this.agency_method: ', this.agency_method);
+                this.dates[0] = row.start_time  // 有效日期
+                this.dates[1] = row.end_time
+                this.pc_skin_id = row.pc_skin_id // 皮肤
+                this.h5_skin_id = row.h5_skin_id
+                this.app_skin_id = row.app_skin_id
+                this.last_sms_num = row.sms_num // 剩余短信数量
+                this.sms_num = '0'
+                this.role = row.role.slice() // 权限选项
+            }
         },
+        treeListUpd() {},
+     
         checkForm() {
+            if(!this.agency_method.find(item=>item)){
+                this.$toast.warning('代理方式不可为空!')
+                return false
+            }
             return true
         },
         save() {
-            if(!this.checkForm()) return
+            if (!this.checkForm()) return
             function getAgencyMethod(arr) {
                 let agencyArr = []
-                arr.forEach((item,index)=>{
-                    item && agencyArr.push(index+1)
+                arr.forEach((item, index) => {
+                    item && agencyArr.push(index + 1)
                 })
-                if(agencyArr.length){
-                    return JSON.stringify(agencyArr)
-                }else {
+                if (agencyArr.length) {
+                    return agencyArr.toString()
+                } else {
                     return ''
                 }
             }
@@ -141,7 +167,7 @@ export default {
                 // agency_method: agency_method.join(','),
                 // role: '',
 
-                id: this.id, //id
+                id: this.row.id, //id
                 agency_method: getAgencyMethod(this.agency_method), // 代理方式
                 start_time: this.dates[0], // 有效日期 开始时间
                 end_time: this.dates[1], // 有效日期 结束时间
@@ -149,7 +175,8 @@ export default {
                 pc_skin_id: this.pc_skin_id, // PC皮肤id
                 h5_skin_id: this.h5_skin_id, // H5皮肤ID
                 app_skin_id: this.app_skin_id, // APP皮肤ID
-                //  TODO: 短信数量 字段添加
+                type: this.type,
+                sms_num: this.sms_num||0, // 短信操作数量
                 role: JSON.stringify(this.role) // 菜单权限
             }
 
@@ -160,20 +187,20 @@ export default {
                     this.$toast.success(res && res.message)
                     this.dia_show = false
                     // this.getList()
-                    // this.$emit('confirm')
+                    this.$emit('confirm')
                 }
             })
         }
     },
     mounted() {
-        console.log('%c id', 'color:green;font-size:18px;', this.id)
+        this.initial()
     }
 }
 </script>
 
 <style scoped>
 .cont {
-    width: 1000px;
+    width: 1100px;
     padding-top: 50px;
     padding-bottom: 90px;
 }

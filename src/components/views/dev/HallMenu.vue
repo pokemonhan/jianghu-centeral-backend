@@ -467,7 +467,7 @@ export default {
 .total-menu .tol-left,
 .total-menu .tol-center,
 .total-menu .tol-right {
-    width: 33%;
+    width: 33.333%;
     height: 100%;
     padding-bottom: 20px;
     /* min-width: 350px; */

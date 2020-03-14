@@ -306,7 +306,6 @@ export default {
     width: 100%;
     min-height: calc(100vh - 120px);
     margin-right: 10px;
-
     padding: 20px 8px 20px 8px;
     border: 1px solid #4c8bfd;
 

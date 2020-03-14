@@ -6,6 +6,27 @@
   "description": "test something",
   "glyphs": [
     {
+      "icon_id": "1262157",
+      "name": "sort-asc",
+      "font_class": "sort-asc",
+      "unicode": "e702",
+      "unicode_decimal": 59138
+    },
+    {
+      "icon_id": "7736377",
+      "name": "sort-desc",
+      "font_class": "sort-desc",
+      "unicode": "e917",
+      "unicode_decimal": 59671
+    },
+    {
+      "icon_id": "7323170",
+      "name": "file package",
+      "font_class": "filepackage",
+      "unicode": "e6e7",
+      "unicode_decimal": 59111
+    },
+    {
       "icon_id": "836561",
       "name": "file",
       "font_class": "file",

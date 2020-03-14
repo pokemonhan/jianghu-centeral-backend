@@ -11,27 +11,23 @@
                             @update="onChange(999999, all_checked)"
                         />
                     </th>
-                    <th v-for="(col, index) in headers" :key="index" >
+                    <th v-for="(col, index) in headers" :key="index">
                         <!-- 使用label 时 -->
+                        <!-- 格式：[ {"label":"中文名","key":"email","sortable":true,"isFrontSort":"String"},{}] -->
                         <template v-if="col.label">
-                            <div v-for="(item, index) in col.label.split(',')" :key="index">
-                                <div>{{item}}</div>
-                                <div v-if="false" class="sort">
-                                    <span class="asc"></span>
-                                    <span class="desc"></span>
+                            <div :class="['th-sort',sortKey===col.key?'orange':'']" @click="sortBy(col,index)">
+                                <div>{{col.label}}</div>
+                                <div v-if="sortKey===col.key" class="sort">
+                                    <!-- <span class="desc"></span> -->
+                                    <span :class="['desc',sortOrder==='desc'?'desc-active':'']"></span>
+                                    <span :class="['asc',sortOrder==='asc'?'asc-active':'']"></span>
                                 </div>
                             </div>
                         </template>
 
                         <!-- 直接使用数组时 -->
                         <template v-else>
-                            <div v-for="(item, index) in col.split(',')" :key="index">
-                                <div>{{item}}</div>
-                                <div v-if="false" class="sort">
-                                    <span class="asc"></span>
-                                    <span class="desc"></span>
-                                </div>
-                            </div>
+                            <div>{{col}}</div>
                         </template>
                     </th>
                 </tr>
@@ -39,7 +35,7 @@
             <tbody>
                 <!-- 有数据时 -->
                 <template v-if="column.length">
-                    <tr v-for="(col_row, idx) in column" :key="idx" >
+                    <tr v-for="(col_row, idx) in column" :key="idx">
                         <!-- // 如果有checkbox -->
                         <td v-if="hadCheckbox">
                             <Checkbox
@@ -82,7 +78,48 @@ export default {
     data() {
         return {
             all_checked: false,
-            check_list: []
+            check_list: [],
+            // list: [
+            //     {
+            //         label: 'First Name',
+            //         key: 'first_name',
+            //         sortable: true,
+            //         type: 'String'
+            //     },
+            //     {
+            //         label: 'Last Name',
+            //         key: 'last_name',
+            //         sortable: true,
+            //         type: 'String'
+            //     },
+            //     {
+            //         label: 'Email',
+            //         key: 'email',
+            //         sortable: true,
+            //         type: 'String'
+            //     },
+            //     { label: 'Age', key: 'age', sortable: true, type: 'Number' },
+            //     {
+            //         label: 'Country',
+            //         key: 'country',
+            //         sortable: true,
+            //         type: 'String'
+            //     },
+            //     {
+            //         label: 'Category',
+            //         key: 'category',
+            //         sortable: true,
+            //         type: 'String'
+            //     },
+            //     {
+            //         label: 'Last Update',
+            //         key: 'last_update',
+            //         sortable: true,
+            //         type: 'String'
+            //     }
+            // ],
+            sortOrder: '', // asc:正序, desc 倒序
+            sortKey: '' // 排序关键字
         }
     },
     methods: {
@@ -104,6 +141,23 @@ export default {
              *  */
             // checked 已植入 this.column 中，可直接获取
             this.$emit('checkboxChange', index, checked)
+        },
+        sortBy(row, index) {
+            // console.log('row: ', row);
+            if (this.sortKey && this.sortKey === row.key) {
+                this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc'
+                // this.column.reverse()
+            } else {
+                this.sortColumn = index
+                this.sortOrder = 'asc'
+                this.sortKey = row.key
+            }
+            let obj = {
+                key: this.sortKey,
+                sortOrder: this.sortOrder
+            }
+            // console.log('obj: ', obj)
+            this.$emit('sortUpdate', obj)
         }
     },
     watch: {
@@ -112,7 +166,9 @@ export default {
     mounted() {
         // 初始化 column 使checked都为false
         this.column.forEach(item => {
-            item.checked = false
+            if (!item.checked) {
+                item.checked = false
+            }
         })
     }
 }
@@ -164,21 +220,30 @@ th > div {
 }
 /* .sort {
 } */
-.asc {
-
+.desc {
     position: relative;
-    top: 19px;
+    top: 1.3rem;
     left: 7px;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
     border-top: 6px solid #ffffff;
 }
-.desc {
+th .desc-active{
+    border-top: 6px solid #f36608;
+}
+.asc {
     position: relative;
     top: -15px;
     left: -5px;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
     border-bottom: 6px solid #ffffff;
+}
+th .asc-active {
+    border-bottom: 6px solid #f36608;
+}
+.th-sort {
+    cursor: pointer;
+    /* border: 1px solid #000; */
 }
 </style>

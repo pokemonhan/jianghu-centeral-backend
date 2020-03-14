@@ -207,7 +207,13 @@
                 </div>
 
                 <!-- 站点管理 -->
-                <SiteManage v-if="dia_show==='site'" :id="curr_row.id" :tree_list="tree_list" />
+                <SiteManage
+                    v-if="dia_show==='site'"
+                    :row="curr_row"
+                    :id="curr_row.id"
+                    :tree_list="tree_list"
+                    @confirm="siteManageCfm"
+                />
 
                 <!-- 域名管理 -->
                 <Domain v-if="dia_show==='domain'" :sign="curr_row.sign" />
@@ -439,6 +445,11 @@ export default {
             this.curr_row = row
             this.dia_show = 'site'
             this.dia_title = '站点管理'
+        },
+        // 站点确认
+        siteManageCfm() {
+            this.dia_show = ''
+            this.getList()
         },
         // 域名管理
         domainShow(row) {
