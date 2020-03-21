@@ -108,12 +108,13 @@ export default {
     flex-basis: 70px;
 }
 .app-content {
-    flex: 0.8;
+    /* flex: 0.8; */
     display: flex;
     /* justify-content: center; */
     width: 100%;
     min-width: 1200px;
     max-width: 2220px;
+    height: 100vh;
     margin: 10px auto 0 auto;
 }
 
@@ -129,7 +130,7 @@ export default {
     width: 100%;
     margin-left: 10px;
     margin-right: 10px;
-    overflow: hidden;
+    overflow: auto;
 }
 
 /* fade-transform */
@@ -304,7 +305,10 @@ export default {
 }
 .container {
     width: 100%;
-    min-height: calc(100vh - 120px);
+    /* min-height: calc(100vh - 120px); */
+    /* height: 100vh; */
+    /* min-height: 700px; */
+    /* height: ; */
     margin-right: 10px;
     padding: 20px 8px 20px 8px;
     border: 1px solid #4c8bfd;

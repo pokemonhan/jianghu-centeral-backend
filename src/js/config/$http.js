@@ -81,7 +81,8 @@ const ERROR_MAP = {
 let HOST = process.env.HOST
 
 let hostList = {
-    inner: location.protocol + '//api.jianghu.local',    // 测试站内网
+    // inner: location.protocol + '//api.jianghu.local',    // 测试站内网
+    inner: location.protocol + '//api.397017.com',    // 测试站内网
     outer: location.protocol + '//api.397017.com',       // 测试外围
     harris: location.protocol + '//api.jianghu.me',      // harris
     ethan: location.protocol + '//api.jianghu.ethan',    // ethan
@@ -138,10 +139,6 @@ http.interceptors.response.use(res => {
     }
     let toastErr = window.__vm__.$toast.error
     let message = res.message || res.data.message || '出现服务问题或被禁止'
-    if (!res.data) {
-        toastErr(message)
-        return res
-    }
 
     if (res.status !== 200) {
         if (res.status === 503) { // 503 请求频繁 
@@ -149,6 +146,8 @@ http.interceptors.response.use(res => {
         } else if (res.status === 401) {
             // 401 跳转到login 登录
             router.push('/login')
+        }else if(res.status === 403) {
+            message = '403 服务器拒绝'
         }
         toastErr(message)
 
