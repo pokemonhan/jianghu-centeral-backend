@@ -75,7 +75,7 @@
                 </ul>
             </div>
             <div class="right">
-                <SortSetDetail />
+                <SortSetDetail :menu="showList" />
             </div>
         </div>
         <Dialog :show.sync="dia_show" :title="dia_title">
@@ -192,8 +192,8 @@ export default {
             let para = {
                 name: this.filter.name,
                 status: this.filter.status,
-                pageSize: this.pageSize,
-                page: this.pageNo
+                // pageSize: this.pageSize,
+                // page: this.pageNo
             }
             let params = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.game_sort_list
