@@ -158,7 +158,16 @@ export default {
         url: '/headquarters-api/game-type/opt-status-do',
         method: 'post'
     },
-
+        //  游戏种类配置 - 删除
+        game_type_del: {
+            url: '/headquarters-api/game-type/del-do',
+            method: 'post'
+        },
+    //  游戏分类配置 - 编辑
+    game_sort_set: {
+        url: '/headquarters-api/game-type/edit-do',
+        method: 'post'
+    },
     // 3.3 游戏管理 - 列表
     game_list: {
         url: '/headquarters-api/game/opt-index-do',
@@ -519,21 +528,13 @@ export default {
         url: '/headquarters-api/game-type/add-do',
         method: 'post'
     },
-    //  游戏分类配置 - 编辑
-    dev_game_type_set: {
-        url: '/headquarters-api/game-type/edit-do',
-        method: 'post'
-    },
+
     //  游戏分类配置 - 列表
     dev_game_type_list: {
         url: '/headquarters-api/game-type/index-do',
         method: 'get'
     },
-    //  游戏种类配置 - 删除
-    dev_game_type_del: {
-        url: '/headquarters-api/game-type/del-do',
-        method: 'post'
-    },
+
     //  游戏分类配置 -改变状态
     dev_game_sort_status_set: {
         url: '/headquarters-api/game-type/status-do',

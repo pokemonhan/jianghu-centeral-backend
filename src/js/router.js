@@ -110,8 +110,11 @@ r.keys().forEach(file_name => {
     let length = file_name.split('/').length
     let name = file_name.split('/')[length - 1].replace('.vue', '')
     function exclude(path) {
+        
         let excludeArr = ['/dev/totalmenudir/routeset'] // 不需要添加的路由path
         let length = path.split('/').length // 目前只到自动注册一,二级菜单的组件
+        console.log('length: ', length);
+        console.log('path: ', path);
         return excludeArr.indexOf(path) !== -1 && length < 4
     }
     if (!exclude(path)) {

@@ -147,7 +147,7 @@ http.interceptors.response.use(res => {
             // 401 跳转到login 登录
             router.push('/login')
         }else if(res.status === 403) {
-            message = '403 服务器拒绝'
+            // message = '403 服务器拒绝'
         }
         toastErr(message)
 

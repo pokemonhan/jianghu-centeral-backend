@@ -227,7 +227,10 @@ export default {
         // 编辑确认
         editCfm() {
             if (!this.checkForm()) return
-            let data = this.form
+            console.log('this.form: ', this.form);
+            let data = {
+                
+            }
 
             let { url, method } = this.$api.dev_game_type_set
             this.$http({ method, url, data }).then(res => {
