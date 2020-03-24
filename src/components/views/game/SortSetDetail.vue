@@ -2,12 +2,12 @@
     <div class="content">
         <el-tree
             :data="menuList"
-            node-key="id"
+            node-key="sign"
             default-expand-all
             @node-drag-start="handleDragStart"
             @node-drag-enter="handleDragEnter"
             @node-drag-leave="handleDragLeave"
-            @node-drag-over="handleDragOver"
+            @node-drag-over="handleDraghandleDragEndOver"
             @node-drag-end="handleDragEnd"
             @node-drop="handleDrop"
             draggable
@@ -37,7 +37,7 @@ export default {
             },
             start_node: {},
             end_node: {},
-            menuList:[],
+            menuList: []
             // data:
         }
     },
@@ -55,6 +55,7 @@ export default {
         handleDragOver(draggingNode, dropNode, ev) {
             // console.log('tree drag over: ', dropNode.label)
         },
+        handleDraghandleDragEndOver() {},
         handleDragEnd(draggingNode, dropNode, dropType, ev) {
             // console.log('tree drag end: ', dropNode && dropNode.label, dropType)
             this.sortConfirm(this.start_node, dropNode, dropType)
@@ -63,58 +64,81 @@ export default {
             // console.log('tree drop: ', dropNode.label, dropType)
         },
         allowDrop(draggingNode, dropNode, type) {
-            // console.log('dropNode: ', dropNode);
-            // console.log('draggingNode: ', draggingNode);
-            // 目前只可以拖到同一层
-            // if(draggingNode.level!==dropNode.level ||type==='inner'){
+            // 只允许同级拖拽
+            let dropging = draggingNode.data // 正在拖拽的节点
+            let drop = dropNode.data // 放置的节点
+            if (!dropging || !drop) return
+            // 没有父级id就是父级（目前只有两级）
+            let dropgingIsParent = !dropging.parent_id
+            let dropIsParent = !drop.parent_id
+            // 如果是inner 就加一级
+            // 如果是某个子菜单
+            let inner = type === 'inner' ? 1 : 0 // 如果是inner层级 +1
+            let dropgingLevel = dropgingIsParent ? 0 : 1
 
-            //     return false
-            // }
+            let droptLevel = !dropIsParent + inner
+            // 如果层级 不同不可放置
+            if (dropgingLevel !== droptLevel) {
+                return false
+            }
+            // 父id不同不可 放置
+            if (dropging.parent_id !== drop.parent_id) {
+                return false
+            }
             return true
         },
         allowDrag(draggingNode) {
-            return draggingNode.data.label.indexOf('三级 3-2-2') === -1
+            return true
         },
         // 提交数据
         /**
          * @param {object} start 开始拖拽的节点
-         * @param {object} end  拖拽结束
+         * @param {object} end  拖拽结束的节点（放置的节点）
          */
         sortConfirm(start_node, dropNode, type) {
             if (!start_node || !dropNode) return
+
             let start = start_node.data
             let end = dropNode.data
-            console.log('end: ', end)
-            console.log('type: ', type)
-            if (start.id === end.id) {
-                return
+            // 如果id相同，1.跨级相同，不发送，2.同级相同（位置没变） 不发送
+            if (start.id === end.id) return
+            // 跨级不发送
+            if(type==='inner') return
+            // let data = this.menuList
+            let model_type = end.parent_id ? 2 : 1
+            let sort = []
+            // 如果是父级级菜单
+            if (model_type === 1) {
+                sort = this.menuList.map((item, index) => {
+                    return {
+                        sort: item.sort,
+                        key: item.id
+                    }
+                })
+                // 如果是子集
+            } else {
+                this.menuList.forEach(item => {
+                    if (item.children) {
+                        item.children.forEach(item => {
+                            sort.push({
+                                sort: item.sort,
+                                key: item.id
+                            })
+                        })
+                    }
+                })
             }
-
             let data = {
-                id: start.id, // 菜单id
-                pid: end.pid, // 修改后的上级id,顶级为0
-                sort: end.sort, // 修改后的排序
-                level: end.level // 修改后的层级
+                sort: sort,
+                // 1 游戏父级分类  2 游戏子分类
+                model_type: model_type
             }
-            // 拖进一个菜单
-            if (type === 'inner') {
-                data.pid = end.id
-                data.sort = 1
-                data.level = end.level + 1
-            } else if (type === 'before') {
-            }
-            console.log('data: ', data)
-            // if (data & (data.level > 3)) {
-
-            //     this.$toast('最多三级菜单')
-            // }
-            let { url, method } = this.$api.merchant_menu_parent_sort
+            let { url, method } = this.$api.pub_sort_set
             this.$http({ method, url, data }).then(res => {
                 console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
 
-                    // this.getList()
                     // 刷新菜单
                     this.$emit('refreshMenu')
                 }

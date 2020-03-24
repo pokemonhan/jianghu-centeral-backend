@@ -115,6 +115,11 @@ export default {
         url: '/headquarters-api/platform/assigned-activity-cancel',
         method: 'post',
     },
+    /*=========================== 2.公共分类 ===========================--*/
+    pub_sort_set: {
+        url: '/headquarters-api/sortable/update-sortable',
+        method: 'post'
+    },
 
     /*=========================== 3.游戏管理 ===========================--*/
 

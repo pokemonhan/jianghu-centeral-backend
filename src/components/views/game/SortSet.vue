@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <!---------------------- 分类设置 -------------------->
-        <div class="filter p10">
+        <!-- <div class="filter p10">
             <ul class="left">
                 <li>
                     <span>分类名称</span>
@@ -15,7 +15,7 @@
                     <button class="btn-blue" @click="getList">查询</button>
                 </li>
             </ul>
-        </div>
+        </div> -->
         <!-- <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
@@ -54,6 +54,8 @@
                                 :class="['iconfont iconup',lv1.isMenuOpen?'iconopen':'']"
                             ></i>
                             <span @click="expand(lv1_idx,lv1)">{{lv1.name}}</span>
+                            <button class="btns-plain-blue" @click="edit(lv1)">编辑</button>
+                                    <button class="btns-plain-red" @click="del(lv1)">删除</button>
                         </div>
                         <!-- 二级 子内容 -->
                         <ul v-if="lv1.children" class="lev2" :ref="lv1_idx">
@@ -64,9 +66,8 @@
                                         :class="['iconfont iconup',lv2.isMenuOpen?'iconopen':'']"
                                     ></i>
                                     <span>{{lv2.name}}</span>
-                                    <button class="btns-plain-blue" @click="edit(lv2,1)">编辑</button>
-
-                                    <button class="btns-plain-red" @click="del(lv2,1)">删除</button>
+                                    <button class="btns-plain-blue" @click="edit(lv2)">编辑</button>
+                                    <button class="btns-plain-red" @click="del(lv2)">删除</button>
                                     <Switchbox class="switch" v-model="lv1.is_open" />
                                 </div>
                             </li>
@@ -75,7 +76,7 @@
                 </ul>
             </div>
             <div class="right">
-                <SortSetDetail :menu="showList" />
+                <SortSetDetail :menu="showList" @refreshMenu="refreshMenu" />
             </div>
         </div>
         <Dialog :show.sync="dia_show" :title="dia_title">
@@ -139,21 +140,21 @@ export default {
                 { label: '启用', value: 1 }
             ],
 
-            headers: [
-                '编号',
-                '分类名称',
-                '分类状态',
-                '最后更新人',
-                '最后更新时间',
-                '操作'
-            ],
-            list: [],
-            total: 0,
-            pageNo: 1,
-            pageSize: 25,
+            // headers: [
+            //     '编号',
+            //     '分类名称',
+            //     '分类状态',
+            //     '最后更新人',
+            //     '最后更新时间',
+            //     '操作'
+            // ],
+            // list: [],
+            // total: 0,
+            // pageNo: 1,
+            // pageSize: 25,
 
             // tree 样式
-            showList: window.all.menu_list,
+            showList: [],
             // 确认框
             mod_show: false,
             mod_status: '',
@@ -161,7 +162,7 @@ export default {
             mod_cont: '',
             curr_row: {},
             // dialog 对话框
-            dia_show: true,
+            dia_show: false,
             dia_title: '',
             dia_status: '',
             form: {
@@ -188,6 +189,9 @@ export default {
             this.pageNo = 1
             this.getList()
         },
+        refreshMenu() {
+            this.getList()
+        },
         getList() {
             let para = {
                 name: this.filter.name,
@@ -202,7 +206,11 @@ export default {
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data
-                    this.showList = res.data.data
+                    let arr = res.data.data||[]
+                    this.showList = arr.map(item => {
+                        item.isMenuOpen = true
+                        return item
+                    })
                 }
             })
         },
@@ -353,7 +361,9 @@ li > .title {
     margin-left: 2em;
 }
 .iconfont {
+    height: 1em;
     transition: all 0.2s;
+    transform-origin: center;
 }
 .lev1 ul {
     /* display: none; */
@@ -393,9 +403,10 @@ li > .title {
     margin-top: -2px;
     transform: scale(0.5);
 }
-/* .iconopen {
+.iconopen {
     transform: rotate(180deg);
-} */
+    transform-origin: 50% 50%;
+}
 .form > li {
     display: flex;
     align-items: center;
