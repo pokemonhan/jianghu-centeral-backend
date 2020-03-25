@@ -607,7 +607,7 @@ export default {
         setRouteMenu() {
             if (this.menu.length === 0) return
             if (this.curr_route.length === 0) return
-            if (this.route_all_opt.length === 0) return
+            // if (this.route_all_opt.length === 0) return
             let self = this
 
             function toTreeArray(menu, prefix = '') {

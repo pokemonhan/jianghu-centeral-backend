@@ -163,14 +163,20 @@ export default {
         url: '/headquarters-api/game-type/opt-status-do',
         method: 'post'
     },
-        //  游戏种类配置 - 删除
-        game_type_del: {
-            url: '/headquarters-api/game-type/del-do',
-            method: 'post'
-        },
-    //  游戏分类配置 - 编辑
+
+    //  游戏分类设置 - 删除
+    game_type_del: {
+        url: '/headquarters-api/game-type/del-do',
+        method: 'post'
+    },
+    //  游戏分类设置 - 编辑
     game_sort_set: {
         url: '/headquarters-api/game-type/edit-do',
+        method: 'post'
+    },
+    //  游戏分类设置 - 添加
+    game_type_add: {
+        url: '/headquarters-api/game-type/add-do',
         method: 'post'
     },
     // 3.3 游戏管理 - 列表
@@ -415,12 +421,12 @@ export default {
 
     // -------- 路由 -------
 
-    //  9.1.7 总控菜单管理-路由-列表
+    //  9.1.8 总控菜单管理-路由-列表
     route_all_list: {
         url: '/headquarters-api/headquarters-route/index',
         method: 'get'
     },
-    //  9.1.8 总控菜单管理-路由-添加
+    //  9.1.9 总控菜单管理-路由-添加
     route_add: {
         url: '/headquarters-api/headquarters-route/do-add',
         method: 'post'

@@ -28,7 +28,7 @@
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.vendor?row.vendor.name:'--'}}</td>
                     <td>{{row.name}}</td>
-                    <td>{{row.type&&row.type.name}}</td>
+                    <td>{{(row.type&&row.type.name)+' - '+(row.sub_type&&row.sub_type.name)}}</td>
                     <!-- <td
                         :class="[row.status===1?'green':'red']"
                     >{{row.status===1?'开启':row.status===0?'关闭':row.status}}</td>-->

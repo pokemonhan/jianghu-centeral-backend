@@ -305,7 +305,7 @@ export default {
 }
 .container {
     width: 100%;
-    /* min-height: calc(100vh - 120px); */
+    min-height: calc(100vh - 120px);
     /* height: 100vh; */
     /* min-height: 700px; */
     /* height: ; */

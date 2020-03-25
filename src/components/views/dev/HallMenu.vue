@@ -1,5 +1,5 @@
 <template>
-    <div class="container total-menu">
+    <div class="container hall-menu">
         <!-- 总控菜单 -->
         <div class="tol-left" @contextmenu.prevent>
             <div class="head">编辑菜单</div>
@@ -458,15 +458,15 @@ export default {
 </script>
 
 <style scoped>
-.total-menu {
+.hall-menu {
     display: flex;
     min-width: 1200px;
-    height: 100%;
-    padding: 0;
+    /* height: 100%; */
+    /* padding: 0; */
 }
-.total-menu .tol-left,
-.total-menu .tol-center,
-.total-menu .tol-right {
+.hall-menu .tol-left,
+.hall-menu .tol-center,
+.hall-menu .tol-right {
     width: 33.333%;
     height: 100%;
     padding-bottom: 20px;
@@ -476,16 +476,16 @@ export default {
     border-bottom: none;
     overflow: auto;
 }
-/* .total-menu .tol-left {
+/* .hall-menu .tol-left {
 
 }
-.total-menu .tol-center {
+.hall-menu .tol-center {
 } */
 .tol-right {
     white-space: nowrap;
     overflow: auto;
 }
-.total-menu .head {
+.hall-menu .head {
     height: 40px;
     text-align: center;
     line-height: 40px;

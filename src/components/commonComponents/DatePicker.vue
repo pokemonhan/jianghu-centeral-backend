@@ -29,7 +29,7 @@
         <transition name="date-picker">
             <div class="date-container">
                 <div v-show="showPanel" :class="['date-box', pickerClassName]" ref="date-box">
-                    <!-- 当前选中 -->
+                    <!-- 当前选中 顶部-->
                     <div class="date-info">
                         <span>
                             <i @click="changeYear('-')" class="iconfont iconzuofanyezuohua"></i>
@@ -256,6 +256,7 @@
                             <!-- 时间 -->
                         </div>
                     </div>
+                    <!-- 底部 1时间 2按钮 -->
                     <div class="select-time" v-if="type==='datetime' || type==='datetimerange'">
                         <div @click="chooseTime" class="pointer">{{step===4 ? '选择日期' : '选择时间'}}</div>
                         <div>
@@ -265,7 +266,16 @@
                     </div>
                     <div style="padding-left:150px;" v-else>
                         <button class="clear-btn" @click="clear" v-if="clearable">清空</button>
+
                     </div>
+                    <!-- <div>
+                        <button class="btns-blue ">今天</button>
+                        <button class="btns-blue">昨天</button>
+                        <button class="btns-blue">上周</button>
+                        <button class="btns-blue">本周</button>
+                        <button class="btns-blue">上月</button>
+                        <button class="btns-blue">本月</button>
+                    </div> -->
                 </div>
             </div>
         </transition>

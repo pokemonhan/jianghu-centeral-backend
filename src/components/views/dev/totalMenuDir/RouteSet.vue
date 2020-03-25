@@ -577,9 +577,8 @@ export default {
         setRouteMenu() {
             if (this.menu.length === 0) return
             if (this.curr_route.length === 0) return
-            if (this.route_all_opt.length === 0) return
+            // if (this.route_all_opt.length === 0) return
             let self = this
-
             function toTreeArray(menu) {
                 return menu.map((item, index) => {
                     // 根据菜单id 得知它自身api路由有哪些,
@@ -603,6 +602,7 @@ export default {
             let { url, method } = this.$api.route_all_list
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
+                    console.log('res: ', res);
                     if (!res.data) return
                     this.curr_route = res.data
                     // console.log('this.curr_route: ', this.curr_route);

@@ -15,7 +15,7 @@
                     <button class="btn-blue" @click="getList">查询</button>
                 </li>
             </ul>
-        </div> -->
+        </div>-->
         <!-- <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
@@ -46,7 +46,8 @@
         </div>-->
         <div class="cont">
             <div class="left tree">
-                <ul class="lev1">
+                <button class="btn-blue-large ml50" @click="add('lev1')">添加一级菜单</button>
+                <ul class="lev1 mt20">
                     <li v-for="(lv1, lv1_idx) in showList" :key="lv1_idx">
                         <div class="title t1">
                             <i
@@ -54,8 +55,15 @@
                                 :class="['iconfont iconup',lv1.isMenuOpen?'iconopen':'']"
                             ></i>
                             <span @click="expand(lv1_idx,lv1)">{{lv1.name}}</span>
+
+                            <button class="btns-plain-blue" @click="add(lv1,2)">添加</button>
                             <button class="btns-plain-blue" @click="edit(lv1)">编辑</button>
-                                    <button class="btns-plain-red" @click="del(lv1)">删除</button>
+                            <button class="btns-plain-red" @click="del(lv1)">删除</button>
+                            <Switchbox
+                                class="switch"
+                                v-model="lv1.status"
+                                @update="switchUpd(lv1)"
+                            />
                         </div>
                         <!-- 二级 子内容 -->
                         <ul v-if="lv1.children" class="lev2" :ref="lv1_idx">
@@ -68,7 +76,11 @@
                                     <span>{{lv2.name}}</span>
                                     <button class="btns-plain-blue" @click="edit(lv2)">编辑</button>
                                     <button class="btns-plain-red" @click="del(lv2)">删除</button>
-                                    <Switchbox class="switch" v-model="lv1.is_open" />
+                                    <Switchbox
+                                        class="switch"
+                                        v-model="lv2.status"
+                                        @update="switchUpd(lv2)"
+                                    />
                                 </div>
                             </li>
                         </ul>
@@ -168,16 +180,14 @@ export default {
             form: {
                 name: '',
                 sign: '',
-                status: ''
+                status: 1
             }
         }
     },
     methods: {
         expand(index, item) {
-            console.log('index: ', index)
             let ele = this.$refs[index]
-            // $(ele).slideToggle(200)
-            item.isMenuOpen = !item.isMenuOpen
+            item.isMenuOpen = !ele[0].offsetHeight
             let slideToggle = window.all.tool.slideToggle(ele)
             this.$forceUpdate()
         },
@@ -195,7 +205,7 @@ export default {
         getList() {
             let para = {
                 name: this.filter.name,
-                status: this.filter.status,
+                status: this.filter.status
                 // pageSize: this.pageSize,
                 // page: this.pageNo
             }
@@ -204,9 +214,9 @@ export default {
             this.$http({ method, url, params }).then(res => {
                 console.log('res: ', res)
                 if (res && res.code === '200') {
-                    this.total = res.data.total
-                    this.list = res.data.data
-                    let arr = res.data.data||[]
+                    // this.total = res.data.total
+                    // this.list = res.data.data
+                    let arr = res.data || []
                     this.showList = arr.map(item => {
                         item.isMenuOpen = true
                         return item
@@ -214,24 +224,42 @@ export default {
                 }
             })
         },
-        edit(row) {
-            console.log('row: ', row)
+        add(row) {
+            console.log('row: ', row);
+            this.form = {
+                name: '',
+                sign: '',
+                status: 1,
+                category_type: row !== 'lev1' ? 2 : 1
+            }
+            if (row.id) {
+                this.form.parent_id = row.id
+                
+            }
+            console.log('this.form: ', this.form);
+            this.dia_status = 'add'
+            this.dia_title = this.form.category_type === 1 ? '添加一级菜单' : '添加子级'
             this.dia_show = true
+        },
+        edit(row) {
             this.form = {
                 id: row.id,
                 name: row.name,
                 sign: row.sign,
                 // status: row.status
-                category_type: row.parent_id ? 1 : 2
+                category_type: row.parent_id ? 2 : 1
             }
             this.dia_status = 'edit'
+            this.dia_title = '编辑'
+            this.dia_show = true
         },
         del(row) {
             this.curr_row = row
             this.mod_status = 'del'
+            this.mod_title = '删除'
             this.mod_cont = '是否确定删除该游戏分类？'
             this.mod_show = true
-       },
+        },
         statusSwitch(row) {
             this.curr_row = row
             if (row.status === 1) {
@@ -265,11 +293,12 @@ export default {
                 this.getList()
             })
         },
-        switchCfm() {
-            let { id, status } = this.curr_row
+        switchUpd(row) {
+            let { id, status } = row
             let data = {
                 id: id,
-                status: status === 1 ? 0 : 1
+                status: status ? 1 : 0,
+                category_type: row.parent_id ? 2 : 1
             }
             let { url, method } = this.$api.game_sort_status_set
             this.$http({ method, url, data }).then(res => {
@@ -301,12 +330,8 @@ export default {
         // 添加确认
         addCfm() {
             if (!this.checkForm()) return
-            let data = {
-                name: this.form.name,
-                sign: this.form.sign,
-                status: this.form.status
-            }
-            let { url, method } = this.$api.dev_game_type_add
+            let data = this.form
+            let { url, method } = this.$api.game_type_add
 
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
@@ -350,18 +375,24 @@ export default {
     display: flex;
 }
 .cont .left,
-.cont .right{
-    padding: 20px;
+.cont .right {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.cont .right {
+    padding-top: 50px;
 }
 li > .title {
     display: flex;
-    height: 25px;
+    align-items: center;
+    height: 26px;
 }
 .t2 {
     margin-left: 2em;
 }
 .iconfont {
     height: 1em;
+    transform: rotate(180deg);
     transition: all 0.2s;
     transform-origin: center;
 }
@@ -404,8 +435,8 @@ li > .title {
     transform: scale(0.5);
 }
 .iconopen {
-    transform: rotate(180deg);
-    transform-origin: 50% 50%;
+    transform: rotate(0deg);
+    /* transform-origin: 50% 50%; */
 }
 .form > li {
     display: flex;

@@ -67,15 +67,16 @@ export default {
             // 然后页面跳转,实现刷新页面
 
             let path = this.$route.path
+            // console.log('当前路由: ', path);consoel
             // 设置当前 路由不保持 keepalive
             let curr_tab = this.tab_nav_list.find(item => item.path===this.$route.path)
             this.updateKeepAliveExclude([curr_tab.name])
             
-            this.$router.replace('/kong') // 跳转到空页面,
+            this.$router.replace('/page404') // 跳转到空页面,
             setTimeout(() => {
                 this.$router.replace({ path: path})
                 this.updateKeepAliveExclude([])
-            }, 10)
+            }, 50)
         },
         scrollLeft() {
             let ul = this.$refs.ul

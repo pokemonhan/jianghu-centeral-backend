@@ -464,15 +464,13 @@ export default {
 .total-menu {
     display: flex;
     min-width: 1200px;
-    height: 100%;
+    /* height: 100%; */
     padding: 0;
 }
 .total-menu .tol-left,
 .total-menu .tol-center,
 .total-menu .tol-right {
-    /* width: 33.33%; */
     padding-bottom: 20px;
-    /* min-width: 350px; */
     min-height: 700px;
     border: 1px solid #70a2fd;
 }

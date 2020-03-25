@@ -64,13 +64,14 @@ export default {
             // console.log('tree drop: ', dropNode.label, dropType)
         },
         allowDrop(draggingNode, dropNode, type) {
-            // 只允许同级拖拽
             let dropging = draggingNode.data // 正在拖拽的节点
             let drop = dropNode.data // 放置的节点
             if (!dropging || !drop) return
             // 没有父级id就是父级（目前只有两级）
             let dropgingIsParent = !dropging.parent_id
             let dropIsParent = !drop.parent_id
+
+            // 只允许同级拖拽
             // 如果是inner 就加一级
             // 如果是某个子菜单
             let inner = type === 'inner' ? 1 : 0 // 如果是inner层级 +1
@@ -82,9 +83,9 @@ export default {
                 return false
             }
             // 父id不同不可 放置
-            if (dropging.parent_id !== drop.parent_id) {
-                return false
-            }
+            // if (dropging.parent_id !== drop.parent_id) {
+            //     return false
+            // }
             return true
         },
         allowDrag(draggingNode) {
