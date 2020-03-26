@@ -4,7 +4,7 @@
         <div class="tol-left" @contextmenu.prevent>
             <div class="head">编辑菜单</div>
             <div class="head-sub">
-                <button class="btn-blue" @click="addLev1Menu">添加一级菜单</button>
+                <button class="btn-blue" @click="addLev1Menu">添加菜单</button>
             </div>
             <!-- 编辑菜单 -->
             <div class="edit-menu center-box ph20">
@@ -137,11 +137,11 @@
                                 v-model="form.is_parent"
                             />
                         </li>-->
-                        <li>
+                        <li v-show="true">
                             <span>父级ID：</span>
                             <Input class="w250" v-model="form.pid" />
                         </li>
-                        <li>
+                        <li v-show="true">
                             <span>层级：</span>
                             <Input class="w250" v-model="form.level" />
                         </li>
@@ -188,7 +188,7 @@
         ></Modal>
 
         <div v-show="menu_show" class="context-menu" ref="menu" v-clickoutside="menuClose">
-            <p @click="addSubordinate">添加下级</p>
+            <p v-if="curr_row.level===1" @click="addSubordinate">添加下级</p>
             <p @click="editMenu">编辑菜单</p>
             <p @click="delClick">删除菜单</p>
         </div>
@@ -251,7 +251,7 @@ export default {
         addLev1Menu() {
             this.initForm()
             this.dia_status = 'add'
-            this.dia_title = '添加一级菜单'
+            this.dia_title = '添加菜单'
             this.dia_show = true
         },
         expand(item) {
@@ -363,6 +363,7 @@ export default {
             })
         },
         editCfm() {
+            console.log('form内容',this.form)
             let data = {
                 id: this.form.id,
                 label: this.form.label,

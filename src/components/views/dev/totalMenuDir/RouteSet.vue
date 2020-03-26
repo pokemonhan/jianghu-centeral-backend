@@ -262,7 +262,7 @@ export default {
                 if (matchInput || search === '') {
                     matchInput = true
                 }
-                // 匹配结果为空格, 或者 等于当前,为true
+                // 状态为空, 或者 等于选中的状态,
                 if (
                     self.is_open_status === '' ||
                     self.is_open_status === item.is_open
@@ -275,6 +275,7 @@ export default {
             function setCss(arr = [], isRoute = true) {
                 let isMenuOpen = false
                 arr.forEach((item, index) => {
+                    console.log('item: ', item);
                     item.isSelect = false
                     item.isMenuOpen = false
 
@@ -284,13 +285,13 @@ export default {
                         item.isMenuOpen = true
                     }
                     if (item.children) {
-                        // 子集有父级就有
+                        // 子集有,父级就有
                         item.isSelect = item.isMenuOpen = setCss(
                             item.children,
                             true
                         )
                     } else if (item.routes) {
-                        // 子集有父级就有
+                        // 子集有,父级就有
                         item.isSelect = item.isMenuOpen = setCss(
                             item.routes,
                             true
@@ -413,8 +414,8 @@ export default {
             let routeObj = this.getRouterNameObj(this.form.route_name) || ''
             this.$set(this.form, 'controller', routeObj.controller)
         },
-        // 当路由input输入时 ,
 
+        // 当路由input输入时 ,
         routeInput: window.all.tool.debounce(function(val) {
             let route_arr = this.curr_route.map(item => item.route_name)
             this.route_show_opt = this.route_all_opt.filter(item => {

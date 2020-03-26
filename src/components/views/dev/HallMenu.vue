@@ -468,7 +468,7 @@ export default {
 .hall-menu .tol-center,
 .hall-menu .tol-right {
     width: 33.333%;
-    height: 100%;
+    /* height: 100%; */
     padding-bottom: 20px;
     /* min-width: 350px; */
     min-height: 700px;

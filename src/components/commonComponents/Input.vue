@@ -16,7 +16,7 @@
             :autocomplete="autocomplete"
         />
         <i v-if="icon" :class="['iconfont', icon]"></i>
-        
+        <span v-show="showerr" class="error-message">{{errmsg}}</span>
     </span>
 </template>
 
@@ -43,7 +43,16 @@ export default {
         maxlength: [Number,String],
         autocomplete:{
             type: String,
-        }
+        },
+        showerr: {
+            type: Boolean,
+            default: false
+        },
+        errmsg: {
+            tupe: String,
+            default: ''
+        },
+
     },
     model: {
         prop: "value",
@@ -155,5 +164,12 @@ input::placeholder{
 }
 .normal .iconfont {
     font-size: 18px;
+}
+.error-message {
+    position: absolute;
+    top: 25px;
+    left: 1em;
+    font-size: 12px;
+    color: red;
 }
 </style>>

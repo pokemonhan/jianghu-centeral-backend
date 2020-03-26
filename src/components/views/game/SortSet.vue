@@ -46,49 +46,57 @@
         </div>-->
         <div class="cont">
             <div class="left tree">
-                <button class="btn-blue-large ml50" @click="add('lev1')">添加一级菜单</button>
-                <ul class="lev1 mt20">
-                    <li v-for="(lv1, lv1_idx) in showList" :key="lv1_idx">
-                        <div class="title t1">
-                            <i
-                                v-if="lv1.children"
-                                :class="['iconfont iconup',lv1.isMenuOpen?'iconopen':'']"
-                            ></i>
-                            <span @click="expand(lv1_idx,lv1)">{{lv1.name}}</span>
+                <div class="left-inner">
+                    <div>
+                        <button class="btn-blue-large ml50" @click="add('lev1')">添加一级分类</button>
+                    <ul class="lev1 mt20">
+                        <li v-for="(lv1, lv1_idx) in showList" :key="lv1_idx">
+                            <div class="title t1">
+                                <i
+                                    v-if="lv1.children"
+                                    :class="['iconfont iconup',lv1.isMenuOpen?'iconopen':'']"
+                                ></i>
+                                <span @click="expand(lv1_idx,lv1)">{{lv1.name}}</span>
 
-                            <button class="btns-plain-blue" @click="add(lv1,2)">添加</button>
-                            <button class="btns-plain-blue" @click="edit(lv1)">编辑</button>
-                            <button class="btns-plain-red" @click="del(lv1)">删除</button>
-                            <Switchbox
-                                class="switch"
-                                v-model="lv1.status"
-                                @update="switchUpd(lv1)"
-                            />
-                        </div>
-                        <!-- 二级 子内容 -->
-                        <ul v-if="lv1.children" class="lev2" :ref="lv1_idx">
-                            <li v-for="(lv2, lv2_idx) in lv1.children" :key="lv2_idx">
-                                <div class="title t2">
-                                    <i
-                                        v-if="lv2.children"
-                                        :class="['iconfont iconup',lv2.isMenuOpen?'iconopen':'']"
-                                    ></i>
-                                    <span>{{lv2.name}}</span>
-                                    <button class="btns-plain-blue" @click="edit(lv2)">编辑</button>
-                                    <button class="btns-plain-red" @click="del(lv2)">删除</button>
-                                    <Switchbox
+                                <button class="btns-plain-blue" @click="add(lv1,2)">添加</button>
+                                <button class="btns-plain-blue" @click="edit(lv1)">编辑</button>
+                                <button class="btns-plain-red" @click="del(lv1)">删除</button>
+                                <Switchbox
+                                    class="switch"
+                                    v-model="lv1.status"
+                                    @update="switchUpd(lv1)"
+                                />
+                            </div>
+                            <!-- 二级 子内容 -->
+                            <ul v-if="lv1.children" class="lev2" :ref="lv1_idx">
+                                <li v-for="(lv2, lv2_idx) in lv1.children" :key="lv2_idx">
+                                    <div class="title t2">
+                                        <i
+                                            v-if="lv2.children"
+                                            :class="['iconfont iconup',lv2.isMenuOpen?'iconopen':'']"
+                                        ></i>
+                                        <span>{{lv2.name}}</span>
+                                        <button class="btns-plain-blue" @click="edit(lv2)">编辑</button>
+                                        <button class="btns-plain-red" @click="del(lv2)">删除</button>
+                                        <!-- <Switchbox
                                         class="switch"
                                         v-model="lv2.status"
                                         @update="switchUpd(lv2)"
-                                    />
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+                                        />-->
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    </div>
+                </div>
             </div>
             <div class="right">
-                <SortSetDetail :menu="showList" @refreshMenu="refreshMenu" />
+                <div class="right-inner">
+                    <div>
+                         <SortSetDetail :menu="showList" @refreshMenu="refreshMenu" />
+                    </div>
+                </div>
             </div>
         </div>
         <Dialog :show.sync="dia_show" :title="dia_title">
@@ -225,7 +233,7 @@ export default {
             })
         },
         add(row) {
-            console.log('row: ', row);
+            console.log('row: ', row)
             this.form = {
                 name: '',
                 sign: '',
@@ -234,11 +242,11 @@ export default {
             }
             if (row.id) {
                 this.form.parent_id = row.id
-                
             }
-            console.log('this.form: ', this.form);
+            console.log('this.form: ', this.form)
             this.dia_status = 'add'
-            this.dia_title = this.form.category_type === 1 ? '添加一级菜单' : '添加子级'
+            this.dia_title =
+                this.form.category_type === 1 ? '添加一级菜单' : '添加子级'
             this.dia_show = true
         },
         edit(row) {
@@ -371,16 +379,49 @@ export default {
 </script>
 
 <style scoped>
+.container {
+    background: #eee;
+
+}
 .cont {
     display: flex;
+    height: 100%;
+    /* font-size: 1.5rem; */
+    /* background: #eee; */
 }
 .cont .left,
 .cont .right {
-    padding-left: 20px;
-    padding-right: 20px;
+    display: flex;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+    /* padding: 20px; */
+    padding-top: 20px;
+    /* background: #000; */
+    /* border: 1px solid #4c8bfd; */
 }
 .cont .right {
-    padding-top: 50px;
+    /* padding-top: 50px; */
+}
+.cont .left .left-inner, 
+.cont .right .right-inner {
+    min-height: calc(100vh - 200px);
+    /* padding: 20px; */
+    display: flex;
+    justify-content: center;
+    min-width: 80%;
+    
+    border-radius: 5px;
+    border: 1px solid #4c8bfd;
+    background: #fff;
+    box-shadow: 0 0 35px 1px rgb(207, 207, 207);
+
+}
+.cont .left .left-inner {
+    padding-top: 20px;
+}
+.cont .right-inner {
+    padding-top: 70px;
 }
 li > .title {
     display: flex;

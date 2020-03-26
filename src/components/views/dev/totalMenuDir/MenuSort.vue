@@ -68,10 +68,10 @@ export default {
             // console.log('dropNode: ', dropNode);
             // console.log('draggingNode: ', draggingNode);
             // 目前只可以拖到同一层
-            if(draggingNode.level!==dropNode.level ||type==='inner'){
+            // if(draggingNode.level!==dropNode.level ||type==='inner'){
               
-                return false
-            }
+            //     return false
+            // }
             return true
         },
         allowDrag(draggingNode) {
