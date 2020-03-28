@@ -1,7 +1,7 @@
 <template>
     <div class="contain" ref="contain">
         <ul class="level-1">
-            <li v-for="(lev1, lev1_index) in menu_list" :key="lev1_index">
+            <li v-for="(lev1, lev1_index) in menu_list.filter(item=>item.display)" :key="lev1_index">
                 <span
                     :class="['title',$route.path == lev1.path&&(!lev1.children)?'active-menu':'',curr_ul(lev1)?'lev1-active':'']"
                     @click="expandMenu(lev1,lev1_index)"
@@ -13,7 +13,7 @@
 
                 <!-- 二级菜单 -->
                 <ul :ref="lev1.pre_idx" :class="['level2',curr_ul(lev1)?'active-ul':'']">
-                    <li v-for="(lev2, lev2_index) in lev1.children" :key="lev2_index">
+                    <li v-for="(lev2, lev2_index) in (lev1.children||[]).filter(item=>item.display)" :key="lev2_index">
                         <!-- 标题 -->
                         <span
                             :class="['title',$route.path == lev2.path?'active-menu':'']"
@@ -26,7 +26,7 @@
 
                         <!-- ---------    三级菜单 ------------------------->
                         <ul :ref="lev2.pre_idx" class="level3">
-                            <li v-for="(lev3, lev3_index) in lev2.children" :key="lev3_index">
+                            <li v-for="(lev3, lev3_index) in (lev2.children||[]).filter(item=>item.display)" :key="lev3_index">
                                 <span
                                     :class="['title',$route.path == lev3.path?'active-menu':'']"
                                     @click="expandMenu(lev3, lev3_index)"
@@ -118,7 +118,9 @@ export default {
 
         objToArr(obj, pre_idx = '') {
             // let list = []
-            if (!obj) return
+            if (!obj) {
+                return [ ]
+            }
             return Object.keys(obj).map((key, index) => {
                 let item = obj[key]
 

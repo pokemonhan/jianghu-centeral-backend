@@ -288,9 +288,11 @@ export default {
             }
         },
         delCfm() {
+            console.log('this.curr_row: ', this.curr_row);
             let data = {
                 id: this.curr_row.id,
-                category_type: this.curr_row.parent_id ? 1 : 2
+                category_type: this.curr_row.parent_id ? 2 : 1
+                
             }
             let { url, method } = this.$api.game_type_del
             this.$http({ method, url, data }).then(res => {
@@ -400,9 +402,7 @@ export default {
     /* background: #000; */
     /* border: 1px solid #4c8bfd; */
 }
-.cont .right {
-    /* padding-top: 50px; */
-}
+
 .cont .left .left-inner, 
 .cont .right .right-inner {
     min-height: calc(100vh - 200px);

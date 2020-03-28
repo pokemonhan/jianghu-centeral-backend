@@ -85,18 +85,18 @@ export default {
 
                 this.sectionsDir = y < 150 ? 'top-upfold' : 'bottom-upfold'
 
-                // $(ele).slideDown(200)
-                Slide.slideDown(ele)
+                $(ele).slideDown(200)
+                // Slide.slideDown(ele)
             } else {
-                // $(ele).slideUp(200)
-                Slide.slideUp(ele)
+                $(ele).slideUp(200)
+                // Slide.slideUp(ele)
             }
         },
         select(item) {
             this.isShow = false
             let ele = this.$refs.sections
-            // $(ele).slideUp(200)
-            Slide.slideUp(ele)
+            $(ele).slideUp(200)
+            // Slide.slideUp(ele)
             if (item.value === this.selectedValue) return
             this.selectedValue = item.value
             this.selectedLabel = item.label
@@ -254,6 +254,10 @@ export default {
     padding: 0 10px;
     text-align: left;
     border-radius: 4px;
+    /* overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; */
+    overflow-y: auto;
 }
 .sections .active {
     background-color: rgb(243, 243, 243);
@@ -262,9 +266,8 @@ export default {
 .sections li:hover {
     background-color: rgb(243, 243, 243);
 }
-.option {
-    overflow: hidden;
-}
+/* .option {
+} */
 </style>
 
 

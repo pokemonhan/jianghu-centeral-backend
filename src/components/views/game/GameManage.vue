@@ -187,7 +187,7 @@ export default {
             return arr
         },
         vendorUpd(val) {
-            this.filterNameOpt()
+            // this.filterNameOpt() // TODO:
         },
         filterNameOpt() {
             // 根据《游戏厂商》和《游戏分类》筛选合格的游戏名称
@@ -274,6 +274,9 @@ export default {
             })
         },
         detail(row) {
+            // TODO
+            this.$toast('还未对接后端接口,或者后端没有接口')
+            return
             this.curr_row = row
             this.dia_show = 'detail'
             this.dia_title = '编辑详情'

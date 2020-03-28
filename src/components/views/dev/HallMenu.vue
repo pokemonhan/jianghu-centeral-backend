@@ -4,7 +4,7 @@
         <div class="tol-left" @contextmenu.prevent>
             <div class="head">编辑菜单</div>
             <div class="head-sub">
-                <button class="btn-blue" @click="addLev1Menu">添加一级菜单</button>
+                <button class="btn-blue" @click="addLev1Menu">添加菜单</button>
             </div>
             <!-- 编辑菜单 -->
             <div class="edit-menu center-box ph20">
@@ -123,28 +123,37 @@
                             <span>路由：</span>
                             <Input class="w250" v-model="form.route" />
                         </li>
-                        <!-- <li>
-                            <span>是否是父级菜单：</span>
+                       <li v-if="dia_status==='add'">
+                            <span>是否是一级菜单：</span>
                             <Radio
                                 class="radio-left"
                                 label="是"
-                                :value="form.is_parent"
+                                :value="form.is_lev1"
                                 val="1"
-                                v-model="form.is_parent"
+                                v-model="form.is_lev1"
+                                @update="islev1Upd"
                             />
                             <Radio
                                 class="radio-right ml20"
                                 label="否"
-                                :value="form.is_parent"
+                                :value="form.is_lev1"
                                 val="0"
-                                v-model="form.is_parent"
+                                v-model="form.is_lev1"
+                                @update="islev1Upd"
                             />
-                        </li>-->
-                        <li>
+                        </li>
+                        <li v-if="form.is_lev1==='0'">
+                            <span>一级菜单：</span>
+                            <Select class="w250" v-model="form.pid" :options="parent_menu_opt" @update="parentMenuUpd"></Select>
+                        </li>
+                        <!-- 备用 -->
+                        <li v-show="false">
                             <span>父级ID：</span>
                             <Input class="w250" v-model="form.pid" />
                         </li>
-                        <li>
+    
+                        <!-- 备用 -->
+                        <li v-show="false">
                             <span>层级：</span>
                             <Input class="w250" v-model="form.level" />
                         </li>
@@ -191,7 +200,7 @@
         ></Modal>
 
         <div v-show="menu_show" class="context-menu" ref="menu" v-clickoutside="menuClose">
-            <p @click="addSubordinate">添加下级</p>
+            <p v-if="curr_row.level===1" @click="addSubordinate">添加下级</p>
             <p @click="editMenu">编辑菜单</p>
             <p @click="delClick">删除菜单</p>
         </div>
@@ -227,29 +236,48 @@ export default {
                 level: '',
                 display: 1
             },
+            parent_menu_opt:[],
             menu_show: false,
             // modal
             mod_show: false
         }
     },
     methods: {
+        // 更改父级菜单
+        parentMenuUpd() {
+
+        },
+        islev1Upd(val) {
+            let is_lev1 = val
+            console.log('val: ', val);
+            // 一级菜单
+            if(is_lev1==='1') {
+                this.form.pid = '0'
+                this.form.level= '1'
+            // 子菜单
+            }else {
+                this.form.level= '2'
+            }
+        },
         initForm() {
             this.form = {
                 icon: '',
                 label: '',
                 en_name: '',
                 route: '',
-
+                is_lev1: '1',
                 pid: 0,
                 level: 1,
                 display: 1
             }
         },
+
         addLev1Menu() {
             this.initForm()
             this.dia_status = 'add'
-            this.dia_title = '添加一级菜单'
+            this.dia_title = '添加菜单'
             this.dia_show = true
+            
         },
         expand(item) {
             let ele = (this.$refs[item.id] && this.$refs[item.id][0]) || ''
@@ -281,6 +309,7 @@ export default {
             this.dia_show = true
             this.menu_show = false
             this.form = {
+                is_lev1: '0',
                 pid: this.curr_row.id,
                 level: this.curr_row.level + 1,
                 display: 1
@@ -437,12 +466,19 @@ export default {
             let { url, method } = this.$api.merchant_menu_all_list
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
-                    console.log('res全部列表: ', res)
+                    // console.log('res全部列表: ', res)
                     Object.keys(res.data).forEach(item => {
                         // console.log(item);
                     })
                     let menu = res.data
-                    this.menu = this.toTreeArray(menu)
+                    this.menu = this.toTreeArray(menu) || []
+                    this.parent_menu_opt = this.menu.map(item => {
+                        console.log('item: ', item);
+                        return {
+                            value: item.id,
+                            label: item.label
+                        }
+                    })
                     // console.log('外层menu: ', this.menu)
                 }
             })
