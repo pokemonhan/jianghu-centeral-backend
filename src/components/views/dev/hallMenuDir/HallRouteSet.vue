@@ -165,8 +165,9 @@
                 <div>
                     <ul class="form">
                         <!-- 添加 编辑路由 -->
-                        <li v-if="route_show_opt.length">
-                            <span>选择路由1:</span>
+                        <!-- <li v-if="route_show_opt.length"> -->
+                        <li>
+                            <span>选择路由:</span>
                             <!-- <Select
                                 style="width:550px;margin-top:10px;"
                                 v-model="form.route"
@@ -176,6 +177,7 @@
                             ></Select>-->
                             <Select
                                 style="width:550px;margin-top:10px;"
+                                placeholder="sorry,没有可使用路由..."
                                 v-model="form.route_name"
                                 :options="route_show_opt"
                                 input
@@ -183,9 +185,9 @@
                                 @update="routeSelect"
                             ></Select>
                         </li>
-                        <li v-else class="no-router">
+                        <!-- <li v-else class="no-router">
                             <span>sorry,没有可以使用的路由....</span>
-                        </li>
+                        </li>-->
                         <!-- 编辑路由 -->
                         <!-- <li>
                             <span>选择路由(编辑):</span>

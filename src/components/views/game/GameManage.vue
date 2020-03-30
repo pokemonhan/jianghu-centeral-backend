@@ -276,7 +276,7 @@ export default {
         detail(row) {
             // TODO
             this.$toast('还未对接后端接口,或者后端没有接口')
-            return
+            // return
             this.curr_row = row
             this.dia_show = 'detail'
             this.dia_title = '编辑详情'

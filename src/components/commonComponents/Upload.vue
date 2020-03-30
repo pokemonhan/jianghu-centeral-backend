@@ -4,7 +4,7 @@
             <input
                 class="v-upload-input"
                 type="file"
-                accept="image/png, image/jpg, image/gif"
+                accept="image/png,image/jpg,image/jpeg,image/gif"
                 ref="upload-input"
                 @change="change"
             />

@@ -158,7 +158,7 @@ export default {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    z-index: 2;
+    z-index: 1;
 }
 /* 竖线 */
 .opera-list > li .vertical-bar {

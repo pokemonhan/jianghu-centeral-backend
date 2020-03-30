@@ -14,6 +14,7 @@
                 :title="showInputLabel"
                 @input="handleInput"
                 @change="inputChange"
+                :placeholder="placeholder"
             />
             <span v-show="!input">{{selectedLabel}}</span>
             <i v-if="clearable && isClear" @click.stop="clear" class="iconfont icon-icon-test"></i>
@@ -50,7 +51,8 @@ export default {
             default: () => []
         },
         value: [Number, String], // 默认值
-        clearable: Boolean // 是否可清空
+        clearable: Boolean, // 是否可清空
+        placeholder: String, 
     },
     model: {
         prop: 'value',
@@ -144,6 +146,7 @@ export default {
         }
     },
     mounted() {
+        console.log('palceholder',this.placeholder)
         this.selectedValue = this.value
         this.options.forEach(item => {
             if (item.value === this.value) {

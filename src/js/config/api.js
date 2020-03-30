@@ -10,6 +10,12 @@ export default {
      * 其他 send
      * 状态更改 status_set
     */
+    /*=========================== 公共分类 ===========================--*/
+    pic_update: {
+        url: '/headquarters-api/uploads/images',
+        method: 'post',
+    },
+    /*=========================== 用户 ===========================--*/
 
     // 登录
     login: { url: '/headquarters-api/login', method: 'post' },

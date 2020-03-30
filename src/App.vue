@@ -757,4 +757,21 @@ button:focus {
     display: table-cell;
     vertical-align: middle;
 }
+/* 重写element ui loading 样式 */
+.el-loading-mask {
+    position: absolute;
+    z-index: 2000;
+    background-color: rgba(255,255,255,.9);
+    margin: 0;
+    top: 50%;
+    /* right: 20%;
+    bottom: 20%; */
+    left: 50%;
+    height: 300px;
+    width: 300px;
+    /* margin-left: -150px; */
+    /* margin-top: -150px; */
+    -webkit-transition: opacity .3s;
+    transition: opacity .3s;
+}
 </style>

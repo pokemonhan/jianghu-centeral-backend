@@ -10,6 +10,7 @@ const state = {
     tab_nav_list: [],         // 顶部导航菜单 顶部导航菜单 顶部导航菜单
     // keepAliveList
     keepAliveExclude: [],
+    picPrefix: window.location.protocol + '//pic.397017.com/', // 静态图片前缀
 };
 const getters = {
     keepAliveInclude(state) {

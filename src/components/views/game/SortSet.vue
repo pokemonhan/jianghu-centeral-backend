@@ -382,7 +382,7 @@ export default {
 
 <style scoped>
 .container {
-    background: #eee;
+    background: rgb(248, 248, 248);
 
 }
 .cont {
@@ -414,8 +414,14 @@ export default {
     border-radius: 5px;
     border: 1px solid #4c8bfd;
     background: #fff;
-    box-shadow: 0 0 35px 1px rgb(207, 207, 207);
-
+    
+    transition: box-shadow .8s;
+}
+.cont .left .left-inner:hover {
+    box-shadow: 0 0 7px 1px rgb(207, 207, 207);
+} 
+.cont .right .right-inner:hover {
+    box-shadow: 0 0 7px 1px rgb(207, 207, 207);
 }
 .cont .left .left-inner {
     padding-top: 20px;

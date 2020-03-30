@@ -22,11 +22,11 @@
                         <Input class="w500" v-model="title" />
                     </li>
                     <li>
-                        <Upload style="width:90px;" title="选择图片?" @change="upPicChange" />
-                        <span v-show="pic_data">
+                        <Upload style="width:90px;" title="选择图片" @change="upPicChange" />
+                        <!-- <span v-show="pic_data">
                             <img class="img-show" :src="pic_data" alt="没有图片" />
                             <button class="btns-red" @click="clearPic">清除</button>
-                        </span>
+                        </span> -->
                     </li>
                     <li>
                         <span>内容:</span>
@@ -110,6 +110,7 @@
 <script>
 import Tree from '../../commonComponents/Tree.vue'
 import E from 'wangeditor'
+import {mapState} from 'vuex'
 export default {
     name: 'SendEmail',
     components: {
@@ -147,10 +148,11 @@ export default {
             hour_opt: [],
             minute_opt: [],
             editor: {},
-            editorContent: ''
+            editorContent: '',
         }
     },
     computed: {
+        ...mapState(['picPrefix']),
         date_opt() {
             let year = this.send_time[0]
             let month = parseInt(this.send_time[1])
@@ -261,17 +263,17 @@ export default {
         },
         upPicChange(e) {
             let pic = e.target.files[0]
-            let basket = 'email/sendemail/uploads'
+            let path = 'email/sendemail/uploads'
             let formData = new FormData()
             formData.append('file', pic, pic.name)
-            formData.append('basket', basket)
-            let { url, method } = this.$api.update_picture_database
+            formData.append('path', path)
+            let { url, method } = this.$api.pic_update
             let data = formData
             let headers = { 'Content-Type': 'multipart/form-data' }
             this.$http({ method, url, data, headers }).then(res => {
                 if (res && res.code == '200') {
                     this.pic_data = res.data.path
-                    let imgHtml = `<img src="${this.protocol}//pic.jianghu.local/${this.pic_data}" alt="图片加载失败">`
+                    let imgHtml = `<img src="${this.picPrefix}${this.pic_data}" alt="图片加载失败">`
                     this.editor.txt.append(imgHtml)
                 }
             })

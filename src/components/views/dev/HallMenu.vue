@@ -503,7 +503,7 @@ export default {
 .hall-menu .tol-left,
 .hall-menu .tol-center,
 .hall-menu .tol-right {
-    width: 33.333%;
+    /* width: 33.333%; */
     /* height: 100%; */
     padding-bottom: 20px;
     /* min-width: 350px; */
@@ -512,12 +512,14 @@ export default {
     border-bottom: none;
     overflow: auto;
 }
-/* .hall-menu .tol-left {
-
+.hall-menu .tol-left {
+    width: 30%;
 }
 .hall-menu .tol-center {
-} */
+    width: 30%;
+}
 .tol-right {
+    width: 40%;
     white-space: nowrap;
     overflow: auto;
 }

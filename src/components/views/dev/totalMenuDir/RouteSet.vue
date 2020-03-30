@@ -165,6 +165,7 @@
                             <span>选择路由:</span>
                             <Select
                                 style="width:550px;margin-top:10px;"
+                                placeholder="sorry,没有可使用路由..."
                                 v-model="form.route_name"
                                 :options="route_show_opt"
                                 input
@@ -172,9 +173,9 @@
                                 @update="routeSelect"
                             ></Select>
                         </li>
-                        <li v-if="!route_show_opt.length" class="no-router">
+                        <!-- <li v-if="!route_show_opt.length" class="no-router">
                             <span>sorry,没有可以使用的路由....</span>
-                        </li>
+                        </li> -->
                         <li class="mt20">
                             <span class="mb10">标题</span>
                             <Input style="width:550px" v-model="form.title" />
@@ -275,7 +276,7 @@ export default {
             function setCss(arr = [], isRoute = true) {
                 let isMenuOpen = false
                 arr.forEach((item, index) => {
-                    console.log('item: ', item);
+                    console.log('item: ', item)
                     item.isSelect = false
                     item.isMenuOpen = false
 
@@ -603,7 +604,7 @@ export default {
             let { url, method } = this.$api.route_all_list
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
-                    console.log('res: ', res);
+                    console.log('res: ', res)
                     if (!res.data) return
                     this.curr_route = res.data
                     // console.log('this.curr_route: ', this.curr_route);
