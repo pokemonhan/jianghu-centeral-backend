@@ -6,7 +6,7 @@ const menuList = [
         children: [
             {
                 label: '首页',
-                paht: '/home',
+                path: '/home',
                 name: 'Home'
             }
         ]

@@ -150,7 +150,8 @@ const Tool = {
         }
         let offsetHeight = ele.clientHeight
         // this.offsetHeight || this.initMaxHeight()
-        // 如果有就slideUp
+
+        // 如果有就slideUp 上滑
         if (offsetHeight) {
             ele.style.maxHeight = ele.offsetHeight + 'px'
             setTimeout(() => {
@@ -158,9 +159,9 @@ const Tool = {
             }, 20)
             setTimeout(() => {
                 ele.style.display = 'none'
-                ele.style.maxHeight = 'none'
+                // ele.style.maxHeight = 'none'
             }, time+100)
-            // 没有就 slideDown
+            // 没有就 slideDown 下拉
         } else {
             ele.style.maxHeight = 'none'
             ele.style.display = 'block'

@@ -89,7 +89,7 @@ export default {
     align-items: center;
 
     position: fixed;
-    z-index: 10001;
+    z-index: 10;
     top: 0;
     bottom: 0;
     left: 0;

@@ -759,8 +759,7 @@ button:focus {
 }
 /* 重写element ui loading 样式 */
 .el-loading-mask {
-    position: absolute;
-    z-index: 2000;
+    position: fixed;
     background-color: rgba(255,255,255,.9);
     margin: 0;
     top: 50%;
@@ -769,9 +768,17 @@ button:focus {
     left: 50%;
     height: 300px;
     width: 300px;
-    /* margin-left: -150px; */
-    /* margin-top: -150px; */
+    margin-left: -150px;
+    margin-top: -150px;
     -webkit-transition: opacity .3s;
     transition: opacity .3s;
+    z-index: 10003;
+
+}
+/* 文字超出省略 */
+.text-ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 </style>

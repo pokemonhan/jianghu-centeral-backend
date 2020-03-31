@@ -246,10 +246,12 @@ export default {
             let self = this
 
             function isMatch(item) {
+                console.log('item: ', item);
                 /**
                  * 1. 路由中文名称 : title
                  * 2. 路由名称 : route_name
-                 * 3. url : url
+                 * 3. 路由url : url
+                 * 
                  * 4.菜单文字标题 : label
                  */
                 // 是否匹配input条件其中一个
@@ -276,7 +278,7 @@ export default {
             function setCss(arr = [], isRoute = true) {
                 let isMenuOpen = false
                 arr.forEach((item, index) => {
-                    console.log('item: ', item)
+                    // console.log('item: ', item)
                     item.isSelect = false
                     item.isMenuOpen = false
 
@@ -351,6 +353,7 @@ export default {
             this.dia_show = true
         },
         edit(row) {
+            console.log('row: ', row);
             let route_arr = this.curr_route.map(item => item.route_name) // 已使用路由数组
             // // 已使用路由不可再被使用
             this.route_show_opt = this.route_all_opt.filter(item => {

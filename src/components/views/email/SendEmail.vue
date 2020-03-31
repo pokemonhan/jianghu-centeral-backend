@@ -245,7 +245,7 @@ export default {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
                     this.dia_show = false
-                    this.initForm()
+                    // this.initForm()
 
                 }
             })
@@ -263,7 +263,7 @@ export default {
         },
         upPicChange(e) {
             let pic = e.target.files[0]
-            let path = 'email/sendemail/uploads'
+            let path = 'central/email/sendemail'
             let formData = new FormData()
             formData.append('file', pic, pic.name)
             formData.append('path', path)
