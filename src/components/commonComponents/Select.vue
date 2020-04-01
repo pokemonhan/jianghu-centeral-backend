@@ -39,7 +39,7 @@
 
         可绑定 v-model
      */
-import Slide from '../../js/config/slide'
+// import Slide from '../../js/config/slide'
 export default {
     name: 'Select',
     props: {

@@ -104,23 +104,45 @@
             <div class="dia-inner">
                 <div class="form">
                     <ul>
-                        <li>
+                        <li class="form-icon">
                             <span>图标：</span>
-                            <Input class="w250" v-model="form.icon" />
-                        </li>
-                        <li>
-                            <span>中文名称：</span>
-                            <Input class="w250" v-model="form.label" />
-                        </li>
-                        <li>
-                            <span>英文名称：</span>
-                            <Input class="w250" v-model="form.en_name" />
+                            <Input
+                                class="w400"
+                                v-model="form.icon"
+                                @focus="icon_show=true"
+                                @blur="closeIconmenu"
+                            />
+                            <div v-if="icon_show" class="form-select-icon">
+                                <i
+                                    v-for="(item, index) in icon_arr"
+                                    :key="index"
+                                    :class="['form-icon-item iconfont',item]"
+                                    @click.stop="iconClick(item)"
+                                ></i>
+                            </div>
+                            <i :class="['form-icon-show iconfont',form.icon]"></i>
                         </li>
                         <li>
                             <span>路由：</span>
-                            <Input class="w250" v-model="form.route" />
+                            <!-- <Input class="w400" v-model="form.route" /> -->
+                            <Select
+                                style="width:400px"
+                                input
+                                v-model="form.route"
+                                :options="route_opt"
+                                @input="routeInput"
+                                @update="routeUpd"
+                            ></Select>
                         </li>
-                        <li  v-if="dia_status==='add'">
+                        <li>
+                            <span>英文名称：</span>
+                            <Input class="w400" v-model="form.en_name" />
+                        </li>
+                        <li>
+                            <span>中文名称：</span>
+                            <Input class="w400" v-model="form.label" />
+                        </li>
+                        <li v-if="dia_status==='add'">
                             <span>是否是一级菜单：</span>
                             <Radio
                                 class="radio-left"
@@ -140,16 +162,21 @@
                             />
                         </li>
                         <li v-if="form.is_lev1=='0'">
-                            <span>一级菜单：</span>
-                            <Select class="w250" v-model="form.pid" :options="parent_menu_opt" @update="parentMenuUpd"></Select>
+                            <span>选择所属主菜单：</span>
+                            <Select
+                                class="w400"
+                                v-model="form.pid"
+                                :options="parent_menu_opt"
+                                @update="parentMenuUpd"
+                            ></Select>
                         </li>
                         <li v-show="false">
                             <span>父级ID：</span>
-                            <Input class="w250" v-model="form.pid" />
+                            <Input class="w400" v-model="form.pid" />
                         </li>
                         <li v-show="false">
                             <span>层级：</span>
-                            <Input class="w250" v-model="form.level" />
+                            <Input class="w400" v-model="form.level" />
                         </li>
                         <li>
                             <span>是否显示：</span>
@@ -226,6 +253,8 @@ export default {
             dia_show: false,
             dia_status: '',
             dia_title: '',
+            route_all: [], // 所有路由
+            route_opt: [],
             form: {
                 icon: '',
                 label: '',
@@ -236,6 +265,37 @@ export default {
                 level: '',
                 display: 1
             },
+            icon_show: false,
+            icon_arr: [
+                'iconset',
+                'iconhuodong',
+                'iconReportform',
+                'iconicon4',
+                'iconassistant_lefticon_Statisticalreportforms',
+                'iconkaifa',
+                'icon185078emailmailstreamline',
+                'iconstart',
+                'iconwrite',
+                'icondunpai',
+                'iconsuo',
+                'iconzhanghao',
+                'iconrili',
+                'iconspeaker',
+                'iconwenhao',
+                'iconcalculator',
+                'iconconnections',
+                'iconhome',
+                'iconcaigoutonggerenbangaobaozhenzhucedenglu17',
+                'iconmoneybag',
+                'iconaccount',
+                'iconpeople4geren',
+                'iconnet',
+                'iconshezhi2',
+                'iconyunyingzhongxin',
+                'iconyuanquan',
+                'icontianjia',
+                'iconfeeds-fill'
+            ],
             parent_menu_opt: [],
             menu_show: false,
             // modal
@@ -244,20 +304,45 @@ export default {
     },
     methods: {
         // 更改父级菜单
-        parentMenuUpd() {
-
-        },
+        parentMenuUpd() {},
         islev1Upd(val) {
             let is_lev1 = val
             // console.log('val: ', val);
             // 一级菜单
-            if(is_lev1==='1') {
+            if (is_lev1 === '1') {
                 this.form.pid = '0'
-                this.form.level= '1'
-            // 子菜单
-            }else {
-                this.form.level= '2'
+                this.form.level = '1'
+                // 子菜单
+            } else {
+                this.form.level = '2'
             }
+        },
+        closeIconmenu() {
+            setTimeout(() => {
+                this.icon_show = false
+            }, 200)
+        },
+        iconClick(item) {
+            // console.log('item: ', item)
+            this.icon_show = false
+            this.form.icon = item
+            this.$set(this.form, 'icon', item)
+        },
+        // 前端路由更新
+        routeInput(val) {
+            // console.log('val: ', val);
+            this.route_opt = this.route_all.filter(item => {
+                let label = item.label || ''
+                return !val || label.indexOf(val) !== -1
+            })
+        },
+        // 路由点击更新
+        routeUpd(val) {
+            if(!val) return
+            let item = this.route_all.find(item => val === item.value ) ||{}
+            // console.log('item: ', item);
+            this.$set(this.form, 'en_name', item.en_name)
+            this.$set(this.form, 'label', item.cname)
         },
         initForm() {
             this.form = {
@@ -286,7 +371,7 @@ export default {
         },
 
         contextmenu(e, row) {
-            console.log('row: ', row)
+            // console.log('row: ', row)
 
             this.curr_row = row
             this.active_title_id = row.id
@@ -316,7 +401,7 @@ export default {
         },
 
         editMenu() {
-            console.log('当前值', this.curr_row)
+            // console.log('当前值', this.curr_row)
             this.dia_status = 'edit'
             let label = this.curr_row.label
             this.dia_title = '编辑菜单 - ' + label
@@ -378,7 +463,7 @@ export default {
             let { url, method } = this.$api.menu_add
 
             this.$http({ method, url, data }).then(res => {
-                console.log('res: ', res)
+                // console.log('res: ', res)
                 if (res && res.code === '200') {
                     this.dia_show = false
 
@@ -388,7 +473,7 @@ export default {
             })
         },
         editCfm() {
-            console.log('form内容',this.form)
+            // console.log('form内容', this.form)
             let data = {
                 id: this.form.id,
                 label: this.form.label,
@@ -423,8 +508,8 @@ export default {
         // },
         // 切换菜单显示状态
         switchDisplay(val, row) {
-            console.log('val: ', val)
-            console.log('row: ', row)
+            // console.log('val: ', val)
+            // console.log('row: ', row)
             let data = {
                 id: row.id,
                 display: val ? 1 : 0
@@ -461,19 +546,35 @@ export default {
                 return item
             })
         },
-
+        setRouteOpt() {
+            let arr = window.all.menu_list
+            this.route_all = []
+            arr.forEach(item => {
+                if (item.children) {
+                    item.children.forEach(item => {
+                        this.route_all.push({
+                            label: `label :(${item.label}) | ename: (${item.name}) | path: (${item.path})`,
+                            value: item.path,   // 路径
+                            en_name: item.name, // 英文名
+                            cname: item.label   // 中文名
+                        })
+                    })
+                }
+            })
+            this.route_opt = this.route_all
+        },
         getMenuList() {
             let { url, method } = this.$api.menu_all_list
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
-                    console.log('res全部列表: ', res)
+                    // console.log('res全部列表: ', res)
                     Object.keys(res.data).forEach(item => {
                         // console.log(item);
                     })
                     let menu = res.data
                     this.menu = this.toTreeArray(menu) || []
                     this.parent_menu_opt = this.menu.map(item => {
-                        console.log('item: ', item);
+                        // console.log('item: ', item)
                         return {
                             value: item.id,
                             label: item.label
@@ -489,6 +590,7 @@ export default {
 
     mounted() {
         this.getMenuList()
+        this.setRouteOpt()
     }
 }
 </script>
@@ -633,13 +735,46 @@ export default {
     width: 8em;
     text-align: right;
 }
+.form-icon {
+    position: relative;
+}
+.form-select-icon {
+    border: 1px solid #eee;
+    position: absolute;
+    top: 35px;
+    left: 8em;
+    display: flex;
+    flex-wrap: wrap;
+    width: 400px;
+    padding: 10px;
+    border-radius: 3px;
+    background: #fff;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.226);
+    z-index: 2;
+}
+.form-icon-item {
+    padding: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    transform: scale(1);
+}
+.form-icon-item:hover {
+    color: #4c8bfd;
+    transform: scale(1.5);
+}
+.form-icon-show {
+    position: absolute;
+    right: 10px;
+}
 .ml20 {
     margin-left: 20px;
 }
 .mt30 {
     margin-top: 30px;
 }
-
+.w400 {
+    width: 400px;
+}
 /* 右键菜单 */
 .context-menu {
     position: fixed;

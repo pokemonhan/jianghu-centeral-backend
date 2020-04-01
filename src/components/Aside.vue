@@ -127,6 +127,7 @@ export default {
                 let template = {
                     id: item.id,
                     label: item.label,
+                    icon: item.icon,
                     en_name: item.en_name,
                     path: item.route,
                     display: item.display,
@@ -135,13 +136,14 @@ export default {
                     level: item.level
                 }
 
-                // TODO: 后期改为以其他关键字作为匹配. 设置icon
-                let curr_menu = window.all.menu_list.filter(
-                    menu => menu.label === item.label
-                )
-                if (curr_menu.length) {
-                    template.icon = curr_menu[0].icon
-                }
+                // // TODO: 后期改为以其他关键字作为匹配. 设置icon
+                // let curr_menu = window.all.menu_list.filter(
+                //     menu => menu.label === item.label
+                // )
+                // if (curr_menu.length) {
+                //     // template.icon = curr_menu[0].icon
+                //     template.icon = 'iconhome'
+                // }
                 if (item.child) {
                     template.children = this.objToArr(
                         item.child,
