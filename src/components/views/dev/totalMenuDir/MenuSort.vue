@@ -65,13 +65,14 @@ export default {
             // console.log('tree drop: ', dropNode.label, dropType)
         },
         allowDrop(draggingNode, dropNode, type) {
-            // console.log('dropNode: ', dropNode);
-            // console.log('draggingNode: ', draggingNode);
-            // 目前只可以拖到同一层
-            // if(draggingNode.level!==dropNode.level ||type==='inner'){
-              
-            //     return false
-            // }
+            let dropging = draggingNode.data // 正在拖拽的节点
+            let drop = dropNode.data // 放置的节点
+            // console.log('drop: ', drop);
+            if (!dropging || !drop) return
+            // 目前最多两级,如果放置位置是2级, 就不能放到内层中
+            if(drop.level===2 && type==='inner') {
+                return false
+            }
             return true
         },
         allowDrag(draggingNode) {
@@ -86,8 +87,8 @@ export default {
             if(!start_node ||!dropNode) return
             let start = start_node.data
             let end = dropNode.data
-            console.log('end: ', end)
-            console.log('type: ', type)
+            // console.log('end: ', end)
+            // console.log('type: ', type)
             if (start.id === end.id) {
                 return
             }

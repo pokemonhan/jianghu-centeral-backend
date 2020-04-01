@@ -170,7 +170,7 @@ export default {
         }
     },
     mounted() {
-        console.log('palceholder', this.placeholder)
+        // console.log('palceholder', this.placeholder)
         this.selectedValue = this.value
         this.options.forEach(item => {
             if (item.value === this.value) {

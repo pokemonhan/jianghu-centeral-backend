@@ -165,7 +165,7 @@
                             <span>选择路由:</span>
                             <Select
                                 style="width:550px;margin-top:10px;"
-                                placeholder="sorry,没有可使用路由..."
+                                :placeholder="route_placeholder"
                                 v-model="form.route_name"
                                 :options="route_show_opt"
                                 input
@@ -234,7 +234,7 @@ export default {
             // dia
             dia_status: '',
             dia_title: '',
-
+            route_placeholder: '', // sorry,没有可使用路由...
             // modal 框
             mod_show: false,
             mod_status: '',
@@ -347,6 +347,9 @@ export default {
                 return not_used
             })
             // console.log('this.route_show_opt: ', this.route_show_opt)
+            if(this.route_show_opt.length===0) {
+                this.route_placeholder = ' sorry,没有可使用路由...'
+            }
             this.curr_row = row
             this.dia_status = 'add'
             this.dia_title = '添加路由'
