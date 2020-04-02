@@ -235,7 +235,7 @@
 import RouteSet from './hallMenuDir/HallRouteSet'
 import MenuSort from './hallMenuDir/HallMenuSort'
 import slide from '../../../js/config/slide'
-import hallMenuList from '../../../js/data/hallMenuList'
+import hallMenuList from '../../../js/data/hallmenulist'
 
 export default {
     name: 'HallMenu',
