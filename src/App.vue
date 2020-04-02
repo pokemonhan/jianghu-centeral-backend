@@ -758,7 +758,7 @@ button:focus {
     vertical-align: middle;
 }
 /* 重写element ui loading 样式 */
-.el-loading-mask {
+.el-loading-parent--relative .el-loading-mask {
     position: fixed;
     background-color: rgba(255,255,255,.9);
     margin: 0;
