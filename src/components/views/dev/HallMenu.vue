@@ -293,7 +293,7 @@ export default {
                 'iconyunyingzhongxin',
                 'iconyuanquan',
                 'icontianjia',
-                'iconfeeds-fill'
+                'iconfeeds-fill',
             ],
             parent_menu_opt: [],
             menu_show: false,
