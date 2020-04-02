@@ -1,9 +1,9 @@
 <template>
-    <div v-if="show" class="dialog-mask">
+    <div v-if="show" ref="mask" class="dialog-mask">
         <transition name="fade-transform">
-            <div v-if="dialog" class="v-dialog">
+            <div v-if="dialog" ref="dialog" class="v-dialog">
                 <div>
-                    <div class="dialog-header">
+                    <div class="dialog-header" ref="header">
                         <!-- <i v-if="icon" :class="['iconfont', icon]"></i> -->
                         <span v-text="title"></span>
                         <i @click="close" class="iconfont iconcuowuguanbi-"></i>
@@ -40,6 +40,55 @@ export default {
         close() {
             this.$emit('update:show', false)
             this.$emit('close')
+        },
+        dragBox(drag, wrap) {
+            // console.log('wrap: ', wrap)
+            // console.log('drag: ', drag)
+            let headerDom = this.$refs.header
+
+            function getCss(ele, prop) {
+                return parseInt(window.getComputedStyle(ele)[prop])
+            }
+
+            var initX,
+                initY,
+                dragable = false,
+                wrapLeft = getCss(wrap, 'left'),
+                wrapRight = getCss(wrap, 'top')
+            // console.log('wrapLeft: ', wrapLeft);
+            drag.addEventListener(
+                'mousedown',
+                function(e) {
+                    // 如果 鼠标在 header 里面可以拖动
+                    if (headerDom.contains(e.target)) {
+                        dragable = true
+                        initX = e.clientX
+                        initY = e.clientY
+                    }
+                },
+                false
+            )
+
+            document.addEventListener('mousemove', function(e) {
+                if (dragable === true) {
+                    var nowX = e.clientX,
+                        nowY = e.clientY,
+                        disX = nowX - initX,
+                        disY = nowY - initY
+                    wrap.style.left = wrapLeft + disX + 'px'
+                    wrap.style.top = wrapRight + disY + 'px'
+                }
+            })
+
+            drag.addEventListener(
+                'mouseup',
+                function(e) {
+                    dragable = false
+                    wrapLeft = getCss(wrap, 'left')
+                    wrapRight = getCss(wrap, 'top')
+                },
+                false
+            )
         }
         // cancel() {
         //     this.$emit('update:show', false)
@@ -58,6 +107,14 @@ export default {
             setTimeout(() => {
                 this.dialog = val
             }, 100)
+        },
+
+        dialog(val) {
+            if (val) {
+                this.$nextTick().then(() => {
+                    this.dragBox(this.$refs.mask, this.$refs.dialog)
+                })
+            }
         }
     },
     mounted() {
@@ -109,7 +166,7 @@ export default {
     transform: translate(-50%, -50%); */
     /* width: 100%;
     height: 100%; */
-
+    position: relative;
     min-width: 400px;
     min-height: 220px;
     background-color: #fff;
@@ -124,6 +181,8 @@ export default {
     border-top-right-radius: 5px;
     background: #4c8bfd;
     color: #fff;
+    /* cursor: move; */
+    /* -webkit-cursor:move; */
 }
 /* dialog 关闭按钮 */
 .dialog-mask .iconcuowuguanbi- {

@@ -189,16 +189,16 @@ const menuList = [
                 path: '/dev/hallmenu',
                 name: 'HallMenu'
             },
-            {
-                label: '游戏厂商配置',
-                path: '/dev/gamevendor',
-                name: 'GameVendor'
-            },
-            {
-                label: '游戏分类配置',
-                path: '/dev/gamesort',
-                name: 'GameSort'
-            },
+            // {
+            //     label: '游戏厂商配置',
+            //     path: '/dev/gamevendor',
+            //     name: 'GameVendor'
+            // },
+            // {
+            //     label: '游戏分类配置',
+            //     path: '/dev/gamesort',
+            //     name: 'GameSort'
+            // },
             {
                 label: '游戏管理配置',
                 path: '/dev/gamemanaconfig',

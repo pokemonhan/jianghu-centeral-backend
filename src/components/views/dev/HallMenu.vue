@@ -235,6 +235,8 @@
 import RouteSet from './hallMenuDir/HallRouteSet'
 import MenuSort from './hallMenuDir/HallMenuSort'
 import slide from '../../../js/config/slide'
+import hallMenuList from '../../../js/data/hallMenuList.js'
+
 export default {
     name: 'HallMenu',
     components: {
@@ -544,7 +546,7 @@ export default {
             })
         },
         setRouteOpt() {
-            let arr = window.all.menu_list
+            let arr = hallMenuList
             this.route_all = []
             arr.forEach(item => {
                 if (item.children) {

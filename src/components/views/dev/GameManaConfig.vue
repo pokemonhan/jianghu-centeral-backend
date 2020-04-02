@@ -27,7 +27,7 @@
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.vendor&&row.vendor.name}}</td>
                     <td>{{row.name}}</td>
-                    <td>{{(row.type&&row.type.name)+' - '+(row.sub_type&&row.sub_type.name)}}</td>
+                    <td>{{(row.type&&row.type.name||'')+' - '+(row.sub_type&&row.sub_type.name||'')}}</td>
                     <td>{{row.sign}}</td>
                     <td>{{row.app_id}}</td>
                     <!-- <td

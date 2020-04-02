@@ -383,20 +383,20 @@ export default {
                 type_id: row.type_id, // 游戏类型id
                 // whitelist_ips: '', //
                 urls: {
-                    login: row.urls.login, // 登录接口
-                    account_query_url: row.urls.account_query_url, //查询余额接口
-                    top_up_url: row.urls.top_up_url, //上分接口
-                    draw_out_url: row.urls.draw_out_url, // 下分接口
-                    order_query_url: row.urls.order_query_url, // 查询订单接口
-                    user_active_query_url: row.urls.user_active_query_url, //查询玩家在线状态
-                    game_order_query_url: row.urls.game_order_query_url, // 查询游戏注单
+                    login: row.urls && row.urls.login, // 登录接口
+                    account_query_url:row.urls &&  row.urls.account_query_url, //查询余额接口
+                    top_up_url: row.urls && row.urls.top_up_url, //上分接口
+                    draw_out_url: row.urls && row.urls.draw_out_url, // 下分接口
+                    order_query_url: row.urls && row.urls.order_query_url, // 查询订单接口
+                    user_active_query_url: row.urls && row.urls.user_active_query_url, //查询玩家在线状态
+                    game_order_query_url: row.urls && row.urls.game_order_query_url, // 查询游戏注单
                     user_total_status_query_url:
-                        row.urls.user_total_status_query_url, // 查询玩家总分
-                    kick_out_url: row.urls.kick_out_url, // 踢玩家接口
-                    agent_account_query_url: row.urls.agent_account_query_url // 查询代理余额接口
+                        row.urls && row.urls.user_total_status_query_url, // 查询玩家总分
+                    kick_out_url: row.urls && row.urls.kick_out_url, // 踢玩家接口
+                    agent_account_query_url: row.urls && row.urls.agent_account_query_url // 查询代理余额接口
                 },
                 test_urls: {
-                    login: row.test_urls.login // 存放三方调用测试urls
+                    login: row.test_urls && row.test_urls.login // 存放三方调用测试urls
                 },
                 app_id: row.app_id, //..终端号
                 merchant_id: row.merchant_id, //商户号
