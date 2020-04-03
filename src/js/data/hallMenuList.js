@@ -2,12 +2,18 @@ const menu = [
     {
         label: "首页",
         icon: "iconhome",
-        name: "Home",
+        // name: "Home",
         // path: "/home",
+        children: [
+            {
+                label: "首页",
+                path: "/home"
+            }
+        ],
     },
     {
         label: "会员管理",
-        name: "user",
+        // name: "user",
         icon: "iconaccount",
         // path: "user",
         children: [
@@ -79,7 +85,8 @@ const menu = [
     {
         label: "公告管理",
         icon: "iconspeaker-5",
-        name: "announce",
+        // name: "announce",
+        // path: "announce"
         children: [
             {
                 label: "跑马灯消息",
@@ -106,7 +113,7 @@ const menu = [
     {
         label: "邮件系统",
         icon: "icon185078emailmailstreamline",
-        path: "email",
+        // path: "email",
         children: [
             {
                 label: "发邮件",
@@ -133,7 +140,7 @@ const menu = [
     {
         label: "报表管理",
         icon: "iconassistant_lefticon_Statisticalreportforms",
-        path: "",
+        // path: "report",
         children: [
             {
                 label: "个人报表",
@@ -175,7 +182,7 @@ const menu = [
     {
         label: "游戏管理",
         icon: "iconicon4",
-        path: "game",
+        // path: "game",
         children: [
             {
                 label: "H5游戏管理",
@@ -224,7 +231,7 @@ const menu = [
     {
         label: "金流管理",
         icon: "icondingdangdaizijinliushui",
-        path: "pay",
+        // path: "pay",
         children: [
             {
                 label: "线下金流配置",
@@ -246,7 +253,7 @@ const menu = [
     {
         label: "推广配置",
         icon: "iconconnections",
-        path: "promote",
+        // path: "promote",
         children: [
             {
                 label: "推广配置",
@@ -263,7 +270,7 @@ const menu = [
     {
         label: "设置管理",
         icon: "iconshezhi2",
-        path: "set",
+        // path: "set",
         children: [
             {
                 label: "管理员分组",

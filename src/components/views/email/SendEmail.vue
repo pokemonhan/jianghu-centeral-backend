@@ -6,7 +6,7 @@
                 <!-- <div class="hd-btn">
                     <button class="btn-plain" @click="sendNow">立即发送</button>
                     <button class="btn-plain ml20" @click="sendAtTime">定时发送</button>
-                </div> -->
+                </div>-->
                 <ul class="form">
                     <li v-show="recipient_show">
                         <span>收件人：</span>
@@ -26,7 +26,7 @@
                         <!-- <span v-show="pic_data">
                             <img class="img-show" :src="pic_data" alt="没有图片" />
                             <button class="btns-red" @click="clearPic">清除</button>
-                        </span> -->
+                        </span>-->
                     </li>
                     <li>
                         <span>内容:</span>
@@ -35,7 +35,7 @@
                     </li>
                     <li>
                         <span>发件人：</span>
-                        <span class="blue">{{'app-id'}}</span>
+                        <span class="blue">{{sender}}</span>
                     </li>
                     <li>
                         <button class="btn-plain" @click="sendNow">立即发送</button>
@@ -110,7 +110,7 @@
 <script>
 import Tree from '../../commonComponents/Tree.vue'
 import E from 'wangeditor'
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 export default {
     name: 'SendEmail',
     components: {
@@ -123,6 +123,7 @@ export default {
             title: '', // 邮件标题
             pic_data: '', //
             content: '', //邮件内容
+            sender: window.all.tool.getLocal('email') || '总控', // 发件人
             is_timing: 1,
             contact_show: true, // 有收件人就隐藏联系人下拉
             tree_list: [
@@ -148,7 +149,7 @@ export default {
             hour_opt: [],
             minute_opt: [],
             editor: {},
-            editorContent: '',
+            editorContent: ''
         }
     },
     computed: {
@@ -183,25 +184,27 @@ export default {
     },
     methods: {
         initForm() {
+            let date = window.all.tool.formatDate(new Date().valueOf()+1*60*1000,true)
             this.receivers = ''
             this.title = ''
             this.editorContent = ''
             this.is_timing = 0
-            this.send_time = ['2020', '01', '01', '00', '00', '00']
+            // this.send_time = ['2020', '01', '01', '00', '00', '00']
+                        this.send_time = [date.slice(0,4), date.slice(5,7),  date.slice(8,10),  date.slice(11,13),  date.slice(14,16),  date.slice(17,18)]
+
             this.editor.txt.clear()
         },
         checkForm() {
-                console.log('this.receivers: ', this.receivers);
-
-            if(this.receivers===''){
+            // console.log('this.receivers: ', this.receivers)
+            if (this.receivers === '') {
                 this.$toast.warning('收件人不可为空')
                 return false
             }
-            if(this.title===''){
+            if (this.title === '') {
                 this.$toast.warning('标题不可为空')
                 return false
             }
-            if(this.editorContent===''){
+            if (this.editorContent === '') {
                 this.$toast.warning('内容不可为空')
                 return false
             }
@@ -212,7 +215,7 @@ export default {
             this.sendEmail()
         },
         sendEmail() {
-            if(!this.checkForm()) return
+            if (!this.checkForm()) return
             let toArray = function(str = '') {
                 str = str.replace('，', ',')
                 str = str.replace(/\s+/g, '')
@@ -234,9 +237,9 @@ export default {
                 title: this.title,
                 content: this.editorContent,
                 is_timing: this.is_timing,
-                send_time: this.is_timing?date: '',
+                send_time: this.is_timing ? date : ''
             }
-            
+
             data = window.all.tool.rmEmpty(data)
             this.getContent()
             let { url, method } = this.$api.email_send_add
@@ -246,13 +249,13 @@ export default {
                     this.$toast.success(res && res.message)
                     this.dia_show = false
                     // this.initForm()
-
                 }
             })
         },
         sendAtTime() {
             this.is_timing = 1
             this.dia_show = true
+            this.initForm()
         },
         recipientUpd(val) {
             if (val) {
@@ -308,10 +311,31 @@ export default {
         // 初始化时间下拉 options
         initOpts() {
             // 年
-            let year_arr = [ '2020', '2021', '2022', '2023', '2024', '2024', '2025' ]
+            let year_arr = [
+                '2020',
+                '2021',
+                '2022',
+                '2023',
+                '2024',
+                '2024',
+                '2025'
+            ]
             this.year_opt = this.arrToOpt(year_arr)
             // 月
-            let month_arr = [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12' ]
+            let month_arr = [
+                '01',
+                '02',
+                '03',
+                '04',
+                '05',
+                '06',
+                '07',
+                '08',
+                '09',
+                '10',
+                '11',
+                '12'
+            ]
             this.month_opt = this.arrToOpt(month_arr)
 
             // 日 根据月份变化, 在computed中
@@ -380,6 +404,10 @@ export default {
         // this.editor.customConfig.uploadImgServer = '/upload'  // 上传图片到服务器
         // https://www.kancloud.cn/wangfupeng/wangeditor3/335782  上传到图片 文档
         this.editor.create()
+        // 设置样式
+        let editorDom = this.$refs.editor ||{}
+        let header = editorDom.children[0] || {}
+        header.style.padding = '6px 0'
     }
 }
 </script>
@@ -434,7 +462,8 @@ export default {
     width: 500px;
     margin-left: 20px;
     border-radius: 5px;
-    border: 1px solid #f2f2f2;
+    border: 1px solid #ccc;
+    border-top: none;
     user-select: text;
 }
 /* 最近联系人 */
@@ -446,8 +475,10 @@ export default {
 .right .contact .head {
     padding: 12px 10px;
     font-size: 16px;
-    color: #4c8bfd;
+    /* color: #4c8bfd; */
     background: #f2f2f2;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
 .recent-contact .head span:nth-child(2) {
@@ -489,7 +520,7 @@ export default {
     font-size: 15px;
 }
 .fs15 {
-    font-size: 15px
+    font-size: 15px;
 }
 .mt80 {
     margin-top: 8s0px;

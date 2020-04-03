@@ -106,9 +106,9 @@ let http = axios.create({
     },
 })
 
-// 请求预设 ---
 let loading = null
 
+// 请求预设 ---
 http.interceptors.request.use(req => {
     // let requestUrl = req.url
     loading = Loading.service({ text: '拼命加载中' })

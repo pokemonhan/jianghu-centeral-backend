@@ -161,7 +161,8 @@ export default {
 
             // 2. 收件箱
         } else {
-            this.content = this.row
+            this.content = this.row && this.row.email
+            console.log('收件想内容', this.row);
         }
         this.total = this.row.total
         // 这是后端数据的第几条
