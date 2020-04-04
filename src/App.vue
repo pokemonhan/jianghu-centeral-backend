@@ -4,7 +4,6 @@
         <Header class="app-header"></Header>
         <!-- <div style="border:1px solid red;width:10rem;">10rem</div>
         <div style="border:1px solid red;width:10em;">10em</div>-->
-
         <div class="app-content">
             <!-- 侧边栏 -->
             <div class="app-aside">
@@ -14,7 +13,7 @@
                 <TabNav class="tab-nav"></TabNav>
                 <transition name="fade-transform" mode="out-in">
                     <keep-alive :include="keepAliveInclude" :exclude="keepAliveExclude">
-                        <router-view class="router-view" />
+                        <router-view v-if="isRouterAlive" class="router-view" />
                     </keep-alive>
                 </transition>
             </div>
@@ -42,10 +41,16 @@ export default {
         Aside: Aside,
         TabNav: TabNav
     },
+    provide() {
+        return {
+            reload: this.reload
+        }
+    },
     data() {
         return {
             play: true,
-            excludeRouteName: []
+            excludeRouteName: [],
+            isRouterAlive: true,
         }
     },
     computed: {
@@ -85,6 +90,12 @@ export default {
                     window.event.returnValue = false
                 }
             }
+        },
+         reload() {
+            this.isRouterAlive = false
+            this.$nextTick(function(){
+                this.isRouterAlive = true
+            })
         }
     },
     mounted() {

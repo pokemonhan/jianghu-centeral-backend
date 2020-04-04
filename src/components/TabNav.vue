@@ -42,6 +42,7 @@ export default {
     // components: {
     //     'context-menu': VueContextMenu
     // },
+    inject: ['reload'],
     data() {
         return {
             // menu_list: [],
@@ -63,8 +64,6 @@ export default {
     methods: {
         ...mapMutations(['updateTab_nav_list', 'updateKeepAliveExclude']),
         refresh() {
-            // 刷新机制: 改变keep-alive 的exclude,使其不缓存
-            // 然后页面跳转,实现刷新页面, 
 
             let path = this.$route.path
             // 设置当前 路由不保持 keepalive
@@ -78,9 +77,10 @@ export default {
             temp_arr.push(curr_tab.name)
             this.updateKeepAliveExclude(temp_arr)
 
-            this.$router.replace('/page404') // 跳转到空页面,
+            // this.$router.replace('/page404') // 跳转到空页面,
             setTimeout(() => {
-                this.$router.replace({ path: path })
+                // this.$router.replace({ path: path })
+                this.reload() // 刷新页面
                 // 再使其缓存
                 this.updateKeepAliveExclude(origenExclude)
             }, 50)
