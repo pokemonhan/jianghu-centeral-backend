@@ -549,13 +549,19 @@ export default {
             let arr = hallMenuList
             this.route_all = []
             arr.forEach(item => {
+                 this.route_all.push({
+                    label: `label :(${item.label}) | ename: (${item.name}) | path: (${item.path})`,
+                    value: item.path, // 路径
+                    en_name: item.name, // 英文名
+                    cname: item.label // 中文名
+                })
                 if (item.children) {
-                    item.children.forEach(item => {
+                    item.children.forEach(child => {
                         this.route_all.push({
-                            label: `label :(${item.label}) | ename: (${item.name}) | path: (${item.path})`,
-                            value: item.path, // 路径
-                            en_name: item.name, // 英文名
-                            cname: item.label // 中文名
+                            label: `label :(${child.label}) | ename: (${child.name}) | path: (${child.path})`,
+                            value: child.path, // 路径
+                            en_name: child.name, // 英文名
+                            cname: child.label // 中文名
                         })
                     })
                 }

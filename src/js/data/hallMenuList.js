@@ -2,20 +2,22 @@ const menu = [
     {
         label: "首页",
         icon: "iconhome",
-        // name: "Home",
-        // path: "/home",
+        path: "/homeout",
+        name: "home",
+
         children: [
             {
                 label: "首页",
-                path: "/home"
+                path: "/home",
+                name: 'HomePage'
             }
         ],
     },
     {
         label: "会员管理",
-        // name: "user",
         icon: "iconaccount",
-        // path: "user",
+        path: "user",
+        name: "user",
         children: [
             {
                 label: "会员列表",
@@ -52,8 +54,8 @@ const menu = [
     {
         label: "财务管理",
         icon: "iconmoneybag",
-        // name: "funds",
-        // path: "funds",
+        path: "funds",
+        name: "funds",
         children: [
             {
                 label: "入款订单",
@@ -85,8 +87,8 @@ const menu = [
     {
         label: "公告管理",
         icon: "iconspeaker-5",
-        // name: "announce",
-        // path: "announce"
+        path: "announce",
+        name: "announce",
         children: [
             {
                 label: "跑马灯消息",
@@ -113,7 +115,8 @@ const menu = [
     {
         label: "邮件系统",
         icon: "icon185078emailmailstreamline",
-        // path: "email",
+        name: "email",
+        path: "email",
         children: [
             {
                 label: "发邮件",
@@ -140,7 +143,8 @@ const menu = [
     {
         label: "报表管理",
         icon: "iconassistant_lefticon_Statisticalreportforms",
-        // path: "report",
+        name: "report",
+        path: "report",
         children: [
             {
                 label: "个人报表",
@@ -182,7 +186,8 @@ const menu = [
     {
         label: "游戏管理",
         icon: "iconicon4",
-        // path: "game",
+        path: "game",
+        name: "game",
         children: [
             {
                 label: "H5游戏管理",
@@ -214,7 +219,8 @@ const menu = [
     {
         label: "活动管理",
         icon: "iconhuodong",
-        // path: "active",
+        path: "active",
+        name: "active",
         children: [
             {
                 label: "静态活动",
@@ -231,7 +237,8 @@ const menu = [
     {
         label: "金流管理",
         icon: "icondingdangdaizijinliushui",
-        // path: "pay",
+        path: "pay",
+        name: "pay",
         children: [
             {
                 label: "线下金流配置",
@@ -253,7 +260,8 @@ const menu = [
     {
         label: "推广配置",
         icon: "iconconnections",
-        // path: "promote",
+        path: "promote",
+        name: "promote",
         children: [
             {
                 label: "推广配置",
@@ -270,7 +278,8 @@ const menu = [
     {
         label: "设置管理",
         icon: "iconshezhi2",
-        // path: "set",
+        path: "set",
+        name: "set",
         children: [
             {
                 label: "管理员分组",

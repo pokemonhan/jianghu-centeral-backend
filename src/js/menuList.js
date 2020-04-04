@@ -1,8 +1,9 @@
 const menuList = [
     {
         label: '首页',
-        // path: '/home',
+        path: '/home',
         icon: 'iconhome',
+        name: 'home',
         children: [
             {
                 label: '首页',
@@ -16,9 +17,9 @@ const menuList = [
     // 厅主列表
     {
         label: '厅主管理',
-        // path: 'hall',
+        path: 'hall',
         icon: 'iconaccount',
-
+        name: 'hall',
         children: [
             {
                 label: '厅主列表',
@@ -36,8 +37,9 @@ const menuList = [
     /*----------------------------------------- 游戏管理 ------------------------------*/
     {
         label: '游戏管理',
-        // path: 'game',
+        path: 'game',
         icon: 'icongame',
+        name: 'game',
         children: [
             {
                 label: '厂商管理',
@@ -60,8 +62,9 @@ const menuList = [
     /*----------------------------------------- 活动管理 ------------------------------*/
     {
         label: '活动管理',
-        // path: 'active',
+        path: 'active',
         icon: 'iconhuodong',
+        name: 'active',
         children: [
             {
                 label: '活动列表',
@@ -74,8 +77,9 @@ const menuList = [
     /*----------------------------------------- 邮件系统 ------------------------------*/
     {
         label: '邮件系统',
-        // path: 'email',
+        path: 'email',
         icon: 'icon185078emailmailstreamline',
+        name: 'email',
         children: [
             {
                 label: '发邮件',
@@ -98,8 +102,9 @@ const menuList = [
     /*----------------------------------------- 报表管理 ------------------------------*/
     {
         label: '报表管理',
-        // path: 'report',
+        path: 'report',
         icon: 'iconassistant_lefticon_Statisticalreportforms',
+        name: 'report',
         children: [
             {
                 label: '厅主注单报表',
@@ -127,8 +132,9 @@ const menuList = [
     /*----------------------------------------- 金流配置 ------------------------------*/
     {
         label: '金流配置',
-        // path: 'cashflow',
+        path: 'cashflow',
         icon: 'iconmoneybag',
+        name: 'cashflow',
         children: [
             {
                 label: '厂商管理',
@@ -151,9 +157,9 @@ const menuList = [
     /*----------------------------------------- 设置管理 ------------------------------*/
     {
         label: '设置管理',
-        // path: 'set',
+        path: 'set',
         icon: 'iconshezhi2',
-
+        name: 'set',
         children: [
             {
                 label: '管理员分组',
@@ -176,8 +182,9 @@ const menuList = [
     /*----------------------------------------- 开发管理 ------------------------------*/
     {
         label: '开发管理',
-        // path: 'dev',
+        path: 'dev',
         icon: 'iconkaifa',
+        name: 'dev',
         children: [
             {
                 label: '总控菜单管理',
