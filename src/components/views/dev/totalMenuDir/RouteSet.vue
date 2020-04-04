@@ -161,10 +161,10 @@
                 <div>
                     <ul class="form">
                         <!-- 添加 编辑路由 -->
-                        <li>
+                        <li class="mt10">
                             <span>选择路由:</span>
                             <Select
-                                style="width:550px;margin-top:10px;"
+                                style="width:550px;"
                                 :placeholder="route_placeholder"
                                 v-model="form.route_name"
                                 :options="route_show_opt"
@@ -356,7 +356,7 @@ export default {
             this.dia_show = true
         },
         edit(row) {
-            console.log('row: ', row);
+            // console.log('row: ', row);
             let route_arr = this.curr_route.map(item => item.route_name) // 已使用路由数组
             // // 已使用路由不可再被使用
             this.route_show_opt = this.route_all_opt.filter(item => {
@@ -735,7 +735,7 @@ export default {
 /* 编辑路由 */
 .form > li {
     display: flex;
-    align-items: baseline;
+    align-items: center;
 }
 .form > li > span:first-child {
     width: 5em;

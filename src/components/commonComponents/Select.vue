@@ -8,24 +8,27 @@
         >
             <input v-model="selectedValue" type="hidden" />
             <input
+                v-if="isShow"
+                ref="input"
                 class="show-input"
                 v-model="showInputLabel"
                 :type="input?'text':'hidden'"
                 :title="showInputLabel"
                 @input="handleInput"
                 @change="inputChange"
+                @focus="inputFocus"
                 :placeholder="placeholder"
             />
-            <span v-show="!input">{{selectedLabel}}</span>
+            <span class="show-select-label" v-show="!input||!isShow">{{selectedLabel?selectedLabel:placeholder}}</span>
             <i v-if="clearable && isClear" @click.stop="clear" class="iconfont icon-icon-test"></i>
             <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
         </div>
         <ul :class="['sections', sectionsDir]" ref="sections">
             <li
-                v-for="(item, index) in options"
-                :key="index"
+                v-for="item in options"
+                :key="item.value"
                 :class="[selectedValue===item.value ? 'active' : '','option']"
-                @click="select(item)"
+                @click.stop="select(item)"
                 :title="input?item.label:''"
             >{{item.label}}</li>
         </ul>
@@ -64,7 +67,7 @@ export default {
             selectedValue: '',
             selectedLabel: '',
             index: 0,
-            isShow: false,
+            isShow: false, // 本义展示下拉框
             isClear: false,
             sectionsDir: 'bottom-upfold',
             sectionsHeight: '0px'
@@ -94,6 +97,11 @@ export default {
         showOptions(e) {
             if (this.input) {
                 this.isShow = true
+                // setTimeout(() => {
+                // })
+                this.$nextTick(()=>{
+                    this.$refs.input.focus()
+                })
             } else {
                 this.isShow = !this.isShow
             }
@@ -126,7 +134,7 @@ export default {
             this.selectedValue = item.value
             this.selectedLabel = item.label
 
-            this.showInputLabel = item.label // input 展示的内容
+            // this.showInputLabel = item.label // input 展示的内容
             this.$emit('update', item.value, item)
         },
         clear() {
@@ -149,6 +157,10 @@ export default {
         },
         inputChange() {
             this.$emit('update', this.showInputLabel)
+        },
+        inputFocus() {
+            this.showInputLabel = ''
+            this.$emit('input', this.showInputLabel)
         }
     },
     watch: {
@@ -161,6 +173,7 @@ export default {
             })
         },
         options() {
+            this.selectedLabel = ''
             if (!this.options) return
             this.options.forEach(item => {
                 if (item.value === this.value) {
@@ -212,13 +225,20 @@ export default {
     border-color: #57a3f3;
 }
 .val-box .show-input {
-    height: 95%;
-    width: 98%;
+    /* height: 95%; */
+    /* width: 98%; */
     margin-left: 1px;
     padding-left: 6px;
     padding-right: 23px;
     border: none;
     background: rgb(253, 254, 255);
+}
+.show-select-label {
+    /* width: 100%; */
+    padding-right: 15px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .val-box .icon-icon-test {
     display: none;

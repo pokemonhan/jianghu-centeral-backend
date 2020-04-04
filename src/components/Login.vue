@@ -197,7 +197,7 @@ export default {
                         window.all.tool.setLocal('email', res.data.email)
                         self.$toast.success('登陆成功')
                         // TODO: 可能有些不能查看首页
-                        this.$router.push('/home')
+                        this.$router.push('/home/home')
                        
                     }
                 })

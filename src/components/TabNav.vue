@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-nav" v-if="$route.path!=='/home' && tab_nav_list.length>0" ref="tabNav">
+    <div class="tab-nav" v-if="$route.path!=='/home/home' && tab_nav_list.length>0" ref="tabNav">
         <button class="btn-arrow" @click="scrollLeft">
             <i class="iconfont iconzuofanyezuohua"></i>
         </button>
@@ -58,24 +58,31 @@ export default {
         }
     },
     computed: {
-        ...mapState(['tab_nav_list'])
+        ...mapState(['tab_nav_list', 'keepAliveExclude'])
     },
     methods: {
-        ...mapMutations(['updateTab_nav_list','updateKeepAliveExclude']),
+        ...mapMutations(['updateTab_nav_list', 'updateKeepAliveExclude']),
         refresh() {
             // 刷新机制: 改变keep-alive 的exclude,使其不缓存
-            // 然后页面跳转,实现刷新页面
+            // 然后页面跳转,实现刷新页面, 
 
             let path = this.$route.path
-            // console.log('当前路由: ', path);consoel
             // 设置当前 路由不保持 keepalive
-            let curr_tab = this.tab_nav_list.find(item => item.path===this.$route.path)
-            this.updateKeepAliveExclude([curr_tab.name])
+            let curr_tab = this.tab_nav_list.find(
+                item => item.path === this.$route.path
+            )
+            // 原来的排除数组
+            let origenExclude = this.keepAliveExclude.slice()
             
+            let temp_arr = origenExclude.slice()
+            temp_arr.push(curr_tab.name)
+            this.updateKeepAliveExclude(temp_arr)
+
             this.$router.replace('/page404') // 跳转到空页面,
             setTimeout(() => {
-                this.$router.replace({ path: path})
-                this.updateKeepAliveExclude([])
+                this.$router.replace({ path: path })
+                // 再使其缓存
+                this.updateKeepAliveExclude(origenExclude)
             }, 50)
         },
         scrollLeft() {
@@ -172,9 +179,9 @@ export default {
         // 根据当前路由 自动滚动
         autoScroll(path) {
             // console.log('path: ', path);
-            
+
             if (this.tab_nav_list.length < 2) return
-            
+
             let ul = this.$refs.ul
             if (!ul) return
             // console.log('ul: ', [ul]);
@@ -203,7 +210,7 @@ export default {
     },
     watch: {
         $route(route) {
-            if(route.path==='/kong'||route.path==='/page404') return
+            if (route.path === '/kong' || route.path === '/page404') return
             this.autoScroll(route.path)
         }
     },

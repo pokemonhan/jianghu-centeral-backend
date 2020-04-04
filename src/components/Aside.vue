@@ -98,7 +98,7 @@ export default {
                 let list = this.tab_nav_list
                 // 导航条没有该页面 就添加进去
                 let isHadTab = list.find(tab => tab.path === item.path)
-                if (!isHadTab && item.path !== '/home') {
+                if (!isHadTab && item.path !== '/home/home') {
                     list.push({
                         label: item.label,
                         path: item.path,

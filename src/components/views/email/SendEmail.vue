@@ -52,11 +52,19 @@
                     <ul class="cont">
                         <li>
                             <span>我在吃火锅55</span>
-                            <span>Ling@gmail.com</span>
+                            <span class="mr5">Ling@gmail.com</span>
+                            <i
+                                class="iconfont icontianjia contact-add"
+                                @click="addContact('Ling@gmail.com')"
+                            ></i>
                         </li>
                         <li>
                             <span>我在吃火锅</span>
                             <span>5252452</span>
+                            <i
+                                class="iconfont icontianjia contact-add"
+                                @click="addContact('5252452')"
+                            ></i>
                         </li>
                         <li class="flex">
                             <!-- <Checkbox label="文字文字" /> -->
@@ -184,13 +192,23 @@ export default {
     },
     methods: {
         initForm() {
-            let date = window.all.tool.formatDate(new Date().valueOf()+1*60*1000,true)
+            let date = window.all.tool.formatDate(
+                new Date().valueOf() + 1 * 60 * 1000,
+                true
+            )
             this.receivers = ''
             this.title = ''
             this.editorContent = ''
             this.is_timing = 0
             // this.send_time = ['2020', '01', '01', '00', '00', '00']
-                        this.send_time = [date.slice(0,4), date.slice(5,7),  date.slice(8,10),  date.slice(11,13),  date.slice(14,16),  date.slice(17,18)]
+            this.send_time = [
+                date.slice(0, 4),
+                date.slice(5, 7),
+                date.slice(8, 10),
+                date.slice(11, 13),
+                date.slice(14, 16),
+                date.slice(17, 18)
+            ]
 
             this.editor.txt.clear()
         },
@@ -251,6 +269,17 @@ export default {
                     // this.initForm()
                 }
             })
+        },
+        addContact(name) {
+            if (!name) return
+            if (!this.receivers) {
+                this.receivers = name
+            } else {
+                let receiversArray = this.receivers.split(',')
+                if (receiversArray.indexOf(name) === -1) {
+                    this.receivers += ','+name
+                }
+            }
         },
         sendAtTime() {
             this.is_timing = 1
@@ -384,7 +413,7 @@ export default {
         this.initOpts()
     },
     mounted() {
-        this.receivers = this.$route.query && this.$route.query.platform_sign
+        this.receivers = this.$route.query && this.$route.query.recipient
 
         this.editor = new E(this.$refs.editor)
         this.editor.customConfig.menus = [
@@ -405,7 +434,7 @@ export default {
         // https://www.kancloud.cn/wangfupeng/wangeditor3/335782  上传到图片 文档
         this.editor.create()
         // 设置样式
-        let editorDom = this.$refs.editor ||{}
+        let editorDom = this.$refs.editor || {}
         let header = editorDom.children[0] || {}
         header.style.padding = '6px 0'
     }
@@ -508,6 +537,10 @@ export default {
     display: flex;
     justify-content: center;
     padding-bottom: 20px;
+}
+.contact-add:hover {
+    color: #4c8bfd;
+    cursor: pointer;
 }
 .dia-inner {
     position: relative;

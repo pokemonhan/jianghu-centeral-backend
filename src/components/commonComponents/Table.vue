@@ -34,7 +34,7 @@
             </thead>
             <tbody>
                 <!-- 有数据时 -->
-                <template v-if="column.length">
+                <template v-if="column&&column.length">
                     <tr v-for="(col_row, idx) in column" :key="idx">
                         <!-- // 如果有checkbox -->
                         <td v-if="hadCheckbox">

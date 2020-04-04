@@ -72,10 +72,15 @@ export default {
     },
     methods: {
         reply() {
+            console.log('this.content: ', this.content)
+            let recipient =
+                this.content &&
+                this.content.merchant &&
+                this.content.merchant.email
             this.$router.push({
                 path: '/email/sendemail',
                 query: {
-                    platform_sign: this.content.platform_sign
+                    recipient: recipient
                 }
             })
         },
@@ -103,7 +108,7 @@ export default {
                 if (res && res.code === '200') {
                     let list = res.data && res.data.data
                     list.forEach((item, index) => {
-                        // 后台数据的第几个,存入content_obj 中. 
+                        // 后台数据的第几个,存入content_obj 中.
                         let idx = (para.page - 1) * this.pageSize + index + 1
                         this.content_obj[String(idx)] = item && item.email
                     })
@@ -162,7 +167,7 @@ export default {
             // 2. 收件箱
         } else {
             this.content = this.row && this.row.email
-            console.log('收件想内容', this.row);
+            console.log('收件想内容', this.row)
         }
         this.total = this.row.total
         // 这是后端数据的第几条
@@ -180,7 +185,6 @@ export default {
     padding: 10px;
     border: 1px solid #4c8bfd;
     overflow: auto;
-
 }
 .btn-disabled {
     padding: 5px 15px;

@@ -9,12 +9,12 @@ const state = {
     showMask: false,
     tab_nav_list: [],         // 顶部导航菜单 顶部导航菜单 顶部导航菜单
     // keepAliveList
-    keepAliveExclude: [],
+    keepAliveExclude: ['SendEmail'],   // 不需要缓存的 组件name()
     picPrefix: window.location.protocol + '//pic.397017.com/', // 静态图片前缀
 };
 const getters = {
     keepAliveInclude(state) {
-        let home = ['Home']
+        let home = []
         // 使导航条的路由 保持keepalive 
         let arr = (state.tab_nav_list || []).map(item => {
             return item.name
