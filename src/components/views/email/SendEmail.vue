@@ -191,16 +191,11 @@ export default {
         }
     },
     methods: {
-        initForm() {
-            let date = window.all.tool.formatDate(
+        initTime() {
+             let date = window.all.tool.formatDate(
                 new Date().valueOf() + 1 * 60 * 1000,
                 true
             )
-            this.receivers = ''
-            this.title = ''
-            this.editorContent = ''
-            this.is_timing = 0
-            // this.send_time = ['2020', '01', '01', '00', '00', '00']
             this.send_time = [
                 date.slice(0, 4),
                 date.slice(5, 7),
@@ -209,7 +204,16 @@ export default {
                 date.slice(14, 16),
                 date.slice(17, 18)
             ]
-
+        },
+        initForm() {
+           
+            this.receivers = ''
+            this.title = ''
+            this.editorContent = ''
+            this.is_timing = 0
+            // this.send_time = ['2020', '01', '01', '00', '00', '00']
+            
+            this.initTime()
             this.editor.txt.clear()
         },
         checkForm() {
@@ -284,7 +288,7 @@ export default {
         sendAtTime() {
             this.is_timing = 1
             this.dia_show = true
-            this.initForm()
+            this.initTime()
         },
         recipientUpd(val) {
             if (val) {
@@ -345,7 +349,6 @@ export default {
                 '2021',
                 '2022',
                 '2023',
-                '2024',
                 '2024',
                 '2025'
             ]

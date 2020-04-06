@@ -55,6 +55,7 @@
                                 <i
                                     v-if="lv1.children"
                                     :class="['iconfont iconup',lv1.isMenuOpen?'iconopen':'']"
+                                     @click="expand(lv1_idx,lv1)"
                                 ></i>
                                 <span @click="expand(lv1_idx,lv1)">{{lv1.name}}</span>
 

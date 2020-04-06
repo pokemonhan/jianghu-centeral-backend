@@ -207,7 +207,7 @@
                             v-if="dia_status==='edit'"
                             class="btn-blue-large ml20"
                             @click="diaCfm"
-                        >确认创建</button>
+                        >确认修改</button>
                     </div>
                 </div>
             </div>

@@ -102,9 +102,9 @@ export default {
             let start = start_node.data
             let end = dropNode.data
             // 如果id相同，1.跨级相同，不发送，2.同级相同（位置没变） 不发送
-            if (start.id === end.id) return
+            // if (start.id === end.id) return
             // 跨级不发送
-            if(type==='inner') return
+            // if(type==='inner') return
             // let data = this.menuList
             let model_type = end.parent_id ? 2 : 1
             let sort = []
@@ -119,11 +119,14 @@ export default {
                 // 如果是子集
             } else {
                 this.menuList.forEach(item => {
+                    console.log('父级item: ', item);
                     if (item.children) {
-                        item.children.forEach(item => {
+                        item.children.forEach(child => {
                             sort.push({
-                                sort: item.sort,
-                                key: item.id
+                                sort: child.sort,
+                                key: child.id,
+                                parent_id: item.id,
+                                label:child.label
                             })
                         })
                     }
