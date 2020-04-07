@@ -81,14 +81,13 @@ const ERROR_MAP = {
 let HOST = process.env.HOST
 
 let hostList = {
-    // inner: location.protocol + '//api.jianghu.local',    // 测试站内网
-    inner: location.protocol + '//api.397017.com',    // 测试站内网
-    outer: location.protocol + '//api.397017.com',       // 测试外围
-    harris: location.protocol + '//api.jianghu.me',      // harris
-    ethan: location.protocol + '//api.jianghu.ethan',    // ethan
+    inner: location.protocol + '//api.397017.com',              // 测试站内网
+    outer: location.protocol + '//api.397017.com',              // 测试外围
+    harris: location.protocol + '//api.jianghu.me',             // harris
+    ethan: location.protocol + '//apionline.jianghu.ethanphp', // ethan
 }
 
-const BASE_PATH = hostList[HOST] || HOST
+const BASE_PATH = hostList['ethan'] || HOST
 
 let http = axios.create({
     baseURL: BASE_PATH,
