@@ -2,13 +2,12 @@ const menu = [
     {
         label: "首页",
         icon: "iconhome",
-        path: "/homeout",
+        path: "/home",
         name: "home",
-
         children: [
             {
                 label: "首页",
-                path: "/home",
+                path: "/home/home",
                 name: 'HomePage'
             }
         ],
@@ -257,24 +256,24 @@ const menu = [
             }
         ]
     },
-    {
-        label: "推广配置",
-        icon: "iconconnections",
-        path: "promote",
-        name: "promote",
-        children: [
-            {
-                label: "推广配置",
-                path: "/promote/promoteconfig",
-                name: "PromoteConfig"
-            },
-            {
-                label: "推广图片配置",
-                path: "/promote/picconfig",
-                name: "PicConfig"
-            }
-        ]
-    },
+    // {
+    //     label: "推广配置",
+    //     icon: "iconconnections",
+    //     path: "promote",
+    //     name: "promote",
+    //     children: [
+    //         {
+    //             label: "推广配置",
+    //             path: "/promote/promoteconfig",
+    //             name: "PromoteConfig"
+    //         },
+    //         {
+    //             label: "推广图片配置",
+    //             path: "/promote/picconfig",
+    //             name: "PicConfig"
+    //         }
+    //     ]
+    // },
     {
         label: "设置管理",
         icon: "iconshezhi2",
@@ -290,6 +289,11 @@ const menu = [
                 label: "全域设置",
                 path: "/set/allareaset",
                 name: "AllAreaSet",
+            },
+            {
+                label: "推广图片配置",
+                path: "/set/picconfig",
+                name: "PicConfig"
             },
             {
                 label: "客服设置",
