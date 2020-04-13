@@ -336,7 +336,7 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 1001;
     background-color: rgba(0, 0, 0, 0.6);
 }
 /* .v-modal {
@@ -596,7 +596,12 @@ button:focus {
     color: #fff;
     background: #fa0;
 }
-
+.btns-plain-blue {
+    color: #4c8bfd;
+    background: rgb(237, 244, 250);
+    border: 1px solid #4c8bfd;
+    box-shadow: 1px 1px 3px rgba(102, 158, 255, 0.2);
+}
 /* *星符号 */
 .require::before {
     content: '*';

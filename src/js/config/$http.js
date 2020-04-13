@@ -84,10 +84,10 @@ let hostList = {
     inner: location.protocol + '//api.397017.com',              // 测试站内网
     outer: location.protocol + '//api.397017.com',              // 测试外围
     harris: location.protocol + '//api.jianghu.me',             // harris
-    ethan: location.protocol + '//apionline.jianghu.ethanphp', // ethan
+    // ethan: location.protocol + '//apionline.jianghu.ethanphp', // ethan
 }
 
-const BASE_PATH = hostList['ethan'] || HOST
+const BASE_PATH = hostList[HOST] || HOST
 
 let http = axios.create({
     baseURL: BASE_PATH,
@@ -109,7 +109,6 @@ let loading = null
 
 // 请求预设 ---
 http.interceptors.request.use(req => {
-    // let requestUrl = req.url
     loading = Loading.service({ text: '拼命加载中' })
     let Authorization = window.all.tool.getLocal('Authorization')
     // let expires = new Date(window.all.tool.getLocal('expires_at')).getTime()
@@ -137,7 +136,7 @@ http.interceptors.response.use(res => {
         loading.close()
     }
     let toastErr = window.__vm__.$toast.error
-    let message = res.message || res.data.message || '出现服务问题或被禁止'
+    let message = res.message || res.data.message || ''
 
     if (res.status !== 200) {
         if (res.status === 503) { // 503 请求频繁 
@@ -146,7 +145,7 @@ http.interceptors.response.use(res => {
             // 401 跳转到login 登录
             router.push('/login')
         }else if(res.status === 403) {
-            // message = '403 服务器拒绝'
+            message = message || '403 服务器拒绝'
         }
         toastErr(message)
 

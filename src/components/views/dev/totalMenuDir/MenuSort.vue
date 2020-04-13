@@ -33,7 +33,6 @@ export default {
     },
     data() {
         return {
-         
             defaultProps: {
                 children: 'children',
                 label: 'label'
@@ -58,8 +57,7 @@ export default {
         },
         handleDragEnd(draggingNode, dropNode, dropType, ev) {
             // console.log('tree drag end: ', dropNode && dropNode.label, dropType)
-            this.sortConfirm(this.start_node,dropNode,dropType)
-
+            this.sortConfirm(this.start_node, dropNode, dropType)
         },
         handleDrop(draggingNode, dropNode, dropType, ev) {
             // console.log('tree drop: ', dropNode.label, dropType)
@@ -68,10 +66,15 @@ export default {
             let dropging = draggingNode.data // 正在拖拽的节点
             let drop = dropNode.data // 放置的节点
             // console.log('drop: ', drop);
+            // console.log('drop: ', drop);
             if (!dropging || !drop) return
             // 目前最多两级,如果放置位置是2级, 就不能放到内层中
-            if(drop.level===2 && type==='inner') {
+            if (drop.level === 2 && type === 'inner') {
                 return false
+            }
+            if (dropging.children) {
+                // 拖拽的如果有子项就不能 是别人的子项， 也不能放置到非1项
+                if (type === 'inner' || drop.level !== 1) return false
             }
             return true
         },
@@ -84,7 +87,7 @@ export default {
          * @param {object} end  拖拽结束
          */
         sortConfirm(start_node, dropNode, type) {
-            if(!start_node ||!dropNode) return
+            if (!start_node || !dropNode) return
             let start = start_node.data
             let end = dropNode.data
             // console.log('end: ', end)
@@ -92,7 +95,7 @@ export default {
             if (start.id === end.id) {
                 return
             }
-           
+
             let data = {
                 id: start.id,
                 pid: end.pid, // 修改后的上级id,顶级为0
@@ -111,7 +114,7 @@ export default {
             }
             let { url, method } = this.$api.menu_change_parent_set
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
 
@@ -120,13 +123,10 @@ export default {
                     this.$emit('refreshMenu')
                 }
             })
-        },
+        }
     },
-    watch: {
-        
-    },
+    watch: {},
     mounted() {
-        
         setTimeout(() => {
             this.menuList = JSON.parse(JSON.stringify(this.menu))
             console.log('this.menu: ', this.menu)

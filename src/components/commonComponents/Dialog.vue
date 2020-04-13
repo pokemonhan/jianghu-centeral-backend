@@ -197,7 +197,10 @@ export default {
     transform: scale(1.1);
 }
 .dialog-mask .dialog-body {
+    max-height: 90vh;
+    max-width: 96vw;
     padding: 20px 25px;
+    overflow: auto;
 }
 </style>
 

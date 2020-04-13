@@ -66,11 +66,16 @@ export default {
         },
         allowDrop(draggingNode, dropNode, type) {
           let dropging = draggingNode.data // 正在拖拽的节点
+        //   console.log('dropging: ', dropging);
             let drop = dropNode.data // 放置的节点
+            // console.log('drop: ', drop);
             if (!dropging || !drop) return
             // 目前最多两级,如果放置位置是2级, 就不能放到内层中
             if(drop.level===2 && type==='inner') {
                 return false
+            }
+            if(dropging.children) {
+                if(type ==='inner' ||drop.level!==1) return false
             }
             return true
         },
@@ -105,14 +110,14 @@ export default {
                 data.level = end.level + 1
             } else if(type ==='before'){
             }
-            console.log('data: ', data);
+            // console.log('data: ', data);
             // if (data & (data.level > 3)) {
                 
             //     this.$toast('最多三级菜单')
             // }
             let { url, method } = this.$api.merchant_menu_parent_sort
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
 

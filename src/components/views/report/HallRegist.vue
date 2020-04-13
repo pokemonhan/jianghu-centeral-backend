@@ -165,7 +165,8 @@ export default {
                 name: '',
                 lottery_dates: [],
                 bet_dates: [],
-                warehouse_dates: []
+                warehouse_dates: [],
+                dates: []
             }
         },
         timeUpdate() {

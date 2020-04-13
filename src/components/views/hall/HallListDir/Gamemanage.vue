@@ -279,11 +279,11 @@ export default {
             this.getUnsignList()
         },
         rightUpdateNo(val) {
-            tihs.getAssignedList()
+            this.getAssignedList()
         },
         rightUpdateSize(val) {
             this.right.pageNo = 1
-            tihs.getAssignedList()
+            this.getAssignedList()
         },
         getUnsignList() {
             let para = {

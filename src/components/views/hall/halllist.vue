@@ -18,7 +18,7 @@
                 </li>
                 <li>
                     <span>站点添加时间</span>
-                    <Date type="daterange" v-model="filter.add_dates" />
+                    <Date type="daterange" quickdate v-model="filter.add_dates" />
                     <!-- <span class="mh-5">至</span> -->
                     <!-- <Date v-model="filter.add_dates[1]" /> -->
                 </li>
@@ -32,7 +32,7 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
                     <!-- '厅主账号', '站点名称', '短信数量', '站点状态', '维护状态', '站点有效日期', '站点维护日期', '站点添加日期', '操作'  -->
-                    <td>{{row.owner &&row.owner.email}}</td>
+                    <td>{{row.email}}</td>
                     <td>{{row.cn_name}}</td>
                     <td>{{row.sms_num}}</td>
                     <!-- <td>

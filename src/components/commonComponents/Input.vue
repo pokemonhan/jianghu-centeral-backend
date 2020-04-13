@@ -1,7 +1,7 @@
 <template>
     <span :class="['v-input', size]">
         <input
-            :class="[,disabled?'disabled':'']"
+            :class="[disabled?'disabled':'']"
             :type="type==='password'? 'password':'text'"
             ref="input"
             :placeholder="placeholder"
@@ -15,8 +15,15 @@
             :disabled="disabled"
             :autocomplete="autocomplete"
         />
-        <i v-if="icon" :class="['iconfont', icon]"></i>
-        <span v-show="showerr" class="error-message">{{errmsg}}</span>
+        <i v-if="icon" :class="['iconfont', icon,'icon-input']"></i>
+        
+        <span v-show="showerr||(required&&!value)" class="error-message">
+            <i class="iconfont iconjinggao1-"></i>
+            {{errmsg}}
+        </span>
+        <span>
+
+        </span>
     </span>
 </template>
 
@@ -49,10 +56,14 @@ export default {
             default: false
         },
         errmsg: {
-            tupe: String,
+            type: String,
             default: ''
         },
-
+        // 当required为true时, 值为空,就会提示
+        required: {
+            type: Boolean,
+            default: false
+        }
     },
     model: {
         prop: "value",
@@ -150,7 +161,7 @@ input::placeholder{
 .v-input input:focus {
     border-color: #2d8cf0;
 }
-.v-input i {
+.v-input .icon-input {
     position: absolute;
     right: 10px;
     color: #808695;
@@ -170,6 +181,12 @@ input::placeholder{
     top: 25px;
     left: 1em;
     font-size: 12px;
-    color: red;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ef583d;
+}
+.error-message .iconjinggao1- {
+    font-size: 13px;
 }
 </style>>
