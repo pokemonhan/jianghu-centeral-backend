@@ -21,9 +21,6 @@
             <i class="iconfont iconjinggao1-"></i>
             {{errmsg}}
         </span>
-        <span>
-
-        </span>
     </span>
 </template>
 

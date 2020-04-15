@@ -1,7 +1,10 @@
 <template>
     <div class="contain" ref="contain">
         <ul class="level-1">
-            <li v-for="(lev1, lev1_index) in menu_list.filter(item=>item.display)" :key="lev1_index">
+            <li
+                v-for="(lev1, lev1_index) in menu_list.filter(item=>item.display)"
+                :key="lev1_index"
+            >
                 <span
                     :class="['title',$route.path == lev1.path&&(!lev1.children)?'active-menu':'',curr_ul(lev1)?'lev1-active':'']"
                     @click="expandMenu(lev1,lev1_index)"
@@ -13,7 +16,10 @@
 
                 <!-- 二级菜单 -->
                 <ul :ref="lev1.pre_idx" :class="['level2',curr_ul(lev1)?'active-ul':'']">
-                    <li v-for="(lev2, lev2_index) in (lev1.children||[]).filter(item=>item.display)" :key="lev2_index">
+                    <li
+                        v-for="(lev2, lev2_index) in (lev1.children||[]).filter(item=>item.display)"
+                        :key="lev2_index"
+                    >
                         <!-- 标题 -->
                         <span
                             :class="['title',$route.path == lev2.path?'active-menu':'']"
@@ -26,7 +32,10 @@
 
                         <!-- ---------    三级菜单 ------------------------->
                         <ul :ref="lev2.pre_idx" class="level3">
-                            <li v-for="(lev3, lev3_index) in (lev2.children||[]).filter(item=>item.display)" :key="lev3_index">
+                            <li
+                                v-for="(lev3, lev3_index) in (lev2.children||[]).filter(item=>item.display)"
+                                :key="lev3_index"
+                            >
                                 <span
                                     :class="['title',$route.path == lev3.path?'active-menu':'']"
                                     @click="expandMenu(lev3, lev3_index)"
@@ -78,21 +87,21 @@ export default {
             // console.log("这个index", index);
             if (!item.children) {
                 // 获取该path 的所有数据
-                function getMenuData(path,arr) {
+                function getMenuData(path, arr) {
                     let template_data
-                    arr.forEach(item=>{
-                        if(item.path===path) {
+                    arr.forEach(item => {
+                        if (item.path === path) {
                             template_data = item
-                        }else if(item.children){
-                            if(getMenuData(path,item.children)) {
-                                template_data = getMenuData(path,item.children)
+                        } else if (item.children) {
+                            if (getMenuData(path, item.children)) {
+                                template_data = getMenuData(path, item.children)
                             }
                         }
                     })
                     return template_data
                 }
 
-                let data = getMenuData(item.path, window.all.menu_list) ||{}
+                let data = getMenuData(item.path, window.all.menu_list) || {}
                 this.$router.push(item.path)
 
                 let list = this.tab_nav_list
@@ -119,7 +128,7 @@ export default {
         objToArr(obj, pre_idx = '') {
             // let list = []
             if (!obj) {
-                return [ ]
+                return []
             }
             return Object.keys(obj).map((key, index) => {
                 let item = obj[key]
@@ -213,12 +222,19 @@ export default {
             // 当前没有菜单就 localStorage找
             // this.getFather()
             if (from.path === '/login') {
-                this.getMenuList()
+                let Authorization = window.all.tool.getLocal('Authorization')
+                if (Authorization) {
+                    this.getMenuList()
+                }
             }
         }
     },
     mounted() {
-        this.getMenuList()
+        let Authorization = window.all.tool.getLocal('Authorization')
+        if (Authorization) {
+            this.getMenuList()
+        }
+
         let self = this
         // let setHeight = function() {
         //     let height = document.documentElement.clientHeight // 可视 页面高度

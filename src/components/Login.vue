@@ -86,7 +86,7 @@ export default {
             accMsg: '',
             pwdMsg: '',
             verifyMsg: '',
-            login_show: false
+            login_show: false,
         }
     },
     methods: {
@@ -112,64 +112,7 @@ export default {
             return this.pwdMsg ? false : true
             return true
         },
-        // checkVerify(){
-        //     return true
-        //     // console.log(this.verifyCode,'验证码');
-        //   if(this.verifyCode){
-        //       this.verifyMsg = ''
-        //       return true
-        //   }else{
-        //       this.verifyMsg = '验证码不能为空'
-        //       return false
-        //   }
-
-        // objToArr(obj, pre_idx = '') {
-        //     // let list = []
-        //     return Object.keys(obj).map((key, index) => {
-        //         let item = obj[key]
-
-        //         let template = {
-        //             id: item.id,
-        //             label: item.label,
-        //             en_name: item.en_name,
-        //             path: item.route,
-        //             display: item.display,
-        //             pre_idx: pre_idx + index,
-        //             // type: '',
-        //             level: item.level
-        //         }
-
-        //         // TODO: 后期改为以其他关键字作为匹配.
-        //         let curr_menu = window.all.menu_list.filter(
-        //             menu => menu.label === item.label
-        //         )
-        //         if (curr_menu.length) {
-        //             template.icon = curr_menu[0].icon
-        //         }
-        //         if (item.child) {
-        //             template.children = this.objToArr(
-        //                 item.child,
-        //                 pre_idx + index + '-'
-        //             )
-        //         }
-        //         return template
-        //     })
-          
-        // },
-        // getMenuList() {
-        //     // let { method, url } = this.$api.menu_all_list
-        //     let { method, url } = this.$api.current_admin_menu
-
-        //     this.$http({ method, url }).then(res => {
-        //         if (res && res.code === '200') {
-        //             let menu = this.objToArr(res.data)
-        //             window.all.tool.setLocal('menu', menu)
-
-        //             // 获取到列表数据在跳转
-        //             this.$router.push('/home')
-        //         }
-        //     })
-        // },
+      
         login() {
             let self = this
             setTimeout(() => {
@@ -198,7 +141,6 @@ export default {
                         self.$toast.success('登陆成功')
                         // TODO: 可能有些不能查看首页
                         this.$router.push('/home/home')
-                       
                     }
                 })
             }

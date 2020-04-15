@@ -115,7 +115,6 @@ http.interceptors.request.use(req => {
     // let now = new Date().getTime()
     // let url = window.location.pathname
     // console.log('url: ', url);
-    // let not_login = req.url.indexOf('/headquarters-api/login') === -1     // 并非 /login页面
     // let not_login =  window.location.pathname !== '/login' && eq.url.indexOf('/headquarters-api/login') === -1
     if (Authorization) {
         req.headers.Authorization = Authorization   // 这是token+token_type
@@ -123,8 +122,12 @@ http.interceptors.request.use(req => {
         //     // alert('token已经超时,请重新登陆..')
         // window._Vue_.$router.push('/login')
         // }
+        // return req
     } else {
-        router.push('/login')
+        let not_login = req.url.indexOf('/headquarters-api/login') === -1     // 并非 /login页面请求
+        if (not_login) {
+            router.push('/login')
+        }
     }
     return req
 })
@@ -144,13 +147,16 @@ http.interceptors.response.use(res => {
         } else if (res.status === 401) {
             // 401 跳转到login 登录
             router.push('/login')
-        }else if(res.status === 403) {
+        } else if (res.status === 403) {
             message = message || '403 服务器拒绝'
         }
         toastErr(message)
 
     } else {
-        if (res.data.code !== '200') {
+        // 302100 登出后提示内容
+        if (res.data.code === '302100') {
+            window.__vm__.$toast(message)
+        } else if(res.data.code !=='200') {
             toastErr(message)
         }
     }

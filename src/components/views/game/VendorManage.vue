@@ -24,16 +24,16 @@
                     <td>{{row.name}}</td>
                     <!-- <td :class="[row.status===1?'green':'red']">{{status_txt[row.status]}}</td> -->
                     <td>
-                        <Switchbox :value="row.status" @update="statusSwitch(row)" />
+                        <Switchbox :value="row.status" @update="statusSwitch($event, row)" />
                     </td>
                     <td>{{row.last_editor && row.last_editor.name}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
-                        <button
+                        <!-- <button
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
-                        >{{row.status===1?'禁用':'启用'}}</button>
+                        >{{row.status===1?'禁用':'启用'}}</button> -->
                     </td>
                 </template>
             </Table>
@@ -75,13 +75,19 @@
 
                         <li>
                             <div>
-                                <span>游戏类型id:</span>
-                                <Input
+                                <span>游戏类型:</span>
+                                <!-- <Input
                                     class="w250"
                                     :showerr="!form.type_id"
-                                    errmsg="游戏类型id不可为空!"
+                                    errmsg="游戏类型不可为空!"
                                     v-model="form.type_id"
-                                />
+                                />-->
+                                <Select
+                                    class="ml10 w250"
+                                    v-model="form.type_id"
+                                    :options="game_type_opt"
+                                ></Select>
+                                <span v-show="!form.type_id" class="err-tips">游戏类型不可为空</span>
                             </div>
                             <div>
                                 <span>登录接口</span>
@@ -108,7 +114,6 @@
                                     errmsg="查询余额接口格式错误!"
                                     v-model="form.urls.account_query_url"
                                 />
-                                
                             </div>
                             <div>
                                 <span>上分接口</span>
@@ -203,7 +208,8 @@
                                 <Input
                                     class="w250"
                                     placeholder="例如: http://abc.com"
-                                    :showerr="!form.test_urls.login||!urlReg.test(form.test_urls.login)" errmsg="存放三方调用测试urls格式错误"
+                                    :showerr="!form.test_urls.login||!urlReg.test(form.test_urls.login)"
+                                    errmsg="存放三方调用测试urls格式错误"
                                     v-model="form.test_urls.login"
                                 />
                             </div>
@@ -211,50 +217,82 @@
                         <li>
                             <div>
                                 <span>终端号</span>
-                                <Input class="w250" required errmsg="终端号不可为空" v-model="form.app_id" />
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="终端号不可为空"
+                                    v-model="form.app_id"
+                                />
                             </div>
                             <div>
                                 <span>商户号:</span>
-                                <Input class="w250" required errmsg="商户号不可为空" v-model="form.merchant_id" />
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="商户号不可为空"
+                                    v-model="form.merchant_id"
+                                />
                             </div>
                         </li>
                         <li>
                             <div>
                                 <span>商户秘钥:</span>
-                                <Input class="w250" required errmsg="商户秘钥不可为空" v-model="form.merchant_secret" />
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="商户秘钥不可为空"
+                                    v-model="form.merchant_secret"
+                                />
                             </div>
                             <div>
                                 <span>公钥:</span>
-                                <Input class="w250" required errmsg="公钥不可为空" v-model="form.public_key" />
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="公钥不可为空"
+                                    v-model="form.public_key"
+                                />
                             </div>
                         </li>
 
                         <li>
                             <div>
                                 <span>私钥:</span>
-                                <Input class="w250" required errmsg="私钥不可为空" v-model="form.private_key" />
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="私钥不可为空"
+                                    v-model="form.private_key"
+                                />
                             </div>
                             <div>
                                 <span>des秘钥:</span>
-                                <Input class="w250" required errmsg="des秘钥不可为空" v-model="form.des_key" />
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="des秘钥不可为空"
+                                    v-model="form.des_key"
+                                />
                             </div>
                         </li>
                         <li>
                             <div>
                                 <span>md5_key</span>
-                                <Input class="w250" required errmsg="md5_key不可为空" v-model="form.md5_key" />
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="md5_key不可为空"
+                                    v-model="form.md5_key"
+                                />
                             </div>
                             <div>
                                 <span>白名单:</span>
                                 <textarea
                                     class="textarea ml10"
                                     placeholder="格式例子: 2.2.2.2, 5.5.3.5"
-                                    
                                     v-model="form.whitelist_ips"
                                 ></textarea>
-                                <span v-show="!form.whitelist_ips" class="err-tips">
-                                    白名单不可为空
-                                </span>
+                                <span v-show="!form.whitelist_ips" class="err-tips">白名单不可为空</span>
                             </div>
                         </li>
 
@@ -331,9 +369,10 @@ export default {
             ],
             list: [],
             // dialog
-            dia_show: 'test', // TODO:
+            dia_show: '',
             dia_status: '',
             dia_title: '',
+            game_type_opt: [], // 游戏类型下拉框
             form: {
                 name: '', // 厂商名称
                 sign: '', // 厂商标识
@@ -371,7 +410,7 @@ export default {
     },
     methods: {
         // 待改动
-        statusSwitch(row) {
+        statusSwitch(value, row) {
             // this.curr_row = row
             // this.mod_show = true
             // if (row.status === 1) {
@@ -379,78 +418,9 @@ export default {
             // } else {
             //     this.mod_cont = '是否确定启用该厂商!'
             // }
-            this.switchConf(row)
+            this.switchConf(value, row)
         },
-        // 去除为param空的 属性
-        rmEmpty(obj) {
-            let params = {}
-            for (const key in obj) {
-                if (Array.isArray(obj[key])) {
-                    if (obj.length > 0) {
-                        params[key] = obj[key]
-                    }
-                } else if (obj[key] !== '') {
-                    params[key] = obj[key]
-                }
-            }
-            return params
-        },
-        getList() {
-            let self = this
-            let par = {
-                name: this.filter.vendor,
-                status: this.filter.status,
-                pageSize: this.pageSize,
-                page: this.pageNo
-            }
 
-            let params = this.rmEmpty(par)
-            // console.log('params: ', params)
-            let { url, method } = this.$api.game_vendor_list
-            this.$http({
-                method: method,
-                url: url,
-                params: params
-            }).then(res => {
-                // console.log('%cres: ', 'color:red;font-size:18px;', res)
-                if (res && res.code === '200') {
-                    self.total = res.data.total
-                    self.list = res.data.data
-                }
-            })
-        },
-        initForm() {
-            this.form = {
-                name: '', // 厂商名称
-                sign: '', // 厂商标识
-                type_id: '', // 游戏类型id
-                whitelist_ips: '', //
-                urls: {
-                    login: '', // 登录接口
-                    account_query_url: '', //查询余额接口
-                    top_up_url: '', //上分接口
-                    draw_out_url: '', // 下分接口
-                    order_query_url: '', // 查询订单接口
-                    user_active_query_url: '', //查询玩家在线状态
-                    game_order_query_url: '', // 查询游戏注单
-                    user_total_status_query_url: '', // 查询玩家总分
-                    kick_out_url: '', // 踢玩家接口
-                    agent_account_query_url: '' // 查询代理余额接口
-                },
-                test_urls: {
-                    login: '' // 存放三方调用测试urls
-                },
-                app_id: '', //..终端号
-                merchant_id: '', //商户号
-                merchant_secret: '', // 商户秘钥
-                public_key: '', // 公钥
-                private_key: '', // 私钥
-                des_key: '', // des 秘钥
-                md5_key: '', // md5秘钥
-                whitelist_ips: '', // 白名单
-                status: '1' // 状态
-            }
-        },
         add() {
             this.initForm()
             this.dia_show = 'add'
@@ -500,9 +470,9 @@ export default {
             this.dia_status = 'edit'
             this.dia_title = '编辑'
         },
-        switchConf(row) {
+        switchConf(value, row) {
             let id = row.id
-            let status = row.status ? 1 : 0
+            let status = value ? 1 : 0
 
             let data = {
                 id: id,
@@ -517,8 +487,8 @@ export default {
                 if (res && res.code === '200') {
                     this.mod_show = false
                     this.$toast.success(res.message)
-                    this.getList()
                 }
+                this.getList()
             })
         },
         checkForm() {
@@ -648,10 +618,84 @@ export default {
         updateSize() {
             this.pageNo = 1
             this.getList()
+        },
+        initForm() {
+            this.form = {
+                name: '', // 厂商名称
+                sign: '', // 厂商标识
+                type_id: '', // 游戏类型id
+                whitelist_ips: '', //
+                urls: {
+                    login: '', // 登录接口
+                    account_query_url: '', //查询余额接口
+                    top_up_url: '', //上分接口
+                    draw_out_url: '', // 下分接口
+                    order_query_url: '', // 查询订单接口
+                    user_active_query_url: '', //查询玩家在线状态
+                    game_order_query_url: '', // 查询游戏注单
+                    user_total_status_query_url: '', // 查询玩家总分
+                    kick_out_url: '', // 踢玩家接口
+                    agent_account_query_url: '' // 查询代理余额接口
+                },
+                test_urls: {
+                    login: '' // 存放三方调用测试urls
+                },
+                app_id: '', //..终端号
+                merchant_id: '', //商户号
+                merchant_secret: '', // 商户秘钥
+                public_key: '', // 公钥
+                private_key: '', // 私钥
+                des_key: '', // des 秘钥
+                md5_key: '', // md5秘钥
+                whitelist_ips: '', // 白名单
+                status: '1' // 状态
+            }
+        },
+        getGameTypeOpt() {
+            let { url, method } = this.$api.game_sort_list
+            this.$http({ method, url }).then(res => {
+                // console.log('res: ', res)
+                if (res && res.code === '200') {
+                    // this.total = res.data.total
+                    // this.list = res.data.data
+                    let arr = res.data || []
+                    this.game_type_opt = arr.map(item => {
+                        return {
+                            value: item.id,
+                            label: item.name
+                        }
+                    })
+                }
+            })
+        },
+        getList() {
+            let self = this
+            let par = {
+                name: this.filter.vendor,
+                status: this.filter.status,
+                pageSize: this.pageSize,
+                page: this.pageNo
+            }
+
+            let params = window.all.tool.rmEmpty(par)
+            // console.log('params: ', params)
+            let { url, method } = this.$api.game_vendor_list
+            this.$http({
+                method: method,
+                url: url,
+                params: params
+            }).then(res => {
+                // console.log('%cres: ', 'color:red;font-size:18px;', res)
+                if (res && res.code === '200') {
+                    self.total = res.data.total
+                    self.list = res.data.data
+                }
+            })
         }
     },
     mounted() {
         this.getList()
+        this.getGameTypeOpt()
     }
 }
 </script>
@@ -677,7 +721,7 @@ export default {
 .form > li > div {
     display: flex;
     position: relative;
-    align-items: baseline;
+    align-items: center;
 }
 .form > li > div:first-child {
     margin-right: 10px;

@@ -178,6 +178,7 @@ export default {
             // window.all.tool.removeSession('token')
             // this.$router.push('/login')
             this.logout_conf_show = true
+
         },
         logoutConf() {
             let self = this

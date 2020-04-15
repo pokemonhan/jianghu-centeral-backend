@@ -134,7 +134,7 @@ export default {
     //----- 厂商管理 - 列表
     game_vendor_list: {
         url: '/headquarters-api/game-vendor/opt-index-do',
-        method: 'get'
+        method: 'post'
     },
     // 厂商管理 - 改变状态
     game_vendor_status_set: {
@@ -354,7 +354,10 @@ export default {
         method: 'post'
     },
     /*   --------    操作日志    -------- */
-
+    operat_log_list: {
+        url: '/headquarters-api/operation-log/index',
+        method: 'post'
+    },
 
     /*   --------    短信配置    -------- */
 

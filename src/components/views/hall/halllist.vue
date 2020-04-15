@@ -231,7 +231,7 @@ import AuthorityTree from '../../commonComponents/AuthorityTree'
 
 import SiteManage from './HallListDir/SiteManage'
 import Domain from './HallListDir/Domain'
-import Gamemanage from './HallListDir/Gamemanage'
+import Gamemanage from './HallListDir/GameMana'
 import ActiveManage from './HallListDir/ActiveManage'
 export default {
     name: 'HallList',

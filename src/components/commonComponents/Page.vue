@@ -60,7 +60,7 @@
             updateSize: 每页条数改变 返回 (pageSize)
             
             pagesNum: 共有多少页,
-            pageCount: 显示多少个页面跳转的方块(<li>)
+            pagerCount: 显示多少个页面跳转的方块(<li>)
     */
     export default {
         name: 'Page',
@@ -69,6 +69,9 @@
                 type: [Number, String],
                 default: () => 0
             },
+            /**
+             * 显示多少个页面跳转的方块(<li>) 默认7个([...]不算)
+             */
             pagerCount: {
                 type: Number,
                 default: () => 7
@@ -84,7 +87,13 @@
         },
         data() {
             return {
+                /**
+                 * 共多少页
+                 */
                 pagesNum: 0,
+                /**
+                 * 中间展示页框子 ... [4][5][6] ...
+                 */
                 pageRange: [],
                 pageSizeList: [
                 //     {
@@ -110,6 +119,9 @@
         },
         methods: {
             updatePageNo(num) {
+                /**
+                 * 点击的 当前页
+                 */
                 let pageNo = Number(this.pageNo)
                 if(num==='-') {
                     pageNo > 1 && pageNo--
@@ -126,6 +138,9 @@
                 this.$emit('updateNo', pageNo)
 
                 this.pageRange = []
+                /**
+                 * 除第一页和最后页 的中间方块数 [1] __[2][3]__ [4]
+                */
                 let centerCount = this.pagerCount - 2
 
                 if(pageNo <= 4) {
@@ -136,15 +151,16 @@
                         }
                         this.pageRange[i] = page
                     }
+
                 }else if(pageNo >= this.pagesNum - Math.floor(centerCount/2)) {
-                    for(let i=0; i< centerCount; i++) {
+                    for(let i=0; i< centerCount; i++) {                       
                         let page = this.pagesNum - centerCount + i
-                        if(page < 2) {
+                        if(page < 2) { // 第一页,不显示在中间
                             continue
-                        }else if(page >= this.pagesNum) {
+                        }else if(page >= this.pagesNum) { // 最后也不显示在中间
                             break
                         }else{
-                            this.pageRange.push(page)                    
+                            this.pageRange.push(page)      
                         }
                     }
                 }else{
@@ -192,17 +208,52 @@
             },
             initPages(total) {
                 this.pagesNum = Math.ceil(Number(total) / this.pageSize)
-                if(this.pagesNum < 3) {
-                    this.pageRange = []
-                    return
-                }
                 this.pageRange = []
-                for(let i = 0; i<this.pagerCount-2; i++) {
-                    let num = this.pageNo + i + 1
-                    if(num >= this.pagesNum) {
-                        break
+                // if(this.pagesNum < 3) {
+                //     return
+                // }
+                // // this.pageRange = []
+                // for(let i = 0; i<this.pagerCount-2; i++) {
+                //     // num 要展示的页面 数字
+                //     let num = this.pageNo + i + 1
+                //     if(num >= this.pagesNum) {
+                //         break
+                //     }
+                //     this.pageRange[i] = num
+                // }
+
+                /**
+                 * 除第一页和最后页 的中间方块数 [1] __[2][3]__ [4]
+                */
+                let centerCount = this.pagerCount - 2
+                /**
+                 * 点击的 当前页
+                 */
+                let pageNo = Number(this.pageNo)
+                if(pageNo <= 4) {
+                    for(let i=0; i< centerCount; i++) {
+                        let page = i + 2
+                        if(page >= this.pagesNum) {
+                            break
+                        }
+                        this.pageRange[i] = page
                     }
-                    this.pageRange[i] = num
+                // 如果 当前页码 >= (总页数 - 中间方块数/2)
+                }else if(pageNo >= this.pagesNum - Math.floor(centerCount/2)) {
+                    for(let i=0; i< centerCount; i++) {                       
+                        let page = this.pagesNum - centerCount + i
+                        if(page < 2) { // 第一页,不显示在中间
+                            continue
+                        }else if(page >= this.pagesNum) { // 最后一页,也不显示在中间
+                            break
+                        }else{
+                            this.pageRange.push(page)      
+                        }
+                    }
+                }else{
+                    for(let i=0; i< centerCount; i++) {
+                        this.pageRange[i] = pageNo - Math.floor(centerCount/2) + i
+                    }
                 }
             }
         },
@@ -211,7 +262,7 @@
         },
         watch: {
             total(val) {
-                this.initPages(val)
+                this.initPages(this.total)
             }
         }
     }

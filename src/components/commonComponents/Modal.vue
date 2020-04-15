@@ -54,7 +54,7 @@ export default {
 
     methods: {
         dragBox(drag, wrap) {
-            console.log('wrap: ', wrap);
+            // console.log('wrap: ', wrap);
             let headerDom = this.$refs.header
 
             function getCss(ele, prop) {
