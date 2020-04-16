@@ -262,7 +262,7 @@
                     <div class="select-time" v-if="type==='datetime' || type==='datetimerange'">
                         <div @click="chooseTime" class="pointer">{{step===4 ? '选择日期' : '选择时间'}}</div>
                         <div>
-                            <button class="btns-red" @click="clear" v-if="clearable">清空</button>
+                            <span class="red" @click="clear" v-if="clearable">清空</span>
                             <button class="btns-blue" @click="confirm">确定</button>
                         </div>
                     </div>
@@ -887,6 +887,7 @@ export default {
             if (!val) {
                 return
             }
+            // 数组 type: 1. daterange 2. datetimerange
             if (val instanceof Array) {
                 if (!val[0] || !val[1]) {
                     return
@@ -925,7 +926,7 @@ export default {
                     this.resultTime = val
                     this.dateStr = val.join(' ~ ')
                 }
-                // 非数组单个
+            // 非数组单个 type: 1. date 2. datetime
             } else {
                 arr = val.split(' ')[0].split('-')
                 date = new Date(val)
@@ -1324,6 +1325,7 @@ export default {
     cursor: pointer;
     color: #4c8bfd;
     padding: 0 10px;
+    font-weight: bold;
 }
 .v-date-picker .select-time div > button {
     margin-left: 10px;
@@ -1371,5 +1373,9 @@ export default {
     background: #4c8bfc;
     color: #fff;
     border-radius: 3px;
+}
+.btns-plain-blue:hover {
+    color: red;
+    border-color: red;
 }
 </style>

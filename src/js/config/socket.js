@@ -8,55 +8,55 @@ export default class Socket {
         this.isconnecting = false
         this.init()
     }
-    init() {
+    init () {
         this.ws && this.ws.close()
 
         let target = document.createElement('div'),
             self = this;
 
-        target.addEventListener('open', function(e) {
+        target.addEventListener('open', function (e) {
             self.onopen(e)
         })
-        target.addEventListener('close', function(e) {
+        target.addEventListener('close', function (e) {
             self.onclose(e)
         })
-        target.addEventListener('message', function(e) {
+        target.addEventListener('message', function (e) {
             self.onmessage(e)
         })
-        target.addEventListener('error', function(e) {
+        target.addEventListener('error', function (e) {
             self.onerror(e)
         })
 
         this.ws = new WebSocket(this.url)
-        this.ws.onopen = function(e) {
+        this.ws.onopen = function (e) {
             let event = new Event('open')
-            event.data = {name:18}
+            event.data = { name: 18 }
             target.dispatchEvent(event)
         }
-        this.ws.onmessage = function(e) {
+        this.ws.onmessage = function (e) {
             let event = new Event('message')
             event.data = e.data
             target.dispatchEvent(event)
         }
-        this.ws.onerror = function(e) {
+        this.ws.onerror = function (e) {
             let event = new Event('error')
             target.dispatchEvent(event)
         }
-        this.ws.onclose = function(e) {
+        this.ws.onclose = function (e) {
             let event = new Event('close')
             target.dispatchEvent(event)
             self.reconnect()
         }
     }
-    onopen(event) {}
-    onclose(event) {}
-    onmessage(event) {}
-    onerror(event) {}
-    send(params) {
+    onopen (event) { }
+    onclose (event) { }
+    onmessage (event) { }
+    onerror (event) { }
+    send (params) {
         this.ws.send(params)
     }
-    reconnect() {
-        if(this.isconnecting) return
+    reconnect () {
+        if (this.isconnecting) return
         this.isconnecting = true
         let self = this
         setTimeout(() => {

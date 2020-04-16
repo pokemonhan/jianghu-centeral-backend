@@ -191,12 +191,13 @@
                     <div>
                         <div style="align-self:flex-start;">维护时间:</div>
                         <div class="mt20">
-                            <Date style="width:250px;" type="datetime" v-model="maintain_dates[0]" />
+                            <!-- <Date style="width:250px;" type="datetime" v-model="maintain_dates[0]" />
                             <Date
                                 style="width:250px; margin-top:20px;"
                                 type="datetime"
                                 v-model="maintain_dates[1]"
-                            />
+                            /> -->
+                            <date style="width:300px;" type="datetimerange" v-model="maintain_dates" />
                         </div>
                         <div class="mt50">提示: 不传时间代表取消维护状态.</div>
                         <div class="maintain-btns">
@@ -300,7 +301,7 @@ export default {
             dia_show: '',
             dia_title: '',
             // 维护 dialog
-            maintain_dates: []
+            maintain_dates: [,]
         }
     },
     methods: {
@@ -510,7 +511,7 @@ export default {
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.tree_list = resToTree(res.data)
-                    console.log('this.tree_list: ', this.tree_list)
+                    // console.log('this.tree_list: ', this.tree_list)
                 }
             })
         },
