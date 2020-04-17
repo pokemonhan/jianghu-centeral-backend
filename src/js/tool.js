@@ -175,7 +175,35 @@ const Tool = {
                 ele.style.display = 'block'
             }, time+100)
         }
+    },
+    /**
+     * 修改 元素样式 
+     * @param {Object} el 元素Dom
+     * @param {String} prop 修改的属性
+     * @param {String, Number} val 值
+     */
+    css(el, prop, val) {
+        var style = el && el.style;
+
+        if (style) {
+            if (val === void 0) {
+                if (document.defaultView && document.defaultView.getComputedStyle) {
+                    val = document.defaultView.getComputedStyle(el, '');
+                } else if (el.currentStyle) {
+                    val = el.currentStyle;
+                }
+
+                return prop === void 0 ? val : val[prop];
+            } else {
+                if (!(prop in style)) {
+                    prop = '-webkit-' + prop;
+                }
+
+                style[prop] = val + (typeof val === 'string' ? '' : 'px');
+            }
+        }
     }
+
 
 };
 export default Tool;
