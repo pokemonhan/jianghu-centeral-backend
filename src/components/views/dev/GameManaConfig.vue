@@ -24,28 +24,25 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
+                     <!-- '编号', '游戏厂商', '游戏名称', '游戏分类', '游戏标识', '游戏状态', '添加人', '添加时间', '最后更新人', '最后更新时间', '操作' -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.vendor&&row.vendor.name}}</td>
                     <td>{{row.name}}</td>
                     <td>{{(row.type&&row.type.name||'')+' - '+(row.sub_type&&row.sub_type.name||'')}}</td>
                     <td>{{row.sign}}</td>
-                    <td>{{row.app_id}}</td>
+                    <!-- <td>{{row.app_id}}</td> -->
                     <!-- <td
                         :class="[row.status?'green':'red']"
                     >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>-->
                     <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
-                    <td>{{row.author&&row.author.name}}</td>
-                    <td>{{row.created_at}}</td>
-                    <td>{{row.last_editor&&row.last_editor.name}}</td>
-                    <td>{{row.updated_at}}</td>
+                    <td>{{row.author&&row.author.name||'---'}}</td>
+                    <td>{{row.created_at||'---'}}</td>
+                    <td>{{row.last_editor&&row.last_editor.name||'---'}}</td>
+                    <td>{{row.updated_at||'---'}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
-                        <!-- <button
-                            :class="[row.status?'btns-red':'btns-green']"
-                            @click="statusSwitch(row)"
-                        >{{row.status===1?'禁用':'启用'}}</button>-->
                         <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
@@ -84,7 +81,25 @@
                                 ></Select>
                                 <span v-show="!form.type_id" class="err-tips">必填项!</span>
                             </li>
-                            <li>
+                             <li>
+                                <span>请求模式:</span>
+
+                                <Radio
+                                    label="获取数据模式"
+                                    :value="form.request_mode"
+                                    val="1"
+                                    v-model="form.request_mode"
+                                />
+
+                                <Radio
+                                    class="ml50"
+                                    label="直接跳转"
+                                    :value="form.request_mode"
+                                    val="2"
+                                    v-model="form.request_mode"
+                                />
+                            </li>
+                            <!-- <li>
                                 <span>商户密钥:</span>
                                 <Input class="w250" v-model="form.merchant_secret" />
                             </li>
@@ -161,7 +176,7 @@
                                     v-show="form.test_get_station_order_url&&(!urlRegExp.test(form.test_get_station_order_url))"
                                     class="err-tips"
                                 >请检查内容格式!</span>
-                            </li>
+                            </li> -->
                         </ul>
                         <!-- form 右侧 -->
                         <ul class="form ml20">
@@ -175,7 +190,7 @@
                                 <Input class="w250" v-model="form.name" />
                                 <span v-show="!form.name" class="err-tips">不可为空!</span>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <span>商户公钥:</span>
                                 <Input class="w250" v-model="form.public_key" />
                             </li>
@@ -239,25 +254,8 @@
                                     v-show="!urlRegExp.test(form.get_station_order_url)"
                                     class="err-tips"
                                 >请检查内容格式!</span>
-                            </li>
-                            <li>
-                                <span>请求模式:</span>
-
-                                <Radio
-                                    label="获取数据模式"
-                                    :value="form.request_mode"
-                                    val="1"
-                                    v-model="form.request_mode"
-                                />
-
-                                <Radio
-                                    class="ml50"
-                                    label="直接跳转"
-                                    :value="form.request_mode"
-                                    val="2"
-                                    v-model="form.request_mode"
-                                />
-                            </li>
+                            </li> -->
+                           
                             <li v-if="dia_status==='add'">
                                 <span>状态选择</span>
                                 <Radio
@@ -305,20 +303,7 @@ export default {
             geme_type_opt: [],
             vendor_opt: [],
             type_opt: [],
-            headers: [
-                '编号',
-                '游戏厂商',
-                '游戏名称',
-                '游戏分类',
-                '游戏标识',
-                'APPID',
-                '游戏状态',
-                '添加人',
-                '添加时间',
-                '最后更新人',
-                '最后更新时间',
-                '操作'
-            ],
+            headers: [ '编号', '游戏厂商', '游戏名称', '游戏分类', '游戏标识', '游戏状态', '添加人', '添加时间', '最后更新人', '最后更新时间', '操作' ],
             list: [],
             total: 0,
             pageNo: 1,
@@ -348,23 +333,23 @@ export default {
                 type_id: '', // 游戏分类
                 name: '', // 游戏名称
 
-                merchant_secret: '', // 商户密钥
-                public_key: '', // 商户公钥
-                merchant_code: '', //商户号码
-                private_key: '', // 商户私钥
-                app_id: '',
+                // merchant_secret: '', // 商户密钥
+                // public_key: '', // 商户公钥
+                // merchant_code: '', //商户号码
+                // private_key: '', // 商户私钥
+                // app_id: '',
 
-                authorization_code: '', //授权码
-                in_game_url: '', // 进入游戏地址
-                test_in_game_url: '', // 进入游戏测试地址
-                conver_url: '', // 额度转换地址 额度地址
-                test_conver_url: '', // 额度测试地址
-                check_balance_url: '', //检查余额地址
-                test_check_balance_url: '', //检查余额测试地址
-                check_order_url: '', // 检查订单地址
-                test_check_order_url: '', // 检查订单测试地址
-                get_station_order_url: '', // 获取注单地址
-                test_get_station_order_url: '', // 活动注单测试地址
+                // authorization_code: '', //授权码
+                // in_game_url: '', // 进入游戏地址
+                // test_in_game_url: '', // 进入游戏测试地址
+                // conver_url: '', // 额度转换地址 额度地址
+                // test_conver_url: '', // 额度测试地址
+                // check_balance_url: '', //检查余额地址
+                // test_check_balance_url: '', //检查余额测试地址
+                // check_order_url: '', // 检查订单地址
+                // test_check_order_url: '', // 检查订单测试地址
+                // get_station_order_url: '', // 获取注单地址
+                // test_get_station_order_url: '', // 活动注单测试地址
                 request_mode: '1', // 请求模式
                 status: '1' // 状态选择
             }
@@ -383,23 +368,23 @@ export default {
                 type_id: row.type_id,
                 name: row.name,
 
-                merchant_secret: row.merchant_secret,
-                public_key: row.public_key,
-                merchant_code: row.merchant_code,
-                private_key: row.private_key,
-                app_id: row.app_id,
+                // merchant_secret: row.merchant_secret,
+                // public_key: row.public_key,
+                // merchant_code: row.merchant_code,
+                // private_key: row.private_key,
+                // app_id: row.app_id,
 
-                authorization_code: row.authorization_code,
-                in_game_url: row.in_game_url,
-                test_in_game_url: row.test_in_game_url,
-                conver_url: row.conver_url,
-                test_conver_url: row.test_conver_url,
-                check_balance_url: row.check_balance_url,
-                test_check_balance_url: row.test_check_balance_url,
-                check_order_url: row.check_order_url,
-                test_check_order_url: row.test_check_order_url,
-                get_station_order_url: row.get_station_order_url,
-                test_get_station_order_url: row.test_get_station_order_url,
+                // authorization_code: row.authorization_code,
+                // in_game_url: row.in_game_url,
+                // test_in_game_url: row.test_in_game_url,
+                // conver_url: row.conver_url,
+                // test_conver_url: row.test_conver_url,
+                // check_balance_url: row.check_balance_url,
+                // test_check_balance_url: row.test_check_balance_url,
+                // check_order_url: row.check_order_url,
+                // test_check_order_url: row.test_check_order_url,
+                // get_station_order_url: row.get_station_order_url,
+                // test_get_station_order_url: row.test_get_station_order_url,
                 request_mode: row.request_mode,
                 status: row.status
             }
@@ -431,7 +416,7 @@ export default {
             }
         },
         checkForm() {
-            let regExp = /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/
+            // let regExp = /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/
             let errInform = {
                 vendor_id: {
                     title: '厂商选择'
@@ -445,26 +430,26 @@ export default {
                 name: {
                     title: '游戏名称'
                 },
-                in_game_url: {
-                    title: '进入游戏地址',
-                    regExp: regExp
-                },
-                conver_url: {
-                    title: '额度转换地址',
-                    regExp: regExp
-                },
-                check_balance_url: {
-                    title: '检查余额地址',
-                    regExp: regExp
-                },
-                check_order_url: {
-                    title: '检查订单地址',
-                    regExp: regExp
-                },
-                get_station_order_url: {
-                    title: '获取注单地址',
-                    regExp: regExp
-                },
+                // in_game_url: {
+                //     title: '进入游戏地址',
+                //     regExp: regExp
+                // },
+                // conver_url: {
+                //     title: '额度转换地址',
+                //     regExp: regExp
+                // },
+                // check_balance_url: {
+                //     title: '检查余额地址',
+                //     regExp: regExp
+                // },
+                // check_order_url: {
+                //     title: '检查订单地址',
+                //     regExp: regExp
+                // },
+                // get_station_order_url: {
+                //     title: '获取注单地址',
+                //     regExp: regExp
+                // },
                 request_mode: {
                     title: '请求模式'
                 },
@@ -476,12 +461,6 @@ export default {
                 if (this.form[key] === '') {
                     this.$toast.info(`${errInform[key].title}不可为空`)
                     return false
-                } else if (errInform[key].regExp) {
-                    let reg = errInform[key].regExp
-                    if (!reg.test(this.form[key])) {
-                        this.$toast.info(`请检查${errInform[key].title}的格式`)
-                        return false
-                    }
                 }
             }
             return true
@@ -495,27 +474,27 @@ export default {
                 sign: this.form.sign,
                 request_mode: this.form.request_mode,
 
-                conver_url: this.form.conver_url,
-                test_conver_url: this.form.test_conver_url,
-                check_balance_url: this.form.check_balance_url,
-                test_check_balance_url: this.form.test_check_balance_url,
-                check_order_url: this.form.check_order_url,
+                // conver_url: this.form.conver_url,
+                // test_conver_url: this.form.test_conver_url,
+                // check_balance_url: this.form.check_balance_url,
+                // test_check_balance_url: this.form.test_check_balance_url,
+                // check_order_url: this.form.check_order_url,
 
-                test_check_order_url: this.form.test_check_order_url,
-                in_game_url: this.form.in_game_url,
-                test_in_game_url: this.form.test_in_game_url,
-                get_station_order_url: this.form.get_station_order_url,
-                test_get_station_order_url: this.form
-                    .test_get_station_order_url,
+                // test_check_order_url: this.form.test_check_order_url,
+                // in_game_url: this.form.in_game_url,
+                // test_in_game_url: this.form.test_in_game_url,
+                // get_station_order_url: this.form.get_station_order_url,
+                // test_get_station_order_url: this.form
+                //     .test_get_station_order_url,
 
                 status: this.form.status,
-                app_id: this.form.app_id,
-                authorization_code: this.form.authorization_code,
-                merchant_code: this.form.merchant_code,
-                merchant_secret: this.form.merchant_secret,
+                // app_id: this.form.app_id,
+                // authorization_code: this.form.authorization_code,
+                // merchant_code: this.form.merchant_code,
+                // merchant_secret: this.form.merchant_secret,
 
-                public_key: this.form.public_key,
-                private_key: this.form.private_key
+                // public_key: this.form.public_key,
+                // private_key: this.form.private_key
             }
             data = window.all.tool.rmEmpty(data)
             let { url, method } = this.$api.dev_game_add

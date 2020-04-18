@@ -30,15 +30,16 @@ export default {
     },
     data() {
         return {
-            isShow: false
+            isShow: true
         }
     },
     methods: {
         onmouseover() {
+            console.log('鼠标炫富')
             this.isShow = true
         },
         onmouseleave() {
-            this.isShow = false
+            // this.isShow = false
         }
     }
 }
@@ -88,7 +89,7 @@ export default {
     font-size: 12px;
 
     white-space: nowrap;
-    z-index: 10;
+    z-index: 100;
     /* border-color: hsla(0, 0%, 85%, 0.5); */
     box-shadow: 1px 1px 4px rgb(150, 150, 150);
 }

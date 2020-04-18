@@ -40,7 +40,9 @@
                             <button class="btns-plain-blue" @click="edit(lv1)">编辑</button>
 
                             <button class="btns-plain-red" @click="del(lv1)">删除</button>
-                            <Switchbox class="switch" v-model="route.is_open" />
+                            <Tooltip content="是否开放式">
+                                <Switchbox class="switch" v-model="route.is_open" />
+                            </Tooltip>
                         </li>
                     </ul>
 
@@ -654,8 +656,8 @@ export default {
 } */
 .lev1 ul {
     /* display: none; */
-    overflow: hidden;
-    transition: max-height 0.4s;
+    /* overflow: hidden; */
+    transition: max-height 0.3s;
 }
 .lev1 > li > .title {
     line-height: 20px;

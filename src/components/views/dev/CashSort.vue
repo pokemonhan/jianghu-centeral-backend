@@ -26,7 +26,7 @@
                     <td>{{row.sign}}</td>
                     <td>{{row.author&&row.author.name}}</td>
                     <td>{{row.created_at}}</td>
-                    <td>{{row.last_editor&&row.last_editor.name}}</td>
+                    <td>{{row.last_editor&&row.last_editor.name||'---'}}</td>
                     <td>{{row.updated_at}}</td>
                     <!-- <td
                         :class="[row.status?'green':'red']"
