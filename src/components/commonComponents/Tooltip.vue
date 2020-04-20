@@ -1,10 +1,12 @@
 <template>
-    <div class="v-tooltip" @mouseenter="onmouseover" @mouseleave="onmouseleave">
-        <slot></slot>
+    <div class="v-tooltip" >
+        <div @mouseenter="onmouseover" @mouseleave="onmouseleave">
+            <slot></slot>
+        </div>
         <transition name="fade-transform">
             <span
-                v-show="isShow"
-                :class="[position, maxWidth ? 'word-wrap' : '']"
+                v-if="isShow"
+                :class="['tip',position, maxWidth ? 'word-wrap' : '']"
                 :style="{width: maxWidth+'px'}"
             >
                 <slot name="content"></slot>
@@ -30,16 +32,16 @@ export default {
     },
     data() {
         return {
-            isShow: true
+            isShow: false
         }
     },
     methods: {
         onmouseover() {
-            console.log('鼠标炫富')
+            // console.log('鼠标悬浮')
             this.isShow = true
         },
         onmouseleave() {
-            // this.isShow = false
+            this.isShow = false
         }
     }
 }
@@ -49,17 +51,15 @@ export default {
 /* fade-transform */
 .fade-transform-leave-active,
 .fade-transform-enter-active {
-    transition: all 0.2s;
+    transition: all 0.1s;
 }
 
-.fade-transform-enter,
-.fade-transform-leave-to {
+.fade-transform-enter{
     opacity: 0;
     transform: scale(0.1);
 }
 
-.fade-transform-leave,
-.fade-transform-enter-to {
+.fade-transform-leave-to{
     opacity: 1;
     transform: scale(1);
 }
@@ -117,7 +117,7 @@ export default {
 /* 提示在顶部 */
 .v-tooltip .top {
     position: absolute;
-    top: -220%;
+    top: -2.3em;
     left: 50%;
     z-index: 10;
     line-height: 1.5;
@@ -140,5 +140,8 @@ export default {
     border-width: 5px;
     border-style: solid;
     border-color: #fff transparent transparent transparent;
+}
+.tip {
+    color: #444
 }
 </style>

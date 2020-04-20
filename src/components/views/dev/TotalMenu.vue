@@ -618,12 +618,15 @@ export default {
 /* TODO: */
 .total-menu .tol-center {
     width: 30%;
+    display: none;
 }
 .total-menu .tol-left {
     width: 30%;
+    display: none;
 }
 .total-menu .tol-right {
     width: 40%;
+    width: 70%;
 }
 /* .total-menu .tol-left {
 

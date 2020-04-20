@@ -40,7 +40,9 @@
                             <button class="btns-plain-blue" @click="edit(lv1)">编辑</button>
 
                             <button class="btns-plain-red" @click="del(lv1)">删除</button>
-                            <Switchbox class="switch" v-model="route.is_open" />
+                            <Tooltip content="是否开放式">
+                                <Switchbox class="switch" v-model="route.is_open" />
+                            </Tooltip>
                         </li>
                     </ul>
 
@@ -79,11 +81,14 @@
                                     >{{route2.title}}</span>
                                     <button class="btns-plain-blue" @click="edit(route2)">编辑</button>
                                     <button class="btns-plain-red" @click="del(route2)">删除</button>
-                                    <Switchbox
-                                        class="switch"
-                                        v-model="route2.is_open"
-                                        @update="isOpenSwitch($event,route2)"
-                                    />
+
+                                    <Tooltip content="是否开放式">
+                                        <Switchbox
+                                            class="switch"
+                                            v-model="route2.is_open"
+                                            @update="isOpenSwitch($event,route2)"
+                                        />
+                                    </Tooltip>
                                 </li>
                             </ul>
                             <!-- 三级 菜单 -->
@@ -128,7 +133,9 @@
 
                                             <button class="btns-plain-blue" @click="edit(route3)">编辑</button>
                                             <button class="btns-plain-red" @click="del(route3)">删除</button>
-                                            <Switchbox class="switch" v-model="route3.is_open" />
+                                            <Tooltip content="是否开放式">
+                                                <Switchbox class="switch" v-model="route3.is_open" />
+                                            </Tooltip>
                                         </li>
                                     </ul>
                                     <!-- 四级 菜单 -->
@@ -329,18 +336,18 @@ export default {
 
                         let ele = self.$refs[item.prefix]
                         //     self.$refs[item.prefix + ''][0]
-                        window.all.tool.slideDown(ele)
+                        window.all.tool.slideDown(ele,300)
                     } else {
                         // $(self.$refs[item.prefix]).slideUp()
                         let ele = self.$refs[item.prefix]
-                        window.all.tool.slideUp(ele)
+                        window.all.tool.slideUp(ele, 300)
                     }
                 })
                 return isMenuOpen
             }
             setCss(this.routesMenu)
             // this.routesMenu = this.routesMenu.slice()
-            this.$forceUpdate()
+            this.$forceUpdate()  
             // console.log('查看前缀this.routesMenu: ', this.routesMenu)
         }, 200),
         selectUpdate() {
@@ -351,7 +358,7 @@ export default {
             let ele = this.$refs[index]
             // $(ele).slideToggle(200)
             // Slide.slideToggle(ele)
-            window.all.tool.slideToggle(ele)
+            window.all.tool.slideToggle(ele,300)
         },
 
         // routeExpand(index) {
@@ -373,7 +380,7 @@ export default {
                 let not_used = route_arr.indexOf(item.route_name) === -1 // 1.路由没有被使用就放进select
                 return not_used
             })
-            if(this.route_show_opt.length===0) {
+            if (this.route_show_opt.length === 0) {
                 this.route_placeholder = ' sorry,没有可使用路由...'
             }
             // console.log('this.route_show_opt: ', this.route_show_opt)
@@ -683,11 +690,8 @@ export default {
     margin-top: 3px;
     margin-bottom: 3px;
 } */
-.lev1 ul {
-    /* display: none; */
-    transition: max-height 0.3s;
-    overflow: hidden;
-}
+/* .lev1 ul {
+} */
 .lev1 > li > .title {
     line-height: 20px;
     font-size: 15px;

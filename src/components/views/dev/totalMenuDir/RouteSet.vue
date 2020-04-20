@@ -77,11 +77,19 @@
                                     >{{route2.title}}</span>
                                     <button class="btns-plain-blue" @click="edit(route2)">编辑</button>
                                     <button class="btns-plain-red" @click="del(route2)">删除</button>
-                                    <Switchbox
+                                    <!-- <Switchbox
                                         class="switch"
                                         v-model="route2.is_open"
                                         @update="isOpenSwitch($event,route2)"
-                                    />
+                                    />-->
+                                    
+                                    <Tooltip content="是否开放式">
+                                        <Switchbox
+                                            class="switch"
+                                            v-model="route2.is_open"
+                                            @update="isOpenSwitch($event,route2)"
+                                        />
+                                    </Tooltip>
                                 </li>
                             </ul>
                             <!-- 三级 菜单 -->
@@ -177,7 +185,7 @@
                         </li>
                         <!-- <li v-if="!route_show_opt.length" class="no-router">
                             <span>sorry,没有可以使用的路由....</span>
-                        </li> -->
+                        </li>-->
                         <li class="mt20">
                             <span class="mb10">标题</span>
                             <Input style="width:550px" v-model="form.title" />
@@ -206,7 +214,7 @@
 </template> 
 
 <script>
-let count = 0
+import Slide from '../../../../js/config/slide'
 export default {
     props: {
         menu: Array
@@ -248,12 +256,12 @@ export default {
             let self = this
 
             function isMatch(item) {
-                console.log('item: ', item);
+                // console.log('item: ', item);
                 /**
                  * 1. 路由中文名称 : title
                  * 2. 路由名称 : route_name
                  * 3. 路由url : url
-                 * 
+                 *
                  * 4.菜单文字标题 : label
                  */
                 // 是否匹配input条件其中一个
@@ -325,9 +333,9 @@ export default {
         },
         expand(index, item) {
             let ele = this.$refs[index]
-            // $(ele).slideToggle(200)
             item.isMenuOpen = !item.isMenuOpen
-            let slideToggle = window.all.tool.slideToggle(ele)
+
+            window.all.tool.slideToggle(ele, 300)
         },
 
         // routeExpand(index) {
@@ -349,7 +357,7 @@ export default {
                 return not_used
             })
             // console.log('this.route_show_opt: ', this.route_show_opt)
-            if(this.route_show_opt.length===0) {
+            if (this.route_show_opt.length === 0) {
                 this.route_placeholder = ' sorry,没有可使用路由...'
             }
             this.curr_row = row
@@ -654,11 +662,9 @@ export default {
     margin-top: 3px;
     margin-bottom: 3px;
 } */
-.lev1 ul {
-    /* display: none; */
-    /* overflow: hidden; */
-    transition: max-height 0.3s;
-}
+/* .lev1 ul {
+    overflow: hidden;
+} */
 .lev1 > li > .title {
     line-height: 20px;
     font-size: 15px;

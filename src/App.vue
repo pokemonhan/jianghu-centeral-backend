@@ -137,7 +137,7 @@ export default {
     /* overflow: scroll; */
 }
 .app-main {
-    height: 100%;
+    /* height: 100%; */
     width: 100%;
     margin-left: 10px;
     margin-right: 10px;
@@ -316,7 +316,7 @@ export default {
 }
 .container {
     width: 100%;
-    min-height: calc(100vh - 120px);
+    min-height: calc(100vh - 300px);
     /* height: 100vh; */
     /* min-height: 700px; */
     /* height: ; */
@@ -653,7 +653,7 @@ button:focus {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
 }
 
 .a {

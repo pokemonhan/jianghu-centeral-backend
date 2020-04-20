@@ -1,3 +1,97 @@
+/**css样式修改 
+ * @param {object} el 元素
+ * @param {string} prop 属性 例如'height'
+ * @param {string} val 值 可以是数字
+*/
+function css(el, prop, val) {
+    var style = el && el.style;
+
+    if (style) {
+        if (val === void 0) {
+            if (document.defaultView && document.defaultView.getComputedStyle) {
+                val = document.defaultView.getComputedStyle(el, '');
+            } else if (el.currentStyle) {
+                val = el.currentStyle;
+            }
+
+            return prop === void 0 ? val : val[prop];
+        } else {
+            if (!(prop in style)) {
+                prop = '-webkit-' + prop;
+            }
+            style[prop] = val + (typeof val === 'string' ? '' : 'px');
+        }
+    }
+}
+// 简单的下拉slide
+function slideDown(ele, time=200) {
+    // let ele = this.$refs.ul
+    if (!ele) return
+    if (!(ele instanceof Element)) {
+        ele = ele[0]
+    }
+    // 初始值
+    
+    let prevStyle = ele.currentStyle || getComputedStyle(ele, null)
+    // console.log('🥖 prevRect: ', prevStyle);
+    let overflow = prevStyle.overflow
+    css(ele, 'transition', 'max-height ' + time + 'ms');
+    ele.style.display = 'block'
+    ele.style.overflow = 'hidden'
+    let offsetHeight = ele.offsetHeight
+    // console.log('🌯 offsetHeight: ', offsetHeight);
+    ele.style.maxHeight = '0'
+    setTimeout(() => {
+        ele.style.maxHeight = offsetHeight + 'px'
+        // ele.style.overflow = 'hidden'
+    }, 20)
+    setTimeout(() => {
+        ele.style.maxHeight = 'none'
+        // ele.style.display = 'block'
+        ele.style.overflow = overflow
+        
+    }, time)
+}
+function slideUp(ele,time=200) {
+    // let ele = this.$refs.ul
+    if (!ele) return
+    if (!(ele instanceof Element)) {
+        ele = ele[0]
+        // if(!(ele instanceof Element)) {
+        //     return
+        // }
+    }
+    ele.style.maxHeight = ele.offsetHeight + 'px'
+    let overflow =ele.style.overflow // 预先存储overflow初始状态, 后面动画完, 还原
+    // ele.style.transition = 'maxHeight .2s'
+    css(ele, 'transition', 'max-height ' + time + 'ms');
+    ele.style.overflow = 'hidden'
+    setTimeout(() => {
+        ele.style.maxHeight = '0'
+    }, 20)
+    setTimeout(() => {
+        ele.style.maxHeight = 'none'
+        ele.style.display = 'none'
+        ele.style.overflow = overflow // 原来是啥就是啥
+    }, time)
+}
+function slideToggle(ele,time=200) {
+    if (!ele) return
+    if (!(ele instanceof Element)) {
+        ele = ele[0]
+    }
+
+    // 如果有就slideUp 上滑
+    if ( ele.clientHeight) {
+        slideUp(ele,time)
+        // 没有就 slideDown 下拉
+    } else {
+        slideDown(ele, time)
+    }
+}
+
+
+
 const Tool = {
     //工具汇总
 
@@ -105,104 +199,16 @@ const Tool = {
         }
         return params
     },
-    // 简单的下拉slide
-    slideDown(ele, time=200) {
-        // let ele = this.$refs.ul
-        if (!ele) return
-        if (!(ele instanceof Element)) {
-            ele = ele[0]
-        }
-        ele.style.maxHeight = 'none'
-        let offsetHeight = ele.offsetHeight
-        ele.style.maxHeight = '0'
-        setTimeout(() => {
-            ele.style.maxHeight = offsetHeight + 'px'
-        }, 20)
-        setTimeout(() => {
-            ele.style.maxHeight = 'none'
-            ele.style.display = 'block'
-
-        }, time+100)
-    },
-    slideUp(ele,time=20) {
-        // let ele = this.$refs.ul
-        if (!ele) return
-        if (!(ele instanceof Element)) {
-            ele = ele[0]
-            // if(!(ele instanceof Element)) {
-            //     return
-            // }
-        }
-        ele.style.maxHeight = ele.offsetHeight + 'px'
-        setTimeout(() => {
-            ele.style.maxHeight = '0'
-        }, 20)
-        setTimeout(() => {
-            ele.style.maxHeight = 'none'
-            ele.style.display = 'none'
-
-        }, time+100)
-    },
-    slideToggle(ele,time=200) {
-        if (!ele) return
-        if (!(ele instanceof Element)) {
-            ele = ele[0]
-        }
-        let offsetHeight = ele.clientHeight
-        // this.offsetHeight || this.initMaxHeight()
-
-        // 如果有就slideUp 上滑
-        if (offsetHeight) {
-            ele.style.maxHeight = ele.offsetHeight + 'px'
-            setTimeout(() => {
-                ele.style.maxHeight = '0'
-            }, 20)
-            setTimeout(() => {
-                ele.style.display = 'none'
-                // ele.style.maxHeight = 'none'
-            }, time+100)
-            // 没有就 slideDown 下拉
-        } else {
-            ele.style.maxHeight = 'none'
-            ele.style.display = 'block'
-            let offsetHeight = ele.offsetHeight
-            ele.style.maxHeight = '0'
-            setTimeout(() => {
-                ele.style.maxHeight = offsetHeight + 'px'
-            }, 20)
-            setTimeout(() => {
-                ele.style.maxHeight = 'none'
-                ele.style.display = 'block'
-            }, time+100)
-        }
-    },
+    slideDown: slideDown,
+    slideUp:slideUp,
+    slideToggle: slideToggle,
     /**
      * 修改 元素样式 
      * @param {Object} el 元素Dom
      * @param {String} prop 修改的属性
      * @param {String, Number} val 值
      */
-    css(el, prop, val) {
-        var style = el && el.style;
-
-        if (style) {
-            if (val === void 0) {
-                if (document.defaultView && document.defaultView.getComputedStyle) {
-                    val = document.defaultView.getComputedStyle(el, '');
-                } else if (el.currentStyle) {
-                    val = el.currentStyle;
-                }
-
-                return prop === void 0 ? val : val[prop];
-            } else {
-                if (!(prop in style)) {
-                    prop = '-webkit-' + prop;
-                }
-
-                style[prop] = val + (typeof val === 'string' ? '' : 'px');
-            }
-        }
-    }
+    css: css,
 
 
 };

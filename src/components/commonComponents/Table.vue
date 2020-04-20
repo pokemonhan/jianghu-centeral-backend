@@ -175,6 +175,10 @@ export default {
 </script>
 
 <style scoped>
+.v-table {
+    min-height: calc(100vh - 290px);
+    /* border: 1px solid #4c8bfd; */
+}
 .table-container table {
     border-collapse: collapse;
     width: 100%;

@@ -36,7 +36,6 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
-// import { component as VueContextMenu } from '@xunlei/vue-context-menu'
 
 export default {
     // components: {
