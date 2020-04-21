@@ -615,18 +615,14 @@ export default {
     min-height: 700px;
     border: 1px solid #70a2fd;
 }
-/* TODO: */
 .total-menu .tol-center {
     width: 30%;
-    display: none;
 }
 .total-menu .tol-left {
     width: 30%;
-    display: none;
 }
 .total-menu .tol-right {
     width: 40%;
-    width: 70%;
 }
 /* .total-menu .tol-left {
 

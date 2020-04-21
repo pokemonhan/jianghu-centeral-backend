@@ -27,8 +27,8 @@
                     <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
-                    <td>{{row.last_editor &&row.last_editor.name}}</td>
-                    <td>{{row.updated_at}}</td>
+                    <td>{{row.last_editor &&row.last_editor.name||'---'}}</td>
+                    <td>{{row.updated_at||'---'}}</td>
                     <!-- <td>
                         <button
                             :class="[row.status?'btns-red':'btns-green']"

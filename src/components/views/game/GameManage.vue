@@ -35,7 +35,7 @@
                     <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
-                    <td>{{row.last_editor && row.last_editor.name}}</td>
+                    <td>{{row.last_editor && row.last_editor.name||'---'}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
                         <!-- <button class="btns-blue" @click="edit(row)">编辑</button> -->
@@ -58,43 +58,6 @@
 
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
             <div class="dia-inner">
-                <!-- <div v-if="dia_show==='edit'" class="edit-form">
-                    <ul class="form">
-                        <li>
-                            <span>游戏名称</span>
-                            <Input class="w250" v-model="form.name" />
-                            <span v-show="!form.name" class="err-tips">游戏名称不可为空!</span>
-                        </li>
-                        <li>
-                            <span>商户秘钥:</span>
-                            <Input class="w250" v-model="form.merchant_secret" />
-                        </li>
-                        <li>
-                            <span>商户私钥:</span>
-                            <Input class="w250" v-model="form.private_key" />
-                        </li>
-                        <li>
-                            <span>商户公钥:</span>
-                            <Input class="w250" v-model="form.public_key" />
-                        </li>
-                        <li>
-                            <span>商户号:</span>
-                            <Input class="w250" v-model="form.merchant_code" />
-                        </li>
-                        <li>
-                            <span>APPID:</span>
-                            <Input class="w250" v-model="form.app_id" />
-                        </li>
-                        <li>
-                            <span>授权码:</span>
-                            <Input class="w250" v-model="form.authorization_code" />
-                        </li>
-                    </ul>
-                    <div class="form-btns">
-                        <button class="btn-plain-large" @click="dia_show=''">取消</button>
-                        <button class="btn-blue-large ml50" @click="editConf">确定</button>
-                    </div>
-                </div>-->
                 <div v-if="dia_show==='detail'" class="dia-detail">
                     <GameManageDetail :id="curr_row.id" />
                 </div>

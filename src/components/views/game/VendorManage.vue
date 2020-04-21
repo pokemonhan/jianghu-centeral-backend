@@ -26,8 +26,8 @@
                     <td>
                         <Switchbox :value="row.status" @update="statusSwitch($event, row)" />
                     </td>
-                    <td>{{row.last_editor && row.last_editor.name}}</td>
-                    <td>{{row.updated_at}}</td>
+                    <td>{{row.last_editor && row.last_editor.name||'---'}}</td>
+                    <td>{{row.updated_at||'---'}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
                         <!-- <button

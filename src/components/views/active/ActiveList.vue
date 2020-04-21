@@ -23,18 +23,12 @@
                     <!-- '编号', '活动名称', '最后更新人', '最后更新时间', '活动状态', '操作'  -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.name}}</td>
-                    <td>{{row.last_editor&&row.last_editor.name}}</td>
+                    <td>{{row.last_editor&&row.last_editor.name||'---'}}</td>
                     <td>{{row.updated_at}}</td>
                     <!-- <td :class="[row.status?'green':'red']">{{row.status===1?'启用':'禁用'}}</td> -->
                     <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
-                    <!-- <td>
-                        <button
-                            :class="[row.status?'btns-red':'btns-green']"
-                            @click="statusSwitch(row)"
-                        >{{row.status===1?'禁用':'启用'}}</button>
-                    </td>-->
                 </template>
             </Table>
 

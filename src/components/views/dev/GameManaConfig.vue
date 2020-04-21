@@ -637,15 +637,15 @@ export default {
     display: flex;
     align-items: center;
     position: relative;
-    margin-top: 20px;
+    margin-top: 25px;
 }
 .form > li > span:first-child {
-    width: 9em;
+    width: 6em;
 }
 .err-tips {
     position: absolute;
     top: 30px;
-    left: 10em;
+    left: 7em;
     color: rgb(255, 51, 0);
 }
 .w250 {

@@ -34,22 +34,24 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
+                    <!-- '域名', '添加时间', '状态', '操作' -->
                     <td class="tab-domain">
                         <i v-show="domain_idx!==0" class="iconfont iconstart"></i>
                         <span>{{row.domain}}</span>
                     </td>
                     <td>{{row.created_at}}</td>
                     <td>
-                        <span
+                        <!-- <span
                             :class="[row.status===1?'green':'red']"
-                        >{{row.status===1?'开启':'关闭'}}</span>
+                        >{{row.status===1?'开启':'关闭'}}</span>-->
+                        <Switchbox v-model="row.status" @update="statusSwitch($event,row)" />
                     </td>
                     <td>
-                        <button
+                        <!-- <button
                             :class="[row.status?'btns-red':'btns-green']"
                             @click="statusSwitch(row)"
-                        >{{row.status===1?'禁用':'启用'}}</button>
-                        <button class="btns-blue" @click="del(row)">删除</button>
+                        >{{row.status===1?'禁用':'启用'}}</button>-->
+                        <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
             </Table>
@@ -188,35 +190,39 @@ export default {
             })
         },
         modConf() {
-            if (this.mod_status === 'switch') {
-                this.switchCfm()
+            if(this.mod_status === 'del') {
+                this.delCfm()
             }
         },
-        statusSwitch(row) {
-            this.curr_row = row
-            this.mod_status = 'switch'
-            this.mod_title = row.status === 1 ? '禁用' : '启用'
-            this.mod_cont = '是否禁用该域名!'
-            this.mod_show = true
+        statusSwitch(val, row) {
+            let data = {
+                id: row.id,
+                status: val ? 1 : 0
+            }
+            let { url, method } = this.$api.platform_domain_status_set
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === '200') {
+                    this.$toast.success(res && res.message)
+                    this.getList()
+                }
+            })
         },
-        del() {
-            this.mod_status = 'delete'
+        del(row) {
+            this.curr_row = row
+            this.mod_status = 'del'
             this.mod_title = '删除'
             this.mod_cont = '是否删除该域名!'
             this.mod_show = true
         },
-        switchCfm() {
-            return // TODO:
+        delCfm() {
             let data = {
-                id: this.form.id,
-                status: this.form.status
+                id: this.curr_row.id,
             }
-
-            // let { url, method } = this.$api.aaaaaaaa🐷
+            let { url, method } = this.$api.platform_domain_del
             this.$http({ method, url, data }).then(res => {
                 console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
-                    this.$toast.success(res && res.message)
+                    this.$toast.success(res.message)
                     this.mod_show = false
                     this.getList()
                 }
@@ -228,10 +234,9 @@ export default {
                 sign: this.sign,
                 type: this.domain_idx,
                 domain: this.filter.domain,
-                status: this.filter.status,
-
+                status: this.filter.status
             }
-            if(this.filter.dates[0]&&this.filter.dates[1]) {
+            if (this.filter.dates[0] && this.filter.dates[1]) {
                 para.createdAt = JSON.stringify(this.filter.dates)
             }
             let params = window.all.tool.rmEmpty(para)

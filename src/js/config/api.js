@@ -50,14 +50,24 @@ export default {
         url: '/headquarters-api/platform/switch',
         method: 'post'
     },
-    // 厅主列表 -域名管理-列表
+    // 2.1.4 厅主列表 -域名管理-列表
     platform_domain_list: {
         url: '/headquarters-api/platform/domain-detail',
         method: 'post'
     },
-    // 厅主列表 -域名管理-添加
+    // 2.1.5 厅主列表 -域名管理-添加
     platform_domain_add: {
         url: '/headquarters-api/platform/domain-add',
+        method: 'post'
+    },
+    // 2.1.6 厅主列表 -域名管理-改变状态
+    platform_domain_status_set: {
+        url: '/headquarters-api/platform/domain-status',
+        method: 'post'
+    },
+    // 2.1.7 厅主列表 -域名管理-删除
+    platform_domain_del: {
+        url: '/headquarters-api/platform/domain-delete',
         method: 'post'
     },
     // 厅主列表 - 站点维护
@@ -71,7 +81,7 @@ export default {
         method: 'post'
     },
 
-    // 登录记录
+    // 登录记录 --------------
     login_record_list: {
         url: '/headquarters-api/login-log/index',
         method: 'post',
