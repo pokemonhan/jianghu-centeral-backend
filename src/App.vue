@@ -705,6 +705,9 @@ button:focus {
 .mb10 {
     margin-bottom: 10px;
 }
+.mb20 {
+    margin-bottom: 10px;
+}
 .p5 {
     padding: 5px;
 }

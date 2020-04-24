@@ -23,7 +23,7 @@
                 </li>
                 <li>
                     <span>日期</span>
-                    <Date type="daterange" v-model="filter.dates" />
+                    <Date type="datetimerange" v-model="filter.dates" />
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -237,12 +237,12 @@ export default {
                 status: this.filter.status
             }
             if (this.filter.dates[0] && this.filter.dates[1]) {
-                para.createdAt = JSON.stringify(this.filter.dates)
+                para.created_at = JSON.stringify(this.filter.dates)
             }
-            let params = window.all.tool.rmEmpty(para)
+            let data = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.platform_domain_list
-            this.$http({ method, url, params }).then(res => {
-                console.log('域名列表?👌: ', res)
+            this.$http({ method, url, data }).then(res => {
+                // console.log('域名列表?👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data

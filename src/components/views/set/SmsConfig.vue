@@ -21,6 +21,7 @@
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
+                    <button class="btn-blue ml10" @click="add">添加</button>
                 </li>
             </ul>
         </div>
@@ -72,27 +73,27 @@
                         <span>商户标识</span>
                         <Input class="w250" disabled v-model="form.sign" />
                     </li>
-                    <li>
+                    <!-- <li>
                         <span>商户号</span>
                         <Input class="w250" v-model="form.merchant_code" />
                         <span class="err-tips" v-show="!form.merchant_code">商户号不可为空!</span>
-                    </li>
-                    <li>
+                    </li> -->
+                    <!-- <li>
                         <span>商户密钥</span>
                         <Input class="w250" v-model="form.merchant_secret" />
                         <span class="err-tips" v-show="!form.merchant_secret">商户密钥不可为空!</span>
-                    </li>
-                    <li>
+                    </li> -->
+                    <!-- <li>
                         <span>商户公钥</span>
                         <Input class="w250" v-model="form.public_key" />
                         <span class="err-tips" v-show="!form.public_key">商户公钥不可为空!</span>
-                    </li>
+                    </li> -->
                     <li>
                         <span>短信数量</span>
                         <Input class="w250" limit="p-integer" v-model="form.sms_num" />
                         <span class="err-tips" v-show="!form.sms_num">短信不可为空!</span>
                     </li>
-                    <li>
+                    <!-- <li>
                         <span>授权码</span>
                         <Input class="w250" limit="en-num" v-model="form.authorization_code" />
                         <span class="err-tips" v-show="!form.authorization_code">授权码不可为空!</span>
@@ -101,7 +102,7 @@
                         <span>请求地址</span>
                         <Input class="w250" v-model="form.url" />
                         <span class="err-tips" v-show="!form.url">请求地址不可为空!</span>
-                    </li>
+                    </li> -->
                 </ul>
                 <div class="form-btn">
                     <button class="btn-plain-large" @click="dia_show=false">取消</button>
@@ -171,6 +172,22 @@ export default {
         }
     },
     methods: {
+        add() {
+            this.form = {
+                // id: row.id, // id
+                sign: '',
+                name: '',
+                // merchant_code: row.merchant_code,
+                // merchant_secret: row.merchant_secret,
+                // public_key: row.public_key,
+                sms_num: '',
+                // authorization_code: row.authorization_code,
+                // url: row.url
+            }
+            this.dia_status = 'add'
+            this.dia_show = true
+        },
+
         edit(row) {
             // console.log('row: ', row)
             this.curr_row = row
@@ -178,8 +195,8 @@ export default {
             this.dia_show = true
             this.form = {
                 id: row.id, // id
-                sign: row.sign,
                 name: row.name,
+                sign: row.sign,
                 merchant_code: row.merchant_code,
                 merchant_secret: row.merchant_secret,
                 public_key: row.public_key,
@@ -192,15 +209,6 @@ export default {
 
         statusSwitch(row) {
             this.curr_row = row
-            // this.mod_status = 'switch'
-            // if (row.status === 1) {
-            //     this.mod_title = '禁用'
-            //     this.mod_cont = '是否确定禁用该厂商!'
-            // } else {
-            //     this.mod_title = '启用'
-            //     this.mod_cont = '是否确定启用该厂商!'
-            // }
-            // this.mod_show = true
             this.switchCfm()
         },
         del(row) {
@@ -211,6 +219,9 @@ export default {
             this.mod_show = true
         },
         diaCfm() {
+            if (this.dia_status === 'add') {
+                this.addCfm()
+            }
             if (this.dia_status === 'edit') {
                 this.editCfm()
             }
@@ -218,13 +229,17 @@ export default {
         checkForm() {
             let checkArr = [
                 'name',
-                'merchant_code',
-                'merchant_secret',
-                'public_key',
+                'sign',
+                // 'merchant_code',
+                // 'merchant_secret',
+                // 'public_key',
                 'sms_num',
-                'authorization_code',
-                'url'
+                // 'authorization_code',
+                // 'url'
             ]
+            // if(this.dia_status === 'add') {
+            //     checkArr.push('sign') // 
+            // }
             let pass = true
             checkArr.forEach(key => {
                 if (this.form[key] === '') {
@@ -234,6 +249,23 @@ export default {
             })
 
             return pass
+        },
+        addCfm() {
+            if (!this.checkForm()) return
+            let data = {
+                name: this.form.name,
+                sms_num: this.form.sms_num,
+                sign: this.form.sign
+            }
+            let { url, method } = this.$api.sms_config_add
+            this.$http({ method, url, data }).then(res => {
+                // console.log('列表: ', res)
+                if (res && res.code === '200') {
+                    this.$toast.success(res && res.message)
+                    this.dia_show = false
+                    this.getList()
+                }
+            })
         },
         editCfm() {
             if (!this.checkForm()) return

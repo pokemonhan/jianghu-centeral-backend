@@ -1,52 +1,62 @@
 <template>
-    <div class="container">
-        <div class="filter p10">
-            <ul class="left">
-                <li>
-                    <span>管理员</span>
-                    <Input v-model="filter.admin_name" />
-                </li>
-                <li>
-                    <span>日期选择</span>
-                    <Date type="daterange" v-model="filter.created_at" />
-                </li>
-                <li>
-                    <button class="btn-blue" @click="getList">查询</button>
-                </li>
-            </ul>
-        </div>
-        <div>
-            <ul class="opera-list">
-                <li v-for="(item, index) in list" :key="index">
-                    <span style="min-width:150px;text-align:right;">{{timeAgo(item.created_at)}}</span>
-                    <div class="pic-cont">
-                        <img class="img" src="../../../assets/image/game/img (1).jpg" alt="图片丢失" />
-                        <div :class="[index!==list.length-1?'vertical-bar':'']"></div>
-                    </div>
-                    <div class="opera-cont">
-                        <div class="cont-left">
-                            <div class="cont-title">{{item.title}}</div>
-                            <div class="mt8">
-                                <span>操作时间:</span>
-                                <span>{{item.created_at}}</span>
+    <div class="container" ref="operalog">
+        <div class="operalog">
+            <div class="filter p10">
+                <ul class="left">
+                    <li>
+                        <span>管理员</span>
+                        <Input v-model="filter.admin_name" />
+                    </li>
+                    <li>
+                        <span>IP</span>
+                        <Input v-model="filter.data_ip" />
+                    </li>
+                    <li>
+                        <span>日期选择</span>
+                        <Date type="daterange" v-model="filter.created_at" />
+                    </li>
+                    <li>
+                        <button class="btn-blue" @click="firstLoad">查询</button>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul class="opera-list">
+                    <li v-for="(item, index) in list" :key="index">
+                        <span style="min-width:150px;text-align:right;">{{timeAgo(item.created_at)}}</span>
+                        <div class="pic-cont">
+                            <img
+                                class="img"
+                                src="../../../assets/image/game/img (1).jpg"
+                                alt="图片丢失"
+                            />
+                            <div :class="[index!==list.length-1?'vertical-bar':'']"></div>
+                        </div>
+                        <div class="opera-cont">
+                            <div class="cont-left">
+                                <div class="cont-title">{{item.title}}</div>
+                                <div class="mt8">
+                                    <span>操作时间:</span>
+                                    <span>{{item.created_at}}</span>
+                                </div>
+                            </div>
+                            <div class="cont-right">
+                                <button class="btn-blue" @click="detail(item)">查看详情</button>
                             </div>
                         </div>
-                        <div class="cont-right">
-                            <button class="btn-blue" @click="detail(item)">查看详情</button>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div>
-           <Page
-                class="table-page"
-                :total="total"
-                :pageNo.sync="pageNo"
-                :pageSize.sync="pageSize"
-                @updateNo="updateNo"
-                @updateSize="updateSize"
-            />
+                    </li>
+                </ul>
+            </div>
+            <!-- <div class="mb20">
+                <Page
+                    class="table-page"
+                    :total="total"
+                    :pageNo.sync="pageNo"
+                    :pageSize.sync="pageSize"
+                    @updateNo="updateNo"
+                    @updateSize="updateSize"
+                />
+            </div> -->
         </div>
         <Dialog :show.sync="dia_show" title="操作详情">
             <div class="dia-inner">
@@ -85,7 +95,7 @@
 <script>
 export default {
     name: 'OperatLog',
-   
+
     data() {
         return {
             filter: {
@@ -98,7 +108,8 @@ export default {
             pageSize: 25,
 
             dia_show: false,
-            curr_row: {}
+            curr_row: {},
+            isOver: false // 是否都加载完了
         }
     },
     methods: {
@@ -106,37 +117,49 @@ export default {
             this.dia_show = true
             this.curr_row = item
         },
-        getList() {
-            let created_at = ''
-            if (this.filter.created_at[0] && this.filter.created_at[1]) {
-                created_at = JSON.stringify(this.filter.created_at)
-            }
-            let para = {
-                data_ip: this.data_ip, // IP
-                admin_name: this.filter.admin_name, // 管理员名称
-                created_at: created_at, // 管理员时间
-                pageSize: this.pageSize,
-                page: this.pageNo
-            }
-
-            let params = window.all.tool.rmEmpty(para)
-
-            let { url, method } = this.$api.operat_log_list
-            this.$http({ method, url, params }).then(res => {
-                // console.log('列表👌👌👌👌: ', res)
-                if (res && res.code === '200') {
-                    this.total = res.data.total
+        // 第一次加载
+        firstLoad() {
+            this.pageNo = 1
+            this.getList().then(res => {
+                if (res.data) {
                     this.list = res.data.data
+                    this.total = res.data.toal
                 }
             })
         },
-        updateNo(val) {
-            this.getList()
+        getList() {
+            return new Promise((resolve, reject) => {
+                let created_at = ''
+                if (this.filter.created_at[0] && this.filter.created_at[1]) {
+                    created_at = JSON.stringify(this.filter.created_at)
+                }
+                let para = {
+                    data_ip: this.filter.data_ip, // IP
+                    admin_name: this.filter.admin_name, // 管理员名称
+                    created_at: created_at, // 管理员时间
+                    pageSize: this.pageSize,
+                    page: this.pageNo
+                }
+
+                let params = window.all.tool.rmEmpty(para)
+                let { url, method } = this.$api.operat_log_list
+                this.$http({ method, url, params }).then(res => {
+                    // console.log('列表👌👌👌👌: ', res)
+                    if (res && res.code === '200') {
+                        resolve(res)
+                    } else {
+                        reject(res)
+                    }
+                })
+            })
         },
-        updateSize(val) {
-            this.pageNo = 1
-            this.getList()
-        },
+        // updateNo(val) {
+        //     // this.getList()
+        // },
+        // updateSize(val) {
+        //     this.pageNo = 1
+        //     // this.getList()
+        // },
         timeAgo(time) {
             let reg = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/
             if (!reg.test(time)) return
@@ -200,17 +223,45 @@ export default {
                 result = Nyear + '-' + Nmonth + '-' + Ndate
             }
             return result
+        },
+
+        // 滚动加载
+        scroll(person) {
+            let isLoading = false
+            let ele = this.$refs.operalog
+
+            ele.onscroll = () => {
+                // 距离底部200px时加载一次
+                let scrollHeight = ele.scrollHeight
+                let scrollTop = ele.scrollTop
+                let offsetHeight = ele.offsetHeight
+                let bottomOfWindow = scrollHeight - scrollTop - offsetHeight
+                // console.log('🍹 isLoading: ', isLoading)
+                if (bottomOfWindow < 200 && isLoading == false) {
+                    let totalPage = Math.ceil(this.total / this.pageSize)
+                    // 如果是加
+                    if (this.pageNo > totalPage) return
+                    isLoading = true
+                    this.pageNo++ // 请求下一页
+                    this.getList().then(res => {
+                        isLoading = false
+                        if (res.data) {
+                            this.list = this.list.concat(res.data.data || [])
+                        }
+                    })
+                }
+            }
         }
     },
     mounted() {
-        this.getList()
+        this.firstLoad()
+        this.scroll()
     }
 }
 </script>
 <style scoped>
-.cont {
-    width: 1000px;
-    max-height: 80vh;
+.operalog {
+    height: calc(100vh - 170px);
     overflow: auto;
 }
 
@@ -218,13 +269,11 @@ export default {
     /* margin-left: 100px; */
     width: 730px;
     margin: 20px auto 0 auto;
-    /* border: 1px solid #000; */
 }
 .opera-list > li {
     display: flex;
     align-items: center;
     padding-bottom: 20px;
-    /* overflow: hidden; */
 }
 .opera-list > li .pic-cont {
     position: relative;

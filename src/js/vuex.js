@@ -9,7 +9,7 @@ const state = {
     showMask: false,
     tab_nav_list: [],         // 顶部导航菜单 顶部导航菜单 顶部导航菜单
     // keepAliveList
-    keepAliveExclude: ['SendEmail'],   // 不需要缓存的 组件name()
+    keepAliveExclude: ['SendEmail','OperatLog'],   // 不需要缓存的 组件name()
     picPrefix: window.location.protocol + '//pic.397017.com/', // 静态图片前缀
 };
 const getters = {

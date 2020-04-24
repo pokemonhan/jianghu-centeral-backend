@@ -210,6 +210,11 @@ export default {
         url: '/headquarters-api/game/opt-edit-do',
         method: 'post'
     },
+    // 3.3.5 游戏管理 - 编辑详情
+    game_edit_detail_list: {
+        url:'/headquarters-api/game/edit-detail',
+        method: 'post'
+    },
 
     /*=========================== 活动管理 ===========================--*/
     active_manage_list: {

@@ -59,7 +59,7 @@
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
             <div class="dia-inner">
                 <div v-if="dia_show==='detail'" class="dia-detail">
-                    <GameManageDetail :id="curr_row.id" />
+                    <GameManageDetail :id="curr_row.id" :select="select" />
                 </div>
             </div>
         </Dialog>
@@ -75,7 +75,7 @@ export default {
     },
     data() {
         return {
-            // select下拉 数据
+            // 所有 select下拉 数据
             select: {},
             filter: {
                 vendor_id: '',
@@ -134,17 +134,9 @@ export default {
         },
         // 后台数组转为 select_opt 数组
         backToSelOpt(list) {
-            let arr = [
-                {
-                    label: '全部',
-                    value: ''
-                }
-            ]
+            let arr = [{ label: '全部', value: '' }]
             list.forEach(item => {
-                let opt = {
-                    label: item.name,
-                    value: item.id
-                }
+                let opt = { label: item.name, value: item.id }
                 arr.push(opt)
             })
             return arr
@@ -238,7 +230,7 @@ export default {
         },
         detail(row) {
             // TODO
-            this.$toast('还未对接后端接口,或者后端没有接口')
+            // this.$toast('还未对接后端接口,或者后端没有接口')
             // return
             this.curr_row = row
             this.dia_show = 'detail'

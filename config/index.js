@@ -47,7 +47,7 @@ module.exports = {
   },
 
   build: {
-    // Template for index.html
+    // Template for index.html // 模板
     index: path.resolve(__dirname, '../dist/index.html'),
 
     // Paths
