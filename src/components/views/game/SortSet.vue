@@ -221,7 +221,6 @@ export default {
             let params = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.game_sort_list
             this.$http({ method, url, params }).then(res => {
-                console.log('res: ', res)
                 if (res && res.code === '200') {
                     // this.total = res.data.total
                     // this.list = res.data.data
@@ -234,7 +233,6 @@ export default {
             })
         },
         add(row) {
-            console.log('row: ', row)
             this.form = {
                 name: '',
                 sign: '',
@@ -244,7 +242,7 @@ export default {
             if (row.id) {
                 this.form.parent_id = row.id
             }
-            console.log('this.form: ', this.form)
+            // console.log('this.form: ', this.form)
             this.dia_status = 'add'
             this.dia_title =
                 this.form.category_type === 1 ? '添加一级菜单' : '添加子级'
@@ -289,7 +287,6 @@ export default {
             }
         },
         delCfm() {
-            console.log('this.curr_row: ', this.curr_row);
             let data = {
                 id: this.curr_row.id,
                 category_type: this.curr_row.parent_id ? 2 : 1
@@ -363,7 +360,6 @@ export default {
             //     category_type: Boolean(1)
             //   };
             let data = this.form
-            console.log('data: ', data)
 
             let { url, method } = this.$api.game_sort_set
             this.$http({ method, url, data }).then(res => {

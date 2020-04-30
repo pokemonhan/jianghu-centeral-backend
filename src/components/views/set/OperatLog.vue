@@ -1,6 +1,6 @@
 <template>
-    <div class="container" ref="operalog">
-        <div class="operalog">
+    <div class="container">
+        <div class="operalog" ref="operalog">
             <div class="filter p10">
                 <ul class="left">
                     <li>
@@ -82,7 +82,7 @@
                             <span>{{curr_row.ip}}</span>
                         </div>
                         <div>
-                            <span>代理:</span>
+                            <span>浏览器:</span>
                             <span>{{curr_row.user_agent}}</span>
                         </div>
                     </li>
@@ -226,7 +226,7 @@ export default {
         },
 
         // 滚动加载
-        scroll(person) {
+        scroll() {
             let isLoading = false
             let ele = this.$refs.operalog
 
@@ -239,7 +239,7 @@ export default {
                 // console.log('🍹 isLoading: ', isLoading)
                 if (bottomOfWindow < 200 && isLoading == false) {
                     let totalPage = Math.ceil(this.total / this.pageSize)
-                    // 如果是加
+                    // 如果是加载到最后一条,不执行
                     if (this.pageNo > totalPage) return
                     isLoading = true
                     this.pageNo++ // 请求下一页

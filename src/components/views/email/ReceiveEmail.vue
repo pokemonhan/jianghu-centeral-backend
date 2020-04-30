@@ -43,7 +43,8 @@
             </div>
             <!-- table -->
             <div style="margin-top:5px;"></div>
-            <Table :headers="headers" :column="list" @checkboxChange="checkboxChange" hadCheckbox>
+            <div class="table">
+                <Table :headers="headers" :column="list" @checkboxChange="checkboxChange" hadCheckbox>
                 <template v-slot:item="{row,idx}">
                     <td
                         class="pointer"
@@ -70,6 +71,7 @@
                 @updateNo="updateNo"
                 @updateSize="updateSize"
             />
+            </div>
         </div>
         <!-- 详情 -->
         <Dialog class="dialog" :show.sync="dia_show" title="收件箱详情">
@@ -224,6 +226,11 @@ export default {
 }
 .pointer {
     cursor: pointer;
+}
+.table .v-table {
+    min-width: 1920px;
+    min-height: calc(100vh - 400px);
+    margin-bottom: 5px;
 }
 .dia-inner {
     min-width: 1000px;

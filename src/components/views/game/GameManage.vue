@@ -59,14 +59,16 @@
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
             <div class="dia-inner">
                 <div v-if="dia_show==='detail'" class="dia-detail">
-                    <GameManageDetail :id="curr_row.id" :select="select" />
+                    <GameManageDetail :id="curr_row.id" />
                 </div>
             </div>
         </Dialog>
         <!-- 禁用 modal -->
         <Modal :show.sync="mod_show" :title="mod_title" :content="mod_cont" @confirm="modConf"></Modal>
     </div>
-</template> <script>
+</template>
+
+<script>
 import GameManageDetail from './GameManageDetail'
 export default {
     name: 'GameManage',

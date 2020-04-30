@@ -1,17 +1,17 @@
 
 <template>
-    <div class="container" ref="operalog">
+    <div class="container" ref="gameManageDetail">
         <div class="operalog">
             <div class="filter p10">
                 <ul class="left">
-                    <li>
+                    <!-- <li>
                         <span>游戏厂商</span>
                         <Select v-model="filter.vendor" :options="vendor_opt"></Select>
                     </li>
                     <li>
                         <span>游戏名称</span>
                         <Select v-model="filter.name" :options="name_opt"></Select>
-                    </li>
+                    </li> -->
                     <li>
                         <span>日期选择</span>
                         <!-- <Date v-model="filter.dates[0]" />
@@ -20,7 +20,7 @@
                         <Date type="daterange" v-model="filter.created_at" />
                     </li>
                     <li>
-                        <button class="btn-blue">查询</button>
+                        <button class="btn-blue" @click="firstLoad">查询</button>
                     </li>
                 </ul>
             </div>
@@ -78,7 +78,7 @@
                             <span>{{curr_row.created_at}}</span>
                         </div>
                         <div>
-                            <span class>来源:</span>
+                            <span>来源:</span>
                             <span>{{curr_row.origin}}</span>
                         </div>
                         <div>
@@ -86,7 +86,7 @@
                             <span>{{curr_row.ip}}</span>
                         </div>
                         <div>
-                            <span>代理:</span>
+                            <span>浏览器:</span>
                             <span>{{curr_row.user_agent}}</span>
                         </div>
                     </li>
@@ -101,21 +101,21 @@ export default {
     name: 'OperatLog',
     props: {
         id: [Number, String],
-        select: {
-            type: Object,
-            default: {}
-        }
+        // select: {
+        //     type: Object,
+        //     default: {}
+        // }
     },
     data() {
         return {
             filter: {
-                vendor: '',
-                name: '',
+                // vendor: '',
+                // name: '',
                 created_at: []
             },
-            vendor_opt: [],
-            type_opt: [],
-            name_opt: [],
+            // vendor_opt: [],
+            // type_opt: [],
+            // name_opt: [],
 
             list: [],
             total: 0,
@@ -132,28 +132,28 @@ export default {
             this.dia_show = true
             this.curr_row = item
         },
-        // 后台数组转为 select_opt 数组
-        backToSelOpt(list = []) {
-            console.log('🥘 list: ', list)
-            let arr = [{ label: '全部', value: '' }]
-            list.forEach(item => {
-                let opt = { label: item.name, value: item.id }
-                arr.push(opt)
-            })
-            return arr
-        },
-        initOpt() {
-            if(JSON.stringify(this.select.vendors) === '{}') return
-            this.vendor_opt = this.backToSelOpt(this.select.vendors)
-            this.name_opt = this.backToSelOpt(this.select.games)
-            this.type_opt = this.backToSelOpt(this.select.types)
-        },
+        // // 后台数组转为 select_opt 数组
+        // backToSelOpt(list = []) {
+        //     // console.log('🥘 list: ', list)
+        //     let arr = [{ label: '全部', value: '' }]
+        //     list.forEach(item => {
+        //         let opt = { label: item.name, value: item.id }
+        //         arr.push(opt)
+        //     })
+        //     return arr
+        // },
+        // initOpt() {
+        //     if (JSON.stringify(this.select.vendors) === '{}') return
+        //     this.vendor_opt = this.backToSelOpt(this.select.vendors)
+        //     this.name_opt = this.backToSelOpt(this.select.games)
+        //     this.type_opt = this.backToSelOpt(this.select.types)
+        // },
         // 第一次加载
         firstLoad() {
             this.getList().then(res => {
                 if (res.data) {
                     this.list = res.data.data
-                    this.total = res.data.toal
+                    this.total = res.data.total
                 }
             })
         },
@@ -176,11 +176,9 @@ export default {
                 this.$http({ method, url, params }).then(res => {
                     // console.log('列表👌👌👌👌: ', res)
                     if (res && res.code === '200') {
-                        console.log('🥨 this.pageNo: ', this.pageNo)
-
                         resolve(res)
                     } else {
-                        reject(res)
+                        // reject(res)
                     }
                 })
             })
@@ -198,7 +196,7 @@ export default {
             let dateTimeStamp = new Date(time)
 
             //dateTimeStamp是一个时间毫秒，注意时间戳是秒的形式，在这个毫秒的基础上除以1000，就是十位数的时间戳。13位数的都是时间毫秒。
-            var minute = 1000 * 60 //把分，时，天，周，半个月，一个月用毫秒表示
+            var minute = 1000 * 60 //把 分，时，天，周，半个月，一个月用毫秒表示
             var hour = minute * 60
             var day = hour * 24
             var week = day * 7
@@ -258,20 +256,20 @@ export default {
         },
 
         // 滚动加载
-        scroll(person) {
+        scroll() {
             let isLoading = false
-            let ele = this.$refs.operalog
-
+            let ele = this.$refs.gameManageDetail
+            let self = this
             ele.onscroll = () => {
                 // 距离底部200px时加载一次
                 let scrollHeight = ele.scrollHeight
                 let scrollTop = ele.scrollTop
                 let offsetHeight = ele.offsetHeight
                 let bottomOfWindow = scrollHeight - scrollTop - offsetHeight
-                console.log('🍹 isLoading: ', isLoading)
                 if (bottomOfWindow < 200 && isLoading == false) {
                     let totalPage = Math.ceil(this.total / this.pageSize)
-                    // 如果是加
+
+                    // 如果是加载 到最后一页
                     if (this.pageNo > totalPage) return
                     isLoading = true
                     this.pageNo++ // 请求下一页
@@ -285,13 +283,13 @@ export default {
             }
         }
     },
-    watch: {
-        select(val) {
-            this.initOpt()
-        }
-    },
+    // watch: {
+    //     select(val) {
+    //         this.initOpt()
+    //     }
+    // },
     mounted() {
-        this.initOpt()
+        // this.initOpt()
         this.firstLoad()
         this.scroll()
     }

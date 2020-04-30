@@ -17,6 +17,7 @@ import Toast from '../components/commonComponents/Toast.vue'
 import Notice from '../components/commonComponents/Notice.vue'
 import Loading from '../components/commonComponents/Loading.vue'
 import Tooltip from '../components/commonComponents/Tooltip.vue'
+import Step from '../components/commonComponents/Step.vue'
 // import DragTree from '../components/commonComponents/dragtree/index.js'
 
 // 指令
@@ -47,6 +48,7 @@ const components = {
     TwoTable,
     Loading,
     Tooltip,
+    Step
     // DragTree
 }
 

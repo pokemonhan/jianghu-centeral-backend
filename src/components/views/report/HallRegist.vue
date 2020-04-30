@@ -3,8 +3,8 @@
         <!-- 厅主注单报表 -->
         <!-- 注单就是下注单 -->
         <!-- <div class="date-select"> -->
-            <QuickQuery :date="quick_query" @update="qqUpd" />
-            
+        <!-- <QuickQuery :date="quick_query" @update="qqUpd" /> -->
+
         <!-- </div> -->
         <div class="filter p10">
             <ul class="left">
@@ -16,14 +16,14 @@
                     <span>派彩时间</span>
                     <!-- <Date v-model="filter.lottery_dates[0]" @update="timeUpdate()" />
                     <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.lottery_dates[1]" @update="timeUpdate()" /> -->
+                    <Date v-model="filter.lottery_dates[1]" @update="timeUpdate()" />-->
                     <Date type="daterange" v-model="filter.lottery_dates" />
                 </li>
                 <li>
                     <span>入库时间</span>
                     <!-- <Date v-model="filter.warehouse_dates[0]" @update="timeUpdate()" />
                     <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.warehouse_dates[1]" @update="timeUpdate()" /> -->
+                    <Date v-model="filter.warehouse_dates[1]" @update="timeUpdate()" />-->
                     <Date type="daterange" v-model="filter.warehouse_dates" />
                 </li>
             </ul>
@@ -38,7 +38,7 @@
                     <span>注单时间</span>
                     <!-- <Date v-model="filter.bet_dates[0]" @update="timeUpdate()" />
                     <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.bet_dates[1]" @update="timeUpdate()" /> -->
+                    <Date v-model="filter.bet_dates[1]" @update="timeUpdate()" />-->
                     <Date type="daterange" v-model="filter.dates" />
                 </li>
                 <li>
@@ -97,7 +97,7 @@ export default {
                 lottery_dates: [],
                 bet_dates: [],
                 warehouse_dates: [],
-                dates: [],
+                dates: []
             },
             status_opt: [
                 { label: '全部', value: '' },
@@ -189,8 +189,8 @@ export default {
 /*定义滚动条高宽及背景
  高宽分别对应横竖滚动条的尺寸*/
 ::-webkit-scrollbar {
-    width:10px;
-    height:10px;
+    width: 10px;
+    height: 10px;
     /* background-color:#F5F5F5; */
 }
 .date-select {
@@ -221,7 +221,7 @@ export default {
 }
 .table .v-table {
     min-width: 1920px;
+    min-height: calc(100vh - 350px);
     margin-bottom: 5px;
 }
-
 </style>

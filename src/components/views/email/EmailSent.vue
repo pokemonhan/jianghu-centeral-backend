@@ -13,7 +13,7 @@
                     <span>发件时间</span>
                     <!-- <Date v-model="filter.dates[0]" @update="timeUpdate()" />
                     <span style="margin: 0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" @update="timeUpdate()" /> -->
+                    <Date v-model="filter.dates[1]" @update="timeUpdate()" />-->
                     <Date type="daterange" v-model="filter.dates" />
                 </li>
                 <li>
@@ -40,33 +40,40 @@
                         @click="nextPage"
                     >下一页</button>
                     <!-- <button class="btn-plain">上一页</button>
-                    <button class="btn-plain">下一页</button> -->
+                    <button class="btn-plain">下一页</button>-->
                 </div>
             </div>
             <!-- table -->
             <div style="margin-top:5px;"></div>
-            <Table :headers="headers" :column="list" @checkboxChange="checkboxChange" hadCheckbox>
-                <template v-slot:item="{row,idx}">
-                    <td class="pointer" style="width:140px;" @click="showDetail(row,idx)">
-                        <p v-for="(item, index) in row.receivers" :key="index">{{item}}</p>
-                    </td>
-                    <!-- <td>{{title}}</td> -->
-                    <td
-                        class="pointer"
-                        style="min-width:760px;padding:5px;"
-                        @click="showDetail(row,idx)"
-                    >{{getText(row.content)}}</td>
-                    <td class="pointer" @click="showDetail(row,idx)">{{row.send_time}}</td>
-                </template>
-            </Table>
-            <Page
-                class="table-page"
-                :total="total"
-                :pageNo.sync="pageNo"
-                :pageSize.sync="pageSize"
-                @updateNo="updateNo"
-                @updateSize="updateSize"
-            />
+            <div class="table">
+                <Table
+                    :headers="headers"
+                    :column="list"
+                    @checkboxChange="checkboxChange"
+                    hadCheckbox
+                >
+                    <template v-slot:item="{row,idx}">
+                        <td class="pointer" style="width:140px;" @click="showDetail(row,idx)">
+                            <p v-for="(item, index) in row.receivers" :key="index">{{item}}</p>
+                        </td>
+                        <!-- <td>{{title}}</td> -->
+                        <td
+                            class="pointer"
+                            style="min-width:760px;padding:5px;"
+                            @click="showDetail(row,idx)"
+                        >{{getText(row.content)}}</td>
+                        <td class="pointer" @click="showDetail(row,idx)">{{row.send_time}}</td>
+                    </template>
+                </Table>
+                <Page
+                    class="table-page"
+                    :total="total"
+                    :pageNo.sync="pageNo"
+                    :pageSize.sync="pageSize"
+                    @updateNo="updateNo"
+                    @updateSize="updateSize"
+                />
+            </div>
         </div>
         <!-- 详情 -->
         <Dialog :show.sync="dia_show" title="已发邮件详情">
@@ -128,14 +135,14 @@ export default {
             }
         },
         prevPage() {
-            if(this.pageNo>1) {
+            if (this.pageNo > 1) {
                 this.pageNo--
                 this.getList()
             }
         },
         nextPage() {
-            if(this.pageNo<Math.ceil(this.total/this.pageSize)) {
-                this.pageNo ++
+            if (this.pageNo < Math.ceil(this.total / this.pageSize)) {
+                this.pageNo++
                 this.getList()
             }
         },
@@ -198,7 +205,6 @@ export default {
 </script>
 
 <style scoped>
-
 .tab-control {
     /* width: 100%; */
     display: flex;
@@ -215,6 +221,11 @@ export default {
     color: #ccc;
     border: 1px solid #ccc;
     cursor: not-allowed;
+}
+.table .v-table {
+    min-width: 1920px;
+    min-height: calc(100vh - 400px);
+    margin-bottom: 5px;
 }
 .dia-inner {
     min-width: 1000px;

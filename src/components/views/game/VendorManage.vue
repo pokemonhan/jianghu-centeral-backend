@@ -30,10 +30,6 @@
                     <td>{{row.updated_at||'---'}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
-                        <!-- <button
-                            :class="[row.status?'btns-red':'btns-green']"
-                            @click="statusSwitch(row)"
-                        >{{row.status===1?'禁用':'启用'}}</button> -->
                     </td>
                 </template>
             </Table>
@@ -52,7 +48,7 @@
             <div class="dia-inner">
                 <div class="edit-form">
                     <ul class="form">
-                        <li>
+                        <!-- <li>
                             <div class="left">
                                 <span>厂商名称:</span>
                                 <Input
@@ -71,17 +67,12 @@
                                     v-model="form.sign"
                                 />
                             </div>
-                        </li>
+                        </li>-->
 
-                        <li>
+                        <!-- <li>
                             <div>
                                 <span>游戏类型:</span>
-                                <!-- <Input
-                                    class="w250"
-                                    :showerr="!form.type_id"
-                                    errmsg="游戏类型不可为空!"
-                                    v-model="form.type_id"
-                                />-->
+                                
                                 <Select
                                     class="ml10 w250"
                                     v-model="form.type_id"
@@ -99,7 +90,7 @@
                                     v-model="form.urls.login"
                                 />
                             </div>
-                        </li>
+                        </li>-->
                         <!-- <li>
                             <span>白名单</span>
                             <Input class="w250" v-model="form.whitelist_ips" />
@@ -297,7 +288,7 @@
                         </li>
 
                         <li>
-                            <div>
+                            <!-- <div>
                                 <span>状态:</span>
                                 <Radio
                                     class="radio-left ml50"
@@ -313,10 +304,12 @@
                                     val="0"
                                     v-model="form.status"
                                 />
-                            </div>
+                            </div>-->
                         </li>
                     </ul>
                     <div class="form-btns">
+                        <button v-show="active!==1" class="btn-blue-large">上一步</button>
+                        <!-- <button class="btn-blue-large" @click="next">下一步</button> -->
                         <button class="btn-plain-large" @click="dia_show=''">取消</button>
                         <button class="btn-blue-large ml50" @click="diaCfm">确定</button>
                     </div>
@@ -324,6 +317,74 @@
                 <!-- <div v-if="dia_show==='detail'" class="dia-detail">
                     <GameManageDetail :id="curr_row.id" />
                 </div>-->
+            </div>
+        </Dialog>
+        <Dialog :show="dia_show!==''" title="标题xxx" @close="dia_show=''">
+            <el-steps :active="active" finish-status="success">
+                <el-step title="厂商类型"></el-step>
+                <el-step title="正式在密钥信息"></el-step>
+                <el-step title="正式在其他接口信息"></el-step>
+                <el-step title="测试站密钥信息"></el-step>
+                <el-step title="测试站其他接口信息"></el-step>
+                <el-step title="配置白名单信息"></el-step>
+            </el-steps>
+            <div class="edit-form">
+                <ul v-if="active===0" class="form">
+                    <li>
+                        <div class="left">
+                            <span>厂商名称:</span>
+                            <Input
+                                class="w250"
+                                :showerr="!form.name"
+                                errmsg="游戏名称不可为空!"
+                                v-model="form.name"
+                            />
+                        </div>
+                        <div class="right">
+                            <span>厂商标识:</span>
+                            <Input
+                                class="w250"
+                                :showerr="!form.sign"
+                                errmsg="厂商标识不可为空!"
+                                v-model="form.sign"
+                            />
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span>游戏类型:</span>
+                            <Select
+                                class="ml10 w250"
+                                v-model="form.type_id"
+                                :options="game_type_opt"
+                            ></Select>
+                            <span v-show="!form.type_id" class="err-tips">游戏类型不可为空</span>
+                        </div>
+                        <div>
+                            <span>状态:</span>
+                            <Radio
+                                class="radio-left ml50"
+                                label="开"
+                                :value="form.status"
+                                val="1"
+                                v-model="form.status"
+                            />
+                            <Radio
+                                class="radio-right ml10"
+                                label="关"
+                                :value="form.status"
+                                val="0"
+                                v-model="form.status"
+                            />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="form-btns">
+                <button v-show="active!==0" class="btn-blue-large" @click="prevStep">上一步</button>
+                <button v-if="active!==5" class="btn-blue-large" @click="nextStep">下一步</button>
+                <!-- <button class="btn-plain-large" @click="dia_show=''">取消</button> -->
+                <button v-else class="btn-blue-large ml50" @click="diaCfm">确定</button>
             </div>
         </Dialog>
         <!-- <Modal
@@ -337,8 +398,14 @@
 </template>
 
 <script>
+import { Steps, Step } from 'element-ui'
+
 export default {
     name: 'VendorManage',
+    components: {
+        [Steps.name]: Steps,
+        [Step.name]: Step
+    },
     data() {
         return {
             urlReg: /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/,
@@ -369,7 +436,7 @@ export default {
             ],
             list: [],
             // dialog
-            dia_show: '',
+            dia_show: 'TODO', // TODO:
             dia_status: '',
             dia_title: '',
             game_type_opt: [], // 游戏类型下拉框
@@ -405,7 +472,8 @@ export default {
             // mod_show: false,
             // mod_cont: '',
             // 当前需要更改的 row对象
-            curr_row: {}
+            curr_row: {},
+            active: 0
         }
     },
     methods: {
@@ -668,6 +736,12 @@ export default {
                 }
             })
         },
+        prevStep() {
+            this.active--
+        },
+        nextStep() {
+            this.active++
+        },
         getList() {
             let self = this
             let par = {
@@ -691,7 +765,7 @@ export default {
                     self.list = res.data.data
                 }
             })
-        }
+        },
     },
     mounted() {
         this.getList()
@@ -704,9 +778,11 @@ export default {
     margin-top: 20px;
 } */
 .edit-form {
-    position: relative;
+    /* position: relative; */
     /* width: 700px; */
     /* height: 400px; */
+    /* margin: 0 auto; */
+    border: 1px solid #000;
 }
 .form {
     /* width: 650px; */
@@ -727,7 +803,7 @@ export default {
     margin-right: 10px;
 }
 .form > li > div > span:first-child {
-    width: 9em;
+    width: 4em;
     text-align: right;
 }
 
@@ -743,7 +819,7 @@ export default {
 .err-tips {
     position: absolute;
     bottom: -16px;
-    left: 11em;
+    left: 7em;
     font-size: 12px;
     color: rgb(255, 38, 0);
 }

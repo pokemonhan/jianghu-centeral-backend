@@ -190,7 +190,7 @@ export default {
             })
         },
         modConf() {
-            if(this.mod_status === 'del') {
+            if (this.mod_status === 'del') {
                 this.delCfm()
             }
         },
@@ -216,11 +216,11 @@ export default {
         },
         delCfm() {
             let data = {
-                id: this.curr_row.id,
+                id: this.curr_row.id
             }
             let { url, method } = this.$api.platform_domain_del
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
                     this.mod_show = false
@@ -229,7 +229,6 @@ export default {
             })
         },
         getList() {
-            console.log('getlist', this.sign)
             let para = {
                 sign: this.sign,
                 type: this.domain_idx,
@@ -242,7 +241,6 @@ export default {
             let data = window.all.tool.rmEmpty(para)
             let { url, method } = this.$api.platform_domain_list
             this.$http({ method, url, data }).then(res => {
-                // console.log('域名列表?👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data
