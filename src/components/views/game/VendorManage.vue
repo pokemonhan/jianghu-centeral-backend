@@ -640,7 +640,7 @@ export default {
             ],
             list: [],
             // dialog
-            dia_show: 'TODO', // TODO:
+            dia_show: '', // TODO:
             dia_status: '',
             dia_title: '',
             game_type_opt: [], // 游戏类型下拉框
