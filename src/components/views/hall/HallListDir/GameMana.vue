@@ -42,7 +42,8 @@
         </div>
         <div class="table table-container">
             <div class="tab-left">
-                <table>
+                <button class="btn-blue-large mt30" @click="save">分配</button>
+                <table class="mt10">
                     <thead>
                         <tr>
                             <th>游戏平台</th>
@@ -92,12 +93,24 @@
 
             <!-- 右边的table -->
             <div class="tab-right">
-                <table>
+                <button class="btn-red-large mt30" @click="remove">移除</button>
+                <table class="mt10">
                     <thead>
                         <tr>
                             <th>游戏平台</th>
                             <th>游戏名称</th>
-                            <th>操作</th>
+                            <th>
+                                <div class="th-checkbox">
+                                    <span>操作</span>
+                                    <span>
+                                        <Checkbox
+                                            label="全选"
+                                            v-model="right.allChecked"
+                                            @update="rightCheckBoxUpd('all')"
+                                        />
+                                    </span>
+                                </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -105,8 +118,13 @@
                             <td>{{plantform_obj[row.vendor_id]}}</td>
                             <td>{{row.name}}</td>
                             <td>
-                                <button class="btn-blue" @click="remove(row)">移除</button>
+                                <div class="select-center">
+                                    <Checkbox label="" v-model="row.checked" @update="rightCheckBoxUpd(index)" />
+                                </div>
                             </td>
+                            <!-- <td>
+                                <button class="btn-blue" @click="remove(row)">移除</button>
+                            </td> -->
                         </tr>
                         <tr v-if="right.list&&right.list.length===0">
                             <td colspan="3">数据为空</td>
@@ -124,7 +142,7 @@
             </div>
         </div>
         <div class="btn-save">
-            <button class="btn-blue-large mt30" @click="save">保存</button>
+            
         </div>
     </div>
 </template> 
@@ -163,6 +181,8 @@ export default {
             },
             right: {
                 // headers: ['游戏平台', '游戏名称', '操作'],
+                allChecked: false,
+                checked: [],
                 list: [],
                 total: 0,
                 pageNo: 1,
@@ -228,6 +248,23 @@ export default {
                 })
             }
         },
+        rightCheckBoxUpd(val) {
+            if (val === 'all') {
+                this.right.list = this.right.list.map(item => {
+                    item.checked = this.right.allChecked
+                    return item
+                })
+            } else {
+                let self = this
+                this.$nextTick(function() {
+                    console.log('🍢 self.right.lis: ', self.right);
+                    self.right.allChecked = (self.right.list||[]).every(
+                        
+                        item => item.checked
+                    )
+                })
+            }
+        },
         // 添加保存
         save() {
             let list = this.left.list || []
@@ -256,10 +293,17 @@ export default {
             })
         },
         remove(row) {
-            console.log('inner row: ', row)
+            let list = this.right.list || []
+            if (list.length < 1) {
+                return
+            }
+            let game_ids = []
+            list.forEach(item => {
+                if (item.checked) { game_ids.push(item.id) }
+            })
             let data = {
                 platform_id: this.outRow.id,
-                game_ids: `["` + row.id + `"]`
+                game_ids: JSON.stringify(game_ids)
             }
 
             let { url, method } = this.$api.game_manage_del
@@ -285,6 +329,7 @@ export default {
             this.right.pageNo = 1
             this.getAssignedList()
         },
+        // left
         getUnsignList() {
             let para = {
                 platform_id: this.outRow.id,
@@ -301,17 +346,18 @@ export default {
                 if (res && res.code === '200') {
                     this.left.total = res.data.total
                     this.left.list = res.data.data
-
+                    this.right.allChecked = false
                     if (this.left.list && this.left.list.length > 0) {
                         this.left.list.forEach(item => {
                             item.checked = false
                         })
-                        // this.left.list
-                        // console.log('this.left.list: ', this.left.list)
+                       
                     }
+
                 }
             })
         },
+        // right
         getAssignedList() {
             let para = {
                 platform_id: this.outRow.id,
@@ -328,6 +374,7 @@ export default {
                 if (res && res.code === '200') {
                     this.right.total = res.data.total
                     this.right.list = res.data.data||[]
+                    this.right.allChecked = false
                 }
             })
         }

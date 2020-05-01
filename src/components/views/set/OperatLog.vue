@@ -123,7 +123,7 @@ export default {
             this.getList().then(res => {
                 if (res.data) {
                     this.list = res.data.data
-                    this.total = res.data.toal
+                    this.total = res.data.total
                 }
             })
         },
@@ -239,7 +239,7 @@ export default {
                 // console.log('🍹 isLoading: ', isLoading)
                 if (bottomOfWindow < 200 && isLoading == false) {
                     let totalPage = Math.ceil(this.total / this.pageSize)
-                    // 如果是加载到最后一条,不执行
+                    // 如果是加载到最后一条,不执行()
                     if (this.pageNo > totalPage) return
                     isLoading = true
                     this.pageNo++ // 请求下一页

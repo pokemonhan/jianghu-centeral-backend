@@ -94,7 +94,7 @@ export default {
     },
     /** 游戏管理 - 未分配的游戏列表 */
     game_manage_unsign_list: {
-        url: '/headquarters-api/platform/unassign-games',
+        url: '/headquarters-api/platform/unassigned-games',
         method: 'get',
     },
     /** 游戏管理 - 已分配的游戏列表 */

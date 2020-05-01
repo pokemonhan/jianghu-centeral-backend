@@ -32,6 +32,10 @@
                 :title="input?item.label:''"
             >{{item.label}}</li>
         </ul>
+        <span v-show="showerr||(required&&!value)" class="error-message">
+            <i class="iconfont iconjinggao1-"></i>
+            {{errmsg}}
+        </span>
     </div>
 </template>
 
@@ -55,7 +59,20 @@ export default {
         },
         value: [Number, String], // 默认值
         clearable: Boolean, // 是否可清空
-        placeholder: String
+        placeholder: String,
+        // 当required为true时, 值为空,就会提示
+        required: {
+            type: Boolean,
+            default: false
+        },
+        showerr: {
+            type: Boolean,
+            default: false
+        },
+        errmsg: {
+            type: String,
+            default: ''
+        },
     },
     model: {
         prop: 'value',
@@ -318,6 +335,19 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+.error-message {
+    position: absolute;
+    top: 30px;
+    left: 1em;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ef583d;
+}
+.error-message .iconjinggao1- {
+    font-size: 13px;
 }
 </style>
 

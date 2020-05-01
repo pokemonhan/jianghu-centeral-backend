@@ -9,7 +9,7 @@
             @input="input"
             @keyup.enter="pressEnter"
             @keyup="keyup"
-            @focus="$emit('focus')"
+            @focus="focus"
             @blur="$emit('blur')"
             :maxlength="maxlength"
             :disabled="disabled"
@@ -93,6 +93,9 @@ export default {
         },
         pressEnter() {
             this.$emit("enter");
+        },
+        focus() {
+            this.$emit('focus')
         },
         keyup() {
             this.regs[this.limit] && (this.val = this.val.toString().replace(this.regs[this.limit], ""));

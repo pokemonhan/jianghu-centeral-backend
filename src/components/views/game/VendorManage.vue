@@ -43,43 +43,426 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
-            <!-- <Dialog :show="true" :title="dia_title" @close="dia_show=''"> -->
-            <div class="dia-inner">
-                <div class="edit-form">
-                    <ul class="form">
-                        <!-- <li>
-                            <div class="left">
-                                <span>厂商名称:</span>
-                                <Input
-                                    class="w250"
-                                    :showerr="!form.name"
-                                    errmsg="游戏名称不可为空!"
-                                    v-model="form.name"
-                                />
-                            </div>
-                            <div class="right">
-                                <span>厂商标识:</span>
-                                <Input
-                                    class="w250"
-                                    :showerr="!form.sign"
-                                    errmsg="厂商标识不可为空!"
-                                    v-model="form.sign"
-                                />
-                            </div>
-                        </li>-->
 
-                        <!-- <li>
+        <Dialog :show="dia_show!==''" title="标题xxx" @close="dia_show=''">
+            <el-steps :active="active" align-center finish-status="success">
+                <el-step class="pointer" title="厂商" description="厂商类型" @click.native="active=0"></el-step>
+                <el-step class="pointer" title="正式站" description="密钥信息" @click.native="active=1"></el-step>
+                <el-step class="pointer" title="正式站" description="其他接口" @click.native="active=2"></el-step>
+                <el-step
+                    class="pointer"
+                    title="测试站"
+                    description="密钥信息"
+                    :status="stepStatus(3)"
+                    @click.native="active=3"
+                ></el-step>
+                <el-step
+                    class="pointer"
+                    title="测试站"
+                    description="其他接口"
+                    :status="stepStatus(4)"
+                    @click.native="active=4"
+                ></el-step>
+                <el-step
+                    class="pointer red"
+                    title="白名单"
+                    description="白名单信息"
+                    @click.native="active=5"
+                ></el-step>
+            </el-steps>
+            <div class="edit-form">
+                <!-- 厂商类型 -->
+                <ul v-if="active===0" class="form">
+                    <li>
+                        <div class="left">
+                            <span>厂商名称:</span>
+                            <Input
+                                class="w250"
+                                :showerr="!form.name"
+                                errmsg="游戏名称不可为空!"
+                                v-model="form.name"
+                            />
+                        </div>
+                        <div class="right">
+                            <span>厂商标识:</span>
+                            <Input
+                                class="w250"
+                                :showerr="!form.sign"
+                                errmsg="厂商标识不可为空!"
+                                v-model="form.sign"
+                            />
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span>游戏类型:</span>
+                            <Select
+                                class="ml10 w250"
+                                v-model="form.type_id"
+                                required
+                                errmsg="游戏类型不可为空"
+                                :options="game_type_opt"
+                            ></Select>
+                            <!-- <span v-show="!form.type_id" class="err-tips">游戏类型不可为空</span> -->
+                        </div>
+                        <div>
+                            <span>状态:</span>
+                            <Radio
+                                class="radio-left ml50"
+                                label="开"
+                                :value="form.status"
+                                val="1"
+                                v-model="form.status"
+                            />
+                            <Radio
+                                class="radio-right ml10"
+                                label="关"
+                                :value="form.status"
+                                val="0"
+                                v-model="form.status"
+                            />
+                        </div>
+                    </li>
+                </ul>
+                <!-- 正式站密钥信息 -->
+                <ul v-if="active===1" class="form">
+                    <li>
+                        <div>
+                            <span>正式站第三方urls</span>
+                            <Input
+                                class="w250"
+                                placeholder="例如: http://abc.com"
+                                :showerr="!form.test_urls.login||!urlReg.test(form.test_urls.login)"
+                                errmsg="存放三方调用测试urls格式错误"
+                                v-model="form.test_urls.login"
+                            />
+                        </div>
+                        <div>
+                            <span>des秘钥</span>
+                            <Input class="w250" v-model="form.des_key" />
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span>终端号</span>
+                            <Input class="w250" required errmsg="终端号不可为空" v-model="form.app_id" />
+                        </div>
+                        <div>
+                            <span>商户号:</span>
+                            <Input
+                                class="w250"
+                                required
+                                errmsg="商户号不可为空"
+                                v-model="form.merchant_id"
+                            />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-line">
+                            <p>商户秘钥</p>
+                            <div class="line"></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span>商户秘钥</span>
+                            <Input
+                                class="w250"
+                                :required="formalKeyShow"
+                                errmsg="商户秘钥不可为空"
+                                v-model="form.merchant_secret"
+                            />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-line">
+                            <p>公钥 + 私钥</p>
+                            <div class="line"></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span>公钥:</span>
+                            <Input
+                                class="w250"
+                                :required="formalKeyShow"
+                                errmsg="公钥不可为空"
+                                v-model="form.public_key"
+                            />
+                        </div>
+                        <div>
+                            <span>私钥</span>
+                            <Input
+                                class="w250"
+                                :required="formalKeyShow"
+                                errmsg="私钥不可为空"
+                                v-model="form.private_key"
+                            />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="form-line">
+                            <p>md5_key</p>
+                            <div class="line"></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span>md5_key</span>
+                            <Input
+                                class="w250"
+                                :required="formalKeyShow"
+                                errmsg="md5_key不可为空"
+                                v-model="form.md5_key"
+                            />
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- 正式站其他接口 -->
+                <ul v-if="active===2" class="form form-2">
+                    <li>
+                        <div>
+                            <span style="width:11em">是否以正式地址为准</span>
+                            <Switchbox
+                                class="ml20"
+                                v-model="isAddFormalUrl"
+                                @update="formalSwitchChange"
+                            />
+                            <div></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span>登录接口</span>
+                            <Input
+                                class="w250"
+                                placeholder="例如: http://abc.com"
+                                :showerr="!form.urls.login||!urlReg.test(form.urls.login)"
+                                errmsg="登录接口格式错误!"
+                                v-model="form.urls.login"
+                            />
+                        </div>
+                        <div>
+                            <span>查询代理余额接口</span>
+                            <Input
+                                class="w250"
+                                placeholder="例如: http://abc.com"
+                                :showerr="!form.urls.agent_account_query_url||!urlReg.test(form.urls.agent_account_query_url)"
+                                errmsg="查询玩家总分格式错误"
+                                v-model="form.urls.agent_account_query_url"
+                            />
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span>查询余额接口</span>
+                            <Input
+                                class="w250"
+                                placeholder="例如: http://abc.com"
+                                :showerr="!form.urls.account_query_url||!urlReg.test(form.urls.account_query_url)"
+                                errmsg="查询余额接口格式错误!"
+                                v-model="form.urls.account_query_url"
+                            />
+                        </div>
+                        <div>
+                            <span>上分接口</span>
+                            <Input
+                                class="w250"
+                                placeholder="例如: http://abc.com"
+                                :showerr="!form.urls.top_up_url||!urlReg.test(form.urls.top_up_url)"
+                                errmsg="上分接口格式错误!"
+                                v-model="form.urls.top_up_url"
+                            />
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span>下分接口</span>
+                            <Input
+                                class="w250"
+                                placeholder="例如: http://abc.com"
+                                :showerr="!form.urls.draw_out_url||!urlReg.test(form.urls.draw_out_url)"
+                                errmsg="下分接口格式错误!"
+                                v-model="form.urls.draw_out_url"
+                            />
+                        </div>
+                        <div>
+                            <span>查询订单接口</span>
+                            <Input
+                                class="w250"
+                                placeholder="例如: http://abc.com"
+                                :showerr="!form.urls.order_query_url||!urlReg.test(form.urls.order_query_url)"
+                                errmsg="查询订单接口格式错误"
+                                v-model="form.urls.order_query_url"
+                            />
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span>查询玩家在线状态</span>
+                            <Input
+                                class="w250"
+                                placeholder="例如: http://abc.com"
+                                :showerr="!form.urls.user_active_query_url||!urlReg.test(form.urls.user_active_query_url)"
+                                errmsg="查询玩家在线状态格式错误"
+                                v-model="form.urls.user_active_query_url"
+                            />
+                        </div>
+                        <div>
+                            <span>查询游戏注单</span>
+                            <Input
+                                class="w250"
+                                placeholder="例如: http://abc.com"
+                                :showerr="!form.urls.game_order_query_url||!urlReg.test(form.urls.game_order_query_url)"
+                                errmsg="查询游戏注单格式错误"
+                                v-model="form.urls.game_order_query_url"
+                            />
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span>查询玩家总分</span>
+                            <Input
+                                class="w250"
+                                placeholder="例如: http://abc.com"
+                                :showerr="!form.urls.user_total_status_query_url||!urlReg.test(form.urls.user_total_status_query_url)"
+                                errmsg="查询玩家总分格式错误"
+                                v-model="form.urls.user_total_status_query_url"
+                            />
+                        </div>
+                        <div>
+                            <span>踢玩家接口</span>
+                            <Input
+                                class="w250"
+                                placeholder="例如: http://abc.com"
+                                :showerr="!form.urls.kick_out_url||!urlReg.test(form.urls.kick_out_url)"
+                                errmsg="踢玩家接口格式错误"
+                                v-model="form.urls.kick_out_url"
+                            />
+                        </div>
+                    </li>
+                    <li></li>
+                </ul>
+
+                <!-- 测试站密钥信息 -->
+                <div v-if="active===3" style="min-height:450px">
+                    <div class="mt20">
+                        <Checkbox label="是否需要配置测试站信息" v-model="form_need_test" />
+                    </div>
+                    <ul v-if="form_need_test" class="form">
+                        <li>
                             <div>
-                                <span>游戏类型:</span>
-                                
-                                <Select
-                                    class="ml10 w250"
-                                    v-model="form.type_id"
-                                    :options="game_type_opt"
-                                ></Select>
-                                <span v-show="!form.type_id" class="err-tips">游戏类型不可为空</span>
+                                <span>测试站第三方urls</span>
+                                <Input
+                                    class="w250"
+                                    placeholder="例如: http://abc.com"
+                                    :showerr="!form.test_urls.login||!urlReg.test(form.test_urls.login)"
+                                    errmsg="存放三方调用测试urls格式错误"
+                                    v-model="form.test_urls.login"
+                                />
                             </div>
+                            <div>
+                                <span>des秘钥</span>
+                                <Input class="w250" v-model="form.des_key" />
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <span>终端号</span>
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="终端号不可为空"
+                                    v-model="form.app_id"
+                                />
+                            </div>
+                            <div>
+                                <span>商户号:</span>
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="商户号不可为空"
+                                    v-model="form.merchant_id"
+                                />
+                            </div>
+                        </li>
+                        <li>
+                            <div class="form-line">
+                                <p>商户秘钥</p>
+                                <div class="line"></div>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <span>商户秘钥</span>
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="商户秘钥不可为空"
+                                    v-model="form.merchant_secret"
+                                />
+                            </div>
+                        </li>
+                        <li>
+                            <div class="form-line">
+                                <p>公钥 + 私钥</p>
+                                <div class="line"></div>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <span>公钥:</span>
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="公钥不可为空"
+                                    v-model="form.public_key"
+                                />
+                            </div>
+                            <div>
+                                <span>私钥</span>
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="私钥不可为空"
+                                    v-model="form.private_key"
+                                />
+                            </div>
+                        </li>
+                        <li>
+                            <div class="form-line">
+                                <p>md5_key</p>
+                                <div class="line"></div>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <span>md5_key</span>
+                                <Input
+                                    class="w250"
+                                    required
+                                    errmsg="md5_key不可为空"
+                                    v-model="form.md5_key"
+                                />
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 测试站其他接口 -->
+                <div v-if="active===4">
+                    <ul v-if="form_need_test" class="form form-2">
+                        <li>
+                            <div>
+                                <span>是否以测试地址为准</span>
+                                <Switchbox
+                                    class="ml20"
+                                    v-model="isAddTestUrl"
+                                    @update="testSwitchChange"
+                                />
+                            </div>
+                        </li>
+                        <li>
                             <div>
                                 <span>登录接口</span>
                                 <Input
@@ -90,11 +473,17 @@
                                     v-model="form.urls.login"
                                 />
                             </div>
-                        </li>-->
-                        <!-- <li>
-                            <span>白名单</span>
-                            <Input class="w250" v-model="form.whitelist_ips" />
-                        </li>-->
+                            <div>
+                                <span>查询代理余额接口</span>
+                                <Input
+                                    class="w250"
+                                    placeholder="例如: http://abc.com"
+                                    :showerr="!form.urls.agent_account_query_url||!urlReg.test(form.urls.agent_account_query_url)"
+                                    errmsg="查询玩家总分格式错误"
+                                    v-model="form.urls.agent_account_query_url"
+                                />
+                            </div>
+                        </li>
                         <li>
                             <div>
                                 <span>查询余额接口</span>
@@ -183,199 +572,14 @@
                                 />
                             </div>
                         </li>
-                        <li>
-                            <div>
-                                <span>查询代理余额接口</span>
-                                <Input
-                                    class="w250"
-                                    placeholder="例如: http://abc.com"
-                                    :showerr="!form.urls.agent_account_query_url||!urlReg.test(form.urls.agent_account_query_url)"
-                                    errmsg="查询玩家总分格式错误"
-                                    v-model="form.urls.agent_account_query_url"
-                                />
-                            </div>
-                            <div>
-                                <span>存放三方调用测试urls</span>
-                                <Input
-                                    class="w250"
-                                    placeholder="例如: http://abc.com"
-                                    :showerr="!form.test_urls.login||!urlReg.test(form.test_urls.login)"
-                                    errmsg="存放三方调用测试urls格式错误"
-                                    v-model="form.test_urls.login"
-                                />
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <span>终端号</span>
-                                <Input
-                                    class="w250"
-                                    required
-                                    errmsg="终端号不可为空"
-                                    v-model="form.app_id"
-                                />
-                            </div>
-                            <div>
-                                <span>商户号:</span>
-                                <Input
-                                    class="w250"
-                                    required
-                                    errmsg="商户号不可为空"
-                                    v-model="form.merchant_id"
-                                />
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <span>商户秘钥:</span>
-                                <Input
-                                    class="w250"
-                                    required
-                                    errmsg="商户秘钥不可为空"
-                                    v-model="form.merchant_secret"
-                                />
-                            </div>
-                            <div>
-                                <span>公钥:</span>
-                                <Input
-                                    class="w250"
-                                    required
-                                    errmsg="公钥不可为空"
-                                    v-model="form.public_key"
-                                />
-                            </div>
-                        </li>
-
-                        <li>
-                            <div>
-                                <span>私钥:</span>
-                                <Input
-                                    class="w250"
-                                    required
-                                    errmsg="私钥不可为空"
-                                    v-model="form.private_key"
-                                />
-                            </div>
-                            <div>
-                                <span>des秘钥:</span>
-                                <Input
-                                    class="w250"
-                                    required
-                                    errmsg="des秘钥不可为空"
-                                    v-model="form.des_key"
-                                />
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <span>md5_key</span>
-                                <Input
-                                    class="w250"
-                                    required
-                                    errmsg="md5_key不可为空"
-                                    v-model="form.md5_key"
-                                />
-                            </div>
-                            <div>
-                                <span>白名单:</span>
-                                <textarea
-                                    class="textarea ml10"
-                                    placeholder="格式例子: 2.2.2.2, 5.5.3.5"
-                                    v-model="form.whitelist_ips"
-                                ></textarea>
-                                <span v-show="!form.whitelist_ips" class="err-tips">白名单不可为空</span>
-                            </div>
-                        </li>
-
-                        <li>
-                            <!-- <div>
-                                <span>状态:</span>
-                                <Radio
-                                    class="radio-left ml50"
-                                    label="开"
-                                    :value="form.status"
-                                    val="1"
-                                    v-model="form.status"
-                                />
-                                <Radio
-                                    class="radio-right ml10"
-                                    label="关"
-                                    :value="form.status"
-                                    val="0"
-                                    v-model="form.status"
-                                />
-                            </div>-->
-                        </li>
+                        <li></li>
                     </ul>
-                    <div class="form-btns">
-                        <button v-show="active!==1" class="btn-blue-large">上一步</button>
-                        <!-- <button class="btn-blue-large" @click="next">下一步</button> -->
-                        <button class="btn-plain-large" @click="dia_show=''">取消</button>
-                        <button class="btn-blue-large ml50" @click="diaCfm">确定</button>
-                    </div>
                 </div>
-                <!-- <div v-if="dia_show==='detail'" class="dia-detail">
-                    <GameManageDetail :id="curr_row.id" />
-                </div>-->
-            </div>
-        </Dialog>
-        <Dialog :show="dia_show!==''" title="标题xxx" @close="dia_show=''">
-            <el-steps :active="active" finish-status="success">
-                <el-step title="厂商类型"></el-step>
-                <el-step title="正式在密钥信息"></el-step>
-                <el-step title="正式在其他接口信息"></el-step>
-                <el-step title="测试站密钥信息"></el-step>
-                <el-step title="测试站其他接口信息"></el-step>
-                <el-step title="配置白名单信息"></el-step>
-            </el-steps>
-            <div class="edit-form">
-                <ul v-if="active===0" class="form">
-                    <li>
-                        <div class="left">
-                            <span>厂商名称:</span>
-                            <Input
-                                class="w250"
-                                :showerr="!form.name"
-                                errmsg="游戏名称不可为空!"
-                                v-model="form.name"
-                            />
-                        </div>
-                        <div class="right">
-                            <span>厂商标识:</span>
-                            <Input
-                                class="w250"
-                                :showerr="!form.sign"
-                                errmsg="厂商标识不可为空!"
-                                v-model="form.sign"
-                            />
-                        </div>
-                    </li>
+                <ul v-if="active===5" class="form">
                     <li>
                         <div>
-                            <span>游戏类型:</span>
-                            <Select
-                                class="ml10 w250"
-                                v-model="form.type_id"
-                                :options="game_type_opt"
-                            ></Select>
-                            <span v-show="!form.type_id" class="err-tips">游戏类型不可为空</span>
-                        </div>
-                        <div>
-                            <span>状态:</span>
-                            <Radio
-                                class="radio-left ml50"
-                                label="开"
-                                :value="form.status"
-                                val="1"
-                                v-model="form.status"
-                            />
-                            <Radio
-                                class="radio-right ml10"
-                                label="关"
-                                :value="form.status"
-                                val="0"
-                                v-model="form.status"
-                            />
+                            <span>白名单</span>
+                            <Input class="w250" v-model="form.whitelist_ips" />
                         </div>
                     </li>
                 </ul>
@@ -440,6 +644,10 @@ export default {
             dia_status: '',
             dia_title: '',
             game_type_opt: [], // 游戏类型下拉框
+
+            isAddFormalUrl: '', //是否以正式地址为准 添加正式地址
+            isAddTestUrl: '', //是否以测试地址为准 添加测试地址
+            form_need_test: true, // 是否需要配置测试站
             form: {
                 name: '', // 厂商名称
                 sign: '', // 厂商标识
@@ -474,6 +682,19 @@ export default {
             // 当前需要更改的 row对象
             curr_row: {},
             active: 0
+        }
+    },
+    computed: {
+        /** 正式站 （1）商户密钥。（2）公钥+私钥  (3) md5_key 必有一个 */
+        formalKeyShow() {
+            let key_one = !!this.form.merchant_secret // 商户秘钥
+            let key_two = !!this.form.public_key && !!this.form.private_key // 商户秘钥
+            let key_three = !!this.form.md5_key // 商户秘钥
+            if (key_one || key_two || key_three) {
+                return false
+            } else {
+                return true
+            }
         }
     },
     methods: {
@@ -718,6 +939,7 @@ export default {
                 whitelist_ips: '', // 白名单
                 status: '1' // 状态
             }
+            this.active = 0
         },
         getGameTypeOpt() {
             let { url, method } = this.$api.game_sort_list
@@ -740,7 +962,23 @@ export default {
             this.active--
         },
         nextStep() {
-            this.active++
+            if (this.active < 6) {
+                this.active++
+            }
+        },
+        // 正式地址 Switch 样式  （是否以正式地址为准）
+        formalSwitchChange() {},
+        /** 测试地址 Switch 样式  （是否以测试地址为准） */
+        testSwitchChange() {},
+        /** 展示 步骤条 状态 */
+        stepStatus(stepVal) {
+            if (this.active === stepVal) {
+                return 'process'
+            } else {
+                return this.active > stepVal && this.form_need_test
+                    ? 'success'
+                    : 'wait'
+            }
         },
         getList() {
             let self = this
@@ -765,7 +1003,7 @@ export default {
                     self.list = res.data.data
                 }
             })
-        },
+        }
     },
     mounted() {
         this.getList()
@@ -778,11 +1016,8 @@ export default {
     margin-top: 20px;
 } */
 .edit-form {
-    /* position: relative; */
-    /* width: 700px; */
-    /* height: 400px; */
-    /* margin: 0 auto; */
-    border: 1px solid #000;
+    min-width: 750px;
+    min-height: 300px;
 }
 .form {
     /* width: 650px; */
@@ -791,7 +1026,7 @@ export default {
 .form > li {
     display: flex;
     /* position: relative; */
-    align-items: baseline;
+    align-items: center;
     margin-top: 20px;
 }
 .form > li > div {
@@ -803,9 +1038,13 @@ export default {
     margin-right: 10px;
 }
 .form > li > div > span:first-child {
-    width: 4em;
+    width: 9em;
     text-align: right;
 }
+/* .form-2 > li > div > span:first-child {
+    width: 9em;
+    text-align: right;
+} */
 
 .form > li > div .v-input {
     margin-left: 10px;
@@ -829,6 +1068,19 @@ export default {
 .form-btns {
     margin-top: 50px;
     text-align: center;
+}
+.form-line {
+    position: relative;
+    margin-top: 1em;
+    font-size: 1.1em;
+    color: #4c8bfd;
+}
+.form-line .line {
+    position: absolute;
+    border: 1px solid #eff1f5;
+    left: 6em;
+    top: 13px;
+    width: 530px;
 }
 .textarea {
     width: 250px;

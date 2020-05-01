@@ -479,6 +479,29 @@ button:focus {
     background: #ff6a6a;
 }
 
+.btn-red-large {
+    height: 30px;
+    width: 100px;
+    /* padding: 9px 22px; */
+    /* outline: none; */
+    border: none;
+    /* box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); */
+    cursor: pointer;
+    box-sizing: border-box;
+    border-radius: 3px;
+    color: #fff;
+    background: #f77963;
+}
+
+.btn-red-large:hover {
+    box-shadow: none;
+    background: #f77963;
+}
+.btn-red-large:active {
+    color: #fbf4f2;
+    box-shadow: none;
+    background: #d46754;
+}
 .btn-blue-large {
     height: 30px;
     width: 100px;
@@ -775,6 +798,9 @@ button:focus {
 .t-center-center {
     display: table-cell;
     vertical-align: middle;
+}
+.pointer {
+    cursor: pointer;
 }
 /* 重写element ui loading 样式 */
 .el-loading-parent--relative .el-loading-mask {
