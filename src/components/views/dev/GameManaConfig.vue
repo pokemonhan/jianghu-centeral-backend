@@ -1,11 +1,11 @@
 <template>
     <div class="container">
-        <!-- 游戏管理配置 -->
+        <!-- 游戏管理配置  开发管理-->
         <div class="filter p10">
             <ul class="left">
                 <li>
                     <span>游戏名称</span>
-                    <Select v-model="filter.game_id" :options="geme_type_opt"></Select>
+                    <Select v-model="filter.game_id" :options="game_name_opt"></Select>
                 </li>
                 <li>
                     <span>游戏厂商</span>
@@ -13,7 +13,7 @@
                 </li>
                 <li>
                     <span>游戏分类</span>
-                    <Select v-model="filter.type_id" :options="type_opt"></Select>
+                    <Select v-model="filter.type_id" :options="type_opt" ></Select>
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -24,7 +24,7 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
-                     <!-- '编号', '游戏厂商', '游戏名称', '游戏分类', '游戏标识', '游戏状态', '添加人', '添加时间', '最后更新人', '最后更新时间', '操作' -->
+                    <!-- '编号', '游戏厂商', '游戏名称', '游戏分类', '游戏标识', '游戏状态', '添加人', '添加时间', '最后更新人', '最后更新时间', '操作' -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.vendor&&row.vendor.name}}</td>
                     <td>{{row.name}}</td>
@@ -73,24 +73,34 @@
                                 <span v-show="!form.vendor_id" class="err-tips">必填项!</span>
                             </li>
                             <li>
-                                <span>游戏分类:</span>
+                                <span>游戏父类:</span>
                                 <Select
                                     style="width:250px;"
                                     v-model="form.type_id"
                                     :options="type_opt"
+                                    @update="gameFatherTypeOptUpd"
                                 ></Select>
                                 <span v-show="!form.type_id" class="err-tips">必填项!</span>
                             </li>
-                             <li>
-                                <span>请求模式:</span>
 
+                            <li>
+                                <span>游戏子类</span>
+                                <Select
+                                    style="width:250px"
+                                    required
+                                    errmsg="请选择子类"
+                                    v-model="form.child_type"
+                                    :options="game_child_opt"
+                                ></Select>
+                            </li>
+                            <li>
+                                <span>请求模式:</span>
                                 <Radio
                                     label="获取数据模式"
                                     :value="form.request_mode"
                                     val="1"
                                     v-model="form.request_mode"
                                 />
-
                                 <Radio
                                     class="ml50"
                                     label="直接跳转"
@@ -176,7 +186,7 @@
                                     v-show="form.test_get_station_order_url&&(!urlRegExp.test(form.test_get_station_order_url))"
                                     class="err-tips"
                                 >请检查内容格式!</span>
-                            </li> -->
+                            </li>-->
                         </ul>
                         <!-- form 右侧 -->
                         <ul class="form ml20">
@@ -254,8 +264,8 @@
                                     v-show="!urlRegExp.test(form.get_station_order_url)"
                                     class="err-tips"
                                 >请检查内容格式!</span>
-                            </li> -->
-                           
+                            </li>-->
+
                             <li v-if="dia_status==='add'">
                                 <span>状态选择</span>
                                 <Radio
@@ -300,10 +310,24 @@ export default {
                 vendor_id: '',
                 type_id: ''
             },
-            geme_type_opt: [],
+            game_name_opt: [],
             vendor_opt: [],
-            type_opt: [],
-            headers: [ '编号', '游戏厂商', '游戏名称', '游戏分类', '游戏标识', '游戏状态', '添加人', '添加时间', '最后更新人', '最后更新时间', '操作' ],
+            type_opt: [], // 游戏父类
+            // game_child_opt: [], // 游戏子类?
+            game_sort_obj: {},
+            headers: [
+                '编号',
+                '游戏厂商',
+                '游戏名称',
+                '游戏分类',
+                '游戏标识',
+                '游戏状态',
+                '添加人',
+                '添加时间',
+                '最后更新人',
+                '最后更新时间',
+                '操作'
+            ],
             list: [],
             total: 0,
             pageNo: 1,
@@ -314,7 +338,16 @@ export default {
             dia_show: false,
             dia_title: '',
             dia_status: '',
-            form: {},
+            form: {
+                vendor_id: '', // 厂商选择
+                sign: '', // 游戏标识
+                type_id: '', // 游戏分类
+                child_type: '', // 游戏子类
+                name: '', // 游戏名称
+
+                request_mode: '1', // 请求模式
+                status: '1' // 状态选择
+            },
             urlRegExp: /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/,
             sort_opt: [{ label: '全部', value: '' }],
 
@@ -323,6 +356,12 @@ export default {
             mod_status: '',
             mod_title: '',
             mod_cont: ''
+        }
+    },
+    computed: {
+        /**游戏子类 */
+        game_child_opt() {
+            return this.game_sort_obj[this.form.type_id] || []
         }
     },
     methods: {
@@ -353,6 +392,62 @@ export default {
                 request_mode: '1', // 请求模式
                 status: '1' // 状态选择
             }
+        },
+        checkForm() {
+            // let regExp = /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/
+            let errInform = {
+                vendor_id: {
+                    title: '厂商选择'
+                },
+                sign: {
+                    title: '游戏标识'
+                },
+                type_id: {
+                    title: '游戏分类'
+                },
+                name: {
+                    title: '游戏名称'
+                },
+                // in_game_url: {
+                //     title: '进入游戏地址',
+                //     regExp: regExp
+                // },
+                // conver_url: {
+                //     title: '额度转换地址',
+                //     regExp: regExp
+                // },
+                // check_balance_url: {
+                //     title: '检查余额地址',
+                //     regExp: regExp
+                // },
+                // check_order_url: {
+                //     title: '检查订单地址',
+                //     regExp: regExp
+                // },
+                // get_station_order_url: {
+                //     title: '获取注单地址',
+                //     regExp: regExp
+                // },
+                request_mode: {
+                    title: '请求模式'
+                },
+                status: {
+                    title: '状态选择'
+                }
+            }
+            for (const key in errInform) {
+                if (this.form[key] === '') {
+                    this.$toast.info(`${errInform[key].title}不可为空`)
+                    return false
+                }
+            }
+            return true
+        },
+        /** 游戏父类update */
+        gameFatherTypeOptUpd() {
+            // this.form.child_type = ''
+            // this.form = Object.assign({}, this.form)
+            this.$set(this.form, 'child_type','')
         },
         add() {
             this.initForm()
@@ -407,6 +502,7 @@ export default {
             this.mod_cont = '是否确定删除该游戏名称？'
             this.mod_show = true
         },
+        /** dialog确认 */
         diaCfm() {
             if (this.dia_status === 'add') {
                 this.addCfm()
@@ -415,56 +511,7 @@ export default {
                 this.editCfm()
             }
         },
-        checkForm() {
-            // let regExp = /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/
-            let errInform = {
-                vendor_id: {
-                    title: '厂商选择'
-                },
-                sign: {
-                    title: '游戏标识'
-                },
-                type_id: {
-                    title: '游戏分类'
-                },
-                name: {
-                    title: '游戏名称'
-                },
-                // in_game_url: {
-                //     title: '进入游戏地址',
-                //     regExp: regExp
-                // },
-                // conver_url: {
-                //     title: '额度转换地址',
-                //     regExp: regExp
-                // },
-                // check_balance_url: {
-                //     title: '检查余额地址',
-                //     regExp: regExp
-                // },
-                // check_order_url: {
-                //     title: '检查订单地址',
-                //     regExp: regExp
-                // },
-                // get_station_order_url: {
-                //     title: '获取注单地址',
-                //     regExp: regExp
-                // },
-                request_mode: {
-                    title: '请求模式'
-                },
-                status: {
-                    title: '状态选择'
-                }
-            }
-            for (const key in errInform) {
-                if (this.form[key] === '') {
-                    this.$toast.info(`${errInform[key].title}不可为空`)
-                    return false
-                }
-            }
-            return true
-        },
+
         addCfm() {
             if (!this.checkForm()) return
             let data = {
@@ -487,7 +534,7 @@ export default {
                 // test_get_station_order_url: this.form
                 //     .test_get_station_order_url,
 
-                status: this.form.status,
+                status: this.form.status
                 // app_id: this.form.app_id,
                 // authorization_code: this.form.authorization_code,
                 // merchant_code: this.form.merchant_code,
@@ -522,6 +569,7 @@ export default {
                 }
             })
         },
+        // mod 确认
         modConf() {
             // if (this.mod_status === 'switch') {
             //     this.switchStatus()
@@ -529,6 +577,17 @@ export default {
             if (this.mod_status === 'del') {
                 this.delCfm()
             }
+        },
+        delCfm() {
+            let data = { id: this.curr_row.id }
+            let { url, method } = this.$api.dev_game_del
+            this.$http({ method, url, data }).then(res => {
+                if (res && res.code === '200') {
+                    this.$toast.success(res && res.message)
+                    this.mod_show = false
+                    this.getList()
+                }
+            })
         },
         switchStatus() {
             let data = {
@@ -544,17 +603,7 @@ export default {
                 this.getList()
             })
         },
-        delCfm() {
-            let data = { id: this.curr_row.id }
-            let { url, method } = this.$api.dev_game_del
-            this.$http({ method, url, data }).then(res => {
-                if (res && res.code === '200') {
-                    this.$toast.success(res && res.message)
-                    this.mod_show = false
-                    this.getList()
-                }
-            })
-        },
+
         updateNo() {
             this.getList()
         },
@@ -582,16 +631,41 @@ export default {
         //     })
         //     return array.concat(opt)
         // },
+        /** 获取下拉框内容 */
         getSelectOpt() {
             let { url, method } = this.$api.dev_game_search_condition_get
 
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
-                    this.geme_type_opt = this.toSelectOpt(res.data.games)
+                    this.game_name_opt = this.toSelectOpt(res.data.games)
 
                     this.vendor_opt = this.toSelectOpt(res.data.vendors)
                     this.type_opt = this.toSelectOpt(res.data.types)
                     // 初始化 filter 筛选内容
+                }
+            })
+        },
+        /** 获取游戏分类 opt */
+        getGameOpt() {
+            let { url, method } = this.$api.game_sort_list
+            this.$http({ method, url }).then(res => {
+                if (res && res.code === '200') {
+                    // this.game_sort_obj =
+                    if (res.data && Array.isArray(res.data)) {
+                        res.data.forEach(item => {
+                            let opt = []
+                            if (item.children && Array.isArray(item.children)) {
+                                opt = item.children.map(child => {
+                                    return {
+                                        label: child.name,
+                                        value: child.id
+                                    }
+                                })
+                            }
+                            /** 根据 父级id放置 子类 */
+                            this.game_sort_obj[item.id] = opt
+                        })
+                    }
                 }
             })
         },
@@ -615,6 +689,7 @@ export default {
         }
     },
     created() {
+        this.getGameOpt()
         this.getSelectOpt()
     },
     mounted() {

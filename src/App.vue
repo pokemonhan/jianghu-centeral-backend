@@ -645,13 +645,13 @@ button:focus {
     background: #f2f2f2;
 }
 
-.filter .left,
-.filter .right {
+.filter > .left,
+.filter > .right {
     display: flex;
     flex-wrap: wrap;
 }
 
-.filter .left > li {
+.filter > .left > li {
     display: flex;
     align-items: center;
     margin-right: 10px;
@@ -663,7 +663,7 @@ button:focus {
     min-width: 100px;
 
 } */
-.filter .left > li > span:first-child {
+.filter > .left > li > span:first-child {
     margin-right: 4px;
 }
 .filter .v-input,

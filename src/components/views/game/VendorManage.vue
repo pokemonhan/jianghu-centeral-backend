@@ -43,8 +43,8 @@
                 @updateSize="updateSize"
             />
         </div>
-
-        <Dialog :show="dia_show!==''" title="标题xxx" @close="dia_show=''">
+xxx
+        <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
             <el-steps :active="active" align-center finish-status="success">
                 <el-step class="pointer" title="厂商" description="厂商类型" @click.native="active=0"></el-step>
                 <el-step class="pointer" title="正式站" description="密钥信息" @click.native="active=1"></el-step>
@@ -622,10 +622,10 @@ export default {
                 { label: '关闭', value: '0' },
                 { label: '启用', value: '1' }
             ],
-            status_txt: {
-                '1': '开启',
-                '0': '关闭'
-            },
+            // status_txt: {
+            //     '1': '开启',
+            //     '0': '关闭'
+            // },
 
             total: 0,
             pageNo: 1,
@@ -679,7 +679,8 @@ export default {
             },
             // mod_show: false,
             // mod_cont: '',
-            // 当前需要更改的 row对象
+            /** 当前需要更改的 row对象 */
+
             curr_row: {},
             active: 0
         }
@@ -698,15 +699,40 @@ export default {
         }
     },
     methods: {
-        // 待改动
+                initForm() {
+            this.form = {
+                name: '', // 厂商名称
+                sign: '', // 厂商标识
+                type_id: '', // 游戏类型id
+                whitelist_ips: '', //
+                urls: {
+                    login: '', // 登录接口
+                    account_query_url: '', //查询余额接口
+                    top_up_url: '', //上分接口
+                    draw_out_url: '', // 下分接口
+                    order_query_url: '', // 查询订单接口
+                    user_active_query_url: '', //查询玩家在线状态
+                    game_order_query_url: '', // 查询游戏注单
+                    user_total_status_query_url: '', // 查询玩家总分
+                    kick_out_url: '', // 踢玩家接口
+                    agent_account_query_url: '' // 查询代理余额接口
+                },
+                test_urls: {
+                    login: '' // 存放三方调用测试urls
+                },
+                app_id: '', //..终端号
+                merchant_id: '', //商户号
+                merchant_secret: '', // 商户秘钥
+                public_key: '', // 公钥
+                private_key: '', // 私钥
+                des_key: '', // des 秘钥
+                md5_key: '', // md5秘钥
+                whitelist_ips: '', // 白名单
+                status: '1' // 状态
+            }
+            this.active = 0
+        },
         statusSwitch(value, row) {
-            // this.curr_row = row
-            // this.mod_show = true
-            // if (row.status === 1) {
-            //     this.mod_cont = '是否确定禁用该厂商!'
-            // } else {
-            //     this.mod_cont = '是否确定启用该厂商!'
-            // }
             this.switchConf(value, row)
         },
 
@@ -908,39 +934,7 @@ export default {
             this.pageNo = 1
             this.getList()
         },
-        initForm() {
-            this.form = {
-                name: '', // 厂商名称
-                sign: '', // 厂商标识
-                type_id: '', // 游戏类型id
-                whitelist_ips: '', //
-                urls: {
-                    login: '', // 登录接口
-                    account_query_url: '', //查询余额接口
-                    top_up_url: '', //上分接口
-                    draw_out_url: '', // 下分接口
-                    order_query_url: '', // 查询订单接口
-                    user_active_query_url: '', //查询玩家在线状态
-                    game_order_query_url: '', // 查询游戏注单
-                    user_total_status_query_url: '', // 查询玩家总分
-                    kick_out_url: '', // 踢玩家接口
-                    agent_account_query_url: '' // 查询代理余额接口
-                },
-                test_urls: {
-                    login: '' // 存放三方调用测试urls
-                },
-                app_id: '', //..终端号
-                merchant_id: '', //商户号
-                merchant_secret: '', // 商户秘钥
-                public_key: '', // 公钥
-                private_key: '', // 私钥
-                des_key: '', // des 秘钥
-                md5_key: '', // md5秘钥
-                whitelist_ips: '', // 白名单
-                status: '1' // 状态
-            }
-            this.active = 0
-        },
+
         getGameTypeOpt() {
             let { url, method } = this.$api.game_sort_list
             this.$http({ method, url }).then(res => {

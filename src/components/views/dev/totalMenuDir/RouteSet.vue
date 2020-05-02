@@ -438,7 +438,8 @@ export default {
             this.route_show_opt = this.route_all_opt.filter(item => {
                 let not_used = route_arr.indexOf(item.route_name) === -1 // 1.路由没有被使用就放进select
                 let isCurrent = item.route_name === this.curr_row.route_name // 2.当前路由也需要放进去.
-                let inputfilter = item.label.indexOf(val) !== -1 // 3.并且根据input内容筛选
+                // let inputfilter = item.label.indexOf(val) !== -1 // 3.并且根据input内容筛选
+                let inputfilter = true
 
                 return (not_used || isCurrent) && inputfilter
             })

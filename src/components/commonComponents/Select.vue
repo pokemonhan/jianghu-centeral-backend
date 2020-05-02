@@ -19,13 +19,16 @@
                 @focus="inputFocus"
                 :placeholder="placeholder"
             />
-            <span class="show-select-label" v-show="!input||!isShow">{{selectedLabel?selectedLabel:placeholder}}</span>
+            <span
+                class="show-select-label"
+                v-show="!input||!isShow"
+            >{{selectedLabel?selectedLabel:placeholder}}</span>
             <i v-if="clearable && isClear" @click.stop="clear" class="iconfont icon-icon-test"></i>
             <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
         </div>
         <ul :class="['sections', sectionsDir]" ref="sections">
             <li
-                v-for="item in options"
+                v-for="item in opt"
                 :key="item.value"
                 :class="[selectedValue===item.value ? 'active' : '','option']"
                 @click.stop="select(item)"
@@ -52,6 +55,7 @@ export default {
     props: {
         css: Object, // 自定义css
         input: Boolean, // 是否像 input 可以输入
+        noFilter: Boolean, // 默认根据input内容筛选。
         options: {
             // 选项内容
             type: Array,
@@ -72,7 +76,7 @@ export default {
         errmsg: {
             type: String,
             default: ''
-        },
+        }
     },
     model: {
         prop: 'value',
@@ -80,14 +84,33 @@ export default {
     },
     data() {
         return {
-            showInputLabel: '',
+            showInputLabel: '', // input 里面的内容
             selectedValue: '',
             selectedLabel: '',
-            index: 0,
+            // index: 0,
             isShow: false, // 本义展示下拉框
+            // opt: [], // 下拉框内容
             isClear: false,
             sectionsDir: 'bottom-upfold',
             sectionsHeight: '0px'
+        }
+    },
+    computed: {
+        opt() {
+            // 输入框内容为空则 返回全部， 不筛选也返回全部 
+            if (!this.input || !this.showInputLabel||this.noFilter) {
+                return this.options
+            } else {
+                let opt_temp = (this.options || []).filter(item => {
+                    // let LowerCase
+                    if(item.label){
+                        return item.label.indexOf(this.showInputLabel) !== -1
+                    }else {
+                        return false
+                    }
+                })
+                return opt_temp
+            }
         }
     },
     methods: {
@@ -116,7 +139,7 @@ export default {
                 this.isShow = true
                 // setTimeout(() => {
                 // })
-                this.$nextTick(()=>{
+                this.$nextTick(() => {
                     this.$refs.input.focus()
                 })
             } else {
@@ -182,7 +205,9 @@ export default {
     },
     watch: {
         value(val) {
+            // console.log('🍧 val: ', val);
             this.selectedValue = this.val
+            this.selectedLabe = ''
             this.options.forEach(item => {
                 if (item.value === this.value) {
                     this.selectedLabel = item.label
@@ -243,7 +268,7 @@ export default {
 }
 .val-box .show-input {
     /* height: 95%; */
-    /* width: 98%; */
+    width: 98%;
     margin-left: 1px;
     padding-left: 6px;
     padding-right: 23px;

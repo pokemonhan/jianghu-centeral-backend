@@ -1,44 +1,82 @@
 <template>
     <div class="cont">
         <div class="filter p10">
-            <ul class="left">
-                <!-- 左侧的 -->
-                <li>
-                    <span>游戏平台</span>
-                    <Select
-                        v-model="filterLeft.vendor_id"
-                        :options="plantform_opt"
-                        @update="plantformLeftUpd"
-                    ></Select>
-                </li>
-                <li v-show="true">
-                    <span>游戏名称</span>
-                    <Select v-model="filterLeft.game_id" :options="game_opt"></Select>
-                </li>
-                <li>
-                    <button class="btn-blue" @click="getUnsignList">查找</button>
-                    <!-- <button class="btn-blue">全部添加</button> -->
-                </li>
-    
-                <!-- 右边的 right -->
-            </ul>
-            <ul class="right">
-                <li>
-                    <span>游戏平台</span>
-                    <Select
-                        v-model="filterRight.vendor_id"
-                        :options="plantform_opt"
-                        @update="plantformRightUpd"
-                    ></Select>
-                </li>
-                <li v-show="true">
-                    <span>游戏名称</span>
-                    <Select v-model="filterRight.game_id" :options="game_opt"></Select>
-                </li>
-                <li>
-                    <button class="btn-blue" @click="getAssignedList">查找</button>
-                </li>
-            </ul>
+            <div class="left">
+                <ul class="up">
+                    <!-- 左侧的 -->
+                    <li>
+                        <span>游戏平台</span>
+                        <Select
+                            v-model="filterLeft.vendor_id"
+                            :options="platform_opt"
+                            @update="plantformLeftUpd"
+                        ></Select>
+                    </li>
+                    <li v-show="true">
+                        <span>游戏名称</span>
+                        <Select input v-model="filterLeft.game_id" :options="game_opt"></Select>
+                    </li>
+                    <li>
+                        <button class="btn-blue" @click="getUnsignList">查找</button>
+                        <!-- <button class="btn-blue">全部添加</button> -->
+                    </li>
+                </ul>
+                <ul class="down">
+                    <li>
+                        <span>游戏主类</span>
+                        <Select
+                            v-model="filterLeft.vendor_id"
+                            :options="platform_opt"
+                            @update="plantformLeftUpd"
+                        ></Select>
+                    </li>
+                    <li v-show="true">
+                        <span>游戏次类</span>
+                        <Select input v-model="filterLeft.game_id" :options="game_opt"></Select>
+                    </li>
+                    <li>
+                        <button class="btn-blue" @click="getUnsignList">查找</button>
+                    </li>
+                </ul>
+            </div>
+            <!-- 右边的 right -->
+
+            <div class="right">
+                <ul class="up">
+                    <li>
+                        <span>游戏平台</span>
+                        <Select
+                            v-model="filterRight.vendor_id"
+                            :options="platform_opt"
+                            @update="plantformRightUpd"
+                        ></Select>
+                    </li>
+                    <li v-show="true">
+                        <span>游戏名称</span>
+                        <Select v-model="filterRight.game_id" :options="game_opt"></Select>
+                    </li>
+                    <li>
+                        <button class="btn-blue" @click="getAssignedList">查找</button>
+                    </li>
+                </ul>
+                <ul class="down">
+                    <li>
+                        <span>游戏主类</span>
+                        <Select
+                            v-model="filterLeft.vendor_id"
+                            :options="platform_opt"
+                            @update="plantformLeftUpd"
+                        ></Select>
+                    </li>
+                    <li v-show="true">
+                        <span>游戏次类</span>
+                        <Select input v-model="filterLeft.game_id" :options="game_opt"></Select>
+                    </li>
+                    <li>
+                        <button class="btn-blue" @click="getUnsignList">查找</button>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="table table-container">
             <div class="tab-left">
@@ -69,7 +107,7 @@
                             <td>
                                 <div class="select-center">
                                     <Checkbox
-                                        label=""
+                                        label
                                         v-model="row.checked"
                                         @update="leftCheckBoxUpd(index)"
                                     />
@@ -119,12 +157,16 @@
                             <td>{{row.name}}</td>
                             <td>
                                 <div class="select-center">
-                                    <Checkbox label="" v-model="row.checked" @update="rightCheckBoxUpd(index)" />
+                                    <Checkbox
+                                        label
+                                        v-model="row.checked"
+                                        @update="rightCheckBoxUpd(index)"
+                                    />
                                 </div>
                             </td>
                             <!-- <td>
                                 <button class="btn-blue" @click="remove(row)">移除</button>
-                            </td> -->
+                            </td>-->
                         </tr>
                         <tr v-if="right.list&&right.list.length===0">
                             <td colspan="3">数据为空</td>
@@ -141,9 +183,7 @@
                 />
             </div>
         </div>
-        <div class="btn-save">
-            
-        </div>
+        <div class="btn-save"></div>
     </div>
 </template> 
 <script>
@@ -165,11 +205,12 @@ export default {
             },
             name_left_show: false,
             name_right_show: false,
-            plantform_opt: [],
+            platform_opt: [], // 游戏平台下拉
             plantform_obj: [], // id为key ,方便获取平台的中文名字
-            game_opt: [],
+            game_opt: [], // 游戏名称
             game_obj: [],
             // headers: ['游戏平台', '游戏名称', '操作'],
+            game_sort_obj: {}, // 游戏父子分类对象
             left: {
                 // headers: ['游戏平台', '游戏名称', '操作'],
                 allChecked: false,
@@ -190,6 +231,12 @@ export default {
             }
         }
     },
+    computed: {
+        /**游戏子类 */
+        game_child_opt() {
+            // return this.game_sort_obj[this.form.type_id] || []
+        }
+    },
     methods: {
         plantformLeftUpd(val) {
             if (val !== '') {
@@ -205,8 +252,8 @@ export default {
                 this.name_right_show = false
             }
         },
-        // 获取下拉框opt
-        getOpt() {
+        // 获取游戏平台下拉框opt
+        getPlatformOpt() {
             let arrToOpt = function(arr = []) {
                 let list = [{ label: '全部', value: '' }]
                 arr = arr.map(item => {
@@ -222,7 +269,7 @@ export default {
             this.$http({ method, url }).then(res => {
                 // console.log('option👌: ', res)
                 if (res && res.code === '200' && res.data) {
-                    this.plantform_opt = arrToOpt(res.data.vendors)
+                    this.platform_opt = arrToOpt(res.data.vendors)
                     let vendors = res.data.vendors || []
                     vendors.forEach(item => {
                         this.plantform_obj[item.id] = item.name
@@ -232,7 +279,7 @@ export default {
             })
         },
         leftCheckBoxUpd(val) {
-            console.log('val: ', val);
+            console.log('val: ', val)
             // checkbox全选
             if (val === 'all') {
                 this.left.list = this.left.list.map(item => {
@@ -257,9 +304,8 @@ export default {
             } else {
                 let self = this
                 this.$nextTick(function() {
-                    console.log('🍢 self.right.lis: ', self.right);
-                    self.right.allChecked = (self.right.list||[]).every(
-                        
+                    console.log('🍢 self.right.lis: ', self.right)
+                    self.right.allChecked = (self.right.list || []).every(
                         item => item.checked
                     )
                 })
@@ -299,7 +345,9 @@ export default {
             }
             let game_ids = []
             list.forEach(item => {
-                if (item.checked) { game_ids.push(item.id) }
+                if (item.checked) {
+                    game_ids.push(item.id)
+                }
             })
             let data = {
                 platform_id: this.outRow.id,
@@ -329,6 +377,32 @@ export default {
             this.right.pageNo = 1
             this.getAssignedList()
         },
+        /** 获取游戏父子分类 opt */
+        getGameOpt() {
+            let all_opt_item = []
+            let { url, method } = this.$api.game_sort_list
+            this.$http({ method, url }).then(res => {
+                if (res && res.code === '200') {
+                    // this.game_sort_obj =
+                    if (res.data && Array.isArray(res.data)) {
+                        res.data.forEach(item => {
+                            let opt = [{ label: '全部', value: '' }]
+                            if (item.children && Array.isArray(item.children)) {
+                                item.children.forEach(child => {
+                                    opt.push({
+                                        label: child.name,
+                                        value: child.id
+                                    })
+                                })
+                            }
+                            /** 根据 父级id放置 子类 */
+                            this.game_sort_obj[item.id] = opt
+                            console.log('🦐 this.game_sort_obj: ', this.game_sort_obj);
+                        })
+                    }
+                }
+            })
+        },
         // left
         getUnsignList() {
             let para = {
@@ -351,9 +425,7 @@ export default {
                         this.left.list.forEach(item => {
                             item.checked = false
                         })
-                       
                     }
-
                 }
             })
         },
@@ -373,7 +445,7 @@ export default {
                 console.log('右边: ', res)
                 if (res && res.code === '200') {
                     this.right.total = res.data.total
-                    this.right.list = res.data.data||[]
+                    this.right.list = res.data.data || []
                     this.right.allChecked = false
                 }
             })
@@ -383,8 +455,9 @@ export default {
         this.getUnsignList()
         this.getAssignedList()
         // 获取下拉框内容
-        this.getOpt()
-        console.log('this.outRow: ', this.outRow);
+        this.getPlatformOpt()
+        this.getGameOpt()
+        console.log('this.outRow: ', this.outRow)
     }
 }
 </script>
@@ -394,9 +467,33 @@ export default {
     min-width: 900px;
     /* width: 99%; */
 }
-
+.filter {
+    justify-content: space-around;
+}
+.filter > .left, .filter > .right {
+    display: initial;
+}
+.filter .up,
+.filter .down {
+    display: flex;
+}
+.up li,
+.down li {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+.up span:first-child,
+.down span:first-child {
+    margin-right: 5px;
+}
+.down {
+    margin-top: 10px;
+}
+/* .up li:not */
 .table {
     display: flex;
+    justify-content: center;
     margin-top: 20px;
 }
 .table .tab-left,
@@ -415,7 +512,7 @@ export default {
     margin-top: 50px;
     text-align: center;
 }
-.right {
+/* .right {
     display: flex;
 }
 .right > li {
@@ -425,7 +522,7 @@ export default {
 }
 .right > li span:first-child {
     margin-right: 10px;
-}
+} */
 
 .table-container table {
     border-collapse: collapse;
