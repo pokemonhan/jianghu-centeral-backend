@@ -533,6 +533,27 @@ export default {
         method: 'post'
     },
 
+    /* -------- 定时任务 -----------------*/
+    /** 9.3.1 定时任务列表 */
+    schedule_list: {
+        url: '/headquarters-api/schedule/index',
+        method: 'post'
+    },
+    /** 9.3.2 定时任务-添加 */
+    schedule_add: {
+        url: '/headquarters-api/schedule/do-add',
+        method: 'post'
+    },
+    /** 9.3.3 定时任务-编辑 */
+    schedule_set: {
+        url: '/headquarters-api/schedule/edit',
+        method: 'post'
+    },
+    /** 9.3.4 定时任务-删除 */
+    schedule_del: {
+        url: '/headquarters-api/schedule/delete',
+        method: 'post'
+    },
 
     /* --------游戏厂商 -----------------*/
     /**  游戏厂商 - 添加 */

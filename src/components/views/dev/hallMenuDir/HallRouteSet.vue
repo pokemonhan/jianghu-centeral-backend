@@ -336,7 +336,7 @@ export default {
 
                         let ele = self.$refs[item.prefix]
                         //     self.$refs[item.prefix + ''][0]
-                        window.all.tool.slideDown(ele,300)
+                        window.all.tool.slideDown(ele, 300)
                     } else {
                         // $(self.$refs[item.prefix]).slideUp()
                         let ele = self.$refs[item.prefix]
@@ -347,7 +347,7 @@ export default {
             }
             setCss(this.routesMenu)
             // this.routesMenu = this.routesMenu.slice()
-            this.$forceUpdate()  
+            this.$forceUpdate()
             // console.log('查看前缀this.routesMenu: ', this.routesMenu)
         }, 200),
         selectUpdate() {
@@ -358,7 +358,7 @@ export default {
             let ele = this.$refs[index]
             // $(ele).slideToggle(200)
             // Slide.slideToggle(ele)
-            window.all.tool.slideToggle(ele,300)
+            window.all.tool.slideToggle(ele, 300)
         },
 
         // routeExpand(index) {
