@@ -397,7 +397,7 @@ export default {
                             }
                             /** 根据 父级id放置 子类 */
                             this.game_sort_obj[item.id] = opt
-                            console.log('🦐 this.game_sort_obj: ', this.game_sort_obj);
+                            // console.log('🦐 this.game_sort_obj: ', this.game_sort_obj);
                         })
                     }
                 }

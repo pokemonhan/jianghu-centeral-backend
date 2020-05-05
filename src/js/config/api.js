@@ -26,7 +26,7 @@ export default {
         url: '/headquarters-api/menu/current-admin-menu',
         method: 'get'
     },
-    
+
     /** 自己修改密码 */
     self_update_pwd: {
         url: '/headquarters-api/headquarters-admin-user/self-update-password',
@@ -214,7 +214,7 @@ export default {
     },
     /** 3.3.5 游戏管理 - 编辑详情 */
     game_edit_detail_list: {
-        url:'/headquarters-api/game/edit-detail',
+        url: '/headquarters-api/game/edit-detail',
         method: 'post'
     },
 
@@ -365,7 +365,7 @@ export default {
         url: '/headquarters-api/headquarters-admin-user/switch-admin',
         method: 'post'
     },
-    /**  8.1.12 查找管理员
+    /**  8.1.12 查找管理员 */
     search_admin_list: {
         url: '/headquarters-api/headquarters-admin-user/search-admin',
         method: 'post'

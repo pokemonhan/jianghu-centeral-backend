@@ -95,7 +95,7 @@ let http = axios.create({
     // retry: 2,
     // retryDelay: 1000,
     header: {
-        'Content-Type': 'application/json; charset=utf-8',
+        'Content-Type': 'application/json',
         // 'Content-Type': 'application/x-www-form-urlencoded',
         'Cache-Control': 'no-cache'
     },

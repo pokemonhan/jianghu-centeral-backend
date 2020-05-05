@@ -28,25 +28,18 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
+                    <!-- '商户号', '短信条数', '最后更新人', '最后更新时间', '启用状态', '添加时间', '操作' -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
-                    <td class="td-2">{{row.merchant_code}}</td>
-                    <td>{{row.sms_num}}</td>
+                    <td class="td-2">{{row.name}}</td>
+                    <td>{{row.sms_remaining}}</td>
                     <td>{{row.admin&&row.admin.name}}</td>
                     <td>{{row.updated_at}}</td>
-                    <!-- <td
-                        :class="[row.status?'green':'red']"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
-                    <td>{{row.created_at}}</td>-->
                     <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
                     <td>{{row.created_at}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>
-                        <!-- <button
-                            :class="[row.status?'btns-red':'btns-green']"
-                            @click="statusSwitch(row)"
-                        >{{row.status===1?'禁用':'启用'}}</button>-->
                         <button class="btns-red" @click="del(row)">删除</button>
                     </td>
                 </template>
@@ -61,7 +54,7 @@
                 @updateSize="updateSize"
             />
         </div>
-        <Dialog :show.sync="dia_show" title="编辑">
+        <Dialog :show.sync="dia_show" :title="dia_status==='add'?'添加':'编辑'">
             <div class="dia-inner">
                 <ul class="form">
                     <li>
@@ -71,42 +64,44 @@
                     </li>
                     <li>
                         <span>商户标识</span>
-                        <Input class="w250" disabled v-model="form.sign" />
+                        <Input
+                            class="w250"
+                            :disabled="dia_status==='edit'"
+                            required
+                            errmsg="商户标识不可为空!"
+                            v-model="form.sign"
+                        />
                     </li>
-                    <!-- <li>
-                        <span>商户号</span>
-                        <Input class="w250" v-model="form.merchant_code" />
-                        <span class="err-tips" v-show="!form.merchant_code">商户号不可为空!</span>
-                    </li> -->
-                    <!-- <li>
-                        <span>商户密钥</span>
-                        <Input class="w250" v-model="form.merchant_secret" />
-                        <span class="err-tips" v-show="!form.merchant_secret">商户密钥不可为空!</span>
-                    </li> -->
-                    <!-- <li>
-                        <span>商户公钥</span>
-                        <Input class="w250" v-model="form.public_key" />
-                        <span class="err-tips" v-show="!form.public_key">商户公钥不可为空!</span>
-                    </li> -->
-                    <li>
+
+                    <li v-if="dia_status==='add'">
                         <span>短信数量</span>
-                        <Input class="w250" limit="p-integer" v-model="form.sms_num" />
-                        <span class="err-tips" v-show="!form.sms_num">短信不可为空!</span>
+                        <Input
+                            class="w250"
+                            required
+                            errmsg="短信不可为空!"
+                            limit="p-integer"
+                            v-model="form.sms_num"
+                        />
                     </li>
-                    <!-- <li>
-                        <span>授权码</span>
-                        <Input class="w250" limit="en-num" v-model="form.authorization_code" />
-                        <span class="err-tips" v-show="!form.authorization_code">授权码不可为空!</span>
+                    <li v-if="dia_status==='edit'">
+                        <span>短信数量</span>
+                        <Select v-model="form.is_increase" :options="increase_opt"></Select>
+                        <Input
+                            class="ml10"
+                            style="width:129px"
+                            :showerr="smsErr(form.crease)"
+                            errmsg="减少数量太大"
+                            limit="p-integer"
+                            v-model="form.crease"
+                        />
                     </li>
-                    <li>
-                        <span>请求地址</span>
-                        <Input class="w250" v-model="form.url" />
-                        <span class="err-tips" v-show="!form.url">请求地址不可为空!</span>
-                    </li> -->
+                    <li v-if="dia_status==='edit'">
+                        <div class="form-curr-sms">当前短信数量: {{form.sms_remaining}}</div>
+                    </li>
                 </ul>
                 <div class="form-btn">
                     <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                    <button class="btn-blue-large ml30" @click="diaCfm">确认</button>
+                    <button class="btn-blue-large ml50" @click="diaCfm">确认</button>
                 </div>
             </div>
         </Dialog>
@@ -133,12 +128,16 @@ export default {
                 { label: '开启', value: '1' },
                 { label: '关闭', value: '0' }
             ],
+            increase_opt: [
+                { label: '增加', value: 1 },
+                { label: '减少', value: 2 }
+            ],
             headers: [
                 {
                     label: '编号',
                     width: '200px'
                 },
-                '商户号',
+                '商户名称',
                 '短信条数',
                 '最后更新人',
                 '最后更新时间',
@@ -157,12 +156,9 @@ export default {
             form: {
                 name: '',
                 sign: '',
-                merchant_code: '',
-                merchant_secret: '',
-                public_key: '',
-                sms_num: '',
-                authorization_code: '',
-                url: ''
+                is_increase: 1,
+                crease: 0,
+                sms_num: ''
             },
             // mod 确认框
             mod_show: false,
@@ -172,17 +168,24 @@ export default {
         }
     },
     methods: {
+        smsErr(val) {
+            // 是否是减少
+            let isDecrease = this.form.is_increase === 2
+            if (
+                isDecrease &&
+                parseInt(val) > parseInt(this.form.sms_remaining)
+            ) {
+                return true
+            } else {
+                return false
+            }
+        },
         add() {
             this.form = {
-                // id: row.id, // id
-                sign: '',
                 name: '',
-                // merchant_code: row.merchant_code,
-                // merchant_secret: row.merchant_secret,
-                // public_key: row.public_key,
-                sms_num: '',
-                // authorization_code: row.authorization_code,
-                // url: row.url
+                sign: '',
+                is_increase: 1,
+                sms_num: ''
             }
             this.dia_status = 'add'
             this.dia_show = true
@@ -197,14 +200,11 @@ export default {
                 id: row.id, // id
                 name: row.name,
                 sign: row.sign,
-                merchant_code: row.merchant_code,
-                merchant_secret: row.merchant_secret,
-                public_key: row.public_key,
-                sms_num: String(row.sms_num),
-                authorization_code: row.authorization_code,
-                url: row.url
+                is_increase: 1,
+                crease: 0,
+                sms_remaining: row.sms_remaining
+                // sms_num: String(row.sms_num)
             }
-            // console.log('form', this.form)
         },
 
         statusSwitch(row) {
@@ -227,27 +227,19 @@ export default {
             }
         },
         checkForm() {
-            let checkArr = [
-                'name',
-                'sign',
-                // 'merchant_code',
-                // 'merchant_secret',
-                // 'public_key',
-                'sms_num',
-                // 'authorization_code',
-                // 'url'
-            ]
-            // if(this.dia_status === 'add') {
-            //     checkArr.push('sign') // 
-            // }
+            let checkArr = ['name', 'sign', 'sms_num']
             let pass = true
             checkArr.forEach(key => {
                 if (this.form[key] === '') {
                     pass = false
-                    this.$toast.warning('请检查表单内容!')
                 }
             })
+            // if(this.dia_status==='edit'){
 
+            // }
+            if (!pass) {
+                this.$toast.warning('请检查表单内容!')
+            }
             return pass
         },
         addCfm() {
@@ -272,12 +264,8 @@ export default {
             let data = {
                 id: this.form.id,
                 name: this.form.name,
-                merchant_code: this.form.merchant_code,
-                merchant_secret: this.form.merchant_secret,
-                public_key: this.form.public_key,
-                sms_num: this.form.sms_num,
-                authorization_code: this.form.authorization_code,
-                url: this.form.url
+                is_increase: this.form.is_increase,
+                sms_num: this.form.crease || 0 // 增加减少值
             }
 
             let { url, method } = this.$api.sms_config_set
@@ -332,11 +320,9 @@ export default {
                 }
             })
         },
-        diaCfm() {
 
-        },
         getList() {
-            let para = {
+            let data = {
                 name: this.filter.name,
 
                 status: this.filter.status,
@@ -344,16 +330,16 @@ export default {
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
-            console.log('para: ', para)
+            // console.log('para: ', para)
             if (this.filter.dates[0] && this.filter.dates[1]) {
-                para.updatedAt = JSON.stringify(this.filter.dates)
+                data.updatedAt = JSON.stringify(this.filter.dates)
+                data.updatedAt = this.filter.dates
             }
-            let params = window.all.tool.rmEmpty(para)
+            data = window.all.tool.rmEmpty(data)
 
-            console.log('params: ', params)
 
             let { url, method } = this.$api.sms_config_list
-            this.$http({ method, url, params }).then(res => {
+            this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data
@@ -375,12 +361,8 @@ export default {
 </script>
 
 <style scoped>
-.mt20 {
-    margin-top: 20px;
-}
 .form {
-    /* border: 1px solid #000; */
-    padding: 20px 190px;
+    padding: 20px 50px;
 }
 .form > li {
     display: flex;
@@ -406,7 +388,8 @@ export default {
     justify-content: center;
     margin-top: 30px;
 }
-.ml30 {
-    margin-left: 50px;
+.form-curr-sms {
+    margin-left: 170px;
+    margin-top: -5px;
 }
 </style>

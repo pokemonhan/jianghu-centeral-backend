@@ -42,8 +42,7 @@
                 @updateNo="updateNo"
                 @updateSize="updateSize"
             />
-        </div>
-xxx
+        </div>xxx
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
             <el-steps :active="active" align-center finish-status="success">
                 <el-step class="pointer" title="厂商" description="厂商类型" @click.native="active=0"></el-step>
@@ -103,7 +102,6 @@ xxx
                                 errmsg="游戏类型不可为空"
                                 :options="game_type_opt"
                             ></Select>
-                            <!-- <span v-show="!form.type_id" class="err-tips">游戏类型不可为空</span> -->
                         </div>
                         <div>
                             <span>状态:</span>
@@ -128,24 +126,29 @@ xxx
                 <ul v-if="active===1" class="form">
                     <li>
                         <div>
-                            <span>正式站第三方urls</span>
+                            <span>第三方urls</span>
                             <Input
                                 class="w250"
                                 placeholder="例如: http://abc.com"
-                                :showerr="!form.test_urls.login||!urlReg.test(form.test_urls.login)"
-                                errmsg="存放三方调用测试urls格式错误"
-                                v-model="form.test_urls.login"
+                                :showerr="isShowErrUrl(form.prod_prefix,false)"
+                                errmsg="urls格式错误"
+                                v-model="form.prod_prefix"
                             />
                         </div>
                         <div>
                             <span>des秘钥</span>
-                            <Input class="w250" v-model="form.des_key" />
+                            <Input class="w250" v-model="form.production.des_key" />
                         </div>
                     </li>
                     <li>
                         <div>
                             <span>终端号</span>
-                            <Input class="w250" required errmsg="终端号不可为空" v-model="form.app_id" />
+                            <Input
+                                class="w250"
+                                required
+                                errmsg="终端号不可为空"
+                                v-model="form.production.app_id"
+                            />
                         </div>
                         <div>
                             <span>商户号:</span>
@@ -153,7 +156,7 @@ xxx
                                 class="w250"
                                 required
                                 errmsg="商户号不可为空"
-                                v-model="form.merchant_id"
+                                v-model="form.production.merchant_id"
                             />
                         </div>
                     </li>
@@ -170,7 +173,7 @@ xxx
                                 class="w250"
                                 :required="formalKeyShow"
                                 errmsg="商户秘钥不可为空"
-                                v-model="form.merchant_secret"
+                                v-model="form.production.merchant_secret"
                             />
                         </div>
                     </li>
@@ -187,7 +190,7 @@ xxx
                                 class="w250"
                                 :required="formalKeyShow"
                                 errmsg="公钥不可为空"
-                                v-model="form.public_key"
+                                v-model="form.production.public_key"
                             />
                         </div>
                         <div>
@@ -196,7 +199,7 @@ xxx
                                 class="w250"
                                 :required="formalKeyShow"
                                 errmsg="私钥不可为空"
-                                v-model="form.private_key"
+                                v-model="form.production.private_key"
                             />
                         </div>
                     </li>
@@ -213,7 +216,7 @@ xxx
                                 class="w250"
                                 :required="formalKeyShow"
                                 errmsg="md5_key不可为空"
-                                v-model="form.md5_key"
+                                v-model="form.production.md5_key"
                             />
                         </div>
                     </li>
@@ -238,9 +241,9 @@ xxx
                             <Input
                                 class="w250"
                                 placeholder="例如: http://abc.com"
-                                :showerr="!form.urls.login||!urlReg.test(form.urls.login)"
+                                :showerr="isShowErrUrl(form.production.url.login)"
                                 errmsg="登录接口格式错误!"
-                                v-model="form.urls.login"
+                                v-model="form.production.url.login"
                             />
                         </div>
                         <div>
@@ -248,9 +251,9 @@ xxx
                             <Input
                                 class="w250"
                                 placeholder="例如: http://abc.com"
-                                :showerr="!form.urls.agent_account_query_url||!urlReg.test(form.urls.agent_account_query_url)"
-                                errmsg="查询玩家总分格式错误"
-                                v-model="form.urls.agent_account_query_url"
+                                :showerr="isShowErrUrl(form.production.url.agent_account_query_url)"
+                                errmsg="查询代理余额接口格式错误"
+                                v-model="form.production.url.agent_account_query_url"
                             />
                         </div>
                     </li>
@@ -260,9 +263,9 @@ xxx
                             <Input
                                 class="w250"
                                 placeholder="例如: http://abc.com"
-                                :showerr="!form.urls.account_query_url||!urlReg.test(form.urls.account_query_url)"
+                                :showerr="isShowErrUrl(form.production.url.account_query_url)"
                                 errmsg="查询余额接口格式错误!"
-                                v-model="form.urls.account_query_url"
+                                v-model="form.production.url.account_query_url"
                             />
                         </div>
                         <div>
@@ -270,9 +273,9 @@ xxx
                             <Input
                                 class="w250"
                                 placeholder="例如: http://abc.com"
-                                :showerr="!form.urls.top_up_url||!urlReg.test(form.urls.top_up_url)"
+                                :showerr="isShowErrUrl(form.production.url.top_up_url)"
                                 errmsg="上分接口格式错误!"
-                                v-model="form.urls.top_up_url"
+                                v-model="form.production.url.top_up_url"
                             />
                         </div>
                     </li>
@@ -282,9 +285,9 @@ xxx
                             <Input
                                 class="w250"
                                 placeholder="例如: http://abc.com"
-                                :showerr="!form.urls.draw_out_url||!urlReg.test(form.urls.draw_out_url)"
+                                :showerr="isShowErrUrl(form.production.url.draw_out_url)"
                                 errmsg="下分接口格式错误!"
-                                v-model="form.urls.draw_out_url"
+                                v-model="form.production.url.draw_out_url"
                             />
                         </div>
                         <div>
@@ -292,9 +295,9 @@ xxx
                             <Input
                                 class="w250"
                                 placeholder="例如: http://abc.com"
-                                :showerr="!form.urls.order_query_url||!urlReg.test(form.urls.order_query_url)"
+                                :showerr="isShowErrUrl(form.production.url.order_query_url)"
                                 errmsg="查询订单接口格式错误"
-                                v-model="form.urls.order_query_url"
+                                v-model="form.production.url.order_query_url"
                             />
                         </div>
                     </li>
@@ -304,9 +307,9 @@ xxx
                             <Input
                                 class="w250"
                                 placeholder="例如: http://abc.com"
-                                :showerr="!form.urls.user_active_query_url||!urlReg.test(form.urls.user_active_query_url)"
+                                :showerr="isShowErrUrl(form.production.url.user_active_query_url)"
                                 errmsg="查询玩家在线状态格式错误"
-                                v-model="form.urls.user_active_query_url"
+                                v-model="form.production.url.user_active_query_url"
                             />
                         </div>
                         <div>
@@ -314,9 +317,9 @@ xxx
                             <Input
                                 class="w250"
                                 placeholder="例如: http://abc.com"
-                                :showerr="!form.urls.game_order_query_url||!urlReg.test(form.urls.game_order_query_url)"
+                                :showerr="isShowErrUrl(form.production.url.game_order_query_url)"
                                 errmsg="查询游戏注单格式错误"
-                                v-model="form.urls.game_order_query_url"
+                                v-model="form.production.url.game_order_query_url"
                             />
                         </div>
                     </li>
@@ -326,9 +329,9 @@ xxx
                             <Input
                                 class="w250"
                                 placeholder="例如: http://abc.com"
-                                :showerr="!form.urls.user_total_status_query_url||!urlReg.test(form.urls.user_total_status_query_url)"
+                                :showerr="isShowErrUrl(form.production.url.user_total_status_query_url)"
                                 errmsg="查询玩家总分格式错误"
-                                v-model="form.urls.user_total_status_query_url"
+                                v-model="form.production.url.user_total_status_query_url"
                             />
                         </div>
                         <div>
@@ -336,9 +339,9 @@ xxx
                             <Input
                                 class="w250"
                                 placeholder="例如: http://abc.com"
-                                :showerr="!form.urls.kick_out_url||!urlReg.test(form.urls.kick_out_url)"
+                                :showerr="isShowErrUrl(form.production.url.kick_out_url)"
                                 errmsg="踢玩家接口格式错误"
-                                v-model="form.urls.kick_out_url"
+                                v-model="form.production.url.kick_out_url"
                             />
                         </div>
                     </li>
@@ -357,14 +360,14 @@ xxx
                                 <Input
                                     class="w250"
                                     placeholder="例如: http://abc.com"
-                                    :showerr="!form.test_urls.login||!urlReg.test(form.test_urls.login)"
+                                    :showerr="isShowErrUrl(form.test_urls,false)"
                                     errmsg="存放三方调用测试urls格式错误"
-                                    v-model="form.test_urls.login"
+                                    v-model="form.test_urls"
                                 />
                             </div>
                             <div>
                                 <span>des秘钥</span>
-                                <Input class="w250" v-model="form.des_key" />
+                                <Input class="w250" v-model="form.testing.des_key" />
                             </div>
                         </li>
                         <li>
@@ -374,7 +377,7 @@ xxx
                                     class="w250"
                                     required
                                     errmsg="终端号不可为空"
-                                    v-model="form.app_id"
+                                    v-model="form.testing.app_id"
                                 />
                             </div>
                             <div>
@@ -383,7 +386,7 @@ xxx
                                     class="w250"
                                     required
                                     errmsg="商户号不可为空"
-                                    v-model="form.merchant_id"
+                                    v-model="form.testing.merchant_id"
                                 />
                             </div>
                         </li>
@@ -400,7 +403,7 @@ xxx
                                     class="w250"
                                     required
                                     errmsg="商户秘钥不可为空"
-                                    v-model="form.merchant_secret"
+                                    v-model="form.testing.merchant_secret"
                                 />
                             </div>
                         </li>
@@ -417,7 +420,7 @@ xxx
                                     class="w250"
                                     required
                                     errmsg="公钥不可为空"
-                                    v-model="form.public_key"
+                                    v-model="form.testing.public_key"
                                 />
                             </div>
                             <div>
@@ -426,7 +429,7 @@ xxx
                                     class="w250"
                                     required
                                     errmsg="私钥不可为空"
-                                    v-model="form.private_key"
+                                    v-model="form.testing.private_key"
                                 />
                             </div>
                         </li>
@@ -443,7 +446,7 @@ xxx
                                     class="w250"
                                     required
                                     errmsg="md5_key不可为空"
-                                    v-model="form.md5_key"
+                                    v-model="form.testing.md5_key"
                                 />
                             </div>
                         </li>
@@ -468,9 +471,9 @@ xxx
                                 <Input
                                     class="w250"
                                     placeholder="例如: http://abc.com"
-                                    :showerr="!form.urls.login||!urlReg.test(form.urls.login)"
+                                    :showerr="isShowErrUrl()"
                                     errmsg="登录接口格式错误!"
-                                    v-model="form.urls.login"
+                                    v-model="form.testing.url.login"
                                 />
                             </div>
                             <div>
@@ -478,9 +481,9 @@ xxx
                                 <Input
                                     class="w250"
                                     placeholder="例如: http://abc.com"
-                                    :showerr="!form.urls.agent_account_query_url||!urlReg.test(form.urls.agent_account_query_url)"
-                                    errmsg="查询玩家总分格式错误"
-                                    v-model="form.urls.agent_account_query_url"
+                                    :showerr="isShowErrUrl()"
+                                    errmsg="查询查询代理余额接口格式错误"
+                                    v-model="form.testing.url.account_query_url"
                                 />
                             </div>
                         </li>
@@ -490,9 +493,9 @@ xxx
                                 <Input
                                     class="w250"
                                     placeholder="例如: http://abc.com"
-                                    :showerr="!form.urls.account_query_url||!urlReg.test(form.urls.account_query_url)"
+                                    :showerr="isShowErrUrl()"
                                     errmsg="查询余额接口格式错误!"
-                                    v-model="form.urls.account_query_url"
+                                    v-model="form.testing.url.account_query_url"
                                 />
                             </div>
                             <div>
@@ -500,9 +503,9 @@ xxx
                                 <Input
                                     class="w250"
                                     placeholder="例如: http://abc.com"
-                                    :showerr="!form.urls.top_up_url||!urlReg.test(form.urls.top_up_url)"
+                                    :showerr="isShowErrUrl()"
                                     errmsg="上分接口格式错误!"
-                                    v-model="form.urls.top_up_url"
+                                    v-model="form.testing.url.top_up_url"
                                 />
                             </div>
                         </li>
@@ -512,9 +515,9 @@ xxx
                                 <Input
                                     class="w250"
                                     placeholder="例如: http://abc.com"
-                                    :showerr="!form.urls.draw_out_url||!urlReg.test(form.urls.draw_out_url)"
+                                    :showerr="isShowErrUrl()"
                                     errmsg="下分接口格式错误!"
-                                    v-model="form.urls.draw_out_url"
+                                    v-model="form.testing.url.draw_out_url"
                                 />
                             </div>
                             <div>
@@ -522,9 +525,9 @@ xxx
                                 <Input
                                     class="w250"
                                     placeholder="例如: http://abc.com"
-                                    :showerr="!form.urls.order_query_url||!urlReg.test(form.urls.order_query_url)"
+                                    :showerr="isShowErrUrl()"
                                     errmsg="查询订单接口格式错误"
-                                    v-model="form.urls.order_query_url"
+                                    v-model="form.testing.url.order_query_url"
                                 />
                             </div>
                         </li>
@@ -534,9 +537,9 @@ xxx
                                 <Input
                                     class="w250"
                                     placeholder="例如: http://abc.com"
-                                    :showerr="!form.urls.user_active_query_url||!urlReg.test(form.urls.user_active_query_url)"
+                                    :showerr="isShowErrUrl()"
                                     errmsg="查询玩家在线状态格式错误"
-                                    v-model="form.urls.user_active_query_url"
+                                    v-model="form.testing.url.user_active_query_url"
                                 />
                             </div>
                             <div>
@@ -544,9 +547,9 @@ xxx
                                 <Input
                                     class="w250"
                                     placeholder="例如: http://abc.com"
-                                    :showerr="!form.urls.game_order_query_url||!urlReg.test(form.urls.game_order_query_url)"
+                                    :showerr="isShowErrUrl()"
                                     errmsg="查询游戏注单格式错误"
-                                    v-model="form.urls.game_order_query_url"
+                                    v-model="form.testing.url.game_order_query_url"
                                 />
                             </div>
                         </li>
@@ -556,9 +559,9 @@ xxx
                                 <Input
                                     class="w250"
                                     placeholder="例如: http://abc.com"
-                                    :showerr="!form.urls.user_total_status_query_url||!urlReg.test(form.urls.user_total_status_query_url)"
+                                    :showerr="isShowErrUrl()"
                                     errmsg="查询玩家总分格式错误"
-                                    v-model="form.urls.user_total_status_query_url"
+                                    v-model="form.testing.url.user_total_status_query_url"
                                 />
                             </div>
                             <div>
@@ -566,9 +569,9 @@ xxx
                                 <Input
                                     class="w250"
                                     placeholder="例如: http://abc.com"
-                                    :showerr="!form.urls.kick_out_url||!urlReg.test(form.urls.kick_out_url)"
+                                    :showerr="isShowErrUrl()"
                                     errmsg="踢玩家接口格式错误"
-                                    v-model="form.urls.kick_out_url"
+                                    v-model="form.testing.url.kick_out_url"
                                 />
                             </div>
                         </li>
@@ -652,30 +655,53 @@ export default {
                 name: '', // 厂商名称
                 sign: '', // 厂商标识
                 type_id: '', // 游戏类型id
-                urls: {
-                    login: '', // 登录接口
-                    account_query_url: '', //查询余额接口
-                    top_up_url: '', //上分接口
-                    draw_out_url: '', // 下分接口
-                    order_query_url: '', // 查询订单接口
-                    user_active_query_url: '', //查询玩家在线状态
-                    game_order_query_url: '', // 查询游戏注单
-                    user_total_status_query_url: '', // 查询玩家总分
-                    kick_out_url: '', // 踢玩家接口
-                    agent_account_query_url: '' // 查询代理余额接口
+                status: '1', // 状态
+                prod_prefix: '', // 正式 第三方urls
+                production: {
+                    des_key: '',
+                    app_id: '',
+                    merchant_id: '',
+                    merchant_secret: '',
+                    public_key: '',
+                    private_key: '',
+                    md5_key: '',
+                    url: {
+                        login: '',
+                        agent_account_query_url: '',
+                        account_query_url: '',
+                        top_up_url: '',
+                        draw_out_url: '',
+                        order_query_url: '',
+                        user_active_query_url: '',
+                        game_order_query_url: '',
+                        user_total_status_query_url: '',
+                        kick_out_url: ''
+                    }
                 },
-                test_urls: {
-                    login: '' // 存放三方调用测试urls
+                test_urls: '', // 测试第三方urls
+                testing: {
+                    des_key: '',
+                    app_id: '',
+                    merchant_id: '',
+                    merchant_secret: '',
+                    public_key: '',
+                    private_key: '',
+                    md5_key: '',
+                    url: {
+                        login: '',
+                        agent_account_query_url: '',
+                        account_query_url: '',
+                        top_up_url: '',
+                        draw_out_url: '',
+                        order_query_url: '',
+                        user_active_query_url: '',
+                        game_order_query_url: '',
+                        user_total_status_query_url: '',
+                        kick_out_url: ''
+                    }
                 },
-                app_id: '', //..终端号
-                merchant_id: '', //商户号
-                merchant_secret: '', // 商户秘钥
-                public_key: '', // 公钥
-                private_key: '', // 私钥
-                des_key: '', // des 秘钥
-                md5_key: '', // md5秘钥
-                whitelist_ips: '', // 白名单
-                status: '1' // 状态
+                isAddFormalUrl: '', // 是否以正式地址为准
+                whitelist_ips: '' // 白名单
             },
             // mod_show: false,
             // mod_cont: '',
@@ -699,38 +725,73 @@ export default {
         }
     },
     methods: {
-                initForm() {
+        initForm() {
             this.form = {
                 name: '', // 厂商名称
                 sign: '', // 厂商标识
                 type_id: '', // 游戏类型id
-                whitelist_ips: '', //
-                urls: {
-                    login: '', // 登录接口
-                    account_query_url: '', //查询余额接口
-                    top_up_url: '', //上分接口
-                    draw_out_url: '', // 下分接口
-                    order_query_url: '', // 查询订单接口
-                    user_active_query_url: '', //查询玩家在线状态
-                    game_order_query_url: '', // 查询游戏注单
-                    user_total_status_query_url: '', // 查询玩家总分
-                    kick_out_url: '', // 踢玩家接口
-                    agent_account_query_url: '' // 查询代理余额接口
+                status: '1', // 状态
+                prod_prefix: '', // 第三方urls
+                production: {
+                    des_key: '',
+                    app_id: '',
+                    merchant_id: '',
+                    merchant_secret: '',
+                    public_key: '',
+                    private_key: '',
+                    md5_key: '',
+                    url: {
+                        login: '',
+                        agent_account_query_url: '',
+                        account_query_url: '',
+                        top_up_url: '',
+                        draw_out_url: '',
+                        order_query_url: '',
+                        user_active_query_url: '',
+                        game_order_query_url: '',
+                        user_total_status_query_url: '',
+                        kick_out_url: ''
+                    }
                 },
-                test_urls: {
-                    login: '' // 存放三方调用测试urls
+                testing: {
+                    des_key: '',
+                    app_id: '',
+                    merchant_id: '',
+                    merchant_secret: '',
+                    public_key: '',
+                    private_key: '',
+                    md5_key: '',
+                    url: {
+                        login: '',
+                        agent_account_query_url: '',
+                        account_query_url: '',
+                        top_up_url: '',
+                        draw_out_url: '',
+                        order_query_url: '',
+                        user_active_query_url: '',
+                        game_order_query_url: '',
+                        user_total_status_query_url: '',
+                        kick_out_url: ''
+                    }
                 },
-                app_id: '', //..终端号
-                merchant_id: '', //商户号
-                merchant_secret: '', // 商户秘钥
-                public_key: '', // 公钥
-                private_key: '', // 私钥
-                des_key: '', // des 秘钥
-                md5_key: '', // md5秘钥
-                whitelist_ips: '', // 白名单
-                status: '1' // 状态
+                isAddFormalUrl: '', // 是否以正式地址为准
+                whitelist_ips: '' // 白名单
             }
             this.active = 0
+        },
+        /**
+         * 是否展示错误提示 只判断url类型
+         * @param {string} val 筛选的值
+         * @param {boolean} required 是否必填
+         *  */
+        isShowErrUrl(val, required = true) {
+            if (required && !val) {
+                return true
+            }
+            if (val && !this.urlReg.test(val)) {
+                return true
+            }
+            return false
         },
         statusSwitch(value, row) {
             this.switchConf(value, row)
@@ -745,37 +806,75 @@ export default {
         edit(row) {
             console.log('row: ', row)
             if (!row) return
+            let production = row.production || {}
+            let product_url = production.url || {}
+            let testing = row.staging || {}
+            let test_url = testing.url || {}
+            console.log('🍈 production: ', production)
             this.form = {
                 name: row.name,
                 sign: row.sign, // 厂商标识
                 type_id: row.type_id, // 游戏类型id
-                // whitelist_ips: '', //
-                urls: {
-                    login: row.urls && row.urls.login, // 登录接口
-                    account_query_url: row.urls && row.urls.account_query_url, //查询余额接口
-                    top_up_url: row.urls && row.urls.top_up_url, //上分接口
-                    draw_out_url: row.urls && row.urls.draw_out_url, // 下分接口
-                    order_query_url: row.urls && row.urls.order_query_url, // 查询订单接口
-                    user_active_query_url:
-                        row.urls && row.urls.user_active_query_url, //查询玩家在线状态
-                    game_order_query_url:
-                        row.urls && row.urls.game_order_query_url, // 查询游戏注单
-                    user_total_status_query_url:
-                        row.urls && row.urls.user_total_status_query_url, // 查询玩家总分
-                    kick_out_url: row.urls && row.urls.kick_out_url, // 踢玩家接口
-                    agent_account_query_url:
-                        row.urls && row.urls.agent_account_query_url // 查询代理余额接口
+                production: {
+                    des_key: production.des_key,
+                    app_id: production.app_id,
+                    merchant_id: production.merchant_id,
+                    merchant_secret: production.merchant_secret,
+                    public_key: production.public_key,
+                    private_key: production.private_key,
+                    md5_key: production.md5_key,
+                    url: {
+                        login: product_url.login, // 登录接口
+                        agent_account_query_url:
+                            product_url.agent_account_query_url, // 查询代理余额接口, //查询代理余额接口
+                        account_query_url: product_url.account_query_url, //查询余额接口
+                        top_up_url: product_url.top_up_url, //上分接口
+                        draw_out_url: product_url.draw_out_url, // 下分接口
+                        order_query_url: product_url.order_query_url, // 查询订单接口
+                        user_active_query_url:
+                            product_url.user_active_query_url, //查询玩家在线状态
+                        game_order_query_url: product_url.game_order_query_url, // 查询游戏注单
+                        user_total_status_query_url:
+                            product_url.user_total_status_query_url, // 查询玩家总分
+                        kick_out_url: product_url.kick_out_url // 踢玩家接口
+                        // agent_account_query_url:
+                    }
                 },
-                test_urls: {
-                    login: row.test_urls && row.test_urls.login // 存放三方调用测试urls
+                testing: {
+                    des_key: testing.des_key,
+                    app_id: testing.app_id,
+                    merchant_id: testing.merchant_id,
+                    merchant_secret: testing.merchant_secret,
+                    public_key: testing.public_key,
+                    private_key: testing.private_key,
+                    md5_key: testing.md5_key,
+                    url: {
+                        login: test_url.login, // 登录接口
+                        agent_account_query_url:
+                            test_url.agent_account_query_url, // 查询代理余额接口, //查询代理余额接口
+                        account_query_url: test_url.account_query_url, //查询余额接口
+                        top_up_url: test_url.top_up_url, //上分接口
+                        draw_out_url: test_url.draw_out_url, // 下分接口
+                        order_query_url: test_url.order_query_url, // 查询订单接口
+                        user_active_query_url: test_url.user_active_query_url, //查询玩家在线状态
+                        game_order_query_url: test_url.game_order_query_url, // 查询游戏注单
+                        user_total_status_query_url:
+                            test_url.user_total_status_query_url, // 查询玩家总分
+                        kick_out_url: test_url.kick_out_url // 踢玩家接口
+                        // agent_account_query_url:
+                    }
                 },
-                app_id: row.app_id, //..终端号
-                merchant_id: row.merchant_id, //商户号
-                merchant_secret: row.merchant_secret, // 商户秘钥
-                public_key: row.public_key, // 公钥
-                private_key: row.private_key, // 私钥
-                des_key: row.des_key, // des 秘钥
-                md5_key: row.md5_key, // md5秘钥
+
+                // test_url: {
+                //     login: test_url && test_url.login // 存放三方调用测试url
+                // },
+                // app_id: app_id, //..终端号
+                // merchant_id: merchant_id, //商户号
+                // merchant_secret: merchant_secret, // 商户秘钥
+                // public_key: public_key, // 公钥
+                // private_key: private_key, // 私钥
+                // des_key: des_key, // des 秘钥
+                // md5_key: md5_key, // md5秘钥
                 status: row.status, // 状态
                 whitelist_ips:
                     row.white_list && (row.white_list.ips || []).join(',') // 白名单
@@ -837,22 +936,22 @@ export default {
                 name: this.form.name,
                 sign: this.form.sign, // 厂商标识
                 type_id: this.form.type_id, // 游戏类型id
-                urls: {
-                    login: this.form.urls.login, // 登录接口
-                    account_query_url: this.form.urls.account_query_url, //查询余额接口
-                    top_up_url: this.form.urls.top_up_url, //上分接口
-                    draw_out_url: this.form.urls.draw_out_url, // 下分接口
-                    order_query_url: this.form.urls.order_query_url, // 查询订单接口
-                    user_active_query_url: this.form.urls.user_active_query_url, //查询玩家在线状态
-                    game_order_query_url: this.form.urls.game_order_query_url, // 查询游戏注单
-                    user_total_status_query_url: this.form.urls
+                url: {
+                    login: this.form.url.login, // 登录接口
+                    account_query_url: this.form.url.account_query_url, //查询余额接口
+                    top_up_url: this.form.url.top_up_url, //上分接口
+                    draw_out_url: this.form.url.draw_out_url, // 下分接口
+                    order_query_url: this.form.url.order_query_url, // 查询订单接口
+                    user_active_query_url: this.form.url.user_active_query_url, //查询玩家在线状态
+                    game_order_query_url: this.form.url.game_order_query_url, // 查询游戏注单
+                    user_total_status_query_url: this.form.url
                         .user_total_status_query_url, // 查询玩家总分
-                    kick_out_url: this.form.urls.kick_out_url, // 踢玩家接口
-                    agent_account_query_url: this.form.urls
+                    kick_out_url: this.form.url.kick_out_url, // 踢玩家接口
+                    agent_account_query_url: this.form.url
                         .agent_account_query_url // 查询代理余额接口
                 },
-                test_urls: {
-                    login: this.form.test_urls.login // 存放三方调用测试urls
+                test_url: {
+                    login: this.form.test_url.login // 存放三方调用测试url
                 },
                 app_id: this.form.app_id, //..终端号
                 merchant_id: this.form.merchant_id, //商户号
@@ -886,22 +985,22 @@ export default {
                 name: this.form.name,
                 sign: this.form.sign, // 厂商标识
                 type_id: this.form.type_id, // 游戏类型id
-                urls: {
-                    login: this.form.urls.login, // 登录接口
-                    account_query_url: this.form.urls.account_query_url, //查询余额接口
-                    top_up_url: this.form.urls.top_up_url, //上分接口
-                    draw_out_url: this.form.urls.draw_out_url, // 下分接口
-                    order_query_url: this.form.urls.order_query_url, // 查询订单接口
-                    user_active_query_url: this.form.urls.user_active_query_url, //查询玩家在线状态
-                    game_order_query_url: this.form.urls.game_order_query_url, // 查询游戏注单
-                    user_total_status_query_url: this.form.urls
+                url: {
+                    login: this.form.url.login, // 登录接口
+                    account_query_url: this.form.url.account_query_url, //查询余额接口
+                    top_up_url: this.form.url.top_up_url, //上分接口
+                    draw_out_url: this.form.url.draw_out_url, // 下分接口
+                    order_query_url: this.form.url.order_query_url, // 查询订单接口
+                    user_active_query_url: this.form.url.user_active_query_url, //查询玩家在线状态
+                    game_order_query_url: this.form.url.game_order_query_url, // 查询游戏注单
+                    user_total_status_query_url: this.form.url
                         .user_total_status_query_url, // 查询玩家总分
-                    kick_out_url: this.form.urls.kick_out_url, // 踢玩家接口
-                    agent_account_query_url: this.form.urls
+                    kick_out_url: this.form.url.kick_out_url, // 踢玩家接口
+                    agent_account_query_url: this.form.url
                         .agent_account_query_url // 查询代理余额接口
                 },
-                test_urls: {
-                    login: this.form.test_urls.login // 存放三方调用测试urls
+                test_url: {
+                    login: this.form.test_url.login // 存放三方调用测试url
                 },
                 app_id: this.form.app_id, //..终端号
                 merchant_id: this.form.merchant_id, //商户号
