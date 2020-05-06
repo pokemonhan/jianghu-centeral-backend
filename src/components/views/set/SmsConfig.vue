@@ -324,16 +324,12 @@ export default {
         getList() {
             let data = {
                 name: this.filter.name,
-
                 status: this.filter.status,
-
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
-            // console.log('para: ', para)
             if (this.filter.dates[0] && this.filter.dates[1]) {
-                data.updatedAt = JSON.stringify(this.filter.dates)
-                data.updatedAt = this.filter.dates
+                data.updated_at = JSON.stringify(this.filter.dates)
             }
             data = window.all.tool.rmEmpty(data)
 

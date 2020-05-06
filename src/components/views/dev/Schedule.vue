@@ -118,7 +118,7 @@ export default {
             list: [],
             curr_row: {},
             // dialog
-            dia_show: true,
+            dia_show: false,
             dia_title: '',
             dia_status: '',
             /** form */
