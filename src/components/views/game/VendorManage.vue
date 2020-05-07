@@ -372,9 +372,9 @@
                                 <Input
                                     class="w250"
                                     :placeholder="test_url_holder"
-                                    :showerr="showTestUrlErr(form.test_urls)"
-                                    errmsg="存放三方调用测试urls格式错误"
-                                    v-model="form.test_urls"
+                                    :showerr="testUrlErrShow"
+                                    errmsg="三方调用测试urls格式错误"
+                                    v-model="form.staging.third_party_url"
                                 />
                             </div>
                             <div>
@@ -389,12 +389,7 @@
                             </div>
                             <div>
                                 <span>商户号:</span>
-                                <Input
-                                    class="w250"
-                                    required
-                                    errmsg="商户号不可为空"
-                                    v-model="form.staging.merchant_id"
-                                />
+                                <Input class="w250" v-model="form.staging.merchant_id" />
                             </div>
                         </li>
                         <li>
@@ -451,7 +446,7 @@
                                 <span>md5_key</span>
                                 <Input
                                     class="w250"
-                                   :showerr="testKeyShow"
+                                    :showerr="testKeyShow"
                                     errmsg="md5_key不可为空"
                                     v-model="form.staging.md5_key"
                                 />
@@ -738,6 +733,7 @@ export default {
                 return true
             }
         },
+        // 测试秘钥,私钥公钥...等等
         testKeyShow() {
             let staging = this.form.staging || {}
 
@@ -750,6 +746,14 @@ export default {
                 return true
             }
         },
+        //
+        testUrlErrShow() {
+            let url = this.form.staging.third_party_url
+            if (url && !this.urlReg.test(url)) {
+                return true
+            }
+            return false
+        }
     },
     methods: {
         initForm() {
@@ -758,7 +762,7 @@ export default {
                 name: '', // 厂商名称
                 sign: '', // 厂商标识
                 type_id: '', // 游戏类型id
-                status: '1', // 状态
+                status: 1, // 状态
                 production: {
                     third_party_url: '',
                     des_key: '',
@@ -813,33 +817,30 @@ export default {
          * @param {string} val 筛选的值
          *  */
         showFormalUrlErr(val) {
-            // if (!val) {
-            //     return false
-            // }
-            // 以正式地址打为准 ,  有正式地址前缀,则不加reg判断
+            // 以正式地址为准 ,  有正式地址前缀,反之则不加前缀,
+            // reg判断 1.加前缀格式 /ab 2.不加前缀格式 http://xx.com/ab
             let reg
             if (this.isAddFormalUrl) {
                 reg = /^\/\w+/
             } else {
                 reg = this.urlReg
             }
-
+            // 有值时才判断 是否错误
             if (val && !reg.test(val)) {
                 return true
             }
             return false
         },
         showTestUrlErr(val) {
-            if (!val) {
-                return false
-            }
-            // 以测试地址打为准 ,  有正式地址前缀,则不加reg判断
+            let reg
             if (this.isAddTestUrl) {
-                return !val
+                reg = /^\/\w+/
             } else {
-                if (!this.urlReg.test(val)) {
-                    return true
-                }
+                reg = this.urlReg
+            }
+            // 有值时才判断 是否错误
+            if (val && !reg.test(val)) {
+                return true
             }
             return false
         },
@@ -867,7 +868,7 @@ export default {
             this.dia_title = '添加'
         },
         edit(row) {
-            console.log('row: ', row)
+            // console.log('row: ', row)
             if (!row) return
             this.curr_row = row
             this.active = 0
@@ -877,7 +878,7 @@ export default {
             let product_url = production.url || {}
             let staging = row.staging || {}
             let test_url = staging.url || {}
-            console.log('🍈 production: ', production)
+            // console.log('🍈 production: ', production)
             this.form = {
                 id: row.id,
                 name: row.name,
@@ -973,6 +974,7 @@ export default {
         },
         step1Check() {
             let production = this.form.production || {}
+            // 1.正式地址 2. 商户号 3. 其中一个秘钥 都是true 才通过
             if (
                 production.third_party_url &&
                 production.merchant_id &&
@@ -1006,7 +1008,7 @@ export default {
             ]
             return arr.every(key => {
                 let item_val = product_url[key] || ''
-                // console.log('🥜 item_val: ', item_val)
+
                 if (!item_val) {
                     return true
                 } else {
@@ -1014,11 +1016,95 @@ export default {
                 }
             })
         },
-        step4Check() {},
-        step5Check() {},
+        step3Check() {
+            if (!this.form_need_test) {
+                return true
+            }
+            let staging = this.form.staging || {}
+            let third_party_url = staging.third_party_url
+            //  1.有测试地址 && 2.地址不通过
+            if (third_party_url && !this.urlReg.test(third_party_url)) {
+                return false
+            }
+            return true
+        },
+        step4Check() {
+            if (!this.form_need_test) {
+                return true
+            }
+            let staging = this.form.staging || {}
+            let stag_url = staging.url || {}
+            let reg
+            if (this.isAddTestUrl) {
+                reg = /^\/\w+/
+            } else {
+                reg = this.urlReg
+            }
+            let arr = [
+                'login',
+                'agent_account_query_url',
+                'account_query_url',
+                'top_up_url',
+                'draw_out_url',
+                'order_query_url',
+                'user_active_query_url',
+                'game_order_query_url',
+                'user_total_status_query_url',
+                'kick_out_url'
+            ]
+            return arr.every(key => {
+                let item_val = stag_url[key] || ''
+                // 可以为空
+                if (!item_val) {
+                    return true
+                } else {
+                    return reg.test(item_val)
+                }
+            })
+        },
+        step5Check() {
+            let ip = this.form.whitelist_ips
+            return !this.errIpsShow(ip)
+        },
+        /**自动加前缀
+         * @param {object} url_obj 需要加前缀的对象
+         * @param {string} prefix 前缀
+         */
+        addPrefix(url_obj = {}, prefix) {
+            let obj = {}
+            for (const key in url_obj) {
+                let item = url_obj[key]
+                if (item) {
+                    obj[key] = prefix + item
+                }
+            }
+            return obj
+        },
         checkForm() {
-            let step2 = {}
-
+            if (!this.step0Check()) {
+                this.$toast.warning('步骤1 错误')
+                return false
+            }
+            if (!this.step1Check()) {
+                this.$toast.warning('步骤2 错误')
+                return false
+            }
+            if (!this.step2Check()) {
+                this.$toast.warning('步骤3 错误')
+                return false
+            }
+            if (!this.step3Check()) {
+                this.$toast.warning('步骤4 错误')
+                return false
+            }
+            if (!this.step4Check()) {
+                this.$toast.warning('步骤5 错误')
+                return false
+            }
+            if (!this.step5Check()) {
+                this.$toast.warning('步骤6 错误')
+                return false
+            }
             return true
         },
         diaCfm() {
@@ -1031,13 +1117,11 @@ export default {
             }
         },
         addCfm() {
-            console.log('添加')
             let production = this.form.production || {}
             let product_url = production.url || {}
             let staging = this.form.staging || {}
             let stag_url = staging.url || {}
             let data = {
-                // id: this.form.id,
                 name: this.form.name, // 厂商名称
                 sign: this.form.sign, // 厂商标识
                 type_id: this.form.type_id, // 游戏类型id
@@ -1090,21 +1174,32 @@ export default {
                             stag_url.user_total_status_query_url, // 查询玩家总分
                         kick_out_url: stag_url.kick_out_url // 踢玩家接口
                     }
-                },
-
-                whitelist_ips:
-                    this.form.white_list &&
-                    (this.form.white_list.ips || []).join(',') // 白名单
+                }
+                // whitelist_ips:
+                //     this.form.white_list &&
+                //     (this.form.white_list.ips || []).join(',') // 白名单
             }
             if (this.form.whitelist_ips) {
                 let str = this.form.whitelist_ips.replace('，', ',')
                 str = str.replace(/\s+/g, '')
                 data.whitelist_ips = JSON.stringify(str.split(','))
             }
-
+            // 是否以正式地址为准 自动加前缀
+            if (this.isAddFormalUrl) {
+                data.production.url = this.addPrefix(
+                    production.url,
+                    production.third_party_url
+                )
+            }
+            if (this.isAddTestUrl) {
+                data.staging.url = this.addPrefix(
+                    staging.url,
+                    staging.third_party_url
+                )
+            }
             let { url, method } = this.$api.game_vendor_add
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
                     this.dia_show = ''
@@ -1171,34 +1266,32 @@ export default {
                             stag_url.user_total_status_query_url, // 查询玩家总分
                         kick_out_url: stag_url.kick_out_url // 踢玩家接口
                     }
-                },
-                
-                whitelist_ips:
-                    this.form.white_list &&
-                    (this.form.white_list.ips || []).join(',') // 白名单
+                }
+
+                // whitelist_ips:
+                //     this.form.white_list &&
+                //     (this.form.white_list || []).join(',') // 白名单
             }
-            // TODO: 自动加前缀
-            if(this.isAddFormalUrl){
-                let production = data.production
-                let prefix = production.third_party_url
-                console.log('🍶 prefix: ', prefix);
-                let url_obj = data.production.url || {}
-                console.log('🥖 url_obj: ', url_obj);
-                for (const key in url_obj) {
-                    if (url_obj.hasOwnProperty(key)) {
-                        let item = url_obj[key];
-                        if(item){
-                            url_obj[key] = prefix + url_obj[key]
-                        }
-                    }
-                } 
-                console.log('编辑添加前缀',production)       
-            }
+            // 白名单
             if (this.form.whitelist_ips) {
                 let str = this.form.whitelist_ips.replace('，', ',')
                 str = str.replace(/\s+/g, '')
                 data.whitelist_ips = JSON.stringify(str.split(','))
             }
+            // 是否以正式地址为准 自动加前缀
+            if (this.isAddFormalUrl) {
+                data.production.url = this.addPrefix(
+                    production.url,
+                    production.third_party_url
+                )
+            }
+            if (this.isAddTestUrl) {
+                data.staging.url = this.addPrefix(
+                    staging.url,
+                    staging.third_party_url
+                )
+            }
+
             let { url, method } = this.$api.game_vendor_set
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
@@ -1221,7 +1314,6 @@ export default {
             this.$http({ method, url }).then(res => {
                 // console.log('res: ', res)
                 if (res && res.code === '200') {
-                    // this.total = res.data.total
                     // this.list = res.data.data
                     let arr = res.data || []
                     this.game_type_opt = arr.map(item => {
@@ -1272,19 +1364,26 @@ export default {
                         break
                     case 2:
                         return this.step2Check() ? 'success' : 'error'
+                    case 3:
+                        if (!this.form_need_test) {
+                            return 'wait'
+                        } else {
+                            return this.step3Check() ? 'success' : 'error'
+                        }
+                        break
+                    case 4:
+                        if (!this.form_need_test) {
+                            return 'wait'
+                        } else {
+                            return this.step4Check() ? 'success' : 'error'
+                        }
+                        break
+                    case 5:
+                        break
                     default:
                         break
                 }
             }
-
-            // if (this.active > stepVal) {
-            //     if(stepVal===3||stepVal===4) {
-            //         this.form_need_test
-            //     }
-            //     return 'success'
-            // } else {
-            //     return 'wait'
-            // }
         },
         // 白名单ip 变成需要的格式
         ipFormat(ip) {

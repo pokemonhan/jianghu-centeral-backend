@@ -11,9 +11,6 @@
                 </li>
                 <li>
                     <span>收件时间</span>
-                    <!-- <Date v-model="filter.dates[0]" @update="timeUpdate()" />
-                    <span style="margin: 0 5px;">~</span>
-                    <Date v-model="filter.dates[1]" @update="timeUpdate()" /> -->
                     <Date type="daterange" v-model="filter.dates" @update="timeUpdate()" />
                 </li>
                 <li>
@@ -51,6 +48,7 @@
                         style="width:100px;"
                         @click="showDetail(row,idx)"
                     >{{row.email&&row.email.title}}</td>
+                    <td>{{row.platform_sign}}</td>
                     <td
                         class="pointer"
                         style="width:760px;padding:5px;"
@@ -105,7 +103,7 @@ export default {
                 platform_sign: '',
                 dates: []
             },
-            headers: ['标题?发件人??', '内容', '收件日期'],
+            headers: ['标题','发件人', '内容', '收件日期'],
             list: [],
             total: 2,
             pageNo: 1,
