@@ -586,7 +586,7 @@
                         <div>
                             <span>白名单</span>
                             <Input
-                                class="w250"
+                                style="width:500px"
                                 required
                                 :showerr="errIpsShow(form.whitelist_ips)"
                                 errmsg="格式错误"

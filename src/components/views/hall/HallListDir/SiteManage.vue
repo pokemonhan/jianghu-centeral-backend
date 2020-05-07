@@ -20,7 +20,7 @@
                             <span>~</span>
                             <Date style="width:200px;" type="datetime" v-model="dates[1]" /> -->
                             <!-- <date type="datatimerange" v-model="dates" /> -->
-                            <date style="width:300px;" type="datetimerange" v-model="dates" />
+                            <date style="width:340px;" type="datetimerange" v-model="dates" />
                             <p v-show="!(dates[0]&&dates[1])" class="red mt5">开始时间和结束都不可为空!</p>
                         </div>
                     </li>
@@ -202,7 +202,7 @@ export default {
 
 <style scoped>
 .cont {
-    width: 1100px;
+    min-width: 1100px;
     padding-top: 50px;
     padding-bottom: 90px;
 }
