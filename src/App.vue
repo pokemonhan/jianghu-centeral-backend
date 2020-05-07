@@ -690,6 +690,9 @@ button:focus {
 .a:active {
     color: red;
 }
+textarea::placeholder{
+    color:#ccc;
+}
 .w100 {
     width: 100px;
 }

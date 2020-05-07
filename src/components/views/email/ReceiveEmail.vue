@@ -48,7 +48,7 @@
                         style="width:100px;"
                         @click="showDetail(row,idx)"
                     >{{row.email&&row.email.title}}</td>
-                    <td>{{row.platform_sign}}</td>
+                    <td>{{row.email&&row.email.platform_sign}}</td>
                     <td
                         class="pointer"
                         style="width:760px;padding:5px;"
@@ -226,7 +226,7 @@ export default {
     cursor: pointer;
 }
 .table .v-table {
-    min-width: 1920px;
+    /* min-width: 1920px; */
     min-height: calc(100vh - 400px);
     margin-bottom: 5px;
 }

@@ -23,7 +23,8 @@
                     <li>
                         <span>发件人:</span>
                         <!-- <span>{{content.platform_sign}}</span> -->
-                        <span>{{content.headquarters&&content.headquarters.name}}</span>
+                        <span v-if="isSend">{{content.headquarters&&content.headquarters.name}}</span>
+                        <span v-else> {{content.platform_sign}}</span>
                     </li>
                     <li>
                         <span>发送时间:</span>

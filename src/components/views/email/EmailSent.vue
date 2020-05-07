@@ -223,7 +223,7 @@ export default {
     cursor: not-allowed;
 }
 .table .v-table {
-    min-width: 1920px;
+    /* min-width: 1920px; */
     min-height: calc(100vh - 400px);
     margin-bottom: 5px;
 }

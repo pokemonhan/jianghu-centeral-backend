@@ -18,7 +18,7 @@
                 </li>
                 <li>
                     <span>站点添加时间</span>
-                    <Date type="daterange" quickdate v-model="filter.add_dates" />
+                    <Date type="daterange" v-model="filter.add_dates" />
                     <!-- <span class="mh-5">至</span> -->
                     <!-- <Date v-model="filter.add_dates[1]" /> -->
                 </li>
@@ -101,29 +101,31 @@
                     <ul class="form add-from">
                         <li>
                             <span>厅主账号:</span>
-                            <Input class="w250" v-model="form.email" />
+                            <Input class="w300" v-model="form.email" />
                         </li>
                         <li>
                             <span>登录密码:</span>
-                            <Input class="w250" type="password" v-model="form.password" />
+                            <Input class="w300" type="password" v-model="form.password" />
                         </li>
                         <li>
                             <span>有效日期:</span>
                             <div>
-                                <Date style="width:250px;" type="datetime" v-model="form.dates[0]" />
+                                <!-- <Date style="width:250px;" type="datetime" v-model="form.dates[0]" />
                                 <div class="text-center">至</div>
-                                <Date style="width:250px;" type="datetime" v-model="form.dates[1]" />
+                                <Date style="width:250px;" type="datetime" v-model="form.dates[1]" /> -->
+                                <date style="width:300px;" type="datetimerange" v-model="form.dates" />
                             </div>
                         </li>
                         <li>
                             <span>站点名称:</span>
-                            <Input class="w250" v-model="form.platform_name" />
+                            <Input class="w300" v-model="form.platform_name" />
                         </li>
                         <li>
                             <span>主域名:</span>
                             <textarea
-                                style="width:250px;height:80px;"
+                                style="width:300px;height:80px;"
                                 class="textarea"
+                                placeholder="例子: http:abc.com,http:ac.com"
                                 v-model="form.domains"
                             ></textarea>
                         </li>
@@ -145,7 +147,7 @@
                         <li>
                             <span>权限选择</span>
                             <!-- // TODO: -->
-                            <!-- <Input class="w250" v-model="form.role" /> -->
+                            <!-- <Input class="w300" v-model="form.role" /> -->
                             <!-- <AuthorityTree v-model="form.role" style="width:500px;" /> -->
                             <AuthorityTree
                                 style="width:500px;"
@@ -156,11 +158,11 @@
                         </li>
                         <li>
                             <span>短信数量</span>
-                            <Input class="w250" limit="p-integer" v-model="form.sms_num" />
+                            <Input class="w300" limit="p-integer" v-model="form.sms_num" />
                         </li>
                         <li>
                             <span>站点标识</span>
-                            <Input class="w250" v-model="form.platform_sign" />
+                            <Input class="w300" v-model="form.platform_sign" />
                         </li>
                         <li>
                             <span>厅主状态:</span>
@@ -365,7 +367,7 @@ export default {
                         methods_arr.push(index + 1)
                     }
                 })
-                return JSON.stringify(methods_arr)
+                return methods_arr.join(',')
             }
 
             let data = {
@@ -580,7 +582,7 @@ export default {
 .form > li {
     display: flex;
     align-items: baseline;
-    padding: 0 150px;
+    padding: 0 100px;
     margin-top: 10px;
 }
 .form > li span:first-child {
@@ -607,6 +609,9 @@ export default {
     min-height: 420px;
     width: 700px;
     justify-content: center;
+}
+.w300 {
+    width: 300px;
 }
 .maintain-btns {
     margin-top: 40px;

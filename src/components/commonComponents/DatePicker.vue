@@ -1192,13 +1192,21 @@ export default {
 }
 .date-box {
     position: absolute;
-    left: -50%;
+    left: 0;
+    margin-left: -20%;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     background: #fff;
     z-index: 10;
     overflow: hidden;
 }
+.date .date-box {
+    margin-left: -50%;
+}
+.daterange .date-box {
+    margin-left: -70%;
+}
+
 .date .date-box,
 .datetime .date-box {
     left: 0;

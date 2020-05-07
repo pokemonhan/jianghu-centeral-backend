@@ -6,7 +6,7 @@
             <div class="left">
                 <ul style="margin-top:-13px;" class="form">
                     <li>
-                        <span>代理方式?:</span>
+                        <span>代理方式:</span>
                         <Checkbox label="PC" v-model="agency_method[0]" />
                         <Checkbox label="H5" v-model="agency_method[1]" />
                         <Checkbox label="APP" v-model="agency_method[2]" />
@@ -16,9 +16,11 @@
                     <li>
                         <span>有效日期:</span>
                         <div class="text-center">
-                            <Date style="width:200px;" type="datetime" v-model="dates[0]" />
+                            <!-- <Date style="width:200px;" type="datetime" v-model="dates[0]" />
                             <span>~</span>
-                            <Date style="width:200px;" type="datetime" v-model="dates[1]" />
+                            <Date style="width:200px;" type="datetime" v-model="dates[1]" /> -->
+                            <!-- <date type="datatimerange" v-model="dates" /> -->
+                            <date style="width:300px;" type="datetimerange" v-model="dates" />
                             <p v-show="!(dates[0]&&dates[1])" class="red mt5">开始时间和结束都不可为空!</p>
                         </div>
                     </li>
