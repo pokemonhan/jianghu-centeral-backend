@@ -16,10 +16,9 @@
                         <span>游戏名称</span>
                         <Select input v-model="filterLeft.game_id" :options="game_opt"></Select>
                     </li>
-                    <li>
+                    <!-- <li>
                         <button class="btn-blue" @click="getUnsignList">查找</button>
-                        <!-- <button class="btn-blue">全部添加</button> -->
-                    </li>
+                    </li> -->
                 </ul>
                 <ul class="down">
                     <li>
@@ -55,9 +54,9 @@
                         <span>游戏名称</span>
                         <Select v-model="filterRight.game_id" :options="game_opt"></Select>
                     </li>
-                    <li>
+                    <!-- <li>
                         <button class="btn-blue" @click="getAssignedList">查找</button>
-                    </li>
+                    </li> -->
                 </ul>
                 <ul class="down">
                     <li>

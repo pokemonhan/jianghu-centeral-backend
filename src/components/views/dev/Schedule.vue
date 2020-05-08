@@ -41,15 +41,16 @@
             />-->
         </div>
         <Dialog :show.sync="dia_show" :title="dia_title">
-            <div class="dia-inner">
+            <div class="dia-inner loc-dialog">
                 <ul class="form">
                     <li>
                         <span>命令名称</span>
                         <Input v-model="form.command" />
                     </li>
+
                     <li>
                         <span>传递参数</span>
-                        <!-- <Input v-model="form.param" /> -->
+                        <Input v-model="form.param" />
                         <div>
                             <ul>
                                 <!-- <li v-for="(item,index)in form.param" :key="index">
@@ -61,7 +62,10 @@
                     </li>
                     <li>
                         <span>cron表达式</span>
-                        <Input v-model="form.schedule" />
+                        <Input placeholder="请输入定时策略" v-model="form.schedule" @focus="cronShow=true" />
+                    </li>
+                    <li>
+                       
                     </li>
                     <li>
                         <span>状态</span>
@@ -91,6 +95,9 @@
                 </div>
             </div>
         </Dialog>
+        <Dialog :show.sync="cronShow" title="设置cron">
+            <cron @change="changeCron" @close="cronShow=false" i18n="cn"></cron>
+        </Dialog>
         <Modal
             :show.sync="mod_show"
             title="删除"
@@ -102,7 +109,11 @@
 </template>
 
 <script>
+import { cron } from 'vue-cron'
 export default {
+    components: {
+        cron
+    },
     data() {
         return {
             headers: [
@@ -121,9 +132,12 @@ export default {
             dia_show: false,
             dia_title: '',
             dia_status: '',
+            // cron 时间任务
+            cronPopover: false,
+            cronShow: false,
             /** form */
             form: {
-                command: '', //任务命令名称
+                command: '', // 任务命令名称
                 param: '', // 需要传递的参数 假数组
                 schedule: '', // cron时间表达式
                 status: 1, // 开启状态 0关闭 1开启
@@ -147,6 +161,9 @@ export default {
                 status: 1, // 开启状态 0关闭 1开启
                 remarks: '' // 定时任务用意描述备注
             }
+        },
+        changeCron(val) {
+            this.form.schedule = val
         },
         add() {
             this.initForm()
@@ -292,7 +309,10 @@ export default {
 <style scoped>
 .dia-inner {
     /* width: 700px; */
-    padding: 0 30px;
+    /* min-width: 700px; */
+    min-height: 600px;
+    /* margin: 0 auto; */
+    padding: 0 60px;
 }
 .form {
     width: 100%;

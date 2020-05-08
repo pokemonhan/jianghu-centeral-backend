@@ -11,19 +11,24 @@ Vue.config.devtools = true // TODO: false 生产设置为false
 
 import tool from './js/tool'                  // 常用工具
 import plugins from './js/plugins'            // 1.公用组件, 2.指令,  3.axios
+import menu_list from './js/menuList'         // 菜单目录
 
+import './assets/font-icon/iconfont.css'      // 引入css
 import echarts from 'echarts'
 import wangeditor from 'wangeditor'           // wangeditor 富文本 ,使用见官网
-import menu_list from './js/menuList'         // 菜单目录
-import './assets/font-icon/iconfont.css'      // 引入css
 import Jquery from 'jquery'
-
 import xss from 'xss'
+
+// element 
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css'
+
 
 window.$ = Jquery;
 // import slide from './js/slide'
-
 Vue.use(plugins)
+Vue.use(ElementUI)
+
 window.all = {
   tool,
   store,

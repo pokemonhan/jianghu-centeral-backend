@@ -200,7 +200,7 @@ export default {
     /** 3.3 游戏管理 - 列表 */
     game_list: {
         url: '/headquarters-api/game/opt-index-do',
-        method: 'get'
+        method: 'post'
     },
     /** 游戏管理 - 改变状态 */
     game_status_set: {

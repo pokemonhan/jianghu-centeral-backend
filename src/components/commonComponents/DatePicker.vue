@@ -1121,6 +1121,7 @@ export default {
 <style scoped>
 .v-date-picker {
     /* width: 100%; */
+    font-size: 13px;
     height: 30px;
     line-height: 30px;
     position: relative;

@@ -55,6 +55,7 @@
                     <td>
                         <div>{{row.maintain_start}}</div>
                         <div>{{row.maintain_end}}</div>
+                        <div>{{!row.maintain_start&&!row.maintain_end&&'---'}}</div>
                     </td>
                     <td>{{row.created_at}}</td>
                     <td style="padding:5px 0;">
