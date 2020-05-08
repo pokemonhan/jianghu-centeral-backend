@@ -310,7 +310,7 @@ export default {
 .dia-inner {
     /* width: 700px; */
     /* min-width: 700px; */
-    min-height: 600px;
+    /* min-height: 600px; */
     /* margin: 0 auto; */
     padding: 0 60px;
 }

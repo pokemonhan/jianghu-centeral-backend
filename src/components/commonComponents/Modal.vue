@@ -1,7 +1,7 @@
 <template>
-    <div v-if="show" class="modal-mask" ref="mask">
+    <div v-if="show" class="modal-mask2" ref="mask">
         <transition name="modal-animate">
-            <div v-if="dialog" class="v-modal" ref="modal">
+            <div v-if="dialog" class="vx-modal" ref="modal">
                 <div class="modal-header" ref="header">
                     <!-- <i v-if="icon" :class="['iconfont', icon]"></i> -->
                     <span v-text="title"></span>
@@ -139,7 +139,7 @@ export default {
 </script>
 
 <style scoped>
-.modal-mask {
+.modal-mask2 {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -170,7 +170,7 @@ export default {
     transform: translateY(-30px);
 }
 
-.v-modal {
+.vx-modal {
     position: relative;
     width: 520px;
     z-index: 12;
@@ -178,7 +178,7 @@ export default {
     background-color: #fff;
     border-radius: 5px;
 }
-.v-modal .modal-header {
+.vx-modal .modal-header {
     position: relative;
     height: 40px;
     line-height: 40px;
@@ -188,28 +188,28 @@ export default {
     background: #4c8bfd;
     color: #fff;
 }
-.v-modal .modal-header i:first-child {
+.vx-modal .modal-header i:first-child {
     margin-right: 5px;
 }
-/* .v-modal .modal-header i:last-child{
+/* .vx-modal .modal-header i:last-child{
         cursor: pointer;
         position: absolute;
         right: 16px;
     } */
-.v-modal .modal-body {
+.vx-modal .modal-body {
     padding: 46px 16px;
     font-size: 17px;
     /* line-height: 1.5; */
     /* color: #3f4450; */
     text-align: center;
 }
-.v-modal .modal-footer {
+.vx-modal .modal-footer {
     padding: 12px 18px;
     display: flex;
     justify-content: space-around;
     border-top: 1px solid #f7f9fa;
 }
-.v-modal .modal-footer button {
+.vx-modal .modal-footer button {
     /* padding: 6px 15px; */
     width: 100px;
     height: 30px;
@@ -220,27 +220,27 @@ export default {
     border-style: solid;
     border-color: #2d8cf0;
 }
-.v-modal .modal-footer .cancel {
+.vx-modal .modal-footer .cancel {
     border-color: #2d8cf0;
     background: #fff;
     color: #2d8cf0;
     box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.2);
 }
-.v-modal .modal-footer .cancel:hover {
+.vx-modal .modal-footer .cancel:hover {
     box-shadow: none;
 }
-.v-modal .modal-footer .confirm {
+.vx-modal .modal-footer .confirm {
     background-color: #4c8bfd;
     color: #fff;
     margin-left: 8px;
     box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.219);
 }
-.v-modal .modal-footer .confirm:hover {
+.vx-modal .modal-footer .confirm:hover {
     background-color: #6e9df5;
     border: 1px solid #6e9df5;
     box-shadow: none;
 }
-.v-modal .modal-footer .confirm:active {
+.vx-modal .modal-footer .confirm:active {
     background-color: #4c8bfd;
 }
 </style>
