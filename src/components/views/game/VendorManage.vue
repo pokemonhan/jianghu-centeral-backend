@@ -43,7 +43,8 @@
             />
         </div>
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
-            <el-steps :active="active" align-center finish-status="success">
+            <div class="dia-inner">
+                <el-steps :active="active" align-center finish-status="success">
                 <el-step
                     class="pointer"
                     title="厂商"
@@ -601,6 +602,7 @@
                 <button v-show="active!==0" class="btn-blue-large" @click="prevStep">上一步</button>
                 <button v-if="active!==5" class="btn-blue-large" @click="nextStep">下一步</button>
                 <button v-else class="btn-blue-large ml50" @click="diaCfm">确定</button>
+            </div>
             </div>
         </Dialog>
         <!-- <Modal
@@ -1429,6 +1431,9 @@ export default {
 /* .table {
     margin-top: 20px;
 } */
+.dia-inner {
+    min-height: 700px;
+}
 .edit-form {
     min-width: 750px;
     min-height: 300px;
