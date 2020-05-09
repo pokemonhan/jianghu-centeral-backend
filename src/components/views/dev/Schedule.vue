@@ -15,7 +15,10 @@
                     <td>{{row.command}}</td>
                     <td>
                         <ul>
-                            <li v-for="(item,index) in row.param" :key="index">{{item}}</li>
+                            <li v-for="(item,index) in row.param" :key="index">
+                                <span class="bold">{{item.key}}:</span>
+                                <span class="ml5">{{item.value}}</span>
+                            </li>
                         </ul>
                     </td>
                     <td>{{row.schedule}}</td>
@@ -50,23 +53,34 @@
 
                     <li>
                         <span>传递参数</span>
-                        <Input v-model="form.param" />
+                        <!-- <Input v-model="form.param" /> -->
                         <div>
                             <ul>
-                                <!-- <li v-for="(item,index)in form.param" :key="index">
-                                    <Input v-model="item." />
-                                    <Input v-model="item.value" />
-                                </li>-->
+                                <li>{{form.parma}}</li>
+
+                                <li
+                                    class="mt10"
+                                    v-for="(item, index) in (form.param||[{}])"
+                                    :key="index"
+                                >
+                                    <div class="form-param">
+                                        <Input v-model="item.key" />
+                                        <span style="margin:0 8px 0">:</span>
+                                        <Input v-model="item.value" />
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                     </li>
                     <li>
                         <span>cron表达式</span>
-                        <Input placeholder="请输入定时策略" v-model="form.schedule" @focus="cronShow=true" />
+                        <Input
+                            placeholder="请输入定时策略"
+                            v-model="form.schedule"
+                            @focus="cronShow=true"
+                        />
                     </li>
-                    <li>
-                       
-                    </li>
+                    <li></li>
                     <li>
                         <span>状态</span>
                         <Radio
@@ -138,7 +152,7 @@ export default {
             /** form */
             form: {
                 command: '', // 任务命令名称
-                param: '', // 需要传递的参数 假数组
+                param: [{}], // 需要传递的参数 假数组
                 schedule: '', // cron时间表达式
                 status: 1, // 开启状态 0关闭 1开启
                 remarks: '' // 定时任务用意描述备注
@@ -156,7 +170,7 @@ export default {
         initForm() {
             this.form = {
                 command: '', //任务命令名称
-                param: '', // 需要传递的参数 假数组
+                param: [{}], // 需要传递的参数 数组里面有1个{} [{},{}]
                 schedule: '', // cron时间表达式
                 status: 1, // 开启状态 0关闭 1开启
                 remarks: '' // 定时任务用意描述备注
@@ -185,12 +199,13 @@ export default {
             })
         },
         edit(row) {
+            console.log('🍉 row: ', row)
             this.dia_title = '编辑'
             this.dia_status = 'edit'
             this.curr_row = row
             this.form = {
                 id: row.id,
-                command: row.command,
+                command: row.command || [{}],
                 param: row.param,
                 schedule: row.schedule,
                 status: row.status,
@@ -207,7 +222,16 @@ export default {
             }
         },
         addCfm() {
-            let param = [{ sign: 'ling' }, { sign1: 'ling1' }]
+            // let param = [{ sign: 'ling' }, { sign1: 'ling1' }]
+            // console.log('🍎 this.form.param: ', this.form.param)
+            // [{"key":"df","value":"df"}]
+
+            let param = (this.form.param || []).map(item => {
+                let obj = {}
+                obj[item.key] = item.value
+                return obj
+            })
+            console.log(' param: ', param)
             let data = {
                 command: this.form.command,
                 param: JSON.stringify(param),
@@ -229,10 +253,15 @@ export default {
             })
         },
         editCfm() {
+            let param = (this.form.param || []).map(item => {
+                let obj = {}
+                obj[item.key] = item.value
+                return obj
+            })
             let data = {
                 id: this.form.id,
                 command: this.form.command,
-                param: this.form.param,
+                param: JSON.stringify(param),
                 schedule: this.form.schedule,
                 status: this.form.status,
                 remarks: this.form.remarks
@@ -276,6 +305,17 @@ export default {
                 }
             })
         },
+        // 后端参数转换 {"aa":"bb"} 转成{key:"aa",value:"bb"}
+        toNeedObj(obj = {}) {
+            let temp_obj = {}
+            for (const key in obj) {
+                temp_obj = {
+                    key: key,
+                    value: obj[key]
+                }
+            }
+            return temp_obj
+        },
         getList() {
             let para = {
                 // pageSize: this.pageSize,
@@ -288,7 +328,19 @@ export default {
                 // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     // this.total = res.data.total
-                    this.list = res.data.data
+                    let list = res.data.data || []
+                    this.list = list.map(item => {
+                        let param = item.param
+
+                        if (Array.isArray(param)) {
+                            item.param = param.map(par => {
+                                return this.toNeedObj(par)
+                            })
+                        }
+                        return item
+                    })
+                    // this.list = list
+                    console.log('🍱 this.list: ', this.list)
                 }
             })
         },
@@ -319,21 +371,28 @@ export default {
 }
 .form > li {
     display: flex;
+    align-items: center;
     width: 100%;
     line-height: 30px;
     margin-top: 20px;
 }
-.form span:first-child {
-    min-width: 7em;
+.form > li > span:first-child {
+    min-width: 8em;
     text-align: right;
     margin-right: 10px;
 }
-.form .v-input {
+.form > li > .v-input {
     width: 300px;
 }
 .form-btn {
     display: flex;
     justify-content: center;
     margin-top: 30px;
+}
+.form-param {
+    display: flex;
+}
+.form-param .v-input {
+    width: 140px;
 }
 </style>

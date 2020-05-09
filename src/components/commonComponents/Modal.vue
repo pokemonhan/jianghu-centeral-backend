@@ -196,6 +196,14 @@ export default {
         position: absolute;
         right: 16px;
     } */
+/* dialog 关闭按钮 */
+.modal-header .iconcuowuguanbi- {
+    position: absolute;
+    right: 12px;
+    font-size: 26px;
+    color: #ffffff;
+    cursor: pointer;
+}
 .vx-modal .modal-body {
     padding: 46px 16px;
     font-size: 17px;

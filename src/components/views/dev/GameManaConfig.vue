@@ -89,7 +89,7 @@
                                     style="width:250px"
                                     required
                                     errmsg="请选择子类"
-                                    v-model="form.child_type"
+                                    v-model="form.sub_type_id"
                                     :options="game_child_opt"
                                 ></Select>
                             </li>
@@ -342,7 +342,7 @@ export default {
                 vendor_id: '', // 厂商选择
                 sign: '', // 游戏标识
                 type_id: '', // 游戏分类
-                child_type: '', // 游戏子类
+                sub_type_id: '', // 游戏子类
                 name: '', // 游戏名称
 
                 request_mode: '1', // 请求模式
@@ -371,24 +371,7 @@ export default {
                 sign: '', // 游戏标识
                 type_id: '', // 游戏分类
                 name: '', // 游戏名称
-
-                // merchant_secret: '', // 商户密钥
-                // public_key: '', // 商户公钥
-                // merchant_code: '', //商户号码
-                // private_key: '', // 商户私钥
-                // app_id: '',
-
-                // authorization_code: '', //授权码
-                // in_game_url: '', // 进入游戏地址
-                // test_in_game_url: '', // 进入游戏测试地址
-                // conver_url: '', // 额度转换地址 额度地址
-                // test_conver_url: '', // 额度测试地址
-                // check_balance_url: '', //检查余额地址
-                // test_check_balance_url: '', //检查余额测试地址
-                // check_order_url: '', // 检查订单地址
-                // test_check_order_url: '', // 检查订单测试地址
-                // get_station_order_url: '', // 获取注单地址
-                // test_get_station_order_url: '', // 活动注单测试地址
+                sub_type_id: '', // 游戏子类
                 request_mode: '1', // 请求模式
                 status: '1' // 状态选择
             }
@@ -462,24 +445,7 @@ export default {
                 sign: row.sign,
                 type_id: row.type_id,
                 name: row.name,
-
-                // merchant_secret: row.merchant_secret,
-                // public_key: row.public_key,
-                // merchant_code: row.merchant_code,
-                // private_key: row.private_key,
-                // app_id: row.app_id,
-
-                // authorization_code: row.authorization_code,
-                // in_game_url: row.in_game_url,
-                // test_in_game_url: row.test_in_game_url,
-                // conver_url: row.conver_url,
-                // test_conver_url: row.test_conver_url,
-                // check_balance_url: row.check_balance_url,
-                // test_check_balance_url: row.test_check_balance_url,
-                // check_order_url: row.check_order_url,
-                // test_check_order_url: row.test_check_order_url,
-                // get_station_order_url: row.get_station_order_url,
-                // test_get_station_order_url: row.test_get_station_order_url,
+                sub_type_id: row.sub_type_id,
                 request_mode: row.request_mode,
                 status: row.status
             }

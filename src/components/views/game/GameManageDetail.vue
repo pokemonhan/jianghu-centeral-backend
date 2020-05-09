@@ -1,6 +1,6 @@
 
 <template>
-    <div class="container" ref="gameManageDetail">
+    <div class="contain" ref="gameManageDetail">
         <div class="operalog">
             <div class="filter p10">
                 <ul class="left">
