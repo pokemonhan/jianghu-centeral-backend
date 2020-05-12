@@ -33,7 +33,7 @@
                         <Switchbox v-model="row.status" @update="statusSwitch($event,row)" />
                     </td>
                     <td>{{row.remarks}}</td>
-                    <td>{{row.created_at}}</td>
+                    <td>{{row.created_at||'---'}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
                         <button class="btn-blue" @click="edit(row)">编辑</button>
@@ -77,9 +77,9 @@
                                     :key="index"
                                 >
                                     <div class="form-param">
-                                        <Input limit="word" v-model="item.left" />
+                                        <Input limit="en-num" v-model="item.left" />
                                         <span style="margin:0 8px 0">:</span>
-                                        <Input limit="word" v-model="item.right" />
+                                        <Input limit="en-num" v-model="item.right" />
                                         <i
                                             class="iconfont icontianjia ml10"
                                             @click="argAdd(form.argument,index)"
@@ -98,9 +98,9 @@
                         <ul>
                             <li class="mt10" v-for="(item, index) in form.option" :key="index">
                                 <div class="form-param">
-                                    <Input limit="word" v-model="item.left" />
+                                    <Input limit="en-num" v-model="item.left" />
                                     <span style="margin:0 8px 0">:</span>
-                                    <Input limit="word" v-model="item.right" />
+                                    <Input limit="en-num" v-model="item.right" />
                                     <i
                                         class="iconfont icontianjia ml10"
                                         @click="argAdd(form.option,index)"
@@ -218,8 +218,8 @@ export default {
         },
 
         argAdd(arr, index) {
-            if (arr.length > 7) {
-                this.$toast.info('最多7个')
+            if (arr.length > 5) {
+                this.$toast.info('最多5个')
                 return
             }
 
@@ -292,8 +292,8 @@ export default {
                 status: this.form.status,
                 remarks: this.form.remarks
             }
-            let argument = this.toNeedObj(this.form.argument)
-            let option = this.toNeedObj(this.form.option, '--') // TODO: 是否加 option--
+            let argument = this.toNeedArg(this.form.argument)
+            let option = this.toNeedOpt(this.form.option)
             if (argument) {
                 data.argument = JSON.stringify(argument)
             }
@@ -325,8 +325,8 @@ export default {
                 status: this.form.status,
                 remarks: this.form.remarks
             }
-            let argument = this.toNeedObj(this.form.argument)
-            let option = this.toNeedObj(this.form.option, '--')
+            let argument = this.toNeedArg(this.form.argument)
+            let option = this.toNeedOpt(this.form.option, '--')
             if (argument) {
                 data.argument = JSON.stringify(argument)
             }
@@ -377,7 +377,7 @@ export default {
          * @param {string} prefix 添加前缀
          *  */
 
-        toNeedObj(arr = [], prefix = '') {
+        toNeedArg(arr = [], prefix = '') {
             let obj = {}
             arr.forEach(item => {
                 if (item.left) {
@@ -390,19 +390,45 @@ export default {
                 return obj
             }
         },
-        toNeedArr(obj) {
+        toNeedOpt(arr = []) {
+            let opt_arr = []
+
+            arr.forEach(item => {
+                if (item.left && item.right) {
+                    // ｛"--key1=value1","--key2=value2"｝
+                    let child = '--' + item.left + '=' + item.right
+                    console.log('🍱 child: ', child)
+                    opt_arr.push(child)
+                }
+            })
+            console.log('🥓 opt_arr: ', opt_arr)
+
+            if (opt_arr.length === 0) {
+                return ''
+            } else {
+                return opt_arr
+            }
+        },
+        toNeedArr(arg_opt) {
             let arr = []
-            if(!obj){
+            if (!arg_opt) {
                 return arr
             }
-            // 这个obj 可能是 Array 数组格式 ， 
-            if(Array.isArray(obj)) {
-                return arr
+            // arg_opt 可能是 Array 数组格式 ，
+            if (Array.isArray(arg_opt)) {
+                return arg_opt.map(item => {
+                    item = item.replace('--', '')
+                    let leftAndRight = item.split('=')
+                    return {
+                        left: leftAndRight[0],
+                        right: leftAndRight[1]
+                    }
+                })
             }
-            for (const key in obj) {
+            for (const key in arg_opt) {
                 arr.push({
                     left: key,
-                    right: obj[key]
+                    right: arg_opt[key]
                 })
             }
             return arr

@@ -23,26 +23,34 @@
 
         <div class="mt20">
             <Table :headers="headers" :column="list">
-                <template v-slot:item="{row,idx}">
+                <template v-slot:item="{row, idx}">
                     <!-- ['编号','ICON','游戏厂商','游戏名称','游戏分类','游戏状态','最后更新人','最后更新时间','操作'] -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>
-                        <img
-                            class="td-icon"
-                            src="../../../assets/image/game/img (1).jpg"
-                            alt="图片加载中"
-                        />
+                        <PicShow>
+                            <img
+                                class="td-icon"
+                                :src="row.icon"
+                                alt="图片加载中"
+                            />
+                            <template v-slot:content>
+                                <div>
+                                    <img
+                                        class="td-pic-show"
+                                        :src="row.icon"
+                                        alt="图片加载中"
+                                    />
+                                </div>
+                            </template>
+                        </PicShow>
                     </td>
-                    <td>{{row.vendor?row.vendor.name:'--'}}</td>
+                    <td>{{row.name || '--'}}</td>
                     <td>{{row.name}}</td>
-                    <td>{{(row.type&&row.type.name)+' - '+(row.sub_type&&row.sub_type.name)}}</td>
-                    <!-- <td
-                        :class="[row.status===1?'green':'red']"
-                    >{{row.status===1?'开启':row.status===0?'关闭':row.status}}</td>-->
+                    <td>{{row.type+' - '+row.sub_type}}</td>
                     <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
-                    <td>{{row.last_editor && row.last_editor.name||'---'}}</td>
+                    <td>{{row.last_editor ||'---'}}</td>
                     <td>{{row.updated_at}}</td>
                     <td>
                         <!-- <button class="btns-blue" @click="edit(row)">编辑</button> -->
@@ -83,7 +91,7 @@ import GameManageDetail from './GameManageDetail'
 export default {
     name: 'GameManage',
     components: {
-        GameManageDetail: GameManageDetail
+        GameManageDetail
     },
     data() {
         return {
@@ -314,6 +322,10 @@ export default {
     max-width: 80px;
     max-width: 44px;
 }
+.td-pic-show {
+    max-width: 600px;
+    max-height: 350px;
+}
 .td-btns {
     display: flex;
     justify-content: center;
@@ -358,5 +370,4 @@ export default {
 .table {
     margin-top: 10px;
 }
-
 </style>

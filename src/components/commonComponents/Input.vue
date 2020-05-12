@@ -75,9 +75,9 @@ export default {
                 "integer": /[^\-?\d]/g,                  // 整数
                 "p-integer": /\D/g,                      //  正整数
                 "no-zh-cn": /[\u4E00-\u9FA5]*/g,         // 非中文
-                "en-num": /[\W_]/g,                      // 字母和数字
+                "en-num": /[\W_]/g,                      // 字母,数字
                 "en": /[\W_0-9]/g,                       // 字母
-                "word": /[^\w\-]/g                         // 字母数字下划线
+                "word": /[^\w\-]/g                         // 字母数字,下划线
             }
         };
     },
@@ -112,7 +112,7 @@ export default {
 
 <style scoped>
 .v-input {
-    /* display: inline-block; */
+    display: inline-block;
     /* width: 100%; */
     position: relative;
     /* min-height: 26px; */

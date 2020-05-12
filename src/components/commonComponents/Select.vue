@@ -325,7 +325,7 @@ export default {
     background-color: #fff;
     overflow-y: scroll;
     display: none;
-    z-index: 2;
+    z-index: 2; 
     transition: max-height 0.2s;
 }
 .bottom-upfold {

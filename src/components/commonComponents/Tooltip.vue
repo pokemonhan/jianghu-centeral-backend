@@ -1,30 +1,31 @@
 <template>
     <div class="v-tooltip" >
-        <div @mouseenter="onmouseover" @mouseleave="onmouseleave">
+        <div @mouseenter="onmouseover($event)" @mouseleave="onmouseleave">
             <slot></slot>
         </div>
         <transition name="fade-transform">
-            <span
+            <div
                 v-if="isShow"
                 :class="['tip',position, maxWidth ? 'word-wrap' : '']"
                 :style="{width: maxWidth+'px'}"
             >
                 <slot name="content"></slot>
                 {{content}}
-            </span>
+            </div>
         </transition>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'Tooltip',
+    name: 'PicShow',
     props: {
         content: String,
         icon: String,
+        // 图标位置,其实就是class
         position: {
             type: String,
-            default: 'top'
+            default: 'top' 
         },
         maxWidth: {
             type: [Number, String]
@@ -36,7 +37,7 @@ export default {
         }
     },
     methods: {
-        onmouseover() {
+        onmouseover(e) {
             // console.log('鼠标悬浮')
             this.isShow = true
         },
@@ -89,6 +90,22 @@ export default {
     font-size: 12px;
 
     white-space: nowrap;
+    z-index: 100;
+    /* border-color: hsla(0, 0%, 85%, 0.5); */
+    box-shadow: 1px 1px 4px rgb(150, 150, 150);
+}
+.v-tooltip > .right {
+    position: absolute;
+    top: -100px;
+    left: 150%;
+    margin-top: 100%;
+    /* transform: translateX(-50%); */
+    line-height: 1.5;
+
+    /* padding: 2px 8px; */
+    border-radius: 3px;
+    background-color: #fff;
+
     z-index: 100;
     /* border-color: hsla(0, 0%, 85%, 0.5); */
     box-shadow: 1px 1px 4px rgb(150, 150, 150);

@@ -18,7 +18,7 @@
                     </li>
                     <!-- <li>
                         <button class="btn-blue" @click="getUnsignList">查找</button>
-                    </li> -->
+                    </li>-->
                 </ul>
                 <ul class="down">
                     <li>
@@ -56,7 +56,7 @@
                     </li>
                     <!-- <li>
                         <button class="btn-blue" @click="getAssignedList">查找</button>
-                    </li> -->
+                    </li>-->
                 </ul>
                 <ul class="down">
                     <li>
@@ -121,6 +121,7 @@
                 <Page
                     class="mt10"
                     :total="left.total"
+                    hiddenJump
                     :pageNo.sync="left.pageNo"
                     :pageSize.sync="left.pageSize"
                     @updateNo="leftUpdateNo"
@@ -174,6 +175,7 @@
                 </table>
                 <Page
                     class="mt10"
+                    hiddenJump
                     :total="right.total"
                     :pageNo.sync="right.pageNo"
                     :pageSize.sync="right.pageSize"
@@ -469,7 +471,8 @@ export default {
 .filter {
     justify-content: space-around;
 }
-.filter > .left, .filter > .right {
+.filter > .left,
+.filter > .right {
     display: initial;
 }
 .filter .up,
