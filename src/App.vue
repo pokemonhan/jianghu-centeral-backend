@@ -636,7 +636,15 @@ button:focus {
 .flex {
     display: flex;
 }
-
+.justify-center {
+    justify-content: center;
+}
+.align-center {
+    align-items: center;
+}
+.align-baseline {
+    align-items: baseline;
+}
 .filter {
     display: flex;
     align-items: center;

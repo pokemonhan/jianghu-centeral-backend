@@ -13,11 +13,12 @@
                         <Select v-model="filter.name" :options="name_opt"></Select>
                     </li> -->
                     <li>
-                        <span>日期选择</span>
+                        <div class="ml20"></div>
+                        <span class="ml10">日期选择</span>
                         <!-- <Date v-model="filter.dates[0]" />
                     <span style="margin:0 5px;">~</span>
                         <Date v-model="filter.dates[1]" />-->
-                        <Date type="daterange" v-model="filter.created_at" />
+                        <Date class="ml20" type="daterange" v-model="filter.created_at" />
                     </li>
                     <li>
                         <button class="btn-blue" @click="firstLoad">查询</button>

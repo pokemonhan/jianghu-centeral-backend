@@ -14,10 +14,17 @@
                     <!-- '命令名称','传递的参数','cron表达式','开启状态', '备注','生成时间','最后更新' -->
                     <td>{{row.command}}</td>
                     <td>
+                        <ul style="color:#4c8bfd">
+                            <li v-for="(item,index) in row.argument" :key="index">
+                                <span class="bold">{{item.left}}:</span>
+                                <span class="ml5">{{item.right}}</span>
+                            </li>
+                        </ul>
+                        <!-- <hr class="mt10" /> -->
                         <ul>
-                            <li v-for="(item,index) in row.param" :key="index">
-                                <span class="bold">{{item.key}}:</span>
-                                <span class="ml5">{{item.value}}</span>
+                            <li v-for="(item,index) in row.option" :key="index">
+                                <span class="bold">{{item.left}}:</span>
+                                <span class="ml5">{{item.right}}</span>
                             </li>
                         </ul>
                     </td>
@@ -52,27 +59,6 @@
                     </li>
 
                     <li>
-                        <span>传递参数</span>
-                        <!-- <Input v-model="form.param" /> -->
-                        <div>
-                            <ul>
-                                <li>{{form.parma}}</li>
-
-                                <li
-                                    class="mt10"
-                                    v-for="(item, index) in (form.param||[{}])"
-                                    :key="index"
-                                >
-                                    <div class="form-param">
-                                        <Input v-model="item.key" />
-                                        <span style="margin:0 8px 0">:</span>
-                                        <Input v-model="item.value" />
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
                         <span>cron表达式</span>
                         <Input
                             placeholder="请输入定时策略"
@@ -80,7 +66,53 @@
                             @focus="cronShow=true"
                         />
                     </li>
-                    <li></li>
+                    <li>
+                        <span>arguments</span>
+                        <!-- <Input v-model="form.param" /> -->
+                        <div>
+                            <ul>
+                                <li
+                                    class="mt10"
+                                    v-for="(item, index) in form.argument"
+                                    :key="index"
+                                >
+                                    <div class="form-param">
+                                        <Input limit="word" v-model="item.left" />
+                                        <span style="margin:0 8px 0">:</span>
+                                        <Input limit="word" v-model="item.right" />
+                                        <i
+                                            class="iconfont icontianjia ml10"
+                                            @click="argAdd(form.argument,index)"
+                                        ></i>
+                                        <i
+                                            class="iconfont iconcuowuguanbi- ml5"
+                                            @click="argDel(form.argument,index)"
+                                        ></i>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <span>options</span>
+                        <ul>
+                            <li class="mt10" v-for="(item, index) in form.option" :key="index">
+                                <div class="form-param">
+                                    <Input limit="word" v-model="item.left" />
+                                    <span style="margin:0 8px 0">:</span>
+                                    <Input limit="word" v-model="item.right" />
+                                    <i
+                                        class="iconfont icontianjia ml10"
+                                        @click="argAdd(form.option,index)"
+                                    ></i>
+                                    <i
+                                        class="iconfont iconcuowuguanbi- ml5"
+                                        @click="argDel(form.option, index)"
+                                    ></i>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
                     <li>
                         <span>状态</span>
                         <Radio
@@ -105,13 +137,15 @@
                 </ul>
                 <div class="form-btn mt20">
                     <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                    <button class="btn-blue-large ml30" @click="diaCfm">确认</button>
+                    <button class="btn-blue-large ml50" @click="diaCfm">确认</button>
                 </div>
             </div>
+
+            <Dialog :show.sync="cronShow" title="设置cron">
+                <cron @change="changeCron" @close="cronShow=false" i18n="cn"></cron>
+            </Dialog>
         </Dialog>
-        <Dialog :show.sync="cronShow" title="设置cron">
-            <cron @change="changeCron" @close="cronShow=false" i18n="cn"></cron>
-        </Dialog>
+
         <Modal
             :show.sync="mod_show"
             title="删除"
@@ -124,6 +158,7 @@
 
 <script>
 import { cron } from 'vue-cron'
+// import cron from '.././../commonComponents/cron'
 export default {
     components: {
         cron
@@ -152,8 +187,9 @@ export default {
             /** form */
             form: {
                 command: '', // 任务命令名称
-                param: [{}], // 需要传递的参数 假数组
                 schedule: '', // cron时间表达式
+                argument: [], // 必须传递的参数  对象转的数组  不是指这里的必填。可以为空
+                option: [], // 可选传递的参数
                 status: 1, // 开启状态 0关闭 1开启
                 remarks: '' // 定时任务用意描述备注
             },
@@ -169,15 +205,33 @@ export default {
     methods: {
         initForm() {
             this.form = {
-                command: '', //任务命令名称
-                param: [{}], // 需要传递的参数 数组里面有1个{} [{},{}]
+                command: '', // 任务命令名称
                 schedule: '', // cron时间表达式
+                argument: [{ left: '', right: '' }], // 必须传递的参数  对象转的数组  不是指这里的必填。可以为空
+                option: [{ left: '', right: '' }], // 可选传递的参数
                 status: 1, // 开启状态 0关闭 1开启
                 remarks: '' // 定时任务用意描述备注
             }
         },
         changeCron(val) {
             this.form.schedule = val
+        },
+
+        argAdd(arr, index) {
+            if (arr.length > 7) {
+                this.$toast.info('最多7个')
+                return
+            }
+
+            arr.splice(index + 1, 0, { left: '', right: '' })
+        },
+        argDel(arr, index) {
+            if (arr.length === 1) {
+                let empty_arr = [{ left: '', right: '' }]
+                arr = arr.splice(index, 1, empty_arr)
+            } else {
+                arr.splice(index, 1)
+            }
         },
         add() {
             this.initForm()
@@ -203,13 +257,21 @@ export default {
             this.dia_title = '编辑'
             this.dia_status = 'edit'
             this.curr_row = row
+            // if(this.)
             this.form = {
                 id: row.id,
-                command: row.command || [{}],
-                param: row.param,
+                command: row.command,
                 schedule: row.schedule,
+                argument: JSON.parse(JSON.stringify(row.argument)),
+                option: JSON.parse(JSON.stringify(row.option)),
                 status: row.status,
                 remarks: row.remarks
+            }
+            if (this.form.argument.length === 0) {
+                this.form.argument = [{ left: '', right: '' }]
+            }
+            if (this.form.option.length === 0) {
+                this.form.option = [{ left: '', right: '' }]
             }
             this.dia_show = true
         },
@@ -222,22 +284,21 @@ export default {
             }
         },
         addCfm() {
-            // let param = [{ sign: 'ling' }, { sign1: 'ling1' }]
-            // console.log('🍎 this.form.param: ', this.form.param)
-            // [{"key":"df","value":"df"}]
-
-            let param = (this.form.param || []).map(item => {
-                let obj = {}
-                obj[item.key] = item.value
-                return obj
-            })
-            console.log(' param: ', param)
             let data = {
+                id: this.form.id,
                 command: this.form.command,
-                param: JSON.stringify(param),
+                // param: JSON.stringify(param),
                 schedule: this.form.schedule,
                 status: this.form.status,
                 remarks: this.form.remarks
+            }
+            let argument = this.toNeedObj(this.form.argument)
+            let option = this.toNeedObj(this.form.option, '--') // TODO: 是否加 option--
+            if (argument) {
+                data.argument = JSON.stringify(argument)
+            }
+            if (option) {
+                data.option = JSON.stringify(option)
             }
             // data = window.all.tool.rmEmpty(data)
 
@@ -252,21 +313,27 @@ export default {
                 }
             })
         },
+
         editCfm() {
-            let param = (this.form.param || []).map(item => {
-                let obj = {}
-                obj[item.key] = item.value
-                return obj
-            })
             let data = {
                 id: this.form.id,
                 command: this.form.command,
-                param: JSON.stringify(param),
+                // param: JSON.stringify(param),
+                argument: '{}',
+                option: '{}',
                 schedule: this.form.schedule,
                 status: this.form.status,
                 remarks: this.form.remarks
             }
-            data = window.all.tool.rmEmpty(data)
+            let argument = this.toNeedObj(this.form.argument)
+            let option = this.toNeedObj(this.form.option, '--')
+            if (argument) {
+                data.argument = JSON.stringify(argument)
+            }
+            if (option) {
+                data.option = JSON.stringify(option)
+            }
+            // data = window.all.tool.rmEmpty(data)
 
             let { url, method } = this.$api.schedule_set
             this.$http({ method, url, data }).then(res => {
@@ -305,16 +372,40 @@ export default {
                 }
             })
         },
-        // 后端参数转换 {"aa":"bb"} 转成{key:"aa",value:"bb"}
-        toNeedObj(obj = {}) {
-            let temp_obj = {}
-            for (const key in obj) {
-                temp_obj = {
-                    key: key,
-                    value: obj[key]
+        /**
+         * 转换成后端需要数据 [{left:"sigin",right:"ling"}] 转成 {"sigin":"ling"}
+         * @param {string} prefix 添加前缀
+         *  */
+
+        toNeedObj(arr = [], prefix = '') {
+            let obj = {}
+            arr.forEach(item => {
+                if (item.left) {
+                    obj[prefix + item.left] = item.right
                 }
+            })
+            if (JSON.stringify(obj) === '{}') {
+                return ''
+            } else {
+                return obj
             }
-            return temp_obj
+        },
+        toNeedArr(obj) {
+            let arr = []
+            if(!obj){
+                return arr
+            }
+            // 这个obj 可能是 Array 数组格式 ， 
+            if(Array.isArray(obj)) {
+                return arr
+            }
+            for (const key in obj) {
+                arr.push({
+                    left: key,
+                    right: obj[key]
+                })
+            }
+            return arr
         },
         getList() {
             let para = {
@@ -330,15 +421,11 @@ export default {
                     // this.total = res.data.total
                     let list = res.data.data || []
                     this.list = list.map(item => {
-                        let param = item.param
-
-                        if (Array.isArray(param)) {
-                            item.param = param.map(par => {
-                                return this.toNeedObj(par)
-                            })
-                        }
+                        item.argument = this.toNeedArr(item.argument)
+                        item.option = this.toNeedArr(item.option)
                         return item
                     })
+
                     // this.list = list
                     console.log('🍱 this.list: ', this.list)
                 }
@@ -371,7 +458,7 @@ export default {
 }
 .form > li {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     width: 100%;
     line-height: 30px;
     margin-top: 20px;
@@ -394,5 +481,13 @@ export default {
 }
 .form-param .v-input {
     width: 140px;
+}
+.form-param .icontianjia:hover {
+    cursor: pointer;
+    color: #4c8bfd;
+}
+.form-param .iconcuowuguanbi-:hover {
+    cursor: pointer;
+    color: rgb(255, 60, 0);
 }
 </style>

@@ -48,8 +48,8 @@
                 <a class="iconfont iconxiayiye"></a>
             </li>
         </ul>
-        <Select style="width:90px;" @update="updatePageSize" :value="pageSize" :options="pageSizeList"/>
-        <div class="page-jump">跳至<input @change="pageJump" v-model.number="jumpNo" v-inputLimit="'p-integer'" type="text">页</div>
+        <Select v-if="!hiddenSelect" style="width:90px;" @update="updatePageSize" :value="pageSize" :options="pageSizeList"/>
+        <div v-if="!hiddenJump" class="page-jump">跳至<input @change="pageJump" v-model.number="jumpNo" v-inputLimit="'p-integer'" type="text">页</div>
     </div>
 </template>
 
@@ -83,6 +83,14 @@
             pageNo: {
                 type: Number,
                 default: () => 1
+            },
+            hiddenSelect: {
+                type: Boolean,
+                default: false
+            },
+            hiddenJump: {
+                type: Boolean,
+                default: false
             }
         },
         data() {

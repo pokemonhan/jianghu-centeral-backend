@@ -24,8 +24,15 @@
         <div class="mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row,idx}">
-                    <!-- ['编号','游戏厂商','游戏名称','游戏分类','游戏状态','最后更新人','最后更新时间','操作'] -->
+                    <!-- ['编号','ICON','游戏厂商','游戏名称','游戏分类','游戏状态','最后更新人','最后更新时间','操作'] -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
+                    <td>
+                        <img
+                            class="td-icon"
+                            src="../../../assets/image/game/img (1).jpg"
+                            alt="图片加载中"
+                        />
+                    </td>
                     <td>{{row.vendor?row.vendor.name:'--'}}</td>
                     <td>{{row.name}}</td>
                     <td>{{(row.type&&row.type.name)+' - '+(row.sub_type&&row.sub_type.name)}}</td>
@@ -40,8 +47,11 @@
                     <td>
                         <!-- <button class="btns-blue" @click="edit(row)">编辑</button> -->
                         <!-- <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button> -->
-
-                        <button class="btns-blue" @click="detail(row)">编辑详情</button>
+                        <div class="td-btns">
+                            <Upload style="width:90px;" title="上传图片" @change="upPicChange" />
+                            <button class="btn-blue ml5">下载图片</button>
+                            <button class="btn-blue" @click="detail(row)">编辑详情</button>
+                        </div>
                     </td>
                 </template>
             </Table>
@@ -90,6 +100,7 @@ export default {
 
             headers: [
                 '编号',
+                'ICON',
                 '游戏厂商',
                 '游戏名称',
                 '游戏分类',
@@ -230,6 +241,31 @@ export default {
                 this.getList()
             })
         },
+        upPicChange(e) {
+            let pic = e.target.files[0]
+            let path = 'central/email/sendemail'
+            let formData = new FormData()
+            formData.append('file', pic, pic.name)
+            formData.append('path', path)
+            let { url, method } = this.$api.pic_update
+            let data = formData
+            let headers = { 'Content-Type': 'multipart/form-data' }
+            this.$http({ method, url, data, headers }).then(res => {
+                if (res && res.code == '200') {
+                    this.pic_data = res.data.path
+                }
+            })
+            // let reader = new FileReader()
+            // reader.readAsDataURL(file)
+            // reader.onerror = function() {
+            //     return
+            // }
+            // reader.onload = function() {
+            //     // self.src[index] = this.result
+            //     self.pic_data = this.result
+            // }
+        },
+        /** 编辑详情 按钮 */
         detail(row) {
             // TODO
             // this.$toast('还未对接后端接口,或者后端没有接口')
@@ -274,6 +310,14 @@ export default {
 </script>
 
 <style scoped>
+.td-icon {
+    max-width: 80px;
+    max-width: 44px;
+}
+.td-btns {
+    display: flex;
+    justify-content: center;
+}
 .edit-form {
     position: relative;
     width: 700px;
@@ -314,7 +358,5 @@ export default {
 .table {
     margin-top: 10px;
 }
-/* .mt20 {
-    margin-top: 20px;
-} */
+
 </style>
