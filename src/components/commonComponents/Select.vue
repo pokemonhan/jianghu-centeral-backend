@@ -147,7 +147,9 @@ export default {
             }
             let ele = this.$refs.sections
             if (this.isShow) {
+                /** 滚动条到顶部的距离 */
                 let scrollTop = document.documentElement.scrollTop
+                
                 let scrollHeight = document.body.scrollHeight
                 let toBottom = e.target.getBoundingClientRect().bottom
                 let y = scrollHeight - scrollTop - toBottom

@@ -20,7 +20,6 @@
                                 <span class="ml5">{{item.right}}</span>
                             </li>
                         </ul>
-                        <!-- <hr class="mt10" /> -->
                         <ul>
                             <li v-for="(item,index) in row.option" :key="index">
                                 <span class="bold">{{item.left}}:</span>
@@ -63,8 +62,8 @@
                         <Input
                             placeholder="请输入定时策略"
                             v-model="form.schedule"
-                            @focus="cronShow=true"
                         />
+                        <button class="btns-blue" @click="cronShow=true">生成 cron </button>
                     </li>
                     <li>
                         <span>arguments</span>
@@ -85,7 +84,7 @@
                                             @click="argAdd(form.argument,index)"
                                         ></i>
                                         <i
-                                            class="iconfont iconcuowuguanbi- ml5"
+                                            class="iconfont iconcuowuguanbi- ml10"
                                             @click="argDel(form.argument,index)"
                                         ></i>
                                     </div>
@@ -106,7 +105,7 @@
                                         @click="argAdd(form.option,index)"
                                     ></i>
                                     <i
-                                        class="iconfont iconcuowuguanbi- ml5"
+                                        class="iconfont iconcuowuguanbi- ml10"
                                         @click="argDel(form.option, index)"
                                     ></i>
                                 </div>
@@ -142,7 +141,7 @@
             </div>
 
             <Dialog :show.sync="cronShow" title="设置cron">
-                <cron @change="changeCron" @close="cronShow=false" i18n="cn"></cron>
+                <cron :value="form.schedule" @input="changeCron" @confirm="cronCfm"></cron>
             </Dialog>
         </Dialog>
 
@@ -157,8 +156,8 @@
 </template>
 
 <script>
-import { cron } from 'vue-cron'
-// import cron from '.././../commonComponents/cron'
+// import { cron } from 'vue-cron'
+import cron from '.././../commonComponents/cron'
 export default {
     components: {
         cron
@@ -214,9 +213,14 @@ export default {
             }
         },
         changeCron(val) {
+            // console.log('🍱 val: ', val);
             this.form.schedule = val
         },
-
+        cronCfm(val) {
+            this.cronShow = false
+            // console.log('🍍 val: ', val);
+            this.form.schedule = val
+        },
         argAdd(arr, index) {
             if (arr.length > 5) {
                 this.$toast.info('最多5个')

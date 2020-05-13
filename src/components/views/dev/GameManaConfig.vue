@@ -26,20 +26,17 @@
                 <template v-slot:item="{row,idx}">
                     <!-- '编号', '游戏厂商', '游戏名称', '游戏分类', '游戏标识', '游戏状态', '添加人', '添加时间', '最后更新人', '最后更新时间', '操作' -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
-                    <td>{{row.vendor&&row.vendor.name}}</td>
+                    <td>{{row.vendor_name}}</td>
                     <td>{{row.name}}</td>
-                    <td>{{(row.type&&row.type.name||'')+' - '+(row.sub_type&&row.sub_type.name||'')}}</td>
+                    <td>{{row.type+' - '+row.sub_type}}</td>
                     <td>{{row.sign}}</td>
-                    <!-- <td>{{row.app_id}}</td> -->
-                    <!-- <td
-                        :class="[row.status?'green':'red']"
-                    >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>-->
+                
                     <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
-                    <td>{{row.author&&row.author.name||'---'}}</td>
+                    <td>{{row.author||'---'}}</td>
                     <td>{{row.created_at||'---'}}</td>
-                    <td>{{row.last_editor&&row.last_editor.name||'---'}}</td>
+                    <td>{{row.last_editor||'---'}}</td>
                     <td>{{row.updated_at||'---'}}</td>
                     <td>
                         <button class="btns-blue" @click="edit(row)">编辑</button>

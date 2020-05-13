@@ -23,7 +23,11 @@
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>
                         <PicShow>
-                            <img class="td-icon" :src="/\.(png|jpe?g|gif|svg)$/.test(row.icon)?row.icon:require('../../../assets/image/picError.svg')" alt="图片加载中" />
+                            <img
+                                class="td-icon"
+                                :src="/\.(png|jpe?g|gif|svg)$/.test(row.icon)?row.icon:defaultImg"
+                                alt="图片加载中"
+                            />
                             <template v-slot:content>
                                 <div>
                                     <img class="td-pic-show" :src="row.icon" alt="图片失败" />
@@ -38,8 +42,12 @@
                     <td>{{row.last_editor && row.last_editor.name||'---'}}</td>
                     <td>{{row.updated_at||'---'}}</td>
                     <td>
-                        <Upload style="width:90px;height:25px;" title="上传图片" @change="upPicChange" />
-                        <button class="btn-blue">下载图片</button>
+                        <Upload
+                            style="width:90px;height:25px;"
+                            title="上传图片"
+                            @change="upPicChange($event, row)"
+                        />
+                        <button class="btn-blue" @click="downLoadImg(row)">下载图片</button>
                         <button class="btn-blue" @click="edit(row)">编辑</button>
                     </td>
                 </template>
@@ -648,6 +656,7 @@ export default {
                 { label: '关闭', value: '0' },
                 { label: '启用', value: '1' }
             ],
+            defaultImg: require('../../../assets/image/picError.svg'),
             // 页面内容
             total: 0,
             pageNo: 1,
@@ -883,9 +892,9 @@ export default {
             this.dia_title = '添加'
         },
         /** 上传图片 */
-        upPicChange(e) {
+        upPicChange(e, row) {
             let pic = e.target.files[0]
-            let path = 'central/email/sendemail'
+            let path = 'central/game/vendormanage'
             let formData = new FormData()
             formData.append('file', pic, pic.name)
             formData.append('path', path)
@@ -894,7 +903,10 @@ export default {
             let headers = { 'Content-Type': 'multipart/form-data' }
             this.$http({ method, url, data, headers }).then(res => {
                 if (res && res.code == '200') {
-                    this.pic_data = res.data.path
+                    // this.pic_data = res.data.path
+                    if (res.data) {
+                        this.iconUpdate(row.id, res.data)
+                    }
                 }
             })
             // let reader = new FileReader()
@@ -906,6 +918,56 @@ export default {
             //     // self.src[index] = this.result
             //     self.pic_data = this.result
             // }
+        },
+        /** 上传图片成功后上传icon地址 */
+        iconUpdate(id, res) {
+            // console.log('🥩 id: ', id);
+            // console.log('🍕 res: ', res);
+            let data = {
+                id: id,
+                icon_id: res.id
+            }
+            data = window.all.tool.rmEmpty(data)
+
+            let { url, method } = this.$api.game_vendor_icon_set
+            this.$http({ method, url, data }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.$toast.success(res.message)
+                    //this.mod_show = false
+                    //this.dia_show = false
+                    this.getList()
+                }
+            })
+        },
+        /** 下载图片 */
+        downLoadImg(row) {
+            var image = new Image()
+            // 解决跨域 Canvas 污染问题
+            image.setAttribute('crossOrigin', 'anonymous')
+            image.onload = function() {
+                var canvas = document.createElement('canvas')
+                canvas.width = image.width
+                canvas.height = image.height
+
+                var context = canvas.getContext('2d')
+                context.drawImage(image, 0, 0, image.width, image.height)
+                var url = canvas.toDataURL('image/png')
+
+                // 生成一个a元素
+                var a = document.createElement('a')
+                // 创建一个单击事件
+                var event = new MouseEvent('click')
+
+                // 将a的download属性设置为我们想要下载的图片名称，若name不存在则使用‘下载图片名称’作为默认名称
+                a.download = name || '下载图片名称'
+                // 将生成的URL设置为a.href属性
+                a.href = url
+                // 触发a的单击事件
+                a.dispatchEvent(event)
+            }
+
+            image.src = row.icon
         },
         edit(row) {
             // console.log('row: ', row)

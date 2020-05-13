@@ -168,7 +168,11 @@ export default {
         url: '/headquarters-api/game-vendor/opt-del-do',
         method: 'post'
     },
-
+    /** 3.1.6 厂商管理 - 更新游戏icon */
+    game_vendor_icon_set: {
+        url: '/headquarters-api/game-vendor/icon',
+        method: 'post'
+    },
     /* 3.2 分类设置 --------- */
 
     /** 分类设置 - 列表 */
@@ -202,7 +206,7 @@ export default {
         url: '/headquarters-api/game/opt-index-do',
         method: 'post'
     },
-    /** 游戏管理 - 改变状态 */
+    /** 3.3.2 游戏管理 - 改变状态 */
     game_status_set: {
         url: '/headquarters-api/game/opt-status-do',
         method: 'post'
@@ -215,6 +219,11 @@ export default {
     /** 3.3.5 游戏管理 - 编辑详情 */
     game_edit_detail_list: {
         url: '/headquarters-api/game/edit-detail',
+        method: 'post'
+    },
+    /**3.3.3 游戏管理 - 更新游戏icon  */
+    game_icon_set: {
+        url:'/headquarters-api/game/icon',
         method: 'post'
     },
 

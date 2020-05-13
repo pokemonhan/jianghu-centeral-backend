@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <!--------------------- 游戏管理 ------------->
+        <!--------------------- 游戏管理 - 游戏设置------------->
         <div class="filter p10">
             <ul class="left">
                 <li>
@@ -28,23 +28,15 @@
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>
                         <PicShow>
-                            <img
-                                class="td-icon"
-                                :src="row.icon"
-                                alt="图片加载中"
-                            />
+                            <img class="td-icon" :src="row.icon" alt="图片加载中" />
                             <template v-slot:content>
                                 <div>
-                                    <img
-                                        class="td-pic-show"
-                                        :src="row.icon"
-                                        alt="图片加载中"
-                                    />
+                                    <img class="td-pic-show" :src="row.icon" alt="图片加载中" />
                                 </div>
                             </template>
                         </PicShow>
                     </td>
-                    <td>{{row.name || '--'}}</td>
+                    <td>{{row.vendor_name || '--'}}</td>
                     <td>{{row.name}}</td>
                     <td>{{row.type+' - '+row.sub_type}}</td>
                     <td>
@@ -56,9 +48,9 @@
                         <!-- <button class="btns-blue" @click="edit(row)">编辑</button> -->
                         <!-- <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button> -->
                         <div class="td-btns">
-                            <Upload style="width:90px;" title="上传图片" @change="upPicChange" />
-                            <button class="btn-blue ml5">下载图片</button>
-                            <button class="btn-blue" @click="detail(row)">编辑详情</button>
+                            <Upload style="width:90px;" title="上传图片" @change="upPicChange($event, row)" />
+                            <button class="btn-blue ml5" @click="downLoadImg(row)">下载图片</button>
+                            <button class="btn-blue" @click="detail(row)">查看编辑详情</button>
                         </div>
                     </td>
                 </template>
@@ -249,9 +241,9 @@ export default {
                 this.getList()
             })
         },
-        upPicChange(e) {
+        upPicChange(e, row) {
             let pic = e.target.files[0]
-            let path = 'central/email/sendemail'
+            let path = 'central/game/gamemanage'
             let formData = new FormData()
             formData.append('file', pic, pic.name)
             formData.append('path', path)
@@ -260,7 +252,11 @@ export default {
             let headers = { 'Content-Type': 'multipart/form-data' }
             this.$http({ method, url, data, headers }).then(res => {
                 if (res && res.code == '200') {
-                    this.pic_data = res.data.path
+                    console.log('🍏 res: ', res);
+                    // this.pic_data = res.data.path
+                    if(res.data) {
+                        this.iconUpdate(row.id, res.data)
+                    }
                 }
             })
             // let reader = new FileReader()
@@ -272,6 +268,57 @@ export default {
             //     // self.src[index] = this.result
             //     self.pic_data = this.result
             // }
+        },
+        // icon 更新
+        iconUpdate(id ,res) {
+            console.log('🥩 id: ', id);
+            console.log('🍕 res: ', res);
+            let data = {
+                id: id,
+                icon_id: res.id
+            }
+            data = window.all.tool.rmEmpty(data)
+
+            let { url, method } = this.$api.game_icon_set
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.$toast.success(res.message)
+                    //this.mod_show = false
+                    //this.dia_show = false
+                    this.getList()
+                }
+            })
+        },
+        /** 下载图片 */
+        downLoadImg(row) {
+            var image = new Image()
+            // 解决跨域 Canvas 污染问题
+            image.setAttribute('crossOrigin', 'anonymous')
+            image.onload = function() {
+                var canvas = document.createElement('canvas')
+                canvas.width = image.width
+                canvas.height = image.height
+
+                var context = canvas.getContext('2d')
+                context.drawImage(image, 0, 0, image.width, image.height)
+                var url = canvas.toDataURL('image/png')
+
+                // 生成一个a元素
+                var a = document.createElement('a')
+                // 创建一个单击事件
+                var event = new MouseEvent('click')
+
+                // 将a的download属性设置为我们想要下载的图片名称，若name不存在则使用‘下载图片名称’作为默认名称
+                a.download = name || '下载图片'
+                // 将生成的URL设置为a.href属性
+                a.href = url
+                // 触发a的单击事件
+                a.dispatchEvent(event)
+            }
+
+            image.src = row.icon
+            // <img data-v-2862595a="" data-v-76ec3669="" src="http://pic.397017.com/uploads/central/game/gamemanage/2020-05-13/0e55fa1b47c595d0fc80d880d8f23f7a.png" alt="图片加载中" class="td-icon">
         },
         /** 编辑详情 按钮 */
         detail(row) {

@@ -81,6 +81,7 @@ export default {
             }
 
             toastDom.appendChild(tpl)
+            
             if (opt.duration) {
                 setTimeout(function () {
                     tpl.tagName && document.querySelector('#toast-box').removeChild(tpl)

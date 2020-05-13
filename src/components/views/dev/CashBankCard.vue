@@ -21,7 +21,8 @@
 
         <div class="table mt20">
             <Table :headers="headers" :column="list">
-                <template v-slot:item="{row}">
+                <template v-slot:item="{row,idx}">
+                    <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                     <td>{{row.code}}</td>
                     <td>{{row.name}}</td>
                     <td>{{row.author&&row.author.name}}</td>
@@ -111,6 +112,7 @@ export default {
                 { label: '关闭', value: '0' }
             ],
             headers: [
+                '编号',
                 '银行编码',
                 '银行名称',
                 '创建人',

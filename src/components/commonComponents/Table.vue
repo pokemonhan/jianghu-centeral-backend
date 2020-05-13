@@ -32,7 +32,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="select-text">
                 <!-- 有数据时 -->
                 <template v-if="column&&column.length">
                     <tr v-for="(col_row, idx) in column" :key="idx">
@@ -249,5 +249,8 @@ th .asc-active {
 .th-sort {
     cursor: pointer;
     /* border: 1px solid #000; */
+}
+.select-text {
+    user-select: text;
 }
 </style>
