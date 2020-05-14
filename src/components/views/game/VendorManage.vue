@@ -960,7 +960,7 @@ export default {
                 var event = new MouseEvent('click')
 
                 // 将a的download属性设置为我们想要下载的图片名称，若name不存在则使用‘下载图片名称’作为默认名称
-                a.download = name || '下载图片名称'
+                a.download = row.name || '下载图片'
                 // 将生成的URL设置为a.href属性
                 a.href = url
                 // 触发a的单击事件

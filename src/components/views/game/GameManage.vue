@@ -292,6 +292,8 @@ export default {
         },
         /** 下载图片 */
         downLoadImg(row) {
+            console.log('🍥 row: ', row);
+            let name = row.vendor_name + '-'+row.sub_type
             var image = new Image()
             // 解决跨域 Canvas 污染问题
             image.setAttribute('crossOrigin', 'anonymous')

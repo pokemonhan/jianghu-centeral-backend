@@ -19,9 +19,9 @@
       <el-tab-pane label="周" name="week">
         <week v-model="weekVal" lable="周"></week>
       </el-tab-pane>
-      <el-tab-pane label="年" name="year">
+      <!-- <el-tab-pane label="年" name="year">
         <year v-model="yearVal" lable="年"></year>
-      </el-tab-pane>
+      </el-tab-pane> -->
     </el-tabs>
     <!-- table -->
     <el-table
@@ -59,10 +59,10 @@
          label="周"
          width="70">
        </el-table-column>
-       <el-table-column
+       <!-- <el-table-column
          prop="yearVal"
          label="年">
-       </el-table-column>
+       </el-table-column> -->
      </el-table>
     <div class="flex justify-center mt20">
         <!-- <el-button>确认</el-button> -->
@@ -125,8 +125,8 @@ export default {
                     hVal: this.hVal,
                     dVal: this.dVal,
                     monthVal: this.monthVal,
-                    weekVal: this.weekVal,
-                    yearVal: this.yearVal
+                    weekVal: this.weekVal
+                    // yearVal: this.yearVal
                 }
             ]
         },
@@ -144,7 +144,8 @@ export default {
             //         this.$toast.error('日期与星期必须有一个为“不指定”')
             //     })
             // }
-            let v = `${this.mVal} ${this.hVal} ${this.dVal} ${this.monthVal} ${this.weekVal} ${this.yearVal}`
+            // let v = `${this.mVal} ${this.hVal} ${this.dVal} ${this.monthVal} ${this.weekVal} ${this.yearVal}`
+            let v = `${this.mVal} ${this.hVal} ${this.dVal} ${this.monthVal} ${this.weekVal}`
             if (v !== this.value) {
                 this.$emit('input', v)
             }
@@ -163,16 +164,16 @@ export default {
             this.dVal = arrays[2]
             this.monthVal = arrays[3]
             this.weekVal = arrays[4]
-            this.yearVal = arrays[5] || '*'
+            // this.yearVal = arrays[5] || '*'
         },
         confirm() {
-            let v = `${this.mVal} ${this.hVal} ${this.dVal} ${this.monthVal} ${this.weekVal} ${this.yearVal}`
+            let v = `${this.mVal} ${this.hVal} ${this.dVal} ${this.monthVal} ${this.weekVal}`
             this.$emit('confirm', v)
         }
     },
     watch: {
         value(a, b) {
-            console.log('🥥 a: ', a)
+            // console.log('🥥 a: ', a)
             this.updateVal()
         }
     },

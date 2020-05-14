@@ -37,7 +37,7 @@
             </div>
 
             <!--------- 右边的 页面 ---------->
-            <div class="cont-right">
+            <div class="cont-center">
                 <div class="edit-form">
                     <div>
                         <span
@@ -106,8 +106,13 @@
                         >确定</button>
                     </div>
                 </div>
+                <!-- 中间竖线 -->
+                <div class="vertical-line"></div>
                 <!-- 查看check之下面内容 -->
-                <div v-if="right_show==='check'" class="mt20">
+               
+            </div>
+            <div class="cont-right">
+                 <div v-if="right_show==='check'" class="mt20">
                     <!-- table 内容 -->
                     <div class="table">
                         <AdminTable ref="adminTable" :group_id="admin_id" @search="search" />
@@ -429,6 +434,7 @@ export default {
 <style scoped>
 .cont {
     display: flex;
+    flex-wrap: wrap;
     margin-top: 20px;
 }
 .cont-left {
@@ -474,6 +480,12 @@ export default {
     margin-left: 50px;
     margin-right: 50px;
     background: #ededed;
+}
+/* 中间边的 内容 */
+.cont-center {
+    display: flex;
+}
+.cont-right {
 }
 .edit-form {
     width: 550px;
@@ -552,9 +564,9 @@ export default {
     margin-left: 30px;
 }
 
-.mt20 {
+/* .mt20 {
     margin-top: 20px;
-}
+} */
 /* table 内容*/
 .table {
     margin-top: 20px;

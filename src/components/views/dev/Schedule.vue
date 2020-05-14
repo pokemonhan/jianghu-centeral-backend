@@ -311,8 +311,7 @@ export default {
                 // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
-                    //this.mod_show = false
-                    //this.dia_show = false
+                    this.dia_show = false
                     this.getList()
                 }
             })

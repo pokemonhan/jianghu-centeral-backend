@@ -20,14 +20,14 @@ import Jquery from 'jquery'
 import xss from 'xss'
 
 // element 
-import ElementUI from 'element-ui';
+// import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
 
 
 window.$ = Jquery;
 // import slide from './js/slide'
 Vue.use(plugins)
-Vue.use(ElementUI)
+// Vue.use(ElementUI)
 
 window.all = {
   tool,

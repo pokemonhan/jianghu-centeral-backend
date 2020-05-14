@@ -14,7 +14,7 @@
                     </li>
                     <li v-show="true">
                         <span>游戏名称</span>
-                        <Select input v-model="filterLeft.game_id" :options="game_opt"></Select>
+                        <Select input v-model="filterLeft.game_id" :options="game_name_opt"></Select>
                     </li>
                     <!-- <li>
                         <button class="btn-blue" @click="getUnsignList">查找</button>
@@ -24,14 +24,14 @@
                     <li>
                         <span>游戏主类</span>
                         <Select
-                            v-model="filterLeft.vendor_id"
+                            v-model="filterLeft.game_main_type"
                             :options="platform_opt"
-                            @update="plantformLeftUpd"
+                            @update="gameMainUpd('left')"
                         ></Select>
                     </li>
                     <li v-show="true">
                         <span>游戏次类</span>
-                        <Select input v-model="filterLeft.game_id" :options="game_opt"></Select>
+                        <Select input v-model="filterLeft.sub_game_type" :options="sub_game_left_opt"></Select>
                     </li>
                     <li>
                         <button class="btn-blue" @click="getUnsignList">查找</button>
@@ -52,7 +52,7 @@
                     </li>
                     <li v-show="true">
                         <span>游戏名称</span>
-                        <Select v-model="filterRight.game_id" :options="game_opt"></Select>
+                        <Select v-model="filterRight.game_id" :options="game_name_opt"></Select>
                     </li>
                     <!-- <li>
                         <button class="btn-blue" @click="getAssignedList">查找</button>
@@ -62,14 +62,14 @@
                     <li>
                         <span>游戏主类</span>
                         <Select
-                            v-model="filterLeft.vendor_id"
+                            v-model="filterRight.game_main_type"
                             :options="platform_opt"
-                            @update="plantformLeftUpd"
+                         
                         ></Select>
                     </li>
                     <li v-show="true">
                         <span>游戏次类</span>
-                        <Select input v-model="filterLeft.game_id" :options="game_opt"></Select>
+                        <Select input v-model="filterRight.subgame_type" :options="sub_game_right_opt"></Select>
                     </li>
                     <li>
                         <button class="btn-blue" @click="getUnsignList">查找</button>
@@ -198,17 +198,21 @@ export default {
         return {
             filterLeft: {
                 plantform: '',
-                game_id: ''
+                game_id: '',
+                game_main_type: '',
+                subgame_type: ''
             },
             filterRight: {
                 plantform: '',
-                game_id: ''
+                game_id: '',
+                game_main_type: '',
+                subgame_type: ''
             },
             name_left_show: false,
             name_right_show: false,
             platform_opt: [], // 游戏平台下拉
             plantform_obj: [], // id为key ,方便获取平台的中文名字
-            game_opt: [], // 游戏名称
+            game_name_opt: [], // 游戏名称
             game_obj: [],
             // headers: ['游戏平台', '游戏名称', '操作'],
             game_sort_obj: {}, // 游戏父子分类对象
@@ -233,25 +237,30 @@ export default {
         }
     },
     computed: {
-        /**游戏子类 */
-        game_child_opt() {
-            // return this.game_sort_obj[this.form.type_id] || []
+       
+        /** 游戏次类 left */
+        sub_game_left_opt() {
+
+        },
+        /** 游戏次类 left */
+        sub_game_right_opt() {
+
         }
     },
     methods: {
         plantformLeftUpd(val) {
-            if (val !== '') {
-                this.name_left_show = true
-            } else {
-                this.name_left_show = false
-            }
+            // if (val !== '') {
+            //     this.name_left_show = true
+            // } else {
+            //     this.name_left_show = false
+            // }
         },
         plantformRightUpd(val) {
-            if (val !== '') {
-                this.name_right_show = true
-            } else {
-                this.name_right_show = false
-            }
+            // if (val !== '') {
+            //     this.name_right_show = true
+            // } else {
+            //     this.name_right_show = false
+            // }
         },
         // 获取游戏平台下拉框opt
         getPlatformOpt() {
@@ -275,9 +284,14 @@ export default {
                     vendors.forEach(item => {
                         this.plantform_obj[item.id] = item.name
                     })
-                    this.game_opt = arrToOpt(res.data.games)
+                    this.game_name_opt = arrToOpt(res.data.games)
                 }
             })
+        },
+        gameMainUpd(left_or_right) {
+            if(left_or_right='left') {
+
+            }
         },
         leftCheckBoxUpd(val) {
             console.log('val: ', val)
