@@ -8,7 +8,7 @@
                 </li>
                 <li>
                     <span>登录日期</span>
-                  
+
                     <Date type="daterange" v-model="filter.createAt" />
                 </li>
                 <li>
@@ -66,19 +66,42 @@ export default {
             import('../../../js/config/Export2Excel').then(excel => {
                 // console.log('触发2')
                 const tHeader = this.headers
-                const data = this.list.map(item=>{
+                const data = this.list.map(item => {
                     return [item.email, item.ip, item.created_at]
                 })
+
+                // let chainName = this.getChainName(this.$route.path)
+                let chainName = window.all.tool.getChainName(this.$route.path)
                 excel.export_json_to_excel({
                     header: tHeader, //表头 必填
                     data, //具体数据 必填
-                    filename: `excel page${this.pageNo}`, //非必填
+                    filename: `${chainName} ${this.pageNo}`, //非必填
                     autoWidth: true, //非必填
                     bookType: 'xlsx' //非必填
                 })
             })
         },
-        
+        /** 链级 名称，如: 厅主管理-登录记录 */
+        getChainName(path) {
+            if (!path) {
+                console.log('no path')
+                return ''
+            }
+            let menuList = window.all.tool.getLocal('menu')
+            let chain_name = ''
+            if (menuList) {
+                menuList.forEach(father => {
+                    if (father.children) {
+                        father.children.forEach(child => {
+                            if (path === child.path) {
+                                chain_name = father.label + '-' + child.label
+                            }
+                        })
+                    }
+                })
+            }
+            return chain_name
+        },
         updateNo() {
             this.getList()
         },
@@ -88,19 +111,19 @@ export default {
         },
         getList() {
             let createAt = ''
-            if(this.filter.createAt[0]&&this.filter.createAt[1]) {
-                let start = this.filter.createAt[0]+ ' 00:00:00'
-                let end = this.filter.createAt[1]+ ' 00:00:00'
-                createAt = JSON.stringify([start,end])
+            if (this.filter.createAt[0] && this.filter.createAt[1]) {
+                let start = this.filter.createAt[0] + ' 00:00:00'
+                let end = this.filter.createAt[1] + ' 00:00:00'
+                createAt = JSON.stringify([start, end])
             }
             let para = {
-                email:this.filter.email,
+                email: this.filter.email,
                 createAt: createAt,
                 loginIp: this.filter.loginIp,
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
-            
+
             let params = window.all.tool.rmEmpty(para)
 
             let { url, method } = this.$api.login_record_list
@@ -119,5 +142,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

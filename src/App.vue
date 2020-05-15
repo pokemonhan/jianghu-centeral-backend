@@ -746,6 +746,14 @@ textarea::placeholder{
 .p5 {
     padding: 5px;
 }
+.px5 {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.px10 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
 .p10 {
     padding: 10px;
 }

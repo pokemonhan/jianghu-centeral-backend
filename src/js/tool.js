@@ -3,7 +3,7 @@
  * @param {string} prop 属性 例如'height'
  * @param {string} val 值 可以是数字
 */
-function css(el, prop, val) {
+function css (el, prop, val) {
     var style = el && el.style;
 
     if (style) {
@@ -24,14 +24,14 @@ function css(el, prop, val) {
     }
 }
 // 简单的下拉slide
-function slideDown(ele, time=200) {
+function slideDown (ele, time = 200) {
     // let ele = this.$refs.ul
     if (!ele) return
     if (!(ele instanceof Element)) {
         ele = ele[0]
     }
     // 初始值
-    
+
     let prevStyle = ele.currentStyle || getComputedStyle(ele, null)
     // console.log('🥖 prevRect: ', prevStyle);
     let overflow = prevStyle.overflow
@@ -49,10 +49,10 @@ function slideDown(ele, time=200) {
         ele.style.maxHeight = 'none'
         // ele.style.display = 'block'
         ele.style.overflow = overflow
-        
+
     }, time)
 }
-function slideUp(ele,time=200) {
+function slideUp (ele, time = 200) {
     // let ele = this.$refs.ul
     if (!ele) return
     if (!(ele instanceof Element)) {
@@ -62,7 +62,7 @@ function slideUp(ele,time=200) {
         // }
     }
     ele.style.maxHeight = ele.offsetHeight + 'px'
-    let overflow =ele.style.overflow // 预先存储overflow初始状态, 后面动画完, 还原
+    let overflow = ele.style.overflow // 预先存储overflow初始状态, 后面动画完, 还原
     // ele.style.transition = 'maxHeight .2s'
     css(ele, 'transition', 'max-height ' + time + 'ms');
     ele.style.overflow = 'hidden'
@@ -75,15 +75,15 @@ function slideUp(ele,time=200) {
         ele.style.overflow = overflow // 原来是啥就是啥
     }, time)
 }
-function slideToggle(ele,time=200) {
+function slideToggle (ele, time = 200) {
     if (!ele) return
     if (!(ele instanceof Element)) {
         ele = ele[0]
     }
 
     // 如果有就slideUp 上滑
-    if ( ele.clientHeight) {
-        slideUp(ele,time)
+    if (ele.clientHeight) {
+        slideUp(ele, time)
         // 没有就 slideDown 下拉
     } else {
         slideDown(ele, time)
@@ -124,7 +124,7 @@ const Tool = {
     // 通用工具类************************************************************************* //
     isType: type => Object.prototype.toString.call(type).slice(8, Object.prototype.toString.call(type).length - 1), // 数据类型判断工具
     // 时间格式化
-    formatDate(time, withTime = false) {
+    formatDate (time, withTime = false) {
         let arr1 = [],
             arr2 = [],
             date = new Date(time);
@@ -140,11 +140,11 @@ const Tool = {
         return `${arr1.join('-')} ${arr2.join(':')}`
     },
 
-    now() {
+    now () {
         return new Date().valueOf()
     },
     // 节流
-    throttle(fn, delay) {
+    throttle (fn, delay) {
         var lastTime;
         var timer;
         var delay = delay || 200;
@@ -170,7 +170,7 @@ const Tool = {
     },
 
     // 防抖
-    debounce(fn, delay) {
+    debounce (fn, delay) {
         // 记录上一次的延时器
         var timer = null;
         var delay = delay || 200;
@@ -186,7 +186,7 @@ const Tool = {
     },
 
     // 去除为param空的 属性
-    rmEmpty(obj) {
+    rmEmpty (obj) {
         let params = {}
         for (const key in obj) {
             if (Array.isArray(obj[key])) {
@@ -200,7 +200,7 @@ const Tool = {
         return params
     },
     slideDown: slideDown,
-    slideUp:slideUp,
+    slideUp: slideUp,
     slideToggle: slideToggle,
     /**
      * 修改 元素样式 
@@ -209,7 +209,48 @@ const Tool = {
      * @param {String, Number} val 值
      */
     css: css,
-
+    /** 链级 名称，如: 厅主管理-登录记录 */
+    getChainName (path) {
+        if (!path) {
+            console.log('no path')
+            return ''
+        }
+        let menuList = window.all.tool.getLocal('menu')
+        let chain_name = ''
+        if (menuList) {
+            menuList.forEach(father => {
+                if (father.children) {
+                    father.children.forEach(child => {
+                        if (path === child.path) {
+                            chain_name = father.label + '-' + child.label
+                        }
+                    })
+                }
+            })
+        }
+        return chain_name
+    },
+    getExploreName (userAgent) {
+        if(!userAgent) return
+        // var userAgent = navigator.userAgent;
+        if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
+            return 'Opera';
+        } else if (userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1) {
+            return 'IE';
+        } else if (userAgent.indexOf("Edge") > -1) {
+            return 'Edge';
+        } else if (userAgent.indexOf("Firefox") > -1) {
+            return 'Firefox';
+        } else if (userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1) {
+            return 'Safari';
+        } else if (userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1) {
+            return 'Chrome';
+        } else if (!!window.ActiveXObject || "ActiveXObject" in window) {
+            return 'IE>=11';
+        } else {
+            return 'Unkonwn';
+        }
+    },
 
 };
 export default Tool;

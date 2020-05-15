@@ -6,15 +6,15 @@
         </div>
         <Table :headers="headers" :column="list">
             <template v-slot:item="{row}">
-                <td>{{row.name}}</td>
-                <td>{{row.email}}</td>
+                <td class="px10">{{row.name}}</td>
+                <td class="px10">{{row.email}}</td>
                 <!-- <td
                     :class="[row.status?'green':'red']"
                 >{{row.status===1?'启用':row.status===0?'禁用':'出错!!!'}}</td>-->
-                <td>
+                <td class="px5">
                     <Switchbox v-model="row.status" @update="memberStatusSwitch(row)" />
                 </td>
-                <td>
+                <td class="px5">
                     <button class="btns-blue" @click="editPwd(row)">修改密码</button>
                     <!-- <button
                         :class="[row.status?'btns-red':'btns-green']"

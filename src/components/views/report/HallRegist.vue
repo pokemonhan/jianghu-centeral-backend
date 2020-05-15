@@ -43,7 +43,7 @@
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
-                    <button class="btn-blue">导出Excel</button>
+                    <button class="btn-blue" @click="exportExcel">导出Excel</button>
                 </li>
                 <li>
                     <button class="btn-red" @click="Clear">清除</button>
@@ -168,6 +168,26 @@ export default {
                 warehouse_dates: [],
                 dates: []
             }
+        },
+        exportExcel() {
+            // console.log('触发')
+            import('../../../js/config/Export2Excel').then(excel => {
+                // console.log('触发2')
+                const tHeader = this.headers
+                const data = this.list.map(item => {
+                    return [item.a1, item.a2, item.a3,item.a4,item.a5,item.a6,item.a7,item.a8]
+                })
+
+                // let chainName = this.getChainName(this.$route.path)
+                let chainName = window.all.tool.getChainName(this.$route.path)
+                excel.export_json_to_excel({
+                    header: tHeader, //表头 必填
+                    data, //具体数据 必填
+                    filename: `${chainName} ${this.pageNo}`, //非必填
+                    autoWidth: true, //非必填
+                    bookType: 'xlsx' //非必填
+                })
+            })
         },
         timeUpdate() {
             //同步快捷查询按钮状态

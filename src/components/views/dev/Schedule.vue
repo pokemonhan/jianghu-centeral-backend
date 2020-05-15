@@ -11,21 +11,25 @@
         <div class="table mt10">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <!-- '命令名称','传递的参数','cron表达式','开启状态', '备注','生成时间','最后更新' -->
+                    <!-- '命令名称','arguments','option',,'cron表达式','开启状态', '备注','生成时间','最后更新' -->
                     <td>{{row.command}}</td>
                     <td>
-                        <ul style="color:#4c8bfd">
+                        <ul v-if="row.argument.length">
                             <li v-for="(item,index) in row.argument" :key="index">
                                 <span class="bold">{{item.left}}:</span>
                                 <span class="ml5">{{item.right}}</span>
                             </li>
                         </ul>
-                        <ul>
+                        <div v-else>---</div>
+                    </td>
+                    <td>
+                        <ul v-if="row.argument.length">
                             <li v-for="(item,index) in row.option" :key="index">
                                 <span class="bold">{{item.left}}:</span>
                                 <span class="ml5">{{item.right}}</span>
                             </li>
                         </ul>
+                        <div v-else>---</div>
                     </td>
                     <td>{{row.schedule}}</td>
                     <td>
@@ -59,11 +63,8 @@
 
                     <li>
                         <span>cron表达式</span>
-                        <Input
-                            placeholder="请输入定时策略"
-                            v-model="form.schedule"
-                        />
-                        <button class="btns-blue" @click="cronShow=true">生成 cron </button>
+                        <Input placeholder="请输入定时策略" v-model="form.schedule" />
+                        <button class="btns-blue" @click="cronShow=true">生成 cron</button>
                     </li>
                     <li>
                         <span>arguments</span>
@@ -166,7 +167,8 @@ export default {
         return {
             headers: [
                 '命令名称',
-                '传递的参数',
+                'arguments',
+                'option',
                 'cron表达式',
                 '开启状态',
                 '备注',
@@ -436,6 +438,20 @@ export default {
             }
             return arr
         },
+        getCommandOpt() {
+            // let a = import(this.$store.state.picPrefix+'common/linter.json')
+            // console.log('🌽 a: ', a);
+            let http_option = {
+                // common/command/system_command_list.json
+                url: this.$store.state.picPrefix + 'common/linter.json',
+                // method: 'post',
+                responseType: 'text'
+                // baseURL: '',
+            }
+            this.$http(http_option).then(res => {
+                console.log('🍭 res: ', res)
+            })
+        },
         getList() {
             let para = {
                 // pageSize: this.pageSize,
@@ -456,7 +472,7 @@ export default {
                     })
 
                     // this.list = list
-                    console.log('🍱 this.list: ', this.list)
+                    // console.log('🍱 this.list: ', this.list)
                 }
             })
         },
@@ -469,6 +485,7 @@ export default {
         }
     },
     mounted() {
+        // this.getCommandOpt()
         this.getList()
     }
 }

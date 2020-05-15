@@ -83,6 +83,7 @@
                         </div>
                         <div>
                             <span>浏览器:</span>
+                            <img class="explorer-img" :src="getExplorerSrc(curr_row.user_agent)" alt="图片加载失败">
                             <span>{{curr_row.user_agent}}</span>
                         </div>
                     </li>
@@ -109,7 +110,7 @@ export default {
 
             dia_show: false,
             curr_row: {},
-            isOver: false // 是否都加载完了
+            isOver: false, // 是否都加载完了
         }
     },
     methods: {
@@ -224,7 +225,37 @@ export default {
             }
             return result
         },
+        getExplorerSrc(explorer) {
+            // console.log('🍟 explorer: ', explorer);
+            let name = window.all.tool.getExploreName(explorer)
 
+            switch (name) {
+                case 'Opera':
+                    return require('../../../assets/image/browser/opera.png')
+                    break
+                case 'IE':
+                    return require('../../../assets/image/browser/IE.png')
+                    break
+                case 'Edge':
+                    return require('../../../assets/image/browser/edge.png')
+                    break
+                case 'Firefox':
+                    return require('../../../assets/image/browser/firefox.png')
+                case 'Safari':
+                    return require('../../../assets/image/browser/safari.png')
+                    break
+                case 'Chrome':
+                    return require('../../../assets/image/browser/chrome.png')
+                    break
+                case 'IE>=11':
+                    return require('../../../assets/image/browser/IE.png')
+                    break
+
+                default:
+                    // return require('../../../assets/image/browser/IE.png')
+                    break
+            }
+        },
         // 滚动加载
         scroll() {
             let isLoading = false
@@ -339,5 +370,9 @@ export default {
 .dia-inner {
     display: flex;
     justify-content: center;
+}
+.explorer-img {
+    max-width: 25px;
+    max-height: 25px;
 }
 </style>

@@ -48,7 +48,11 @@
                         <!-- <button class="btns-blue" @click="edit(row)">编辑</button> -->
                         <!-- <button :class="[row.status?'btns-red':'btns-green']" @click="statusSwitch(row)">{{row.status===1?'禁用':'启用'}}</button> -->
                         <div class="td-btns">
-                            <Upload style="width:90px;" title="上传图片" @change="upPicChange($event, row)" />
+                            <Upload
+                                style="width:90px;"
+                                title="上传图片"
+                                @change="upPicChange($event, row)"
+                            />
                             <button class="btn-blue ml5" @click="downLoadImg(row)">下载图片</button>
                             <button class="btn-blue" @click="detail(row)">查看编辑详情</button>
                         </div>
@@ -252,9 +256,9 @@ export default {
             let headers = { 'Content-Type': 'multipart/form-data' }
             this.$http({ method, url, data, headers }).then(res => {
                 if (res && res.code == '200') {
-                    console.log('🍏 res: ', res);
+                    console.log('🍏 res: ', res)
                     // this.pic_data = res.data.path
-                    if(res.data) {
+                    if (res.data) {
                         this.iconUpdate(row.id, res.data)
                     }
                 }
@@ -270,9 +274,9 @@ export default {
             // }
         },
         // icon 更新
-        iconUpdate(id ,res) {
-            console.log('🥩 id: ', id);
-            console.log('🍕 res: ', res);
+        iconUpdate(id, res) {
+            console.log('🥩 id: ', id)
+            console.log('🍕 res: ', res)
             let data = {
                 id: id,
                 icon_id: res.id
@@ -281,7 +285,7 @@ export default {
 
             let { url, method } = this.$api.game_icon_set
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res.message)
                     //this.mod_show = false
@@ -292,8 +296,7 @@ export default {
         },
         /** 下载图片 */
         downLoadImg(row) {
-            console.log('🍥 row: ', row);
-            let name = row.vendor_name + '-'+row.sub_type
+            let name = row.vendor_name + '-' + row.name
             var image = new Image()
             // 解决跨域 Canvas 污染问题
             image.setAttribute('crossOrigin', 'anonymous')
