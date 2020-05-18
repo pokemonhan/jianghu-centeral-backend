@@ -5,7 +5,7 @@
             <ul class="left">
                 <li>
                     <span>游戏名称</span>
-                    <Select v-model="filter.game_id" :options="game_name_opt"></Select>
+                    <Select input v-model="filter.game_id" :options="game_name_opt"></Select>
                 </li>
                 <li>
                     <span>游戏厂商</span>
@@ -13,7 +13,7 @@
                 </li>
                 <li>
                     <span>游戏分类</span>
-                    <Select v-model="filter.type_id" :options="type_opt" ></Select>
+                    <Select input v-model="filter.type_id" :options="type_opt" ></Select>
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -84,6 +84,7 @@
                                 <span>游戏子类</span>
                                 <Select
                                     style="width:250px"
+                                    input
                                     required
                                     errmsg="请选择子类"
                                     v-model="form.sub_type_id"

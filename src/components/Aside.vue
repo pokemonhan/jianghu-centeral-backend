@@ -85,24 +85,24 @@ export default {
         expandMenu(item, index) {
             // console.log("该元素item", item);
             // console.log("这个index", index);
+            /** 根据路径获取相关信息 */
+            function getMenuData(path, arr) {
+                let template_data
+                arr.forEach(item => {
+                    if (item.path === path) {
+                        template_data = item
+                    } else if (item.children) {
+                        if (getMenuData(path, item.children)) {
+                            template_data = getMenuData(path, item.children)
+                        }
+                    }
+                })
+                return template_data || {}
+            }
+            // 子菜单跳转
             if (!item.children) {
                 // 获取该path 的所有数据
-                function getMenuData(path, arr) {
-                    let template_data
-                    arr.forEach(item => {
-                        if (item.path === path) {
-                            template_data = item
-                        } else if (item.children) {
-                            if (getMenuData(path, item.children)) {
-                                template_data = getMenuData(path, item.children)
-                            }
-                        }
-                    })
-                    return template_data
-                }
-
-                let data = getMenuData(item.path, window.all.menu_list) || {}
-                this.$router.push(item.path)
+                let data = getMenuData(item.path, window.all.menu_list)
 
                 let list = this.tab_nav_list
                 // 导航条没有该页面 就添加进去
@@ -113,8 +113,13 @@ export default {
                         path: item.path,
                         name: data.name
                     })
-                    this.updateTab_nav_list(list)
+                    // 最多多十五个 导航条
+                    if (list.length > 15) {
+                        list.shift()
+                    }
+                    this.updateTab_nav_list(list) //
                 }
+                this.$router.push(item.path)
 
                 // 没有 children 就是父级菜单,就下滑打开该菜单
             } else {

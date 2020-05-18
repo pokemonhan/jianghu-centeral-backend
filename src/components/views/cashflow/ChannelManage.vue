@@ -12,7 +12,7 @@
                 </li>
                 <li>
                     <span>分类名称</span>
-                    <Select v-model="filter.type_id" :options="sort_opt"></Select>
+                    <Select input v-model="filter.type_id" :options="sort_opt"></Select>
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>

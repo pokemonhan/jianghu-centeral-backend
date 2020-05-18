@@ -31,7 +31,7 @@
                         </ul>
                         <div v-else>---</div>
                     </td>
-                    <td>{{row.schedule}}</td>
+                    <td>{{row.schedule||'---'}}</td>
                     <td>
                         <Switchbox v-model="row.status" @update="statusSwitch($event,row)" />
                     </td>
@@ -56,11 +56,10 @@
         <Dialog :show.sync="dia_show" :title="dia_title">
             <div class="dia-inner loc-dialog">
                 <ul class="form">
-                    <li>
+                    <li class="align-center">
                         <span>命令名称</span>
-                        <Input v-model="form.command" />
+                        <Select input v-model="form.command" :options="command_opt"></Select>
                     </li>
-
                     <li>
                         <span>cron表达式</span>
                         <Input placeholder="请输入定时策略" v-model="form.schedule" />
@@ -186,6 +185,7 @@ export default {
             cronPopover: false,
             cronShow: false,
             /** form */
+            command_opt: [],
             form: {
                 command: '', // 任务命令名称
                 schedule: '', // cron时间表达式
@@ -351,7 +351,7 @@ export default {
             })
         },
         del(row) {
-            console.log('🍎 row: ', row)
+            // console.log('🍎 row: ', row)
             this.curr_row = row
             this.mod_status = 'del'
             this.mod_content = '是否删除该定时任务!'
@@ -402,11 +402,9 @@ export default {
                 if (item.left && item.right) {
                     // ｛"--key1=value1","--key2=value2"｝
                     let child = '--' + item.left + '=' + item.right
-                    console.log('🍱 child: ', child)
                     opt_arr.push(child)
                 }
             })
-            console.log('🥓 opt_arr: ', opt_arr)
 
             if (opt_arr.length === 0) {
                 return ''
@@ -439,18 +437,31 @@ export default {
             return arr
         },
         getCommandOpt() {
-            // let a = import(this.$store.state.picPrefix+'common/linter.json')
-            // console.log('🌽 a: ', a);
             let http_option = {
-                // common/command/system_command_list.json
-                url: this.$store.state.picPrefix + 'common/linter.json',
-                // method: 'post',
-                responseType: 'text'
-                // baseURL: '',
+                url: this.$store.state.picPrefix + 'common/linter.json'
             }
+            // 请求所有下拉路径
             this.$http(http_option).then(res => {
-                console.log('🍭 res: ', res)
+                if (res) {
+                    console.log('🍞 res: ', res);
+                    let command_list = res.system_command_list.path
+                    // 请求 命令集opt
+                    if (command_list) {
+                        let option = { url: command_list }
+                        this.$http(option).then(res => {
+                            if (res && Array.isArray(res)) {
+                                this.command_opt = res.map(item => {
+                                    return {
+                                        label: item.description,
+                                        value: item.command
+                                    }
+                                })
+                            }
+                        })
+                    }
+                }
             })
+            // 请求命令内容
         },
         getList() {
             let para = {
@@ -485,7 +496,7 @@ export default {
         }
     },
     mounted() {
-        // this.getCommandOpt()
+        this.getCommandOpt()
         this.getList()
     }
 }
@@ -516,6 +527,12 @@ export default {
 }
 .form > li > .v-input {
     width: 300px;
+}
+.form > li > .v-select {
+    width: 300px;
+}
+.form .align-center {
+    align-items: center;
 }
 .form-btn {
     display: flex;

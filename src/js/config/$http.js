@@ -1,7 +1,10 @@
 'use strict';
 import axios from 'axios'
 import router from '../router'
+import store from '../vuex'
 import { Loading } from 'element-ui'
+
+let picPre = store.state.picPrefix
 const ERROR_MAP = {
     //MenuController
     '300000': '编辑保存有误',
@@ -107,8 +110,26 @@ let http = axios.create({
 
 let loading = null
 
+// 根据url 判断是否是xx.json静态文件
+function noJsonFile (url) {
+    let Arr = [
+        // 下拉数据
+        picPre + 'common/linter.json',
+        // 游戏主类型对应厂商列表
+        picPre + 'common/account/user_account_type.json',
+        // 游戏系列对应厂商列表
+        picPre + 'common/game/game_type_vendors_lists.json',
+        // 系统支持银行
+        picPre + 'common/financial/banks/system_banks/system_banks.json',
+        // 系统定时任务命令集
+        picPre + 'common/command/system_command_list.json'
+    ]
+    return Arr.indexOf(url) === -1 // 不在数组则需要 设置authorization
+}
+
 // 请求预设 ---
 http.interceptors.request.use(req => {
+    // console.log('🍊 req: ', req);
     loading = Loading.service({ text: '拼命加载中' })
     let Authorization = window.all.tool.getLocal('Authorization')
     // let expires = new Date(window.all.tool.getLocal('expires_at')).getTime()
@@ -117,12 +138,10 @@ http.interceptors.request.use(req => {
     // console.log('url: ', url);
     // let not_login =  window.location.pathname !== '/login' && eq.url.indexOf('/headquarters-api/login') === -1
     if (Authorization) {
-        req.headers.Authorization = Authorization   // 这是token+token_type
-        // if (expires && now > expires) {
-        //     // alert('token已经超时,请重新登陆..')
-        // window._Vue_.$router.push('/login')
-        // }
-        // return req
+        // 不是下拉静态json文件 才设置token
+        if (noJsonFile(req.url)) {
+            req.headers.Authorization = Authorization
+        }
     } else {
         let not_login = req.url.indexOf('/headquarters-api/login') === -1     // 并非 /login页面请求
         if (not_login) {
@@ -135,6 +154,7 @@ http.interceptors.request.use(req => {
 // 后台返回数据 全局预设 ---
 http.interceptors.response.use(res => {
     // console.log('后台预设: ', res);
+    let url = res.config && res.config.url
     if (loading) {
         loading.close()
     }
@@ -155,9 +175,13 @@ http.interceptors.response.use(res => {
     } else {
         // 302100 登出后提示内容
         if (res.data.code === '302100') {
-            window.__vm__.$toast(message)
-        } else if(res.data.code !=='200') {
             toastErr(message)
+        } else if (res.data.code !== '200') {
+            // toastErr(message)
+            if (noJsonFile(url)) {
+                // console.log('🍼️ res.url: ', res.config);
+                toastErr(message)
+            }
         }
     }
     return res.data

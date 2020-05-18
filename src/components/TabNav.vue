@@ -63,7 +63,6 @@ export default {
     methods: {
         ...mapMutations(['updateTab_nav_list', 'updateKeepAliveExclude']),
         refresh() {
-
             let path = this.$route.path
             // 设置当前 路由不保持 keepalive
             let curr_tab = this.tab_nav_list.find(
@@ -71,7 +70,7 @@ export default {
             )
             // 原来的排除数组
             let origenExclude = this.keepAliveExclude.slice()
-            
+
             let temp_arr = origenExclude.slice()
             temp_arr.push(curr_tab.name)
             this.updateKeepAliveExclude(temp_arr)
@@ -209,8 +208,10 @@ export default {
     },
     watch: {
         $route(route) {
-            if (route.path === '/kong' || route.path === '/page404') return
-            this.autoScroll(route.path)
+            if (route.path === '/page404') return
+            this.$nextTick(() => {
+                this.autoScroll(route.path)
+            })
         }
     },
     mounted() {

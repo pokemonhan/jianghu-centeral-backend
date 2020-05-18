@@ -642,6 +642,9 @@ button:focus {
 .align-center {
     align-items: center;
 }
+.self-center {
+    align-self: center;
+}
 .align-baseline {
     align-items: baseline;
 }

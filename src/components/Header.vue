@@ -19,8 +19,9 @@
 
                     <!-- 喇叭 -->
                     <li style="width:22px;margin-left:50px;" @click="play_music=!play_music">
-                        <i v-if="play_music" class="iconfont iconspeaker"></i>
-                        <i v-if="!play_music" class="iconfont iconmute"></i>
+                        <i
+                            :class="['iconfont',play_music?'iconspeaker':'iconmute']"
+                        ></i>
                     </li>
                     <li class="account" @mouseenter="accoutEnter" @mouseleave="accountLeave">
                         <span>
@@ -78,7 +79,6 @@
                             />
                             <p v-show="err_tips[2]" class="err-tips">{{err_tips[2]}}</p>
                         </li>
-                     
                     </ul>
                     <div class="form-btns">
                         <button class="btn-plain-large" @click="dia_show=false">取消</button>
@@ -97,7 +97,7 @@ export default {
     data() {
         return {
             // isfullScreen: true,
-            play_music: false,
+            play_music: true,
             account_ishow: false,
             logout_conf_show: false,
             user_name: '',
@@ -139,7 +139,7 @@ export default {
         //         this.isfullScreen = true;
         //     }
         // },
-    
+
         playMusic() {
             // let ele = document.querySelector('.playMusic');
             // console.log("TCL: playMusic -> ele", ele)
@@ -178,7 +178,6 @@ export default {
             // window.all.tool.removeSession('token')
             // this.$router.push('/login')
             this.logout_conf_show = true
-
         },
         logoutConf() {
             let self = this
@@ -204,17 +203,29 @@ export default {
 
             // 原密码
             if (!regExp.test(old_pwd)) {
-                this.$set( this.err_tips, '0', '请输入8~16位英文字母+数字密码组合!' )
+                this.$set(
+                    this.err_tips,
+                    '0',
+                    '请输入8~16位英文字母+数字密码组合!'
+                )
                 return false
 
                 // 新密码 验证
             } else if (!regExp.test(new_pwd)) {
-                this.$set( this.err_tips, '1', '请输入8~16位英文字母+数字密码组合!' )
+                this.$set(
+                    this.err_tips,
+                    '1',
+                    '请输入8~16位英文字母+数字密码组合!'
+                )
                 return false
 
                 // 确认密码
             } else if (!regExp.test(conf_pwd)) {
-                this.$set( this.err_tips, '2', '请输入8~16位英文字母+数字密码组合!' )
+                this.$set(
+                    this.err_tips,
+                    '2',
+                    '请输入8~16位英文字母+数字密码组合!'
+                )
                 return false
 
                 // 确认密码是否与原密码相同
@@ -229,15 +240,15 @@ export default {
         passwordConf() {
             this.err_tips = ['', '', '', '']
             if (!this.checkPwd()) return
-            console.log('form',this.form);
+            console.log('form', this.form)
             let data = {
                 old_password: this.form.old_pwd,
-                password: this.form.new_pwd,
+                password: this.form.new_pwd
             }
             let { method, url } = this.$api.self_update_pwd
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
-                    this.$toast.success(res&&res.message)
+                    this.$toast.success(res && res.message)
                     this.dia_show = false
                 } else {
                     if (res && res.message !== '') {

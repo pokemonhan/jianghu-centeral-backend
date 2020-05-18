@@ -9,11 +9,11 @@
                 </li>
                 <li>
                     <span>游戏分类</span>
-                    <Select v-model="filter.type_id" :options="type_opt" @update="typeUpd"></Select>
+                    <Select input v-model="filter.type_id" :options="type_opt" @update="typeUpd"></Select>
                 </li>
                 <li>
                     <span>游戏名称</span>
-                    <Select v-model="filter.name" :options="name_opt"></Select>
+                    <Select input v-model="filter.name" :options="name_opt"></Select>
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>

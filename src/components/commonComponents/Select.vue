@@ -23,7 +23,7 @@
                 class="show-select-label"
                 v-show="!input||!isShow"
             >{{selectedLabel?selectedLabel:placeholder}}</span>
-            <i v-if="clearable && isClear" @click.stop="clear" class="iconfont icon-icon-test"></i>
+            <i v-if="clearable && isClear" @click.stop="clear" class="iconfont iconcuowuguanbi-"></i>
             <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
         </div>
         <ul :class="['sections', sectionsDir]" ref="sections">
@@ -62,7 +62,10 @@ export default {
             default: () => []
         },
         value: [Number, String], // 默认值
-        clearable: Boolean, // 是否可清空
+        clearable: {
+            type: Boolean,
+            default: true
+        }, // 是否可清空
         placeholder: String,
         // 当required为true时, 值为空,就会提示
         required: {
@@ -97,15 +100,15 @@ export default {
     },
     computed: {
         opt() {
-            // 输入框内容为空则 返回全部， 不筛选也返回全部 
-            if (!this.input || !this.showInputLabel||this.noFilter) {
+            // 输入框内容为空则 返回全部， 不筛选也返回全部
+            if (!this.input || !this.showInputLabel || this.noFilter) {
                 return this.options
             } else {
                 let opt_temp = (this.options || []).filter(item => {
                     // let LowerCase
-                    if(item.label){
+                    if (item.label) {
                         return item.label.indexOf(this.showInputLabel) !== -1
-                    }else {
+                    } else {
                         return false
                     }
                 })
@@ -149,7 +152,7 @@ export default {
             if (this.isShow) {
                 /** 滚动条到顶部的距离 */
                 let scrollTop = document.documentElement.scrollTop
-                
+
                 let scrollHeight = document.body.scrollHeight
                 let toBottom = e.target.getBoundingClientRect().bottom
                 let y = scrollHeight - scrollTop - toBottom
@@ -297,7 +300,8 @@ export default {
 .val-box i {
     display: inline-block;
     position: absolute;
-    right: 10px;
+    right: 3px;
+    font-size: 1.5em;
     transition: all 0.2s ease;
 }
 .val-box span {
@@ -327,7 +331,7 @@ export default {
     background-color: #fff;
     overflow-y: scroll;
     display: none;
-    z-index: 2; 
+    z-index: 2;
     transition: max-height 0.2s;
 }
 .bottom-upfold {
@@ -375,6 +379,9 @@ export default {
 }
 .error-message .iconjinggao1- {
     font-size: 13px;
+}
+.iconcuowuguanbi-:hover {
+    color: rgb(255, 60, 0);
 }
 </style>
 

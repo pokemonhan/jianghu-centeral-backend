@@ -6,7 +6,8 @@
             <ul class="left">
                 <li>
                     <span>银行名称</span>
-                    <Input v-model="filter.name" />
+                    <!-- <Input v-model="filter.name" /> -->
+                    <Select input v-model="filter.name" :options="bank_opt"></Select>
                 </li>
                 <li>
                     <span>状态</span>
@@ -106,6 +107,7 @@ export default {
                 name: '',
                 status: ''
             },
+            bank_opt: [],
             status_opt: [
                 { label: '全部', value: '' },
                 { label: '开启', value: '1' },
@@ -274,6 +276,34 @@ export default {
                 }
             })
         },
+        getCommandOpt() {
+            let http_option = {
+                url: this.$store.state.picPrefix + 'common/linter.json'
+            }
+            // 请求所有下拉路径
+            this.$http(http_option).then(res => {
+                if (res) {
+                    console.log('🍞 res: ', res);
+                    let bankList = res.system_banks_available.path
+                    // 请求 命令集opt
+                    if (bankList) {
+                        let option = { url: bankList }
+                        this.$http(option).then(result => {
+                            console.log('😎 result: ', result);
+                            if (result && Array.isArray(result)) {
+                                this.bank_opt = result.map(item => {
+                                    return {
+                                        label: item.name,
+                                        value: item.name
+                                    }
+                                })
+                            }
+                        })
+                    }
+                }
+            })
+            // 请求命令内容
+        },
         getList() {
             let para = {
                 name: this.filter.name,
@@ -300,6 +330,7 @@ export default {
         }
     },
     mounted() {
+        this.getCommandOpt()
         this.getList()
     }
 }

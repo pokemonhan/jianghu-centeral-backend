@@ -16,11 +16,11 @@
                         <span>游戏名称</span>
                         <Select input v-model="filterLeft.game_id" :options="game_name_opt"></Select>
                     </li>
-                    <!-- <li>
+                    <li>
                         <button class="btn-blue" @click="getUnsignList">查找</button>
-                    </li>-->
+                    </li>
                 </ul>
-                <ul class="down">
+                <!-- <ul class="down">
                     <li>
                         <span>游戏主类</span>
                         <Select
@@ -33,10 +33,8 @@
                         <span>游戏次类</span>
                         <Select input v-model="filterLeft.sub_game_type" :options="sub_game_left_opt"></Select>
                     </li>
-                    <li>
-                        <button class="btn-blue" @click="getUnsignList">查找</button>
-                    </li>
-                </ul>
+                    
+                </ul>-->
             </div>
             <!-- 右边的 right -->
 
@@ -52,13 +50,13 @@
                     </li>
                     <li v-show="true">
                         <span>游戏名称</span>
-                        <Select v-model="filterRight.game_id" :options="game_name_opt"></Select>
+                        <Select input v-model="filterRight.game_id" :options="game_name_opt"></Select>
                     </li>
-                    <!-- <li>
-                        <button class="btn-blue" @click="getAssignedList">查找</button>
-                    </li>-->
+                    <li>
+                        <button class="btn-blue" @click="getUnsignList">查找</button>
+                    </li>
                 </ul>
-                <ul class="down">
+                <!-- <ul class="down">
                     <li>
                         <span>游戏主类</span>
                         <Select
@@ -71,10 +69,7 @@
                         <span>游戏次类</span>
                         <Select input v-model="filterRight.subgame_type" :options="sub_game_right_opt"></Select>
                     </li>
-                    <li>
-                        <button class="btn-blue" @click="getUnsignList">查找</button>
-                    </li>
-                </ul>
+                </ul>-->
             </div>
         </div>
         <div class="table table-container">
@@ -237,15 +232,10 @@ export default {
         }
     },
     computed: {
-       
         /** 游戏次类 left */
-        sub_game_left_opt() {
-
-        },
+        sub_game_left_opt() {},
         /** 游戏次类 left */
-        sub_game_right_opt() {
-
-        }
+        sub_game_right_opt() {}
     },
     methods: {
         plantformLeftUpd(val) {
@@ -289,8 +279,7 @@ export default {
             })
         },
         gameMainUpd(left_or_right) {
-            if(left_or_right='left') {
-
+            if ((left_or_right = 'left')) {
             }
         },
         leftCheckBoxUpd(val) {

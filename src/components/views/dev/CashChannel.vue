@@ -17,6 +17,7 @@
                     <span>分类名称</span>
                     <Select
                         style="width:150px;"
+                        input
                         v-model="filter.type_id"
                         :options="type_opt"
                         @update="typeUpd"

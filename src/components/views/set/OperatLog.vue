@@ -56,7 +56,7 @@
                     @updateNo="updateNo"
                     @updateSize="updateSize"
                 />
-            </div> -->
+            </div>-->
         </div>
         <Dialog :show.sync="dia_show" title="操作详情">
             <div class="dia-inner">
@@ -83,7 +83,11 @@
                         </div>
                         <div>
                             <span>浏览器:</span>
-                            <img class="explorer-img" :src="getExplorerSrc(curr_row.user_agent)" alt="图片加载失败">
+                            <img
+                                class="explorer-img"
+                                :src="getExplorerSrc(curr_row.user_agent)"
+                                alt="图片加载失败"
+                            />
                             <span>{{curr_row.user_agent}}</span>
                         </div>
                     </li>
@@ -110,7 +114,7 @@ export default {
 
             dia_show: false,
             curr_row: {},
-            isOver: false, // 是否都加载完了
+            isOver: false // 是否都加载完了
         }
     },
     methods: {
@@ -260,18 +264,30 @@ export default {
         scroll() {
             let isLoading = false
             let ele = this.$refs.operalog
-
+            let max_scroll_top = 0
             ele.onscroll = () => {
                 // 距离底部200px时加载一次
                 let scrollHeight = ele.scrollHeight
                 let scrollTop = ele.scrollTop
+                // console.log('🍭 scrollTop: ', scrollTop)
                 let offsetHeight = ele.offsetHeight
+                /** 窗口底部距离 */
                 let bottomOfWindow = scrollHeight - scrollTop - offsetHeight
                 // console.log('🍹 isLoading: ', isLoading)
+                if (scrollTop > max_scroll_top) {
+                    max_scroll_top = scrollTop
+                }
+
                 if (bottomOfWindow < 200 && isLoading == false) {
                     let totalPage = Math.ceil(this.total / this.pageSize)
                     // 如果是加载到最后一条,不执行()
-                    if (this.pageNo > totalPage) return
+                    if (this.pageNo === totalPage) {
+                        if (scrollTop >= max_scroll_top) {
+                            this.$toast.warning('已是最后一条')
+                        }
+                        return
+                    }
+
                     isLoading = true
                     this.pageNo++ // 请求下一页
                     this.getList().then(res => {

@@ -21,7 +21,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td ></td>
+                        <td></td>
                         <slot name="tdOne" :row="row" :idx="index"></slot>
                     </tr>
                     <slot name="tr1"></slot>
@@ -37,7 +37,7 @@
                             <th
                                 v-for="(th, index) in headers[1]"
                                 :key="index"
-                                 :style="'width:'+th.width+'px'"
+                                :style="'width:'+th.width+'px'"
                             >{{th.label?th.label:th}}</th>
                             <!-- <th></th> -->
                         </tr>
@@ -70,8 +70,7 @@ export default {
         return {
             is_show: [],
             first_tbl_isfixed: false,
-            second_tbl_isfixed: false,
-            
+            second_tbl_isfixed: false
         }
     },
     methods: {
@@ -84,11 +83,11 @@ export default {
         }
     },
     mounted() {
-        if(this.headers[0][0].width){
-            this.first_tbl_isfixed=true
+        if (this.headers[0][0].width) {
+            this.first_tbl_isfixed = true
         }
-        if(this.headers[1][0].width){
-            this.second_tbl_isfixed=true
+        if (this.headers[1][0].width) {
+            this.second_tbl_isfixed = true
         }
     }
 }
@@ -102,7 +101,7 @@ export default {
     border-bottom-right-radius: 5px;
     background: #fff;
 } */
-.content{
+.content {
     border: 1px solid #4c8bfd;
 }
 .opened {
@@ -124,8 +123,8 @@ export default {
     height: 40px;
     border: 1px solid #70a2fd;
 }
-.first-table tbody td:first-child{
-    border:none;
+.first-table tbody td:first-child {
+    border: none;
 }
 .table tbody tr:nth-child(2n) {
     background: rgb(250, 249, 249);
@@ -148,7 +147,6 @@ export default {
 }
 .container .first-table td {
     border-bottom: none;
-
 }
 .second-table {
     display: none;
