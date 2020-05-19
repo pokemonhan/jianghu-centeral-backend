@@ -110,7 +110,7 @@
                                 class="w400"
                                 v-model="form.icon"
                                 @focus="icon_show=true"
-                                @blur="closeIconmenu"
+                                @blur="closeIconMenu"
                             />
                             <div v-if="icon_show" class="form-select-icon">
                                 <i
@@ -128,10 +128,12 @@
                             <Select
                                 style="width:400px"
                                 input
+                                :clearable="false"
                                 v-model="form.route"
                                 :options="route_opt"
                                 @input="routeInput"
                                 @update="routeUpd"
+                                @focus="routeFocus"
                             ></Select>
                         </li>
                         <li>
@@ -196,7 +198,7 @@
                             />
                         </li>
                     </ul>
-                    <div class="center-box mt30">
+                    <div class="center-box mt50">
                         <button class="btn-plain-large" @click="dia_show=false">取消创建</button>
                         <button
                             v-if="dia_status==='add'"
@@ -254,7 +256,7 @@ export default {
             dia_status: '',
             dia_title: '',
             route_all: [], // 所有路由
-            route_opt: [],
+            // route_opt: [],
             form: {
                 icon: '',
                 label: '',
@@ -296,10 +298,70 @@ export default {
                 'icontianjia',
                 'iconfeeds-fill'
             ],
-            parent_menu_opt: [],
+            parent_menu_opt: [], // 所属主菜单
             menu_show: false,
             // modal
             mod_show: false
+        }
+    },
+    computed: {
+        route_opt() {
+            let menu = this.menu || []
+            let route_opt_arr = []
+            function getExistRouter() {
+                let arr = []
+                menu.forEach(item => {
+                    // 没有路由的用 enname代替
+                    item.route ? arr.push(item.route) : arr.push(item.en_name)
+                    if (item.children) {
+                        item.children.forEach(child => {
+                            child.route && arr.push(child.route)
+                        })
+                    }
+                })
+                return arr
+            }
+            /** 已出现路由 */
+            let exist_path = getExistRouter()
+
+            function getAllRouter() {
+                let temp_arr = []
+                let menu_list = window.all.menu_list || []
+
+                menu_list.forEach(item => {
+                    temp_arr.push({
+                        label: `label :(${item.label}*) | ename: (${item.name}) | path: (${item.path})`,
+                        value: item.path, // 路径
+                        en_name: item.name, // 英文名
+                        cname: item.label // 中文名
+                    })
+                    if (item.children) {
+                        item.children.forEach(child => {
+                            temp_arr.push({
+                                label: `label :(${child.label}) | ename: (${child.name}) | path: (${child.path})`,
+                                value: child.path, // 路径
+                                en_name: child.name, // 英文名
+                                cname: child.label // 中文名
+                            })
+                        })
+                    }
+                })
+                return temp_arr
+            }
+            this.route_all = getAllRouter()
+
+            route_opt_arr = this.route_all.filter(item => {
+                if (this.dia_status === 'edit') {
+                    return (
+                        exist_path.indexOf(item.value) === -1 ||
+                        item.value === this.curr_row.route
+                    )
+                }
+                if(this.dia_status === 'add') {
+                    return exist_path.indexOf(item.value) === -1
+                }
+            })
+            return route_opt_arr
         }
     },
     methods: {
@@ -317,7 +379,7 @@ export default {
                 this.form.level = '2'
             }
         },
-        closeIconmenu() {
+        closeIconMenu() {
             setTimeout(() => {
                 this.icon_show = false
             }, 200)
@@ -328,18 +390,15 @@ export default {
             this.form.icon = item
             this.$set(this.form, 'icon', item)
         },
-        // 前端路由更新
-        routeInput(val) {
-            // console.log('val: ', val);
-            this.route_opt = this.route_all.filter(item => {
-                let label = item.label || ''
-                return !val || label.indexOf(val) !== -1
-            })
+        routeFocus() {
+            
         },
+        // 前端路由更新
+        routeInput(val) {},
         // 路由点击更新
         routeUpd(val) {
             if (!val) return
-            let item = this.route_all.find(item => val === item.value) || {}
+            let item = this.route_opt.find(item => val === item.value) || {}
             // console.log('item: ', item);
             this.$set(this.form, 'en_name', item.en_name)
             this.$set(this.form, 'label', item.cname)
@@ -371,7 +430,7 @@ export default {
         },
 
         contextmenu(e, row) {
-            // console.log('row: ', row)
+            // console.log('curr_row: ', row)
 
             this.curr_row = row
             this.active_title_id = row.id
@@ -524,8 +583,7 @@ export default {
                 this.getMenuList()
             })
         },
-        // 后台数据转成可用tree数组1
-        /**
+        /**  后台数据转成可用tree数组1
          *
          * @params {array} list 要转换的数组
          * @params {string} pre_idx 前缀
@@ -547,45 +605,26 @@ export default {
             })
         },
         setRouteOpt() {
-            let arr = window.all.menu_list
-            this.route_all = []
-            arr.forEach(item => {
-                this.route_all.push({
-                    label: `label :(${item.label}) | ename: (${item.name}) | path: (${item.path})`,
-                    value: item.path, // 路径
-                    en_name: item.name, // 英文名
-                    cname: item.label // 中文名
-                })
-                if (item.children) {
-                    item.children.forEach(child => {
-                        this.route_all.push({
-                            label: `label :(${child.label}) | ename: (${child.name}) | path: (${child.path})`,
-                            value: child.path, // 路径
-                            en_name: child.name, // 英文名
-                            cname: child.label // 中文名
-                        })
-                    })
-                }
-            })
-            this.route_opt = this.route_all
+            /**  已出现路径 */
         },
         getMenuList() {
             let { url, method } = this.$api.menu_all_list
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
                     // console.log('res全部列表: ', res)
-                    Object.keys(res.data).forEach(item => {
-                        // console.log(item);
-                    })
+                    // Object.keys(res.data).forEach(item => {
+                    //     // console.log(item);
+                    // })
                     let menu = res.data
                     this.menu = this.toTreeArray(menu) || []
                     this.parent_menu_opt = this.menu.map(item => {
-                        // console.log('item: ', item)
                         return {
                             value: item.id,
                             label: item.label
                         }
                     })
+                    this.setRouteOpt(this.menu)
+
                     // console.log('外层menu: ', this.menu)
                 }
             })
@@ -596,7 +635,6 @@ export default {
 
     mounted() {
         this.getMenuList()
-        this.setRouteOpt()
     }
 }
 </script>
@@ -725,8 +763,11 @@ export default {
 .lev4 {
     margin-left: 16px;
 }
+/* .dia-inner {
+    min-height: 440px;
+} */
 .form {
-    padding: 0 100px;
+    padding: 20px 100px;
 }
 .form ul li {
     display: flex;
@@ -737,7 +778,7 @@ export default {
     margin-top: 0;
 }
 .form ul li > span:first-child {
-    width: 8em;
+    width: 9em;
     text-align: right;
 }
 .form-icon {

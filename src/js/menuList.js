@@ -196,6 +196,11 @@ const menuList = [
                 path: '/dev/hallmenu',
                 name: 'HallMenu'
             },
+            {
+                label: '定时任务',
+                path: '/dev/schedule',
+                name: 'Schedule'
+            },
             // {
             //     label: '游戏厂商配置',
             //     path: '/dev/gamevendor',

@@ -32,7 +32,7 @@
                 :key="item.value"
                 :class="[selectedValue===item.value ? 'active' : '','option']"
                 @click.stop="select(item)"
-                :title="input?item.label:''"
+                :title="TitleShow(input,item)"
             >{{item.label}}</li>
         </ul>
         <span v-show="showerr||(required&&!value)" class="error-message">
@@ -117,6 +117,13 @@ export default {
         }
     },
     methods: {
+        TitleShow(input, item) {
+            let title = ''
+            if (input) {
+                title = item.title ? item.title : item.label
+            }
+            return title
+        },
         slideDown(ele) {
             if (!ele) return
             if (!(ele instanceof Element)) {
@@ -174,10 +181,10 @@ export default {
             let ele = this.$refs.sections
             // $(ele).slideUp(200)
             // Slide.slideUp(ele)
-            this.slideUp(ele)
             if (item.value === this.selectedValue) return
             this.selectedValue = item.value
             this.selectedLabel = item.label
+            this.slideUp(ele)
 
             // this.showInputLabel = item.label // input 展示的内容
             this.$emit('update', item.value, item)

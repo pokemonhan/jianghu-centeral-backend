@@ -1139,11 +1139,11 @@ export default {
     width: 160px;
 }
 .daterange {
-    min-width: 200px;
-    width: 14em;
+    min-width: 220px;
+    /* width: 14em; */
 }
 .datetimerange {
-    width: 300px;
+    width: 320px;
 }
 /* .v-date-picker .date-str {
     font-size: 12px;

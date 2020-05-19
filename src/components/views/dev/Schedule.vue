@@ -159,6 +159,7 @@
 // import { cron } from 'vue-cron'
 import cron from '.././../commonComponents/cron'
 export default {
+    name: 'Schedule',
     components: {
         cron
     },
@@ -452,7 +453,8 @@ export default {
                             if (res && Array.isArray(res)) {
                                 this.command_opt = res.map(item => {
                                     return {
-                                        label: item.description,
+                                        title: item.description,
+                                        label: item.command,
                                         value: item.command
                                     }
                                 })

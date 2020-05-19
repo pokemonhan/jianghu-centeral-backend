@@ -11,6 +11,7 @@ export default {
      * 状态更改 status_set
     */
     /*=========================== 公共分类 ===========================--*/
+    /** 上传图片 */
     pic_update: {
         url: '/headquarters-api/uploads/images',
         method: 'post',

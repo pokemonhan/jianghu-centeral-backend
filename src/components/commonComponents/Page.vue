@@ -57,6 +57,7 @@
         <Select
             v-if="!hiddenSelect"
             style="width:90px;"
+            :clearable="false"
             @update="updatePageSize"
             :value="pageSize"
             :options="pageSizeList"

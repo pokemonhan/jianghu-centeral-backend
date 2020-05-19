@@ -637,7 +637,7 @@
 
 <script>
 import { Steps, Step } from 'element-ui'
-
+import axios from 'axios'
 export default {
     name: 'VendorManage',
     components: {
@@ -902,6 +902,8 @@ export default {
             let data = formData
             let headers = { 'Content-Type': 'multipart/form-data' }
             this.$http({ method, url, data, headers }).then(res => {
+                // let a = 'http//apionline.jianghu.ethanphp'
+            // axios({ method, url:a+url, data, headers }).then(res => {
                 if (res && res.code == '200') {
                     // this.pic_data = res.data.path
                     if (res.data) {

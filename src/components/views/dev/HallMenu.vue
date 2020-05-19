@@ -253,7 +253,7 @@ export default {
             dia_status: '',
             dia_title: '',
             route_all: [], // 所有路由
-            route_opt: [],
+            // route_opt: [],
             form: {
                 icon: '',
                 label: '',
@@ -293,12 +293,72 @@ export default {
                 'iconyunyingzhongxin',
                 'iconyuanquan',
                 'icontianjia',
-                'iconfeeds-fill',
+                'iconfeeds-fill'
             ],
             parent_menu_opt: [],
             menu_show: false,
             // modal
             mod_show: false
+        }
+    },
+    computed: {
+        route_opt() {
+            let menu = this.menu || []
+            let route_opt_arr = []
+            function getExistRouter() {
+                let arr = []
+                menu.forEach(item => {
+                    // 没有路由的用 enname代替
+                    item.route ? arr.push(item.route) : arr.push(item.en_name)
+                    if (item.children) {
+                        item.children.forEach(child => {
+                            child.route && arr.push(child.route)
+                        })
+                    }
+                })
+                return arr
+            }
+            /** 已出现路由 */
+            let exist_path = getExistRouter()
+
+            function getAllRouter() {
+                let temp_arr = []
+                let menu_list = hallMenuList || []
+
+                menu_list.forEach(item => {
+                    temp_arr.push({
+                        label: `label :(${item.label}*) | ename: (${item.name}) | path: (${item.path})`,
+                        value: item.path, // 路径
+                        en_name: item.name, // 英文名
+                        cname: item.label // 中文名
+                    })
+                    if (item.children) {
+                        item.children.forEach(child => {
+                            temp_arr.push({
+                                label: `label :(${child.label}) | ename: (${child.name}) | path: (${child.path})`,
+                                value: child.path, // 路径
+                                en_name: child.name, // 英文名
+                                cname: child.label // 中文名
+                            })
+                        })
+                    }
+                })
+                return temp_arr
+            }
+            this.route_all = getAllRouter()
+
+            route_opt_arr = this.route_all.filter(item => {
+                if (this.dia_status === 'edit') {
+                    return (
+                        exist_path.indexOf(item.value) === -1 ||
+                        item.value === this.curr_row.route
+                    )
+                }
+                if (this.dia_status === 'add') {
+                    return exist_path.indexOf(item.value) === -1
+                }
+            })
+            return route_opt_arr
         }
     },
     methods: {
@@ -331,10 +391,10 @@ export default {
         // 前端路由更新
         routeInput(val) {
             // console.log('val: ', val);
-            this.route_opt = this.route_all.filter(item => {
-                let label = item.label || ''
-                return !val || label.indexOf(val) !== -1
-            })
+            // this.route_opt = this.route_all.filter(item => {
+            //     let label = item.label || ''
+            //     return !val || label.indexOf(val) !== -1
+            // })
         },
         // 路由点击更新
         routeUpd(val) {
@@ -545,29 +605,29 @@ export default {
                 return item
             })
         },
-        setRouteOpt() {
-            let arr = hallMenuList
-            this.route_all = []
-            arr.forEach(item => {
-                 this.route_all.push({
-                    label: `label :(${item.label}) | ename: (${item.name}) | path: (${item.path})`,
-                    value: item.path, // 路径
-                    en_name: item.name, // 英文名
-                    cname: item.label // 中文名
-                })
-                if (item.children) {
-                    item.children.forEach(child => {
-                        this.route_all.push({
-                            label: `label :(${child.label}) | ename: (${child.name}) | path: (${child.path})`,
-                            value: child.path, // 路径
-                            en_name: child.name, // 英文名
-                            cname: child.label // 中文名
-                        })
-                    })
-                }
-            })
-            this.route_opt = this.route_all
-        },
+        // setRouteOpt() {
+        //     let arr = hallMenuList
+        //     this.route_all = []
+        //     arr.forEach(item => {
+        //         this.route_all.push({
+        //             label: `label :(${item.label}) | ename: (${item.name}) | path: (${item.path})`,
+        //             value: item.path, // 路径
+        //             en_name: item.name, // 英文名
+        //             cname: item.label // 中文名
+        //         })
+        //         if (item.children) {
+        //             item.children.forEach(child => {
+        //                 this.route_all.push({
+        //                     label: `label :(${child.label}) | ename: (${child.name}) | path: (${child.path})`,
+        //                     value: child.path, // 路径
+        //                     en_name: child.name, // 英文名
+        //                     cname: child.label // 中文名
+        //                 })
+        //             })
+        //         }
+        //     })
+        //     this.route_opt = this.route_all
+        // },
         getMenuList() {
             let { url, method } = this.$api.merchant_menu_all_list
             this.$http({ method, url }).then(res => {
@@ -595,7 +655,7 @@ export default {
 
     mounted() {
         this.getMenuList()
-        this.setRouteOpt()
+        // this.setRouteOpt()
     }
 }
 </script>

@@ -87,10 +87,11 @@ let hostList = {
     inner: location.protocol + '//api.397017.com',              // 测试站内网
     outer: location.protocol + '//api.397017.com',              // 测试外围
     harris: location.protocol + '//api.jianghu.me',             // harris
-    // ethan: location.protocol + '//apionline.jianghu.ethanphp', // ethan
+    ethan: location.protocol + '//apionline.jianghu.ethanphp',  // ethan
 }
 
 const BASE_PATH = hostList[HOST] || HOST
+// const BASE_PATH = hostList.ethan
 
 let http = axios.create({
     baseURL: BASE_PATH,
@@ -111,7 +112,7 @@ let http = axios.create({
 let loading = null
 
 // 根据url 判断是否是xx.json静态文件
-function noJsonFile (url) {
+function needSetAuthorization (url) {
     let Arr = [
         // 下拉数据
         picPre + 'common/linter.json',
@@ -122,14 +123,16 @@ function noJsonFile (url) {
         // 系统支持银行
         picPre + 'common/financial/banks/system_banks/system_banks.json',
         // 系统定时任务命令集
-        picPre + 'common/command/system_command_list.json'
+        picPre + 'common/command/system_command_list.json',
+        // pic上传
+        '/headquarters-api/uploads/images'
+
     ]
     return Arr.indexOf(url) === -1 // 不在数组则需要 设置authorization
 }
 
 // 请求预设 ---
 http.interceptors.request.use(req => {
-    // console.log('🍊 req: ', req);
     loading = Loading.service({ text: '拼命加载中' })
     let Authorization = window.all.tool.getLocal('Authorization')
     // let expires = new Date(window.all.tool.getLocal('expires_at')).getTime()
@@ -139,7 +142,7 @@ http.interceptors.request.use(req => {
     // let not_login =  window.location.pathname !== '/login' && eq.url.indexOf('/headquarters-api/login') === -1
     if (Authorization) {
         // 不是下拉静态json文件 才设置token
-        if (noJsonFile(req.url)) {
+        if (needSetAuthorization(req.url)) {
             req.headers.Authorization = Authorization
         }
     } else {
@@ -178,7 +181,7 @@ http.interceptors.response.use(res => {
             toastErr(message)
         } else if (res.data.code !== '200') {
             // toastErr(message)
-            if (noJsonFile(url)) {
+            if (needSetAuthorization(url)) {
                 // console.log('🍼️ res.url: ', res.config);
                 toastErr(message)
             }
