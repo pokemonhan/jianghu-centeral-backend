@@ -30,9 +30,7 @@
                         <PicShow>
                             <img class="td-icon" :src="row.icon" alt="图片加载中" />
                             <template v-slot:content>
-                                <div>
-                                    <img class="td-pic-show" :src="row.icon" alt="图片加载中" />
-                                </div>
+                                <img class="td-pic-show" :src="row.icon" alt="图片加载中" />
                             </template>
                         </PicShow>
                     </td>
@@ -373,10 +371,13 @@ export default {
 .td-icon {
     max-width: 80px;
     max-width: 44px;
+    display: block;
+    padding-top: 3px;
 }
 .td-pic-show {
     max-width: 600px;
     max-height: 350px;
+    display: block;
 }
 .td-btns {
     display: flex;
@@ -421,5 +422,8 @@ export default {
 } */
 .table {
     margin-top: 10px;
+}
+.block {
+    display: block;
 }
 </style>

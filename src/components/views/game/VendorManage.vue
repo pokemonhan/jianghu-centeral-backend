@@ -1536,10 +1536,12 @@ export default {
 .td-icon {
     max-width: 80px;
     max-width: 44px;
+    padding-top: 3px;
 }
 .td-pic-show {
     max-width: 600px;
     max-height: 350px;
+    display: block;
 }
 .dia-inner {
     min-height: 700px;

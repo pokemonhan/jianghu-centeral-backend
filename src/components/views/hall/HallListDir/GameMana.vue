@@ -14,7 +14,11 @@
                     </li>
                     <li v-show="true">
                         <span>游戏名称</span>
-                        <Select input v-model="filterLeft.game_id" :options="game_name_opt"></Select>
+                        <Select
+                            input
+                            v-model="filterLeft.game_id"
+                            :options="game_name_opt(filterLeft.vendor_id)"
+                        ></Select>
                     </li>
                     <li>
                         <button class="btn-blue" @click="getUnsignList">查找</button>
@@ -50,10 +54,14 @@
                     </li>
                     <li v-show="true">
                         <span>游戏名称</span>
-                        <Select input v-model="filterRight.game_id" :options="game_name_opt"></Select>
+                        <Select
+                            input
+                            v-model="filterRight.game_id"
+                            :options="game_name_opt(filterRight.vendor_id)"
+                        ></Select>
                     </li>
                     <li>
-                        <button class="btn-blue" @click="getUnsignList">查找</button>
+                        <button class="btn-blue" @click="getAssignedList">查找</button>
                     </li>
                 </ul>
                 <!-- <ul class="down">
@@ -183,6 +191,7 @@
     </div>
 </template> 
 <script>
+import tool from '../../../../js/tool'
 export default {
     props: {
         outRow: {
@@ -206,9 +215,8 @@ export default {
             name_left_show: false,
             name_right_show: false,
             platform_opt: [], // 游戏平台下拉
-            plantform_obj: [], // id为key ,方便获取平台的中文名字
-            game_name_opt: [], // 游戏名称
-            game_obj: [],
+            plantform_obj: {}, // id为key ,方便获取平台的中文名字
+            // game_name_opt: [], // 游戏名称
             // headers: ['游戏平台', '游戏名称', '操作'],
             game_sort_obj: {}, // 游戏父子分类对象
             left: {
@@ -252,38 +260,71 @@ export default {
             //     this.name_right_show = false
             // }
         },
-        // 获取游戏平台下拉框opt
-        getPlatformOpt() {
-            let arrToOpt = function(arr = []) {
-                let list = [{ label: '全部', value: '' }]
-                arr = arr.map(item => {
-                    return {
-                        label: item.name,
-                        value: item.id
-                    }
-                })
-                return list.concat(arr)
-            }
-
-            let { url, method } = this.$api.game_manage_opt_list
-            this.$http({ method, url }).then(res => {
-                // console.log('option👌: ', res)
-                if (res && res.code === '200' && res.data) {
-                    this.platform_opt = arrToOpt(res.data.vendors)
-                    let vendors = res.data.vendors || []
-                    vendors.forEach(item => {
+        /** 获取下拉框 */
+        getOpt() {
+            tool.getOpt('game_vendors__games').then(res => {
+                if (res && Array.isArray(res)) {
+                    this.platform_opt = [{ label: '全部', value: '' }]
+                    res.forEach(item => {
+                        this.platform_opt.push({
+                            label: item.name,
+                            value: item.id,
+                            children: item.games_under_vendor
+                        })
                         this.plantform_obj[item.id] = item.name
                     })
-                    this.game_name_opt = arrToOpt(res.data.games)
                 }
             })
         },
+        game_name_opt(id) {
+            let arr = [{ label: '全部', value: '' }]
+            this.platform_opt.forEach(item => {
+                if (item.value === id || !id) {
+                    if (item.children) {
+                        item.children.forEach(child => {
+                            arr.push({
+                                label: child.name,
+                                value: item.id
+                            })
+                        })
+                    }
+                }
+            })
+            // console.log('🍬 arr: ', arr);
+            return arr
+        },
+        // 获取游戏平台下拉框opt
+        // getPlatformOpt() {
+        //     let arrToOpt = function(arr = []) {
+        //         let list = [{ label: '全部', value: '' }]
+        //         arr = arr.map(item => {
+        //             return {
+        //                 label: item.name,
+        //                 value: item.id
+        //             }
+        //         })
+        //         return list.concat(arr)
+        //     }
+
+        //     let { url, method } = this.$api.game_manage_opt_list
+        //     this.$http({ method, url }).then(res => {
+        //         // console.log('option👌: ', res)
+        //         if (res && res.code === '200' && res.data) {
+        //             this.platform_opt = arrToOpt(res.data.vendors)
+        //             let vendors = res.data.vendors || []
+        //             vendors.forEach(item => {
+        //                 this.plantform_obj[item.id] = item.name
+        //             })
+        //             this.game_name_opt = arrToOpt(res.data.games)
+        //         }
+        //     })
+        // },
         gameMainUpd(left_or_right) {
             if ((left_or_right = 'left')) {
             }
         },
         leftCheckBoxUpd(val) {
-            console.log('val: ', val)
+            // console.log('val: ', val)
             // checkbox全选
             if (val === 'all') {
                 this.left.list = this.left.list.map(item => {
@@ -308,7 +349,7 @@ export default {
             } else {
                 let self = this
                 this.$nextTick(function() {
-                    console.log('🍢 self.right.lis: ', self.right)
+                    // console.log('🍢 self.right.lis: ', self.right)
                     self.right.allChecked = (self.right.list || []).every(
                         item => item.checked
                     )
@@ -334,11 +375,10 @@ export default {
 
             let { url, method } = this.$api.game_manage_add
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
                     this.getUnsignList()
-                    this.getAssignedList() // TODO: 测试完 删除这里， 需要刷新已分配
+                    this.getAssignedList()
                 }
             })
         },
@@ -362,7 +402,7 @@ export default {
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
-                    this.getUnsignList() // TODO: 测试完 删除这里， 需要刷新未分配
+                    this.getUnsignList()
                     this.getAssignedList()
                 }
             })
@@ -387,7 +427,6 @@ export default {
             let { url, method } = this.$api.game_sort_list
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
-                    // this.game_sort_obj =
                     if (res.data && Array.isArray(res.data)) {
                         res.data.forEach(item => {
                             let opt = [{ label: '全部', value: '' }]
@@ -401,13 +440,24 @@ export default {
                             }
                             /** 根据 父级id放置 子类 */
                             this.game_sort_obj[item.id] = opt
-                            // console.log('🦐 this.game_sort_obj: ', this.game_sort_obj);
                         })
                     }
                 }
             })
         },
-        // left
+        /** 后端数据可能为 对象 格式这里转换一下 */
+        objToArr(rightList = []) {
+            if (Array.isArray(rightList)) {
+                return rightList
+            }
+            if (window.all.tool.isType(rightList) === 'Object') {
+                let arr = []
+                Object.keys(rightList).forEach(key => {
+                    arr.push(rightList[key])
+                })
+                return arr
+            }
+        },
         getUnsignList() {
             let para = {
                 platform_id: this.outRow.id,
@@ -418,14 +468,14 @@ export default {
                 page: this.left.pageNo
             }
             let params = window.all.tool.rmEmpty(para)
-            console.log('this.filterRight: ', this.filterRight)
             let { url, method } = this.$api.game_manage_unsign_list
             this.$http({ method, url, params }).then(res => {
                 if (res && res.code === '200') {
                     this.left.total = res.data.total
-                    this.left.list = res.data.data
-                    this.right.allChecked = false
-                    if (this.left.list && this.left.list.length > 0) {
+                    this.left.list = res.data.data || []
+                    // 去掉选择checkbox
+                    this.left.allChecked = false
+                    if (this.left.list.length > 0) {
                         this.left.list.forEach(item => {
                             item.checked = false
                         })
@@ -443,13 +493,14 @@ export default {
                 page: this.right.pageNo
             }
             let params = window.all.tool.rmEmpty(para)
+            // console.log('🍍 params: ', params);
 
             let { url, method } = this.$api.game_manage_assigned_list
             this.$http({ method, url, params }).then(res => {
-                console.log('右边: ', res)
                 if (res && res.code === '200') {
                     this.right.total = res.data.total
-                    this.right.list = res.data.data || []
+                    this.right.list = this.objToArr(res.data.data)
+
                     this.right.allChecked = false
                 }
             })
@@ -459,9 +510,9 @@ export default {
         this.getUnsignList()
         this.getAssignedList()
         // 获取下拉框内容
-        this.getPlatformOpt()
-        this.getGameOpt()
-        console.log('this.outRow: ', this.outRow)
+        // this.getPlatformOpt()
+        // this.getGameOpt()
+        this.getOpt()
     }
 }
 </script>

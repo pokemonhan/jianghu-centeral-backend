@@ -381,8 +381,7 @@ export default {
         /**
          * 转换成后端需要数据 [{left:"sigin",right:"ling"}] 转成 {"sigin":"ling"}
          * @param {string} prefix 添加前缀
-         *  */
-
+         * */
         toNeedArg(arr = [], prefix = '') {
             let obj = {}
             arr.forEach(item => {
@@ -444,7 +443,7 @@ export default {
             // 请求所有下拉路径
             this.$http(http_option).then(res => {
                 if (res) {
-                    console.log('🍞 res: ', res);
+                    // console.log('🍞 res: ', res);
                     let command_list = res.system_command_list.path
                     // 请求 命令集opt
                     if (command_list) {

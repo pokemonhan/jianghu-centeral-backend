@@ -1,6 +1,6 @@
 <template>
     <div class="v-pic-show">
-        <div @mouseenter="onmouseover($event)" @mouseleave="onmouseleave">
+        <div class="pic-content" @mouseenter="onmouseover($event)" @mouseleave="onmouseleave">
             <slot></slot>
         </div>
         <transition name="fade-transform">

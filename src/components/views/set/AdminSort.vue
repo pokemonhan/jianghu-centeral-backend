@@ -109,10 +109,9 @@
                 <!-- 中间竖线 -->
                 <div class="vertical-line"></div>
                 <!-- 查看check之下面内容 -->
-               
             </div>
             <div class="cont-right">
-                 <div v-if="right_show==='check'" class="mt20">
+                <div v-if="right_show==='check'" class="mt20">
                     <!-- table 内容 -->
                     <div class="table">
                         <AdminTable ref="adminTable" :group_id="admin_id" @search="search" />
@@ -439,8 +438,8 @@ export default {
 }
 .cont-left {
     display: flex;
-    /* todo */
     margin-left: 40px;
+    margin-bottom: 30px;
 }
 .filter-input {
     width: 15em;
@@ -460,9 +459,8 @@ export default {
     background: #f9fbfc;
 }
 .cont .cont-left .had-search {
-    border: 1px solid rgb(250, 207, 195);
-
-    background: rgb(248, 222, 215);
+    border: 1px solid rgb(195, 250, 240);
+    background: rgb(234, 245, 251);
     transition: background-color 0.2s;
 }
 .cont .li-left .li-hd span {
@@ -477,6 +475,7 @@ export default {
 .vertical-line {
     width: 1px;
     height: 100%;
+    /* 和左右maring合并 */
     margin-left: 50px;
     margin-right: 50px;
     background: #ededed;
@@ -484,8 +483,10 @@ export default {
 /* 中间边的 内容 */
 .cont-center {
     display: flex;
+    margin-left: 40px;
 }
 .cont-right {
+    margin-left: 40px;
 }
 .edit-form {
     width: 550px;

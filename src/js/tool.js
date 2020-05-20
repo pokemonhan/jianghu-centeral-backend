@@ -1,3 +1,5 @@
+import store from './vuex'
+import axios from 'axios'
 /**css样式修改 
  * @param {object} el 元素
  * @param {string} prop 属性 例如'height'
@@ -231,7 +233,7 @@ const Tool = {
         return chain_name
     },
     getExploreName (userAgent) {
-        if(!userAgent) return
+        if (!userAgent) return
         // var userAgent = navigator.userAgent;
         if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
             return 'Opera';
@@ -251,6 +253,29 @@ const Tool = {
             return 'Unkonwn';
         }
     },
-
+    getOpt (key) {
+        return new Promise(resolve => {
+            // let http_option = {
+            let all_json_url = store.state.picPrefix + 'common/linter.json'
+            // }
+            // 请求所有下拉路径
+            axios.get(all_json_url).then(res => {
+                // console.log('🥰 res: ', res);
+                if (res && res.data) {
+                    // console.log('🍞 json: ', res);
+                    let temp_obj = res.data[key] || {}
+                    let json_url = temp_obj.path
+                    // console.log('🥚 json_url: ', json_url);
+                    
+                    // 请求 命令集opt
+                    if (json_url) {
+                        axios.get(json_url).then(response => {
+                            resolve(response && response.data)
+                        })
+                    }
+                }
+            })
+        })
+    },
 };
 export default Tool;

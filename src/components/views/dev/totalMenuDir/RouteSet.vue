@@ -621,7 +621,7 @@ export default {
             let { url, method } = this.$api.route_all_list
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
-                    console.log('res: ', res)
+                    // console.log('res: ', res)
                     if (!res.data) return
                     this.curr_route = res.data
                     // console.log('this.curr_route: ', this.curr_route);

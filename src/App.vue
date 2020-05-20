@@ -50,7 +50,7 @@ export default {
         return {
             play: true,
             excludeRouteName: [],
-            isRouterAlive: true,
+            isRouterAlive: true
         }
     },
     computed: {
@@ -77,7 +77,6 @@ export default {
             //     play = false
             // audio = null;
             // })
-            
         },
 
         // 阻止 别人f12按键审查代码
@@ -92,9 +91,9 @@ export default {
                 }
             }
         },
-         reload() {
+        reload() {
             this.isRouterAlive = false
-            this.$nextTick(function(){
+            this.$nextTick(function() {
                 this.isRouterAlive = true
             })
         }
@@ -702,8 +701,8 @@ button:focus {
 .a:active {
     color: red;
 }
-textarea::placeholder{
-    color:#ccc;
+textarea::placeholder {
+    color: #ccc;
 }
 .w100 {
     width: 100px;
@@ -828,7 +827,7 @@ textarea::placeholder{
 /* 重写element ui loading 样式 */
 .el-loading-parent--relative .el-loading-mask {
     position: fixed;
-    background-color: rgba(255,255,255,.9);
+    background-color: rgba(255, 255, 255, 0.9);
     margin: 0;
     top: 50%;
     /* right: 20%;
@@ -838,15 +837,19 @@ textarea::placeholder{
     width: 300px;
     margin-left: -150px;
     margin-top: -150px;
-    -webkit-transition: opacity .3s;
-    transition: opacity .3s;
+    -webkit-transition: opacity 0.3s;
+    transition: opacity 0.3s;
     z-index: 10003;
-
+}
+.center-center {
+    min-height: 6.5em;
+    display: table-cell;
+    vertical-align: middle;
 }
 /* 重写element ui loading 样式 */
 body .el-loading-mask {
     position: fixed;
-    background-color: rgba(255,255,255,.9);
+    background-color: rgba(255, 255, 255, 0.9);
     margin: 0;
     top: 50%;
     /* right: 20%;
@@ -856,10 +859,9 @@ body .el-loading-mask {
     width: 300px;
     margin-left: -150px;
     margin-top: -150px;
-    -webkit-transition: opacity .3s;
-    transition: opacity .3s;
+    -webkit-transition: opacity 0.3s;
+    transition: opacity 0.3s;
     z-index: 10003;
-
 }
 /* 文字超出省略 */
 .text-ellipsis {
