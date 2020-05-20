@@ -4,13 +4,14 @@
         <div class="filter p10">
             <ul class="left">
                 <li>
-                    <span>游戏厂商</span>
-                    <Select v-model="filter.vendor_id" :options="vendor_opt" @update="vendorUpd"></Select>
-                </li>
-                <li>
                     <span>游戏分类</span>
                     <Select input v-model="filter.type_id" :options="type_opt" @update="typeUpd"></Select>
                 </li>
+                <li>
+                    <span>游戏厂商</span>
+                    <Select v-model="filter.vendor_id" :options="vendor_opt" @update="vendorUpd"></Select>
+                </li>
+
                 <li>
                     <span>游戏名称</span>
                     <Select input v-model="filter.name" :options="name_opt"></Select>

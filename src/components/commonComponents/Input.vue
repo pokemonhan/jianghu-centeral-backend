@@ -16,7 +16,7 @@
             :autocomplete="autocomplete"
         />
         <i v-if="icon" :class="['iconfont', icon,'icon-input']"></i>
-        
+
         <span v-show="showerr||(required&&!value)" class="error-message">
             <i class="iconfont iconjinggao1-"></i>
             {{errmsg}}
@@ -26,27 +26,27 @@
 
 <script>
 export default {
-    name: "Input",
+    name: 'Input',
     props: {
         disabled: Boolean,
         type: {
             type: String,
-            default: "text"
+            default: 'text'
         },
         icon: String,
         size: {
             type: String,
-            default: "normal"
+            default: 'normal'
         },
         limit: {
             type: String,
-            default: ""
+            default: ''
         },
         placeholder: String,
         value: [String, Number],
-        maxlength: [Number,String],
-        autocomplete:{
-            type: String,
+        maxlength: [Number, String],
+        autocomplete: {
+            type: String
         },
         showerr: {
             type: Boolean,
@@ -63,51 +63,54 @@ export default {
         }
     },
     model: {
-        prop: "value",
-        event: "keyup" // 原来是input
+        prop: 'value',
+        event: 'keyup' // 原来是input
     },
     data() {
         return {
-            val: "",
+            val: '',
             regs: {
-                "number": /[^\-?\d.]/g,                  // 数字
-                "p-number": /[^\d.]/g,                   // 正数
-                "integer": /[^\-?\d]/g,                  // 整数
-                "p-integer": /\D/g,                      //  正整数
-                "no-zh-cn": /[\u4E00-\u9FA5]*/g,         // 非中文
-                "en-num": /[\W_]/g,                      // 字母,数字
-                "en": /[\W_0-9]/g,                       // 字母
-                "word": /[^\w\-]/g                         // 字母数字,下划线
+                number: /[^\-?\d.]/g, // 数字
+                'p-number': /[^\d.]/g, // 正数
+                integer: /[^\-?\d]/g, // 整数
+                'p-integer': /\D/g, //  正整数
+                'no-zh-cn': /[\u4E00-\u9FA5]*/g, // 非中文
+                'en-num': /[\W_]/g, // 字母,数字
+                en: /[\W_0-9]/g, // 字母
+                word: /[^\w\-]/g // 字母数字,下划线
             }
-        };
+        }
     },
     watch: {
-        value(value){
+        value(value) {
             this.val = value
-          }
+        }
     },
     methods: {
         input() {
-            this.$emit("input", this.val);
-            this.$emit("update", this.val);
+            this.$emit('input', this.val)
+            this.$emit('update', this.val)
         },
         pressEnter() {
-            this.$emit("enter");
+            this.$emit('enter')
         },
         focus() {
             this.$emit('focus')
         },
         keyup() {
-            this.regs[this.limit] && (this.val = this.val.toString().replace(this.regs[this.limit], ""));
+            this.regs[this.limit] &&
+                (this.val = this.val
+                    .toString()
+                    .replace(this.regs[this.limit], ''))
             // console.log(this.val)
-            this.$emit("keyup", this.val);
-            this.$emit("update", this.val);
+            this.$emit('keyup', this.val)
+            this.$emit('update', this.val)
         }
     },
     mounted() {
         this.val = this.value
-    },
-};
+    }
+}
 </script>
 
 <style scoped>
@@ -123,8 +126,8 @@ export default {
     color: #888;
     cursor: not-allowed;
 }
-input::placeholder{
-    color:#ccc;
+input::placeholder {
+    color: #ccc;
 }
 .large {
     height: 36px;

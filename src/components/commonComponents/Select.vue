@@ -23,7 +23,7 @@
                 class="show-select-label"
                 v-show="!input||!isShow"
             >{{selectedLabel?selectedLabel:placeholder}}</span>
-            <i v-if="clearable && isClear" @click.stop="clear" class="iconfont iconcuowuguanbi-"></i>
+            <i v-if="!isShow && clearable && isClear" @click.stop="clear" class="iconfont iconcuowuguanbi-"></i>
             <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
         </div>
         <ul :class="['sections', sectionsDir]" ref="sections">
