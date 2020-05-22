@@ -253,7 +253,7 @@ const Tool = {
             return 'Unkonwn';
         }
     },
-    getOpt (key) {
+    getJsonOpt (key) {
         return new Promise(resolve => {
             // let http_option = {
             let all_json_url = store.state.picPrefix + 'common/linter.json'

@@ -9,7 +9,7 @@
                         <Select
                             v-model="filterLeft.vendor_id"
                             :options="platform_opt"
-                            @update="plantformLeftUpd"
+                            @update="plantformUpd($event,'left')"
                         ></Select>
                     </li>
                     <li v-show="true">
@@ -17,7 +17,8 @@
                         <Select
                             input
                             v-model="filterLeft.game_id"
-                            :options="game_name_opt(filterLeft.vendor_id)"
+                            :options="left_game_name_opt"
+                            @update="GameNameUpd($event, 'left')"
                         ></Select>
                     </li>
                     <li>
@@ -49,7 +50,7 @@
                         <Select
                             v-model="filterRight.vendor_id"
                             :options="platform_opt"
-                            @update="plantformRightUpd"
+                            @update="plantformUpd($event,'right')"
                         ></Select>
                     </li>
                     <li v-show="true">
@@ -57,7 +58,8 @@
                         <Select
                             input
                             v-model="filterRight.game_id"
-                            :options="game_name_opt(filterRight.vendor_id)"
+                            :options="right_game_name_opt"
+                            @update="GameNameUpd($event, 'right')"
                         ></Select>
                     </li>
                     <li>
@@ -200,6 +202,8 @@ export default {
     },
     data() {
         return {
+            left_game_name_opt: [],
+            right_game_name_opt: [],
             filterLeft: {
                 plantform: '',
                 game_id: '',
@@ -216,7 +220,7 @@ export default {
             name_right_show: false,
             platform_opt: [], // 游戏平台下拉
             plantform_obj: {}, // id为key ,方便获取平台的中文名字
-            // game_name_opt: [], // 游戏名称
+            // gameNameOpt: [], // 游戏名称
             // headers: ['游戏平台', '游戏名称', '操作'],
             game_sort_obj: {}, // 游戏父子分类对象
             left: {
@@ -246,37 +250,21 @@ export default {
         sub_game_right_opt() {}
     },
     methods: {
-        plantformLeftUpd(val) {
-            // if (val !== '') {
-            //     this.name_left_show = true
-            // } else {
-            //     this.name_left_show = false
-            // }
+        plantformUpd(id, where) {
+            if (where === 'left') {
+                this.filterLeft.game_id = ''
+                this.left_game_name_opt = this.gameNameOpt(id)
+            } else {
+                this.filterRight.game_id = ''
+                this.right_game_name_opt = this.gameNameOpt(id)
+            }
         },
-        plantformRightUpd(val) {
-            // if (val !== '') {
-            //     this.name_right_show = true
-            // } else {
-            //     this.name_right_show = false
-            // }
-        },
-        /** 获取下拉框 */
-        getOpt() {
-            tool.getOpt('game_vendors__games').then(res => {
-                if (res && Array.isArray(res)) {
-                    this.platform_opt = [{ label: '全部', value: '' }]
-                    res.forEach(item => {
-                        this.platform_opt.push({
-                            label: item.name,
-                            value: item.id,
-                            children: item.games_under_vendor
-                        })
-                        this.plantform_obj[item.id] = item.name
-                    })
-                }
-            })
-        },
-        game_name_opt(id) {
+        // plantformRightUpd(id) {
+        //     this.right_game_name_opt = this.gameNameOpt(id)
+        // },
+        GameNameUpd(id, where) {},
+        // rightGameNameUpd() {},
+        gameNameOpt(id) {
             let arr = [{ label: '全部', value: '' }]
             this.platform_opt.forEach(item => {
                 if (item.value === id || !id) {
@@ -284,13 +272,13 @@ export default {
                         item.children.forEach(child => {
                             arr.push({
                                 label: child.name,
-                                value: item.id
+                                value: child.id
                             })
                         })
                     }
                 }
             })
-            // console.log('🍬 arr: ', arr);
+            console.log('🍬 游戏名称arr: ', arr)
             return arr
         },
         // 获取游戏平台下拉框opt
@@ -315,7 +303,7 @@ export default {
         //             vendors.forEach(item => {
         //                 this.plantform_obj[item.id] = item.name
         //             })
-        //             this.game_name_opt = arrToOpt(res.data.games)
+        //             this.gameNameOpt = arrToOpt(res.data.games)
         //         }
         //     })
         // },
@@ -512,7 +500,27 @@ export default {
         // 获取下拉框内容
         // this.getPlatformOpt()
         // this.getGameOpt()
-        this.getOpt()
+
+        /** 获取下拉框 */
+        let self = this
+        function getOpt() {
+            tool.getJsonOpt('game_vendors__games').then(res => {
+                if (res && Array.isArray(res)) {
+                    self.platform_opt = [{ label: '全部', value: '' }]
+                    res.forEach(item => {
+                        self.platform_opt.push({
+                            label: item.name,
+                            value: item.id,
+                            children: item.games_under_vendor
+                        })
+                        self.plantform_obj[item.id] = item.name
+                        self.plantformUpd('', 'left')
+                        self.plantformUpd('', 'right')
+                    })
+                }
+            })
+        }
+        getOpt()
     }
 }
 </script>

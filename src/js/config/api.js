@@ -16,6 +16,12 @@ export default {
         url: '/headquarters-api/uploads/images',
         method: 'post',
     },
+
+    /*=========================== 用户 ===========================--*/
+    homepage: {
+        url: '/headquarters-api/statistics/index',
+        method: 'get'
+    },
     /*=========================== 用户 ===========================--*/
 
     /** 登录 */

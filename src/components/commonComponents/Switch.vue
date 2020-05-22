@@ -32,7 +32,6 @@ export default {
     methods:{
         toggle(){
             this.me_checked = !this.me_checked;
-        
             this.$emit('update', this.me_checked);
         }
     },

@@ -44,11 +44,11 @@
                 </div>
                 <div class="cont">
                     <div>
-                        <span class="number">{{'0.00'}}</span>
+                        <span class="number">{{this.top.withdrawal_amount}}</span>
                     </div>
                     <div class="bottom-10">
                         <span>提现总人数:</span>
-                        <span>{{'0'}}</span>
+                        <span>{{this.top.withdrawal_people}}</span>
                         <span>人</span>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                     :class="[peopleIdx===index?'btn-active':'btn-plain-white']"
                     v-for="(item,index) in ['登录总人数','注册总人数']"
                     :key="index"
-                    @click="searchPeople(item,index)"
+                    @click="centerClick(index)"
                 >{{item}}</button>
             </div>
             <div class="body">
@@ -87,7 +87,7 @@
                     <div class="circle-body"></div>
                     <div class="circle-inner">
                         <div>登录人数</div>
-                        <div style="margin-top:5px;">{{'16'}}人</div>
+                        <div style="margin-top:5px;">{{center_total}}人</div>
                     </div>
                 </div>
                 <div class="right">
@@ -103,7 +103,7 @@
                     :class="[amountIdx===index?'btn-active':'btn-plain-white']"
                     v-for="(item,index) in ['今日充值','今日提款', '今日盈利', '今日彩金优惠']"
                     :key="index"
-                    @click="searchAmount(item,index)"
+                    @click="bottomClick(index)"
                 >{{item}}</button>
             </div>
             <div class="body">
@@ -111,7 +111,7 @@
                     <div class="circle-title">{{['总充值','总提款', '总盈利', '总优惠'][amountIdx]}}</div>
                     <div class="circle-body"></div>
                     <div class="circle-inner">
-                        <div style="margin-top:5px;">{{'100000.00'}}</div>
+                        <div style="margin-top:5px;">{{bottom_total}}</div>
                     </div>
                 </div>
                 <div class="right">
@@ -129,34 +129,74 @@ export default {
     name: 'Home',
     data() {
         return {
+            top: {
+                profit_amount: 0, // 盈利
+                profit_people: 0,
+                heading_amount: 0, // 首冲
+                heading_people: 0,
+                withdrawal_amount: 0, // 提现
+                withdrawal_people: 0,
+                bonus_amount: 0, // 彩金
+                bonus_people: 0
+            },
             peopleIdx: 0,
-            amountIdx: 0
+            center_total: 0, // 登录或注册总人数
+            amountIdx: 0,
+            bottom_total: 0, // 下方总数
+            echar_data: {
+                total_logins: [], // 登录总人数
+                total_number_of_registrations: [], // 注册总人数
+                total_top_up: [], // 充值
+                total_withdrawal: [] //提款
+            }
         }
     },
     methods: {
-        searchPeople(item, index) {
+        centerClick(index) {
             this.peopleIdx = index
+            let buttonArr = ['total_logins', 'total_number_of_registrations']
+            let key = buttonArr[index]
+            let list = this.echar_data[key]
 
+            this.center_total = 0
+            list.forEach(item => {
+                this.center_total += item.total
+            })
+            this.centerCharDraw(key)
         },
-        searchAmount(item, index) {
+        bottomClick(index) {
             this.amountIdx = index
+            let buttonArr = ['total_top_up', 'total_withdrawal']
+            let key = buttonArr[index] || ''
+            let list = this.echar_data[key] || []
+            this.bottom_total = 0
+            list.forEach(item => {
+                this.bottom_total += item.total_amount
+            })
+            this.bottomCharDraw(key)
         },
-        loginChartDraw() {
+        centerCharDraw(key) {
+            // let key = 'total_logins'
+            let list = this.echar_data[key] || []
+            // console.log('🍣 datas: ', list)
+            let xData = list.map(item => item.platform_name)
+            let seriesDatas = list.map(item => item.total)
+
             let echarts = window.all.echarts
             let login_chart = echarts.init(this.$refs.loginEchart)
             // console.log('this.$refs.loginEchart: ', this.$refs.loginPic);
             login_chart.setOption({
                 xAxis: {
                     type: 'category',
-                    data: ['江湖互娱', '财神棋牌', '九五至尊'],
-                     // 刻度线
+                    data: xData,
+                    // 刻度线
                     axisTick: {
-                        show:false
-                    },
+                        show: false
+                    }
                 },
                 yAxis: {
                     type: 'value',
-                    show: false,
+                    show: false
                     // // 刻度线
                     // axisTick: {
                     //     show:false
@@ -168,13 +208,13 @@ export default {
                 },
                 series: [
                     {
-                        data: [10, 6, 10],
+                        data: seriesDatas,
                         type: 'bar',
                         barWidth: '30px',
-                        label:{
+                        label: {
                             normal: {
                                 position: 'top',
-                                show:true
+                                show: true
                             }
                         },
                         itemStyle: {
@@ -183,7 +223,7 @@ export default {
                                     let colorList = [
                                         '#4c8bfd',
                                         '#ffbf41',
-                                        '#4dc213',
+                                        '#4dc213'
                                     ]
                                     return colorList[params.dataIndex]
                                 }
@@ -193,22 +233,25 @@ export default {
                 ]
             })
         },
-        amountDraw() {
+        bottomCharDraw(key) {
+            let list = this.echar_data[key] || []
+            let xData = list.map(item => item.platform_name)
+            let seriesDatas = list.map(item => item.total)
             let echarts = window.all.echarts
             let login_chart = echarts.init(this.$refs.totalEchart)
             // console.log('this.$refs.loginPic: ', this.$refs.loginPic);
             login_chart.setOption({
                 xAxis: {
                     type: 'category',
-                    data: ['江湖互娱', '财神棋牌', '九五至尊'],
-                     // 刻度线
+                    data: xData,
+                    // 刻度线
                     axisTick: {
-                        show:false
-                    },
+                        show: false
+                    }
                 },
                 yAxis: {
                     type: 'value',
-                    show: false,
+                    show: false
                     // // 刻度线
                     // axisTick: {
                     //     show:false
@@ -220,14 +263,11 @@ export default {
                 },
                 series: [
                     {
-                        data: [50000, 30000, 50000],
+                        data: seriesDatas,
                         type: 'bar',
                         barWidth: '30px',
-                        label:{
-                            normal: {
-                                position: 'top',
-                                show:true
-                            }
+                        label: {
+                            normal: { position: 'top', show: true }
                         },
                         itemStyle: {
                             normal: {
@@ -235,7 +275,7 @@ export default {
                                     let colorList = [
                                         '#4c8bfd',
                                         '#ffbf41',
-                                        '#4dc213',
+                                        '#4dc213'
                                     ]
                                     return colorList[params.dataIndex]
                                 }
@@ -244,11 +284,38 @@ export default {
                     }
                 ]
             })
+        },
+        getList() {
+            let { url, method } = this.$api.homepage
+            this.$http({ method, url }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
+                if (res && res.data) {
+                    this.echar_data.total_logins = res.data.total_logins || []
+                    this.echar_data.total_number_of_registrations =
+                        res.data.total_number_of_registrations || []
+                    this.echar_data.total_top_up = res.data.total_top_up || []
+                    this.echar_data.total_withdrawal =
+                        res.data.total_withdrawal || []
+                    // this.centerCharDraw('total_logins')
+                    // 今日提现总数
+                    this.top.withdrawal_amount = 0
+                    this.top.withdrawal_people = 0
+                    this.echar_data.total_withdrawal.forEach(item => {
+                        this.top.withdrawal_amount += item.total_amount
+                        this.top.withdrawal_people += item.total_people
+                    })
+                  
+                    this.centerClick(0)
+                    this.bottomClick(0)
+                }
+            })
         }
     },
+    created() {
+        this.getList()
+    },
     mounted() {
-        this.loginChartDraw()
-        this.amountDraw()
+        // this.getList()
     }
 }
 </script>
@@ -361,7 +428,6 @@ export default {
     background: #fff;
 }
 
-
 /* row2,3,4 头 */
 .row2 .header,
 .row3 .header {
@@ -424,7 +490,7 @@ export default {
     text-align: center;
     font-size: 18px;
 }
-.row2 .body .left .circle-inner{
+.row2 .body .left .circle-inner {
     position: relative;
     top: -68px;
     text-align: center;
@@ -450,7 +516,7 @@ export default {
     height: 254px;
     /* border: 1px solid #000; */
 }
-.right .echart-name{
+.right .echart-name {
     margin-top: 185px;
     margin-left: -20px;
     /* border: 1px solid #000;    */

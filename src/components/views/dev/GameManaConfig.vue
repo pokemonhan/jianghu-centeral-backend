@@ -4,16 +4,22 @@
         <div class="filter p10">
             <ul class="left">
                 <li>
-                    <span>游戏名称</span>
-                    <Select input v-model="filter.game_id" :options="game_name_opt"></Select>
+                    <span>游戏分类</span>
+                    <Select input v-model="filter.type_id" :options="type_opt"></Select>
                 </li>
                 <li>
                     <span>游戏厂商</span>
                     <Select v-model="filter.vendor_id" :options="vendor_opt"></Select>
                 </li>
+
                 <li>
-                    <span>游戏分类</span>
-                    <Select input v-model="filter.type_id" :options="type_opt" ></Select>
+                    <span>游戏名称</span>
+                    <Select
+                        input
+                        v-model="filter.game_id"
+                        :options="game_name_opt"
+                        @update="gameNameUpd"
+                    ></Select>
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -30,7 +36,7 @@
                     <td>{{row.name}}</td>
                     <td>{{row.type+' - '+row.sub_type}}</td>
                     <td>{{row.sign}}</td>
-                
+
                     <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>
@@ -65,7 +71,8 @@
                                 <Select
                                     style="width:250px;"
                                     v-model="form.vendor_id"
-                                    :options="vendor_opt"
+                                    :options="vendor_opt.filter(item=>item.value!=='')"
+                                    @update="formVendorUpd"
                                 ></Select>
                                 <span v-show="!form.vendor_id" class="err-tips">必填项!</span>
                             </li>
@@ -73,11 +80,10 @@
                                 <span>游戏父类:</span>
                                 <Select
                                     style="width:250px;"
+                                    disabled
                                     v-model="form.type_id"
-                                    :options="type_opt"
-                                    @update="gameFatherTypeOptUpd"
+                                    :options="type_opt.filter(item=>item.value)"
                                 ></Select>
-                                <span v-show="!form.type_id" class="err-tips">必填项!</span>
                             </li>
 
                             <li>
@@ -87,7 +93,7 @@
                                     input
                                     required
                                     errmsg="请选择子类"
-                                    v-model="form.sub_type_id"
+                                    v-model="form.game_id"
                                     :options="game_child_opt"
                                 ></Select>
                             </li>
@@ -299,6 +305,7 @@
     </div>
 </template>
 <script>
+import tool from '../../../js/tool'
 export default {
     name: 'GameManaConfig',
     data() {
@@ -308,10 +315,13 @@ export default {
                 vendor_id: '',
                 type_id: ''
             },
-            game_name_opt: [],
+            // game_name_opt: [], // 游戏名称
             vendor_opt: [],
+            // vendor_obj: {},
+            /** 游戏父类 游戏主类 */
             type_opt: [], // 游戏父类
-            // game_child_opt: [], // 游戏子类?
+            type_obj: {},
+            // game_child_opt: [], // 游戏子类
             game_sort_obj: {},
             headers: [
                 '编号',
@@ -340,9 +350,8 @@ export default {
                 vendor_id: '', // 厂商选择
                 sign: '', // 游戏标识
                 type_id: '', // 游戏分类
-                sub_type_id: '', // 游戏子类
+                game_id: '', // 游戏子类
                 name: '', // 游戏名称
-
                 request_mode: '1', // 请求模式
                 status: '1' // 状态选择
             },
@@ -357,9 +366,13 @@ export default {
         }
     },
     computed: {
+        /**游戏名称 */
+        game_name_opt() {
+            return this.getMatchOpt(this.filter.vendor_id, this.vendor_opt)
+        },
         /**游戏子类 */
         game_child_opt() {
-            return this.game_sort_obj[this.form.type_id] || []
+            return this.getMatchOpt(this.form.vendor_id, this.vendor_opt)
         }
     },
     methods: {
@@ -369,7 +382,7 @@ export default {
                 sign: '', // 游戏标识
                 type_id: '', // 游戏分类
                 name: '', // 游戏名称
-                sub_type_id: '', // 游戏子类
+                game_id: '', // 游戏子类
                 request_mode: '1', // 请求模式
                 status: '1' // 状态选择
             }
@@ -424,11 +437,42 @@ export default {
             }
             return true
         },
-        /** 游戏父类update */
-        gameFatherTypeOptUpd() {
-            // this.form.child_type = ''
-            // this.form = Object.assign({}, this.form)
-            this.$set(this.form, 'child_type','')
+        /** 游戏厂商更新 */
+        formVendorUpd(id) {
+            this.form.game_id = ''
+            // this.game_child_opt = this.getMatchOpt(id, this.vendor_opt)
+            this.form.type_id = ''
+            this.type_opt.forEach(item => {
+                if (item.children && item.children.length) {
+                    let vendor_obj = item.children[0]
+                    if (vendor_obj.value === id) {
+                        this.form.type_id = item.value
+                    }
+                }
+            })
+        },
+        /**根据厂商id 找 游戏主类id */
+        VendorIdFindType(vendor_id) {
+            let type_id
+            this.type_opt.forEach(item => {
+                if (item.children && item.children.length) {
+                    let vendor_obj = item.children[0]
+                    if (vendor_obj.value === vendor_id) {
+                        type_id = item.value
+                    }
+                }
+            })
+            return type_id
+        },
+        gameNameUpd(val) {
+            let vendor_arr = this.vendor_opt.find(item => {
+                let isHad = (item.children || []).find(child => {
+                    return child.value === val
+                })
+                return isHad
+            })
+            this.filter.vendor_id = vendor_arr.value // 设置游戏厂商
+            this.filter.type_id = this.VendorIdFindType(this.filter.vendor_id)
         },
         add() {
             this.initForm()
@@ -437,13 +481,14 @@ export default {
             this.dia_show = true
         },
         edit(row) {
+            console.log('🍬 row: ', row)
             this.form = {
                 id: row.id,
                 vendor_id: row.vendor_id,
                 sign: row.sign,
                 type_id: row.type_id,
                 name: row.name,
-                sub_type_id: row.sub_type_id,
+                game_id: row.game_id,
                 request_mode: row.request_mode,
                 status: row.status
             }
@@ -480,32 +525,12 @@ export default {
             if (!this.checkForm()) return
             let data = {
                 type_id: this.form.type_id,
+                game_id: this.form.game_id,
                 vendor_id: this.form.vendor_id,
                 name: this.form.name,
                 sign: this.form.sign,
                 request_mode: this.form.request_mode,
-
-                // conver_url: this.form.conver_url,
-                // test_conver_url: this.form.test_conver_url,
-                // check_balance_url: this.form.check_balance_url,
-                // test_check_balance_url: this.form.test_check_balance_url,
-                // check_order_url: this.form.check_order_url,
-
-                // test_check_order_url: this.form.test_check_order_url,
-                // in_game_url: this.form.in_game_url,
-                // test_in_game_url: this.form.test_in_game_url,
-                // get_station_order_url: this.form.get_station_order_url,
-                // test_get_station_order_url: this.form
-                //     .test_get_station_order_url,
-
                 status: this.form.status
-                // app_id: this.form.app_id,
-                // authorization_code: this.form.authorization_code,
-                // merchant_code: this.form.merchant_code,
-                // merchant_secret: this.form.merchant_secret,
-
-                // public_key: this.form.public_key,
-                // private_key: this.form.private_key
             }
             data = window.all.tool.rmEmpty(data)
             let { url, method } = this.$api.dev_game_add
@@ -595,17 +620,65 @@ export default {
         //     })
         //     return array.concat(opt)
         // },
+        /**
+         * 更具value获取 匹配的值
+         */
+        getMatchOpt(val, father_arr = []) {
+            let arr = []
+            father_arr.forEach(father => {
+                if (father.value === val || !val) {
+                    if (father.children && Array.isArray(father.children)) {
+                        father.children.forEach(child => {
+                            // 设置 游戏子类
+                            arr.push(child)
+                        })
+                    }
+                }
+            })
+            return arr
+        },
         /** 获取下拉框内容 */
         getSelectOpt() {
-            let { url, method } = this.$api.dev_game_search_condition_get
+            tool.getJsonOpt('game_vendors__games').then(res => {
+                if (res && Array.isArray(res)) {
+                    this.vendor_opt = [{ label: '全部', value: '' }]
+                    res.forEach(item => {
+                        let children = []
+                        if (item.games_under_vendor) {
+                            children = item.games_under_vendor.map(child => {
+                                return { label: child.name, value: child.id }
+                            })
+                        }
+                        this.vendor_opt.push({
+                            label: item.name,
+                            value: item.id,
+                            children: children
+                        })
+                    })
+                    // this.game_name_opt = this.getMatchOpt('', this.vendor_opt)
+                }
+            })
+            // 游戏分类, 游戏父类 设置
+            tool.getJsonOpt('game_type_vendors').then(res => {
+                if (res && Array.isArray(res)) {
+                    // self.type_opt = []
+                    this.type_opt = [{ label: '全部', value: '' }]
+                    // this.vendor_obj = {}
 
-            this.$http({ method, url }).then(res => {
-                if (res && res.code === '200') {
-                    this.game_name_opt = this.toSelectOpt(res.data.games)
-
-                    this.vendor_opt = this.toSelectOpt(res.data.vendors)
-                    this.type_opt = this.toSelectOpt(res.data.types)
-                    // 初始化 filter 筛选内容
+                    res.forEach(item => {
+                        let children = []
+                        if (item.vendors) {
+                            children = item.vendors.map(child => {
+                                return { label: child.name, value: child.id }
+                            })
+                        }
+                        this.type_opt.push({
+                            label: item.name,
+                            value: item.id,
+                            children: children
+                        })
+                    })
+                    // console.log('🍎 this.vendor_opt: ', this.type_opt)
                 }
             })
         },
@@ -653,8 +726,9 @@ export default {
         }
     },
     created() {
-        this.getGameOpt()
+        // this.getGameOpt()
         this.getSelectOpt()
+        // this.initOpt()
     },
     mounted() {
         this.getList()
@@ -664,9 +738,9 @@ export default {
 </script>
 
 <style scoped>
-/* dia-inner全局样式 */
+/* dia-inner 有全局样式 */
 .dia-inner {
-    padding: 0 50px;
+    padding: 50px 50px;
 }
 .dia-detail {
     display: flex;
@@ -687,15 +761,15 @@ export default {
     left: 7em;
     color: rgb(255, 51, 0);
 }
-.w250 {
+/* .w250 {
     width: 250px;
-}
-.ml50 {
+} */
+/* .ml50 {
     margin-left: 50px;
-}
-.ml20 {
+} */
+/* .ml20 {
     margin-left: 20px;
-}
+} */
 .center-box {
     display: flex;
     justify-content: center;

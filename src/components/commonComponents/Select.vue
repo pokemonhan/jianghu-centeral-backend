@@ -1,5 +1,5 @@
 <template>
-    <div class="v-select" :style="css" v-clickoutside="closeSections" ref="v-select">
+    <div :class="['v-select',disabled?'disabled':'']" :style="css" v-clickoutside="closeSections" ref="v-select">
         <div
             :class="['val-box', isShow ? 'val-box-active' : '']"
             @click.stop="showOptions"
@@ -23,8 +23,11 @@
                 class="show-select-label"
                 v-show="!input||!isShow"
             >{{selectedLabel?selectedLabel:placeholder}}</span>
-            <i v-if="!isShow && clearable && isClear" @click.stop="clear" class="iconfont iconcuowuguanbi-"></i>
-            <span v-else :class="['drop-down', '', isShow ? 'icon-rotate' : '']"></span>
+            <i v-show="clearable && isClear" @click.stop="clear" class="iconfont iconcuowuguanbi-"></i>
+            <span
+                v-show="!(clearable && isClear)"
+                :class="['drop-down', '', isShow ? 'icon-rotate' : '']"
+            ></span>
         </div>
         <ul :class="['sections', sectionsDir]" ref="sections">
             <li
@@ -64,9 +67,10 @@ export default {
         value: [Number, String], // 默认值
         clearable: {
             type: Boolean,
-            default: true
+            default: false
         }, // 是否可清空
         placeholder: String,
+        disabled: Boolean,
         // 当required为true时, 值为空,就会提示
         required: {
             type: Boolean,
@@ -145,6 +149,7 @@ export default {
             }, 20)
         },
         showOptions(e) {
+            if(this.disabled) return
             if (this.input) {
                 this.isShow = true
                 // setTimeout(() => {
@@ -190,9 +195,10 @@ export default {
             this.$emit('update', item.value, item)
         },
         clear() {
+            if(this.disabled) return
             this.selectedValue = ''
-            this.selectedLabel = ''
-            this.$emit('update', undefined, undefined)
+            // this.selectedLabel = ''
+            this.$emit('update', '', '')
         },
         closeSections() {
             this.isShow = false
@@ -202,6 +208,7 @@ export default {
             this.slideUp(ele)
         },
         updateClearState(bool) {
+            if(this.disabled) return
             this.isClear = bool
         },
         handleInput() {
@@ -217,16 +224,18 @@ export default {
     },
     watch: {
         value(val) {
-            // console.log('🍧 val: ', val);
+            // console.log('🍏 val: ', val);
             this.selectedValue = this.val
-            this.selectedLabe = ''
+            this.selectedLabel = ''
             this.options.forEach(item => {
                 if (item.value === this.value) {
                     this.selectedLabel = item.label
                 }
             })
         },
-        options() {
+        options(opt) {
+            // console.log('🥪 opt: ', opt);
+            this.selectedValue = ''
             this.selectedLabel = ''
             if (!this.options) return
             this.options.forEach(item => {
@@ -259,7 +268,6 @@ export default {
     /* margin: 0 5px; */
     /* display: inline-block; */
     box-sizing: border-box;
-    cursor: pointer;
     /* box-sizing: border-box; */
     background: #fff;
 }
@@ -273,7 +281,11 @@ export default {
     border: 1px solid #e2dcdc;
     border-radius: 4px;
     position: relative;
+    cursor: pointer;
     /* overflow: hidden; */
+}
+.disabled .val-box {
+    cursor: not-allowed;
 }
 .v-select .val-box-active {
     border-color: #57a3f3;
@@ -387,8 +399,12 @@ export default {
 .error-message .iconjinggao1- {
     font-size: 13px;
 }
+
 .iconcuowuguanbi-:hover {
     color: rgb(255, 60, 0);
+}
+.disabled .iconcuowuguanbi-:hover{
+    color: #ccc;
 }
 </style>
 
