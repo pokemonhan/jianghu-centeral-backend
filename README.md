@@ -1,3 +1,4 @@
+
 # totalContral 总控后台
 
 > A Vue.js project
@@ -14,6 +15,9 @@ npm run build
 
 # outer 测试外网(http://api.397017.com)
 npm run build -- outer
+
+# stg 筹划地址 stg(http://apistg.397017.com)
+npm run build -- stg
 
 # ethan (http://api.jianghu.ethan)
 npm run build -- ethan
