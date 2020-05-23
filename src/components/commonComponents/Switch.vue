@@ -1,5 +1,5 @@
 <template>
-    <div class="v-switch">
+    <div :class="['v-switch',disabled?'disabled':'']">
         <span :class="['switch',size,me_checked?'switch-on': '']" :value="value" @click="toggle"></span>
     </div>
 </template>
@@ -16,6 +16,7 @@ export default {
             type: String,
             default: 'normal'
         },
+        disabled: Boolean
         // color:{
         //     type :String,
         // }
@@ -31,6 +32,7 @@ export default {
     },
     methods:{
         toggle(){
+            if(this.disabled)return
             this.me_checked = !this.me_checked;
             this.$emit('update', this.me_checked);
         }
@@ -70,6 +72,9 @@ export default {
     background-color: #aaa;
     transition: background-color 0.1s, border 0.1s;
     cursor: pointer;
+}
+.disabled .switch {
+    cursor: not-allowed;
 }
 .small {
     width: 35px;

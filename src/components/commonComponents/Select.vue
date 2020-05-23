@@ -1,5 +1,10 @@
 <template>
-    <div :class="['v-select',disabled?'disabled':'']" :style="css" v-clickoutside="closeSections" ref="v-select">
+    <div
+        :class="['v-select',disabled?'disabled':'']"
+        :style="css"
+        v-clickoutside="closeSections"
+        ref="v-select"
+    >
         <div
             :class="['val-box', isShow ? 'val-box-active' : '']"
             @click.stop="showOptions"
@@ -149,7 +154,7 @@ export default {
             }, 20)
         },
         showOptions(e) {
-            if(this.disabled) return
+            if (this.disabled) return
             if (this.input) {
                 this.isShow = true
                 // setTimeout(() => {
@@ -192,10 +197,10 @@ export default {
             this.slideUp(ele)
 
             // this.showInputLabel = item.label // input 展示的内容
-            this.$emit('update', item.value, item)
+            this.$emit('update', item.value)
         },
         clear() {
-            if(this.disabled) return
+            if (this.disabled) return
             this.selectedValue = ''
             // this.selectedLabel = ''
             this.$emit('update', '', '')
@@ -208,52 +213,50 @@ export default {
             this.slideUp(ele)
         },
         updateClearState(bool) {
-            if(this.disabled) return
+            if (this.disabled) return
             this.isClear = bool
         },
         handleInput() {
             this.$emit('input', this.showInputLabel)
         },
         inputChange() {
-            this.$emit('update', this.showInputLabel)
+            this.$emit('inputchange', this.showInputLabel)
         },
         inputFocus() {
             this.showInputLabel = ''
             this.$emit('input', this.showInputLabel)
+        },
+        setSelectedLabel() {
+            this.options.forEach(item => {
+                if (item.value === this.value) {
+                    this.selectedLabel = item.label
+                }
+            })
         }
     },
     watch: {
         value(val) {
-            // console.log('🍏 val: ', val);
-            this.selectedValue = this.val
+            this.selectedValue = val
             this.selectedLabel = ''
-            this.options.forEach(item => {
-                if (item.value === this.value) {
-                    this.selectedLabel = item.label
-                }
-            })
+            this.setSelectedLabel()
         },
         options(opt) {
             // console.log('🥪 opt: ', opt);
-            this.selectedValue = ''
+            // this.selectedValue = ''
             this.selectedLabel = ''
             if (!this.options) return
-            this.options.forEach(item => {
-                if (item.value === this.value) {
-                    this.selectedLabel = item.label
-                }
-            })
+            this.setSelectedLabel()
         }
     },
     mounted() {
         // console.log('palceholder', this.placeholder)
         this.selectedValue = this.value
-        this.options.forEach(item => {
-            if (item.value === this.value) {
-                this.selectedLabel = item.label
-                this.showInputLabel = item.label // input 展示的内容
-            }
-        })
+        // this.options.forEach(item => {
+        //     if (item.value === this.value) {
+        //         this.selectedLabel = item.label
+        //     }
+        // })
+        this.setSelectedLabel()
     }
 }
 </script>
@@ -403,7 +406,7 @@ export default {
 .iconcuowuguanbi-:hover {
     color: rgb(255, 60, 0);
 }
-.disabled .iconcuowuguanbi-:hover{
+.disabled .iconcuowuguanbi-:hover {
     color: #ccc;
 }
 </style>

@@ -83,11 +83,12 @@ const ERROR_MAP = {
 // 如果指令是 [npm run build --  inner]  那么inner 就是 HOST的内容 (默认为inner)
 let HOST = process.env.HOST
 
-let hostList = {
+const hostList = {
     inner: location.protocol + '//api.397017.com',              // 测试站内网
     outer: location.protocol + '//api.397017.com',              // 测试外围
     harris: location.protocol + '//api.jianghu.me',             // harris
     ethan: location.protocol + '//apionline.jianghu.ethanphp',  // ethan
+    stg: location.protocol + '//apistg.397017.com',             // stg
 }
 
 const BASE_PATH = hostList[HOST] || HOST

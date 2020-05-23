@@ -97,7 +97,7 @@
                                     input
                                     required
                                     errmsg="请选择子类"
-                                    v-model="form.game_id"
+                                    v-model="form.sub_type_id"
                                     :options="game_child_opt"
                                 ></Select>
                             </li>
@@ -211,7 +211,7 @@ export default {
                 vendor_id: '', // 厂商选择
                 sign: '', // 游戏标识
                 type_id: '', // 游戏分类
-                game_id: '', // 游戏子类
+                sub_type_id: '', // 游戏子类
                 name: '', // 游戏名称
                 request_mode: '1', // 请求模式
                 status: '1' // 状态选择
@@ -244,9 +244,9 @@ export default {
                 sign: '', // 游戏标识
                 type_id: '', // 游戏分类
                 name: '', // 游戏名称
-                game_id: '', // 游戏子类
-                request_mode: '1', // 请求模式
-                status: '1' // 状态选择
+                sub_type_id: '', // 游戏子类
+                status: '1', // 状态选择
+                request_mode: '1' // 请求模式
             }
         },
         checkForm() {
@@ -263,12 +263,15 @@ export default {
                 name: {
                     title: '游戏名称'
                 },
-                request_mode: {
-                    title: '请求模式'
+                sub_type_id: {
+                    title: '游戏子类'
                 },
-                status: {
-                    title: '状态选择'
-                }
+                // request_mode: {
+                //     title: '请求模式'
+                // },
+                // status: {
+                //     title: '状态选择'
+                // }
             }
             for (const key in errInform) {
                 if (this.form[key] === '') {
@@ -310,6 +313,7 @@ export default {
             this.game_name_opt = all.concat(
                 this.getMatchOpt(vendor_id, this.vendor_opt)
             )
+            this.filter.sub_type = ''
         },
         filterGameNameUpd(val) {
             if (!val) return
@@ -332,13 +336,13 @@ export default {
             console.log('🍬 row: ', row)
             this.form = {
                 id: row.id,
-                vendor_id: row.vendor_id,
+                vendor_id: row.vendor&&row.vendor.id,
                 sign: row.sign,
-                type_id: row.type_id,
+                type_id: row.type&&row.type.id,
                 name: row.name,
-                game_id: row.game_id,
+                sub_type_id: row.sub_type&&row.sub_type.id,
                 request_mode: row.request_mode,
-                status: row.status
+                // status: row.status
             }
             this.dia_status = 'edit'
             this.dia_title = '编辑'
@@ -373,7 +377,7 @@ export default {
             if (!this.checkForm()) return
             let data = {
                 type_id: this.form.type_id,
-                game_id: this.form.game_id,
+                sub_type_id: this.form.sub_type_id,
                 vendor_id: this.form.vendor_id,
                 name: this.form.name,
                 sign: this.form.sign,
