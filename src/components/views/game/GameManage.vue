@@ -35,9 +35,9 @@
                             </template>
                         </PicShow>
                     </td>
-                    <td>{{row.vendor_name || '--'}}</td>
+                    <td>{{row.vendor&&row.vendor.name || '--'}}</td>
                     <td>{{row.name}}</td>
-                    <td>{{row.type+' - '+row.sub_type}}</td>
+                    <td>{{(row.type&&row.type.name)+' - '+(row.sub_type&&row.sub_type.name)}}</td>
                     <td>
                         <Switchbox v-model="row.status" @update="statusSwitch(row)" />
                     </td>

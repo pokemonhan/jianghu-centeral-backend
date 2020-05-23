@@ -211,7 +211,7 @@ tr td {
     text-align: center;
     /* vertical-align: middle; */
     /* padding: 7px 4px; */
-    min-height: 2.9rem;
+    height: 2.9rem;
     border: 1px solid #6fa2fe;
     /* font-size: 13px; */
 }

@@ -9,7 +9,11 @@
                 </li>
                 <li>
                     <span>游戏厂商</span>
-                    <Select v-model="filter.vendor_id" :options="vendor_opt"></Select>
+                    <Select
+                        v-model="filter.vendor_id"
+                        :options="vendor_opt"
+                        @update="filterVendorUpd"
+                    ></Select>
                 </li>
 
                 <li>
@@ -18,7 +22,7 @@
                         input
                         v-model="filter.game_id"
                         :options="game_name_opt"
-                        @update="gameNameUpd"
+                        @update="filterGameNameUpd"
                     ></Select>
                 </li>
                 <li>
@@ -32,9 +36,9 @@
                 <template v-slot:item="{row,idx}">
                     <!-- '编号', '游戏厂商', '游戏名称', '游戏分类', '游戏标识', '游戏状态', '添加人', '添加时间', '最后更新人', '最后更新时间', '操作' -->
                     <td>{{(pageNo-1)*pageSize+idx+1}}</td>
-                    <td>{{row.vendor_name}}</td>
+                    <td>{{row.vendor&&row.vendor.name}}</td>
                     <td>{{row.name}}</td>
-                    <td>{{row.type+' - '+row.sub_type}}</td>
+                    <td>{{(row.type&&row.type.name)+' - '+(row.sub_type&&row.sub_type.name)}}</td>
                     <td>{{row.sign}}</td>
 
                     <td>
@@ -113,84 +117,6 @@
                                     v-model="form.request_mode"
                                 />
                             </li>
-                            <!-- <li>
-                                <span>商户密钥:</span>
-                                <Input class="w250" v-model="form.merchant_secret" />
-                            </li>
-                            <li>
-                                <span>商户号:</span>
-                                <Input class="w250" v-model="form.merchant_code" />
-                            </li>
-                            <li>
-                                <span>商户私钥:</span>
-                                <Input class="w250" v-model="form.private_key" />
-                            </li>
-                            <li>
-                                <span>授权码:</span>
-                                <Input class="w250" v-model="form.authorization_code" />
-                            </li>
-
-                            <li>
-                                <span>进入游戏测试地址:</span>
-                                <Input
-                                    class="w250"
-                                    placeholder="格式:  http://baidu.com"
-                                    v-model="form.test_in_game_url"
-                                />
-                                <span
-                                    v-show="form.test_in_game_url&&(!urlRegExp.test(form.test_in_game_url))"
-                                    class="err-tips"
-                                >请检查内容格式!</span>
-                            </li>
-                            <li>
-                                <span>额度转换测试地址:</span>
-                                <Input
-                                    class="w250"
-                                    placeholder="格式:  http://baidu.com"
-                                    v-model="form.test_conver_url"
-                                />
-                                <span
-                                    v-show="form.test_conver_url&&(!urlRegExp.test(form.test_conver_url))"
-                                    class="err-tips"
-                                >请检查内容格式!</span>
-                            </li>
-
-                            <li>
-                                <span>检查余额测试地址:</span>
-                                <Input
-                                    class="w250"
-                                    placeholder="格式:  http://baidu.com"
-                                    v-model="form.test_check_balance_url"
-                                />
-                                <span
-                                    v-show="form.test_check_balance_url&&(!urlRegExp.test(form.test_check_balance_url))"
-                                    class="err-tips"
-                                >请检查内容格式!</span>
-                            </li>
-                            <li>
-                                <span>检查订单测试地址:</span>
-                                <Input
-                                    class="w250"
-                                    placeholder="格式:  http://baidu.com"
-                                    v-model="form.test_check_order_url"
-                                />
-                                <span
-                                    v-show="form.test_check_order_url&&(!urlRegExp.test(form.test_check_order_url))"
-                                    class="err-tips"
-                                >请检查内容格式!</span>
-                            </li>
-                            <li>
-                                <span>活动注单测试地址:</span>
-                                <Input
-                                    class="w250"
-                                    placeholder="格式:  http://baidu.com"
-                                    v-model="form.test_get_station_order_url"
-                                />
-                                <span
-                                    v-show="form.test_get_station_order_url&&(!urlRegExp.test(form.test_get_station_order_url))"
-                                    class="err-tips"
-                                >请检查内容格式!</span>
-                            </li>-->
                         </ul>
                         <!-- form 右侧 -->
                         <ul class="form ml20">
@@ -204,71 +130,6 @@
                                 <Input class="w250" v-model="form.name" />
                                 <span v-show="!form.name" class="err-tips">不可为空!</span>
                             </li>
-                            <!-- <li>
-                                <span>商户公钥:</span>
-                                <Input class="w250" v-model="form.public_key" />
-                            </li>
-
-                            <li>
-                                <span>APPID:</span>
-                                <Input class="w250" v-model="form.app_id" />
-                            </li>
-                            <li>
-                                <span>进入游戏地址:</span>
-                                <Input
-                                    class="w250"
-                                    placeholder="格式:  http://baidu.com"
-                                    v-model="form.in_game_url"
-                                />
-                                <span
-                                    v-show="!urlRegExp.test(form.in_game_url)"
-                                    class="err-tips"
-                                >请检查内容格式!</span>
-                            </li>
-                            <li>
-                                <span>额度转换地址:</span>
-                                <Input
-                                    class="w250"
-                                    placeholder="格式:  http://baidu.com"
-                                    v-model="form.conver_url"
-                                />
-                                <span
-                                    v-show="!urlRegExp.test(form.conver_url)"
-                                    class="err-tips"
-                                >请检查内容格式!</span>
-                            </li>
-                            <li>
-                                <span>检查余额地址:</span>
-                                <Input
-                                    class="w250"
-                                    placeholder="格式:  http://baidu.com"
-                                    v-model="form.check_balance_url"
-                                />
-                                <span
-                                    v-show="!urlRegExp.test(form.check_balance_url)"
-                                    class="err-tips"
-                                >请检查内容格式!</span>
-                            </li>
-                            <li>
-                                <span>检查订单地址:</span>
-                                <Input class="w250" v-model="form.check_order_url" />
-                                <span
-                                    v-show="!urlRegExp.test(form.check_order_url)"
-                                    class="err-tips"
-                                >请检查内容格式!</span>
-                            </li>
-                            <li>
-                                <span>获取注单地址:</span>
-                                <Input
-                                    class="w250"
-                                    placeholder="格式:  http://baidu.com"
-                                    v-model="form.get_station_order_url"
-                                />
-                                <span
-                                    v-show="!urlRegExp.test(form.get_station_order_url)"
-                                    class="err-tips"
-                                >请检查内容格式!</span>
-                            </li>-->
 
                             <li v-if="dia_status==='add'">
                                 <span>状态选择</span>
@@ -315,7 +176,7 @@ export default {
                 vendor_id: '',
                 type_id: ''
             },
-            // game_name_opt: [], // 游戏名称
+            game_name_opt: [], // 游戏名称
             vendor_opt: [],
             // vendor_obj: {},
             /** 游戏父类 游戏主类 */
@@ -367,9 +228,10 @@ export default {
     },
     computed: {
         /**游戏名称 */
-        game_name_opt() {
-            return this.getMatchOpt(this.filter.vendor_id, this.vendor_opt)
-        },
+        // game_name_opt() {
+        //     let all = [{label:'全部',value:''}]
+        //     return all.concat(this.getMatchOpt(this.filter.vendor_id, this.vendor_opt))
+        // },
         /**游戏子类 */
         game_child_opt() {
             return this.getMatchOpt(this.form.vendor_id, this.vendor_opt)
@@ -388,7 +250,6 @@ export default {
             }
         },
         checkForm() {
-            // let regExp = /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/
             let errInform = {
                 vendor_id: {
                     title: '厂商选择'
@@ -402,26 +263,6 @@ export default {
                 name: {
                     title: '游戏名称'
                 },
-                // in_game_url: {
-                //     title: '进入游戏地址',
-                //     regExp: regExp
-                // },
-                // conver_url: {
-                //     title: '额度转换地址',
-                //     regExp: regExp
-                // },
-                // check_balance_url: {
-                //     title: '检查余额地址',
-                //     regExp: regExp
-                // },
-                // check_order_url: {
-                //     title: '检查订单地址',
-                //     regExp: regExp
-                // },
-                // get_station_order_url: {
-                //     title: '获取注单地址',
-                //     regExp: regExp
-                // },
                 request_mode: {
                     title: '请求模式'
                 },
@@ -464,7 +305,14 @@ export default {
             })
             return type_id
         },
-        gameNameUpd(val) {
+        filterVendorUpd(vendor_id) {
+            let all = [{ label: '全部', value: '' }]
+            this.game_name_opt = all.concat(
+                this.getMatchOpt(vendor_id, this.vendor_opt)
+            )
+        },
+        filterGameNameUpd(val) {
+            if (!val) return
             let vendor_arr = this.vendor_opt.find(item => {
                 let isHad = (item.children || []).find(child => {
                     return child.value === val
@@ -655,7 +503,10 @@ export default {
                             children: children
                         })
                     })
-                    // this.game_name_opt = this.getMatchOpt('', this.vendor_opt)
+                    let all = [{ label: '全部', value: '' }]
+                    this.game_name_opt = all.concat(
+                        this.getMatchOpt('', this.vendor_opt)
+                    )
                 }
             })
             // 游戏分类, 游戏父类 设置

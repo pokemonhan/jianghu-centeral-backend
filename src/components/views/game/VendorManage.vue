@@ -262,7 +262,7 @@
                                 <span style="width:11em">是否以正式地址为准</span>
                                 <Switchbox
                                     class="ml20"
-                                    v-model="isAddFormalUrl"
+                                    v-model="form.production.is_official_station"
                                     @update="formalSwitchChange($event)"
                                 />
                                 <span class="ml50 orange">{{form.production.third_party_url}}</span>
@@ -483,7 +483,7 @@
                                     <span>是否以测试地址为准</span>
                                     <Switchbox
                                         class="ml20"
-                                        v-model="isAddTestUrl"
+                                        v-model="form.staging.is_official_station"
                                         @update="testSwitchChange"
                                     />
                                     <span class="ml50 orange">{{form.test_urls}}</span>
@@ -677,8 +677,8 @@ export default {
             dia_title: '',
             game_type_opt: [], // 游戏类型下拉框
 
-            isAddFormalUrl: false, //是否以正式地址为准 添加正式地址
-            isAddTestUrl: false, //是否以测试地址为准 添加测试地址
+            // isAddFormalUrl: false, //是否以正式地址为准 添加正式地址
+            // isAddTestUrl: false, //是否以测试地址为准 添加测试地址
             form_need_test: true, // 是否需要配置测试站
             formal_url_holder: '例如: http://abc.com', // 正式地址 url的 placeholder
             test_url_holder: '例如: http://abc.com', // 测试地址 url的 placeholder
@@ -688,6 +688,7 @@ export default {
                 type_id: '', // 游戏类型id
                 status: '1', // 状态
                 production: {
+                    is_official_station: '',
                     third_party_url: '',
                     des_key: '',
                     app_id: '',
@@ -732,7 +733,7 @@ export default {
                         kick_out_url: ''
                     }
                 },
-                isAddFormalUrl: '', // 是否以正式地址为准
+                // isAddFormalUrl: '', // 是否以正式地址为准
                 whitelist_ips: '' // 白名单
             },
             // mod_show: false,
@@ -788,6 +789,8 @@ export default {
                 type_id: '', // 游戏类型id
                 status: 1, // 状态
                 production: {
+                    // isAddFormalUrl: false,
+                    is_official_station: false,
                     third_party_url: '',
                     des_key: '',
                     app_id: '',
@@ -810,6 +813,7 @@ export default {
                     }
                 },
                 staging: {
+                    is_official_station: false,
                     third_party_url: '',
                     des_key: '',
                     app_id: '',
@@ -831,7 +835,7 @@ export default {
                         kick_out_url: ''
                     }
                 },
-                isAddFormalUrl: '', // 是否以正式地址为准
+                // isAddFormalUrl: '', // 是否以正式地址为准
                 whitelist_ips: '' // 白名单
             }
             this.active = 0
@@ -844,7 +848,7 @@ export default {
             // 以正式地址为准 ,  有正式地址前缀,反之则不加前缀,
             // reg判断 1.加前缀格式 /ab 2.不加前缀格式 http://xx.com/ab
             let reg
-            if (this.isAddFormalUrl) {
+            if (this.form.production.is_official_station) {
                 reg = /^\/\w+/
             } else {
                 reg = this.urlReg
@@ -857,7 +861,7 @@ export default {
         },
         showTestUrlErr(val) {
             let reg
-            if (this.isAddTestUrl) {
+            if (this.form.staging.is_official_station) {
                 reg = /^\/\w+/
             } else {
                 reg = this.urlReg
@@ -976,8 +980,9 @@ export default {
             if (!row) return
             this.curr_row = row
             this.active = 0
-            this.isAddFormalUrl = false // 是否以正式地址为准
-            this.isAddTestUrl = false // 是否以测试地址为准
+            // this.isAddFormalUrl = false // 是否以正式地址为准
+            // this.isAddTestUrl = false // 是否以测试地址为准
+            let type = row.type
             let production = row.production || {}
             let product_url = production.url || {}
             let staging = row.staging || {}
@@ -987,7 +992,7 @@ export default {
                 id: row.id,
                 name: row.name,
                 sign: row.sign, // 厂商标识
-                type_id: row.type_id, // 游戏类型id
+                type_id: type.id, // 游戏类型id
                 status: row.status, // 状态
                 production: {
                     third_party_url: production.third_party_url,
@@ -1000,6 +1005,7 @@ export default {
                     public_key: production.public_key,
                     private_key: production.private_key,
                     md5_key: production.md5_key,
+                    is_official_station: production.is_official_station?1:0,
                     url: {
                         login: product_url.login, // 登录接口
                         agent_account_query_url:
@@ -1018,7 +1024,6 @@ export default {
                 },
                 staging: {
                     third_party_url: staging.third_party_url,
-
                     des_key: staging.des_key,
                     app_id: staging.app_id,
                     merchant_id: staging.merchant_id,
@@ -1026,6 +1031,7 @@ export default {
                     public_key: staging.public_key,
                     private_key: staging.private_key,
                     md5_key: staging.md5_key,
+                    is_official_station: staging.is_official_station?1:0,
                     url: {
                         login: test_url.login, // 登录接口
                         agent_account_query_url:
@@ -1041,8 +1047,7 @@ export default {
                         kick_out_url: test_url.kick_out_url // 踢玩家接口
                     }
                 },
-                whitelist_ips:
-                    row.white_list && (row.white_list.ips || []).join(',') // 白名单
+                whitelist_ips:(row.white_list || []).join(',') // 白名单
             }
             this.curr_row = row
             this.dia_show = 'edit'
@@ -1093,7 +1098,7 @@ export default {
             let production = this.form.production || {}
             let product_url = production.url || {}
             let reg
-            if (this.isAddFormalUrl) {
+            if (production.is_official_station) {
                 reg = /^\/\w+/
             } else {
                 reg = this.urlReg
@@ -1139,7 +1144,7 @@ export default {
             let staging = this.form.staging || {}
             let stag_url = staging.url || {}
             let reg
-            if (this.isAddTestUrl) {
+            if (staging.is_official_station) {
                 reg = /^\/\w+/
             } else {
                 reg = this.urlReg
@@ -1231,6 +1236,7 @@ export default {
                 type_id: this.form.type_id, // 游戏类型id
                 status: this.form.status, // 状态
                 production: {
+                    is_official_station: production.is_official_station,
                     third_party_url: production.third_party_url,
                     des_key: production.des_key,
                     app_id: production.app_id, // 终端号
@@ -1256,7 +1262,8 @@ export default {
                     }
                 },
                 staging: {
-                    third_party_url: production.third_party_url,
+                    is_official_station: staging.is_official_station,
+                    third_party_url: staging.third_party_url,
                     des_key: staging.des_key,
                     app_id: staging.app_id, // 终端号
                     merchant_id: staging.merchant_id, // 商户号
@@ -1289,13 +1296,13 @@ export default {
                 data.whitelist_ips = JSON.stringify(str.split(','))
             }
             // 是否以正式地址为准 自动加前缀
-            if (this.isAddFormalUrl) {
+            if (this.form.production.is_official_station) {
                 data.production.url = this.addPrefix(
                     production.url,
                     production.third_party_url
                 )
             }
-            if (this.isAddTestUrl) {
+            if (this.form.staging.is_official_station) {
                 data.staging.url = this.addPrefix(
                     staging.url,
                     staging.third_party_url
@@ -1331,6 +1338,7 @@ export default {
                     public_key: production.public_key, // 公钥
                     private_key: production.private_key, // 私钥
                     md5_key: production.md5_key, // md5秘钥
+                    is_official_station: production.is_official_station,
                     url: {
                         login: product_url.login, // 登录接口
                         agent_account_query_url:
@@ -1356,6 +1364,7 @@ export default {
                     public_key: staging.public_key, // 公钥
                     private_key: staging.private_key, // 私钥
                     md5_key: staging.md5_key, // md5秘钥
+                    is_official_station: staging.is_official_station,
                     url: {
                         login: stag_url.login, // 登录接口
                         agent_account_query_url:
@@ -1372,9 +1381,6 @@ export default {
                     }
                 }
 
-                // whitelist_ips:
-                //     this.form.white_list &&
-                //     (this.form.white_list || []).join(',') // 白名单
             }
             // 白名单
             if (this.form.whitelist_ips) {
@@ -1383,13 +1389,13 @@ export default {
                 data.whitelist_ips = JSON.stringify(str.split(','))
             }
             // 是否以正式地址为准 自动加前缀
-            if (this.isAddFormalUrl) {
+            if (production.is_official_station) {
                 data.production.url = this.addPrefix(
                     production.url,
                     production.third_party_url
                 )
             }
-            if (this.isAddTestUrl) {
+            if (staging.is_official_station) {
                 data.staging.url = this.addPrefix(
                     staging.url,
                     staging.third_party_url

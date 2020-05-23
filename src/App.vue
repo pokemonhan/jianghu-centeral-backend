@@ -194,7 +194,6 @@ export default {
     } */
     html {
         /* color: rgb(110, 38, 243); */
-
         font-size: 12px;
     }
 
