@@ -149,6 +149,7 @@ export default {
     mounted() {
         // 清空localStorage
         localStorage.clear()
+        sessionStorage.clear()
     }
 }
 </script>

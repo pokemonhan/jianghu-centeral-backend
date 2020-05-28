@@ -205,8 +205,8 @@ const menu = [
             },
             {
                 label: "平台管理",
-                path: "/game/plantform",
-                name: "PlantForm"
+                path: "/game/platform",
+                name: "PlatForm"
             },
             {
                 label: "分类管理",

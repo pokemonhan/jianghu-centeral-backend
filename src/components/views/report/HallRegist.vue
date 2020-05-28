@@ -57,7 +57,7 @@
                         <td>{{(pageNo-1)*pageSize+idx+1}}</td>
                         <td
                             :class="[row.status?'green':'red']"
-                        >{{row.status===1?'开启':row.status===0?'关闭':'???'}}</td>
+                        >{{row.status===1?'开启':row.status===0?'关闭':'645'}}</td>
                         <td>{{row.a1}}</td>
                         <td>{{row.a2}}</td>
                         <td>{{row.a3}}</td>

@@ -33,10 +33,11 @@ const state = {
     isShowLoading: false,
     showMask: false,
     tab_nav_list: [],                                          // 顶部导航菜单 顶部导航菜单 顶部导航菜单
-    // keepAliveList
     keepAliveExclude: ['SendEmail','OperatLog'],               // 不需要缓存的 组件name()
     baseUrl: BASE_PATH,
+    
     picPrefix: hostObj[HOST].pic, // 静态图片前缀
+    aside_scroll_path: '', // 自动滚动的路径
 };
 const getters = {
     keepAliveInclude(state) {

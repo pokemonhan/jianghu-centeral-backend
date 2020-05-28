@@ -61,7 +61,7 @@ export default {
         ...mapState(['tab_nav_list', 'keepAliveExclude'])
     },
     methods: {
-        ...mapMutations(['updateTab_nav_list', 'updateKeepAliveExclude']),
+        ...mapMutations(['updateTab_nav_list', 'updateKeepAliveExclude','updateAside_scroll_path']),
         refresh() {
             let path = this.$route.path
             // 设置当前 路由不保持 keepalive
@@ -100,6 +100,7 @@ export default {
             if (item.path !== this.$route.path) {
                 this.$router.push(item.path)
             }
+            this.updateAside_scroll_path(item.path)
         },
         contextmenu(e, row) {
             this.curr_tab = row

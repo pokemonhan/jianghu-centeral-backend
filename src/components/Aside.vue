@@ -22,6 +22,7 @@
                     >
                         <!-- 标题 -->
                         <span
+                            :ref="lev2.path"
                             :class="['title',$route.path == lev2.path?'active-menu':'']"
                             @click="expandMenu(lev2, lev2_index)"
                         >
@@ -66,7 +67,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['tab_nav_list'])
+        ...mapState(['tab_nav_list', 'aside_scroll_path'])
     },
     methods: {
         ...mapMutations(['updateTab_nav_list']),
@@ -97,7 +98,7 @@ export default {
                         }
                     }
                 })
-                return template_data || {}
+                return template_data || ''
             }
             // 子菜单跳转
             if (!item.children) {
@@ -111,7 +112,7 @@ export default {
                     list.push({
                         label: item.label,
                         path: item.path,
-                        name: data.name
+                        name: (data || {}).name
                     })
                     // 最多多十五个 导航条
                     if (list.length > 15) {
@@ -232,6 +233,19 @@ export default {
                     this.getMenuList()
                 }
             }
+        },
+        aside_scroll_path(jumpPath) {
+            if (!jumpPath) return
+            let containEle = this.$refs.contain
+            let currEle = this.$refs[jumpPath][0]
+            let parent_top = containEle.offsetTop
+            let curr_top = currEle && currEle.offsetTop
+            // curr_top - parent_top
+            containEle.scrollTo({
+                top: curr_top - parent_top - 50,
+                left: 0,
+                behavior: 'smooth'
+            })
         }
     },
     mounted() {
