@@ -15,6 +15,9 @@
                     <button class="btn-blue" @click="add">添加</button>
                 </li>
             </ul>
+            <div class="right">
+                <button class="btn-blue" @click="downloadAllPic">下载本页所有图片</button>
+            </div>
         </div>
         <div class="table mt20">
             <Table :headers="headers" :column="list">
@@ -636,6 +639,8 @@
 </template>
 
 <script>
+import JSZip from 'jszip'
+import FileSaver from 'file-saver'
 import { Steps, Step } from 'element-ui'
 import axios from 'axios'
 export default {
@@ -888,7 +893,53 @@ export default {
         statusSwitch(value, row) {
             this.switchConf(value, row)
         },
+        downloadAllPic() {
+            // var fileName = '打包图片'
+            let fileName = window.all.tool.getChainName('/game/gamemanage') + ' ' + 'p' + this.pageNo
+            var zip = new JSZip()
+            var imgs = zip.folder(fileName)
+            var baseList = []
+            // 要下载图片的url
+            var arr = this.list.map(item=>item.icon)
+            // 下载后图片的文件名，个数应与arr对应
+            var imgNameList = this.list.map(item=>{
+                return item.name
+            })
 
+            for (var i = 0; i < arr.length; i++) {
+                let image = new Image()
+                // 解决跨域 Canvas 污染问题
+                image.setAttribute('crossOrigin', 'anonymous')
+
+                image.onload = function() {
+                    let canvas = document.createElement('canvas')
+                    canvas.width = image.width
+                    canvas.height = image.height
+
+                    let context = canvas.getContext('2d')
+                    context.drawImage(image, 0, 0, image.width, image.height)
+
+                    let url = canvas.toDataURL() // 得到图片的base64编码数据
+                    canvas.toDataURL('image/png')
+
+                    baseList.push(url.substring(22)) // 去掉base64编码前的 data:image/png;base64,
+                    if (baseList.length === arr.length && baseList.length > 0) {
+                        for (let k = 0; k < baseList.length; k++) {
+                            imgs.file(imgNameList[k] + '.png', baseList[k], {
+                                base64: true
+                            })
+                        }
+                        zip.generateAsync({ type: 'blob' }).then(function(
+                            content
+                        ) {
+                            // see FileSaver.js
+                            FileSaver.saveAs(content, fileName + '.zip')
+                        })
+                    }
+                }
+                image.src = arr[i]
+            }
+        },
         add() {
             this.initForm()
             this.dia_show = 'add'

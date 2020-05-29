@@ -20,6 +20,9 @@
                     <button class="btn-blue" @click="getList">查询</button>
                 </li>
             </ul>
+            <div class="right">
+                <button class="btn-blue" @click="downloadAllPic">下载本页所有图片</button>
+            </div>
         </div>
 
         <div class="mt20">
@@ -82,6 +85,8 @@
 </template>
 
 <script>
+import JSZip from 'jszip'
+import FileSaver from 'file-saver'
 import GameManageDetail from './GameManageDetail'
 export default {
     name: 'GameManage',
@@ -160,6 +165,53 @@ export default {
         vendorUpd(val) {
             // this.filterNameOpt() // TODO:
         },
+        downloadAllPic() {
+            // var fileName = '打包图片'
+            let fileName = window.all.tool.getChainName('/game/gamemanage') + ' ' + 'p' + this.pageNo
+            var zip = new JSZip()
+            var imgs = zip.folder(fileName)
+            var baseList = []
+            // 要下载图片的url
+            var arr = this.list.map(item=>item.icon)
+            // 下载后图片的文件名，个数应与arr对应
+            var imgNameList = this.list.map(item=>{
+                return (item.vendor && item.vendor.name) + '-' + item.name
+            })
+
+            for (var i = 0; i < arr.length; i++) {
+                let image = new Image()
+                // 解决跨域 Canvas 污染问题
+                image.setAttribute('crossOrigin', 'anonymous')
+
+                image.onload = function() {
+                    let canvas = document.createElement('canvas')
+                    canvas.width = image.width
+                    canvas.height = image.height
+
+                    let context = canvas.getContext('2d')
+                    context.drawImage(image, 0, 0, image.width, image.height)
+
+                    let url = canvas.toDataURL() // 得到图片的base64编码数据
+                    canvas.toDataURL('image/png')
+
+                    baseList.push(url.substring(22)) // 去掉base64编码前的 data:image/png;base64,
+                    if (baseList.length === arr.length && baseList.length > 0) {
+                        for (let k = 0; k < baseList.length; k++) {
+                            imgs.file(imgNameList[k] + '.png', baseList[k], {
+                                base64: true
+                            })
+                        }
+                        zip.generateAsync({ type: 'blob' }).then(function(
+                            content
+                        ) {
+                            // see FileSaver.js
+                            FileSaver.saveAs(content, fileName + '.zip')
+                        })
+                    }
+                }
+                image.src = arr[i]
+            }
+        },
         filterNameOpt() {
             // 根据《游戏厂商》和《游戏分类》筛选合格的游戏名称
             let vendor_id = this.filter.vendor_id
@@ -219,15 +271,6 @@ export default {
         // },
         statusSwitch(row) {
             this.curr_row = row
-            // this.mod_show = true
-            // if (row.status) {
-            //     this.mod_title = '启用'
-            //     this.mod_cont = '是否确定启用该游戏？'
-            // } else {
-
-            //     this.mod_title = '禁用'
-            //     this.mod_cont = '是否确定禁用该游戏？'
-            // }
             this.modConf()
         },
         modConf() {
@@ -295,7 +338,7 @@ export default {
         },
         /** 下载图片 */
         downLoadImg(row) {
-            let name = row.vendor_name + '-' + row.name
+            let name = (row.vendor && row.vendor.name) + '-' + row.name
             var image = new Image()
             // 解决跨域 Canvas 污染问题
             image.setAttribute('crossOrigin', 'anonymous')

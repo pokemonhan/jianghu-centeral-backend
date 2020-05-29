@@ -111,10 +111,11 @@
                         <li>
                             <span>有效日期:</span>
                             <div>
-                                <!-- <Date style="width:250px;" type="datetime" v-model="form.dates[0]" />
-                                <div class="text-center">至</div>
-                                <Date style="width:250px;" type="datetime" v-model="form.dates[1]" /> -->
-                                <date style="width:300px;" type="datetimerange" v-model="form.dates" />
+                                <date
+                                    style="width:300px;"
+                                    type="datetimerange"
+                                    v-model="form.dates"
+                                />
                             </div>
                         </li>
                         <li>
@@ -146,6 +147,22 @@
                             />
                         </li>
                         <li>
+                            <ul class="skin">
+                                <li>
+                                    <span class="skin-pc">PC皮肤:</span>
+                                    <Select v-model="form.pc_skin_id" :options="pc_skin_opt"></Select>
+                                </li>
+                                <li class="ml10">
+                                    <span>H5皮肤:</span>
+                                    <Select v-model="form.h5_skin_id" :options="skin_h5_opt"></Select>
+                                </li>
+                                <li class="ml10">
+                                    <span>APP皮肤:</span>
+                                    <Select v-model="form.app_skin_id" :options="skin_app_opt"></Select>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="form-authority">
                             <span>权限选择</span>
                             <!-- // TODO: -->
                             <!-- <Input class="w300" v-model="form.role" /> -->
@@ -199,8 +216,12 @@
                                 style="width:250px; margin-top:20px;"
                                 type="datetime"
                                 v-model="maintain_dates[1]"
-                            /> -->
-                            <date style="width:300px;" type="datetimerange" v-model="maintain_dates" />
+                            />-->
+                            <date
+                                style="width:300px;"
+                                type="datetimerange"
+                                v-model="maintain_dates"
+                            />
                         </div>
                         <div class="mt50">提示: 不传时间代表取消维护状态.</div>
                         <div class="maintain-btns">
@@ -248,12 +269,31 @@ export default {
     },
     data() {
         return {
+            
             filter: {
                 status: '',
                 email: '',
                 maintain: '',
                 add_dates: []
             },
+            pc_skin_opt: [
+                { label: '默认皮肤', value: 0 },
+                { label: '皮肤一', value: 1 },
+                { label: '皮肤二', value: 2 },
+                { label: '皮肤三', value: 3 }
+            ],
+            skin_h5_opt: [
+                { label: '默认皮肤', value: 0 },
+                { label: '皮肤一', value: 1 },
+                { label: '皮肤二', value: 2 },
+                { label: '皮肤三', value: 3 }
+            ],
+            skin_app_opt: [
+                { label: '默认皮肤', value: 0 },
+                { label: '皮肤一', value: 1 },
+                { label: '皮肤二', value: 2 },
+                { label: '皮肤三', value: 3 }
+            ],
             form: {
                 email: '',
                 password: '',
@@ -261,6 +301,9 @@ export default {
                 platform_name: '',
                 domains: '',
                 agency_method: [],
+                pc_skin_id: 0,
+                h5_skin_id: 0,
+                app_skin_id: 0,
                 role: [], // 权限选择
                 sms_num: '',
                 platform_sign: '', // 站点标识
@@ -316,6 +359,9 @@ export default {
                 platform_name: '',
                 domains: '',
                 agency_method: [],
+                pc_skin_id: 0,
+                h5_skin_id: 0,
+                app_skin_id: 0,
                 role: [], // 权限选择
                 sms_num: '',
                 platform_sign: '', // 站点标识
@@ -337,10 +383,30 @@ export default {
                 { key: 'sms_num', message: '短信数量不可为空!' },
                 { key: 'platform_sign', message: '站点标识不可为空!' }
             ]
+        
             let EmptyItem = checkArr.find(item => this.form[item.key] === '')
             if (EmptyItem) {
                 this.$toast.warning(EmptyItem.message)
                 return false
+            }
+            if(this.form.email) {
+                let emailReg = /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/
+                if(!emailReg.test(this.form.email)) {
+                    this.$toast.warning('厅主账号格式错误(应为邮箱格式)')
+                    return false
+                }
+            }
+            if(this.form.domains) {
+                this.form.domains = this.form.domains.replace(/\s/g,'')
+                let arr = this.form.domains.split(/[\,\，]/)
+                let urlRegExp = /^https?:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/
+                let testUrl = arr.every(item=>{
+                    return urlRegExp.test(item)
+                })
+                if(!testUrl) {
+                    this.$toast.warning('主域名格式不正确')
+                    return false
+                }
             }
             if (!this.form.dates[0] || !this.form.dates[1]) {
                 this.$toast.warning('有效日期不可为空!')
@@ -379,6 +445,9 @@ export default {
                 platform_name: this.form.platform_name, // 站点名称
                 domains: this.form.domains.split(/[\,\，]/), // TODO: 是数组吗?
                 agency_method: getAgencyMethod(this.form.agency_method), // 1,2,3
+                pc_skin_id: this.form.pc_skin_id,
+                h5_skin_id: this.form.h5_skin_id,
+                app_skin_id: this.form.app_skin_id,
                 role: JSON.stringify(this.form.role), // TODO:
                 sms_num: this.form.sms_num,
                 platform_sign: this.form.platform_sign,
@@ -579,7 +648,13 @@ export default {
 }
 /* margin-horizontal 水平边框为5px*/
 /*  添加  */
-
+.skin {
+    display: flex;
+}
+.skin > li {
+    display: flex;
+    align-items: center;
+}
 .form > li {
     display: flex;
     align-items: baseline;
@@ -590,6 +665,10 @@ export default {
     width: 4.3em;
     margin-right: 10px;
 }
+/* .form-authority {
+    align-self: center;
+    border: 1px solid #000;
+} */
 .radio-right {
     margin-left: 50px;
 }

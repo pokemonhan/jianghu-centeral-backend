@@ -17,6 +17,7 @@
     "element-ui": "^2.13.0",
     "file-saver": "^2.0.2",
     "jquery": "^3.4.1",
+    "jszip": "^3.4.0",
     "vue": "^2.5.2",
     "vue-cron": "^1.0.9",
     "vue-router": "^3.0.1",

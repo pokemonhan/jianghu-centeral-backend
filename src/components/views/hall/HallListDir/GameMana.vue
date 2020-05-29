@@ -278,7 +278,7 @@ export default {
                     }
                 }
             })
-            console.log('🍬 游戏名称arr: ', arr)
+            // console.log('🍬 游戏名称arr: ', arr)
             return arr
         },
         // 获取游戏平台下拉框opt
@@ -474,9 +474,9 @@ export default {
         // right
         getAssignedList() {
             let para = {
-                platform_id: this.outRow.id,
-                vendor_id: this.filterRight.vendor_id,
-                game_id: this.filterRight.game_id,
+                platform: this.outRow.id,
+                vendor: this.filterRight.vendor_id,
+                game: this.filterRight.game_id,
                 pageSize: this.right.pageSize,
                 page: this.right.pageNo
             }

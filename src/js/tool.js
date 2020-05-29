@@ -218,6 +218,10 @@ const Tool = {
             return ''
         }
         let menuList = window.all.tool.getLocal('menu')
+        if(!menuList) {
+            console.log('wait get menu list')
+            return ''
+        }
         let chain_name = ''
         if (menuList) {
             menuList.forEach(father => {
