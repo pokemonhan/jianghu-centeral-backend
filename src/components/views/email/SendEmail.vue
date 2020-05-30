@@ -31,7 +31,7 @@
                     <li>
                         <span>内容:</span>
                         <!-- <textarea class="textarea" v-model="content"></textarea> -->
-                        <div v-show="!dia_show" ref="editor" style="width:100%"></div>
+                        <div v-show="!dia_show" ref="editor" class="editor"></div>
                     </li>
                     <li>
                         <span>发件人：</span>
@@ -354,20 +354,7 @@ export default {
             ]
             this.year_opt = this.arrToOpt(year_arr)
             // 月
-            let month_arr = [
-                '01',
-                '02',
-                '03',
-                '04',
-                '05',
-                '06',
-                '07',
-                '08',
-                '09',
-                '10',
-                '11',
-                '12'
-            ]
+            let month_arr = [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12' ]
             this.month_opt = this.arrToOpt(month_arr)
 
             // 日 根据月份变化, 在computed中
@@ -440,6 +427,10 @@ export default {
         let editorDom = this.$refs.editor || {}
         let header = editorDom.children[0] || {}
         header.style.padding = '6px 0'
+        header.style.borderColor = '#d8e2f5'
+        header.style.background = '#d8e2f5'
+        let body = editorDom.children[1] || {}
+        body.style.border = 'none'
     }
 }
 </script>
@@ -465,9 +456,7 @@ export default {
     width: 40rem;
     min-width: 500px;
 }
-.p10 {
-    padding: 10px;
-}
+
 .form > li {
     display: flex;
     align-items: baseline;
@@ -476,27 +465,43 @@ export default {
 .form > li > span:first-child {
     width: 4.5em;
 }
+/* .li-pic {
+    display: flex;
+    align-items: center;
+} */
+
 /* 图片 */
-.img-show {
-    max-width: 400px;
+/* .img-show {
+    max-width: 250px;
     max-height: 100px;
     margin-left: 20px;
+} */
+/* .pic-show {
+    user-select: text;
 }
 .form .textarea {
     width: 500px;
     height: 330px;
-}
-.ml10 {
+} */
+/* .ml10 {
     margin-left: 10px;
+} */
+/* .editor {
+    box-shadow: -1px 6px 14px #c5ccd8;
+} */
+.editor {
+    width: calc(100% - 5em);
+    border: 1px solid #dee6f5;
+    border-radius: 4px;
+    box-shadow: 1px 3px 12px #ebeef3;
 }
 
 .right {
     width: 500px;
     margin-left: 20px;
     border-radius: 5px;
-    border: 1px solid #ccc;
-    border-top: none;
     user-select: text;
+    box-shadow: 1px 3px 12px #d3d7df;
 }
 /* 最近联系人 */
 .right .recent-contact {
@@ -508,9 +513,8 @@ export default {
     padding: 12px 10px;
     font-size: 16px;
     /* color: #4c8bfd; */
-    background: #f2f2f2;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    background: #d8e2f5;
+    border-bottom: 1px solid #d8e2f5;
 }
 
 .recent-contact .head span:nth-child(2) {

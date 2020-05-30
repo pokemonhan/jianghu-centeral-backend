@@ -82,6 +82,9 @@ function slideToggle (ele, time = 200) {
     if (!(ele instanceof Element)) {
         ele = ele[0]
     }
+    // if (!(ele instanceof Element)) {
+    //     return
+    // }
 
     // 如果有就slideUp 上滑
     if (ele.clientHeight) {
@@ -219,7 +222,7 @@ const Tool = {
         }
         let menuList = window.all.tool.getLocal('menu')
         if(!menuList) {
-            console.log('wait get menu list')
+            console.log('wait get the menu list')
             return ''
         }
         let chain_name = ''
