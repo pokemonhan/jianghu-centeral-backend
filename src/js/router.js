@@ -96,8 +96,13 @@ const routes = new Router({
 })
 routes.beforeEach((to, from, next) => {
     // console.log('to: ', to);
-    if (to.path !== from.path) { next() }
-    next()
+    let hadAuthor = window.all.tool.getLocal('Authorization')
+    if (!hadAuthor && to.path !== '/login') {
+        next({ path: '/login' })
+    }else if(to.path !== from.path){
+        next()
+    }
+    
 })
 let route_add = []
 
