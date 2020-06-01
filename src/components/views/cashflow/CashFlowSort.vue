@@ -5,7 +5,8 @@
             <ul class="left">
                 <li>
                     <span>分类名称</span>
-                    <Input class="w100" v-model="filter.name" />
+                    <!-- <Input class="w100" v-model="filter.name" /> -->
+                    <Select v-model="filter.name" input :options="sort_opt"></Select>
                 </li>
                 <li>
                     <span>厂商状态</span>
@@ -64,6 +65,7 @@ export default {
                 name: '',
                 status: ''
             },
+            sort_opt: [],
             status_opt: [
                 { label: '全部', value: '' },
                 { label: '开启', value: '1' },
@@ -93,6 +95,19 @@ export default {
         }
     },
     methods: {
+        getJSONOpt() {
+            window.all.tool.getJsonOpt('system_finance_type').then(res => {
+                if (res && Array.isArray(res)) {
+                    let arr = res.map(item=>{
+                        return {
+                            label: item.name,
+                            value: item.name
+                        }
+                    })
+                    this.sort_opt = [{label:'全部',value:''}].concat(arr)
+                }
+            })
+        },
         statusSwitch(row) {
             this.curr_row = row
             // this.mod_show = true
@@ -152,6 +167,7 @@ export default {
         }
     },
     mounted() {
+        this.getJSONOpt()
         this.getList()
     }
 }

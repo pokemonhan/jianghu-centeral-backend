@@ -5,7 +5,12 @@
             <ul class="left">
                 <li>
                     <span>游戏分类</span>
-                    <Select input v-model="filter.type_id" :options="type_opt"></Select>
+                    <Select
+                        input
+                        v-model="filter.type_id"
+                        :options="type_opt"
+                        @update="filterTypeUpd"
+                    ></Select>
                 </li>
                 <li>
                     <span>游戏厂商</span>
@@ -184,19 +189,7 @@ export default {
             type_obj: {},
             // game_child_opt: [], // 游戏子类
             game_sort_obj: {},
-            headers: [
-                '编号',
-                '游戏厂商',
-                '游戏名称',
-                '游戏分类',
-                '游戏标识',
-                '游戏状态',
-                '添加人',
-                '添加时间',
-                '最后更新人',
-                '最后更新时间',
-                '操作'
-            ],
+            headers: [ '编号', '游戏厂商', '游戏名称', '游戏分类', '游戏标识', '游戏状态', '添加人', '添加时间', '最后更新人', '最后更新时间', '操作' ],
             list: [],
             total: 0,
             pageNo: 1,
@@ -265,7 +258,7 @@ export default {
                 },
                 sub_type_id: {
                     title: '游戏子类'
-                },
+                }
                 // request_mode: {
                 //     title: '请求模式'
                 // },
@@ -308,12 +301,28 @@ export default {
             })
             return type_id
         },
+        /** 游戏分类 update */
+        filterTypeUpd(type_id) {
+            this.$set(this.filter, 'vendor_id', '')
+            this.$set(this.filter, 'game_id', '')
+            let curr_type = this.type_opt.find(item => item.value === type_id)
+            if (curr_type && curr_type.children) {
+                if (curr_type.children.length === 1) {
+                    let vendor = curr_type.children[0] || {}
+                    this.$set(this.filter, 'vendor_id', vendor.value)
+                }
+            }
+            // 更新 游戏名称
+            this.game_name_opt = this.getMatchOpt( this.filter.vendor_id, this.vendor_opt, true )
+        },
+        /** 游戏厂商更新 */
         filterVendorUpd(vendor_id) {
-            let all = [{ label: '全部', value: '' }]
-            this.game_name_opt = all.concat(
-                this.getMatchOpt(vendor_id, this.vendor_opt)
-            )
-            this.filter.sub_type = ''
+            this.$set(this.filter, 'type_id', '')
+            this.$set(this.filter, 'game_id', '')
+            // 更新 游戏分类(filter)
+            this.filter.type_id = this.VendorIdFindType(vendor_id) || ''
+            // 更新 游戏名称
+            this.game_name_opt = this.getMatchOpt( vendor_id, this.vendor_opt, true )
         },
         filterGameNameUpd(val) {
             if (!val) return
@@ -323,8 +332,9 @@ export default {
                 })
                 return isHad
             })
-            this.filter.vendor_id = vendor_arr.value // 设置游戏厂商
+            this.filter.vendor_id = (vendor_arr || {}).value // 设置游戏厂商
             this.filter.type_id = this.VendorIdFindType(this.filter.vendor_id)
+
         },
         add() {
             this.initForm()
@@ -336,12 +346,12 @@ export default {
             console.log('🍬 row: ', row)
             this.form = {
                 id: row.id,
-                vendor_id: row.vendor&&row.vendor.id,
+                vendor_id: row.vendor && row.vendor.id,
                 sign: row.sign,
-                type_id: row.type&&row.type.id,
+                type_id: row.type && row.type.id,
                 name: row.name,
-                sub_type_id: row.sub_type&&row.sub_type.id,
-                request_mode: row.request_mode,
+                sub_type_id: row.sub_type && row.sub_type.id,
+                request_mode: row.request_mode
                 // status: row.status
             }
             this.dia_status = 'edit'
@@ -473,10 +483,14 @@ export default {
         //     return array.concat(opt)
         // },
         /**
-         * 更具value获取 匹配的值
+         * 更具value获取 匹配的值children
+         * @param {boolean} isAddAll 是否加上全部 {label:'全部',value:''}
          */
-        getMatchOpt(val, father_arr = []) {
+        getMatchOpt(val, father_arr = [], isAddAll) {
             let arr = []
+            if (isAddAll) {
+                arr = [{ label: '全部', value: '' }]
+            }
             father_arr.forEach(father => {
                 if (father.value === val || !val) {
                     if (father.children && Array.isArray(father.children)) {
@@ -507,9 +521,10 @@ export default {
                             children: children
                         })
                     })
-                    let all = [{ label: '全部', value: '' }]
-                    this.game_name_opt = all.concat(
-                        this.getMatchOpt('', this.vendor_opt)
+                    this.game_name_opt = this.getMatchOpt(
+                        '',
+                        this.vendor_opt,
+                        true
                     )
                 }
             })

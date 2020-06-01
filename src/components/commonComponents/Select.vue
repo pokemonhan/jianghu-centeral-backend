@@ -116,7 +116,7 @@ export default {
                 let opt_temp = (this.options || []).filter(item => {
                     // let LowerCase
                     if (item.label) {
-                        return item.label.indexOf(this.showInputLabel) !== -1
+                        return (item.label||'').toLowerCase().indexOf((this.showInputLabel||'').toLowerCase()) !== -1
                     } else {
                         return false
                     }

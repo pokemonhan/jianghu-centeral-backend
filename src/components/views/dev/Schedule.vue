@@ -453,8 +453,8 @@ export default {
                                 this.command_opt = res.map(item => {
                                     return {
                                         title: item.description,
-                                        label: item.command,
-                                        value: item.command
+                                        label: item.sign,
+                                        value: item.sign
                                     }
                                 })
                             }
