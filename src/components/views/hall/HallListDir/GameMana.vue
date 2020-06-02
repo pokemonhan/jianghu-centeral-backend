@@ -123,21 +123,24 @@
                         </tr>
                     </tbody>
                 </table>
-                <Page
+                <div class="flex justify-center">
+                    <Page
                     class="mt10"
                     :total="left.total"
                     hiddenJump
+                    hiddenSelect
                     :pageNo.sync="left.pageNo"
                     :pageSize.sync="left.pageSize"
                     @updateNo="leftUpdateNo"
                     @updateSize="leftUpdateSize"
                 />
+                </div>
             </div>
 
             <!-- 右边的table -->
             <div class="tab-right">
                 <button class="btn-red-large mt30" @click="remove">移除</button>
-                <table class="mt10">
+                <table class="mt10 x-table">
                     <thead>
                         <tr>
                             <th>游戏平台</th>
@@ -178,15 +181,18 @@
                         </tr>
                     </tbody>
                 </table>
-                <Page
+                <div class="flex justify-center">
+                    <Page
                     class="mt10"
                     hiddenJump
+                    hiddenSelect
                     :total="right.total"
                     :pageNo.sync="right.pageNo"
                     :pageSize.sync="right.pageSize"
                     @updateNo="rightUpdateNo"
                     @updateSize="rightUpdateSize"
                 />
+                </div>
             </div>
         </div>
         <div class="btn-save"></div>
@@ -230,7 +236,7 @@ export default {
                 list: [],
                 total: 0,
                 pageNo: 1,
-                pageSize: 25
+                pageSize: 10
             },
             right: {
                 // headers: ['游戏平台', '游戏名称', '操作'],
@@ -239,7 +245,7 @@ export default {
                 list: [],
                 total: 0,
                 pageNo: 1,
-                pageSize: 25
+                pageSize: 10
             }
         }
     },
@@ -528,7 +534,7 @@ export default {
 <style scoped>
 .cont {
     min-width: 900px;
-    /* width: 99%; */
+    height: 650px;
 }
 .filter {
     justify-content: space-around;
@@ -571,6 +577,9 @@ export default {
 }
 .tab-right {
     margin-left: 50px;
+}
+.table .x-table {
+    min-height: 0;
 }
 .btn-save {
     margin-top: 50px;

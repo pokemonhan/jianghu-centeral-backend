@@ -4,7 +4,7 @@
         v-clickoutside="closePanel"
         :style="css"
     >
-        <!-- 已选 -->
+        <!-- 已选 input 框-->
         <div
             @click="chooseDate"
             @mouseover="changeClearState(true)"
@@ -27,7 +27,7 @@
         </div>
 
 
-        <!-- 已选 下方选择框-->
+        <!-- 下方 弹出选择框-->
         <transition name="date-picker">
             <div class="date-container">
                 <div v-show="showPanel" :class="['date-box', pickerClassName]" ref="date-box">
@@ -78,12 +78,15 @@
                                     <li v-for="(day, index) in weekList" :key="index">{{day}}</li>
                                 </ul>
                                 <ul class="days-list">
+                                    <!-- 上月 日期 -->
                                     <li
                                         @click="changeDate(preMonthLastDate-beforeThisMonthDays+n, -1)"
                                         class="pre-month-day"
                                         v-for="n in beforeThisMonthDays"
                                         :key="'0'+n"
                                     >{{preMonthLastDate-beforeThisMonthDays+n}}</li>
+
+                                    <!-- 本月 -->
                                     <li
                                         @click="changeDate(n, 0)"
                                         :class="{
@@ -95,6 +98,8 @@
                                         v-for="n in thisMonthDays"
                                         :key="'1'+n"
                                     >{{n}}</li>
+
+                                    <!-- 下月 -->
                                     <li
                                         @click="changeDate(n, 1)"
                                         class="next-month-day"
@@ -166,12 +171,14 @@
                             <!-- 时间 -->
                         </div>
                         <div class="list-box" v-show="type==='daterange' || type==='datetimerange'">
+                            
                             <!-- 日期 -->
                             <div class="date-list" v-show="step===1">
                                 <ul class="week-list">
                                     <li v-for="(day, index) in weekList" :key="index">{{day}}</li>
                                 </ul>
                                 <ul class="days-list">
+                                    <!-- 上月 灰色字体 -->
                                     <li
                                         @click="changeDate(thisMonthLastDate-beforeNextMonthDays+n, 0)"
                                         class="pre-month-day"
@@ -189,6 +196,7 @@
                                         v-for="n in nextMonthDays"
                                         :key="'1'+n"
                                     >{{n}}</li>
+                                    <!-- 下月 灰色 -->
                                     <li
                                         @click="changeDate(n, 2)"
                                         class="next-month-day"
@@ -198,6 +206,7 @@
                                 </ul>
                             </div>
                             <!-- 日期 -->
+
                             <!-- 年份 -->
                             <div v-show="step===2" class="year-list">
                                 <ul>
@@ -435,6 +444,7 @@ export default {
             }
             let year, month, timeType
             switch (type) {
+                // 上月
                 case -1:
                     month = this.startMonth - 1
                     if (month < 1) {
@@ -445,10 +455,12 @@ export default {
                     }
                     this.changeMonth('-')
                     break
+                // 本月
                 case 0:
                     month = this.startMonth
                     year = this.startYear
                     break
+                // 下月
                 case 1:
                     month = this.startMonth + 1
                     if (month > 12) {
@@ -465,6 +477,7 @@ export default {
                         this.changeMonth('+')
                     }
                     break
+                // 结束月 + 1
                 case 2:
                     month = this.endMonth + 1
                     if (month > 12) {
@@ -744,10 +757,7 @@ export default {
 
             var nowDayOfWeek = now.getDay() // 今天是本周的第几天
             // (周日获取的是第0天,设置为7天)
-            if (nowDayOfWeek === 0) {
-                nowDayOfWeek = 7
-            }
-
+            if (nowDayOfWeek === 0) { nowDayOfWeek = 7 }
             // 今天
             function getToday() {
                 return [new Date(), new Date().valueOf() + 1000 * 60 * 60 * 24]

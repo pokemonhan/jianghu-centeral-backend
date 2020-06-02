@@ -125,6 +125,10 @@ export default {
              */
             pageRange: [],
             pageSizeList: [
+                {   
+                    value: 10,
+                    label: '10 条/页'
+                },
                 {
                     value: 25,
                     label: '25 条/页'

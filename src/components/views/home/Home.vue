@@ -13,7 +13,7 @@
                     <div class="bottom-10">
                         <span>日环比:</span>
                         <span>{{'0.00%'}}</span>
-                        <span>人</span>
+                        <!-- <span>人</span> -->
                     </div>
                 </div>
             </li>
@@ -312,7 +312,7 @@ export default {
         }
     },
     created() {
-        this.getList()
+        // this.getList()
     },
     mounted() {
         // this.getList()

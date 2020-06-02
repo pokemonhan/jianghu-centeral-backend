@@ -32,7 +32,7 @@
             </ul>
         </div>
         <div class="table mt20">
-            <Table :headers="headers" :column="list">
+            <Table class="x-table" :headers="headers" :column="list">
                 <template v-slot:item="{row}">
                     <!-- '域名', '添加时间', '状态', '操作' -->
                     <td class="tab-domain">
@@ -135,7 +135,7 @@ export default {
             list: [],
             total: 0,
             pageNo: 1,
-            pageSize: 25,
+            pageSize: 10,
             // dialog 对话框
             dia_show: false,
             dia_status: '',
@@ -267,7 +267,11 @@ export default {
 }
 .cont {
     width: 900px;
-    min-height: 500px;
+    /* min-height: 500px; */
+    height: 740px;
+}
+.x-table {
+    min-height: 0;
 }
 .p10 {
     padding: 10px;
