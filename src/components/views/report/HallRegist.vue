@@ -111,7 +111,7 @@ export default {
             list: [],
             total: 0,
             pageNo: 1,
-            pageSize: 2,
+            pageSize: 25,
         }
     },
     methods: {
