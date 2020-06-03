@@ -10,21 +10,17 @@
             <ul class="left">
                 <li>
                     <span>站点名称</span>
-                    <Input v-model="filter.name" />
+                    <Input v-model="filter.platform_name" />
                 </li>
                 <li>
                     <span>派彩时间</span>
-                    <!-- <Date v-model="filter.lottery_dates[0]" @update="timeUpdate()" />
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.lottery_dates[1]" @update="timeUpdate()" />-->
-                    <Date type="daterange" v-model="filter.lottery_dates" />
+
+                    <Date type="datetimerange" v-model="filter.delivery_time" />
                 </li>
                 <li>
                     <span>入库时间</span>
-                    <!-- <Date v-model="filter.warehouse_dates[0]" @update="timeUpdate()" />
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.warehouse_dates[1]" @update="timeUpdate()" />-->
-                    <Date type="daterange" v-model="filter.warehouse_dates" />
+
+                    <Date type="datetimerange" v-model="filter.created_at" />
                 </li>
             </ul>
         </div>
@@ -36,13 +32,10 @@
                 </li>
                 <li>
                     <span>注单时间</span>
-                    <!-- <Date v-model="filter.bet_dates[0]" @update="timeUpdate()" />
-                    <span style="margin:0 5px;">~</span>
-                    <Date v-model="filter.bet_dates[1]" @update="timeUpdate()" />-->
-                    <Date type="daterange" v-model="filter.dates" />
+                    <Date type="datetimerange" v-model="filter.their_create_time" />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="exportExcel">导出Excel</button>
                 </li>
                 <li>
@@ -53,24 +46,23 @@
         <div class="mt20">
             <div class="table mb10">
                 <Table class="v-table" :headers="headers" :column="list">
-                    <template v-slot:item="{row,idx}">
-                        <td>{{(pageNo-1)*pageSize+idx+1}}</td>
-                        <td
-                            :class="[row.status?'green':'red']"
-                        >{{row.status===1?'开启':row.status===0?'关闭':'645'}}</td>
-                        <td>{{row.a1}}</td>
-                        <td>{{row.a2}}</td>
-                        <td>{{row.a3}}</td>
-                        <td>{{row.a4}}</td>
-                        <td>{{row.a5}}</td>
-                        <td>{{row.a6}}</td>
-                        <td>{{row.a7}}</td>
-                        <td>{{row.a8}}</td>
-                        <td>{{row.a8}}</td>
-                        <td>{{row.a8}}</td>
-                        <td>{{row.a8}}</td>
-                        <td>{{row.a8}}</td>
-                        <td>{{row.a8}}</td>
+                    <!-- [ '系统注单', '注单号', '会员账号', '会员ID', '站点名称', '游戏平台', '游戏名称', '投注额', '有效下注', '抽水', '输赢', '派彩状态', '注单时间', '派彩时间', '入库时间' ], -->
+                    <template v-slot:item="{row}">
+                        <td>{{row.serial_number}}</td>
+                        <td>{{row.their_serial_number}}</td>
+                        <td>{{row.mobile}}</td>
+                        <td>{{row.guid}}</td>
+                        <td>{{row.platform_name}}</td>
+                        <td>{{row.game_vendor}}</td>
+                        <td>{{row.game_name}}</td>
+                        <td>{{Number(row.bet_money)}}</td>
+                        <td>{{row.effective_bet}}</td>
+                        <td>{{row.charged_fees}}</td>
+                        <td>{{Number(row.win_money)-Number(row.bet_money)}}</td>
+                        <td>{{lottery_status[row.status]||'---'}}</td>
+                        <td>{{row.their_create_time}}</td>
+                        <td>{{row.delivery_time||'---'}}</td>
+                        <td>{{row.created_at}}</td>
                     </template>
                 </Table>
             </div>
@@ -91,82 +83,52 @@ export default {
     data() {
         return {
             filter: {
-                acc: '',
-                status: '',
-                name: '',
-                lottery_dates: [],
-                bet_dates: [],
-                warehouse_dates: [],
-                dates: []
+                status: '', // 派彩状态 0已投注 1已撤销 2未中奖 3已中奖 4已派奖
+                platform_name: '', // 站点名称
+                delivery_time: [], // 派彩时间
+                created_at: [],
+                their_create_time: []
             },
             status_opt: [
                 { label: '全部', value: '' },
-                { label: '已派彩', value: '1' },
-                { label: '未派彩', value: '2' }
+                { label: '已投注', value: '0' },
+                { label: '已撤销', value: '1' },
+                { label: '未中奖', value: '2' },
+                { label: '已中奖', value: '3' },
+                { label: '已派奖', value: '4' },
             ],
             quick_query: [],
             /* table */
-            headers: [
-                '系统注单',
-                '注单号',
-                '会员账号',
-                '会员ID',
-                '站点名称',
-                '游戏平台',
-                '游戏名称',
-                '投注额',
-                '有效下注',
-                '抽水',
-                '输赢',
-                '派彩状态',
-                '注单时间',
-                '派彩时间',
-                '入库时间'
-            ],
-            list: [
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30',
-                    a6: '2019-02-02 21:30',
-                    a7: '2019-02-02 21:30',
-                    a8: '2019-02-02 21:30',
-                    a9: '2019-02-02 21:30'
-                },
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                }
-            ],
+            // 0已投注 1已撤销 2未中奖 3已中奖 4已派奖
+            lottery_status:{
+                '0':'已投注',
+                '1':'已撤销',
+                '2':'未中奖',
+                '3':'已中奖',
+                '4':'已派奖',
+            },
+            headers: [ '系统注单', '注单号', '会员账号', '会员ID', '站点名称', '游戏平台', '游戏名称', '投注额', '有效下注', '抽水', '输赢', '派彩状态', '注单时间', '派彩时间', '入库时间' ],
+            list: [],
             total: 0,
             pageNo: 1,
-            pageSize: 25,
-
-            updateNo(val) {},
-            updateSize(val) {}
+            pageSize: 2,
         }
     },
     methods: {
-        qqUpd(dates) {
-            //同步时间筛选值
-            this.filter.bet_dates = dates
-            this.filter = Object.assign(this.filter)
-        },
+        // qqUpd(dates) {
+        //     //同步时间筛选值
+        //     this.filter.bet_dates = dates
+        //     this.filter = Object.assign(this.filter)
+        // },
         Clear() {
             this.quick_query = []
             this.filter = {
-                acc: '',
                 status: '',
                 name: '',
-                lottery_dates: [],
+                delivery_time: [],
                 bet_dates: [],
-                warehouse_dates: [],
-                dates: []
+                created_at: [],
+                their_create_time: []
             }
         },
         exportExcel() {
@@ -175,7 +137,16 @@ export default {
                 // console.log('触发2')
                 const tHeader = this.headers
                 const data = this.list.map(item => {
-                    return [item.a1, item.a2, item.a3,item.a4,item.a5,item.a6,item.a7,item.a8]
+                    return [
+                        item.a1,
+                        item.a2,
+                        item.a3,
+                        item.a4,
+                        item.a5,
+                        item.a6,
+                        item.a7,
+                        item.a8
+                    ]
                 })
 
                 // let chainName = this.getChainName(this.$route.path)
@@ -189,12 +160,50 @@ export default {
                 })
             })
         },
-        timeUpdate() {
-            //同步快捷查询按钮状态
-            this.quick_query = this.filter.bet_dates
+        // timeUpdate() {
+        //     //同步快捷查询按钮状态
+        //     this.quick_query = this.filter.bet_dates
+        // },
+        updateNo(val) {
+            this.getList()
+        },
+        updateSize(val) {
+            this.pageNo = 1
+            this.getList()
+        },
+        getList() {
+            let para = {
+                platform_name: this.filter.platform_name,
+                status: this.filter.status,
+                delivery_time: this.filter.delivery_time,
+                their_create_time: this.filter.their_create_time,
+                created_at: this.filter.created_at,
+                pageSize: this.pageSize,
+                page: this.pageNo
+            }
+            let data = window.all.tool.rmEmpty(para)
+            if(data.delivery_time){
+                data.delivery_time = JSON.stringify(data.delivery_time)
+            }
+            if(data.their_create_time){
+                data.their_create_time = JSON.stringify(data.their_create_time)
+            }
+            if(data.created_at){
+                data.created_at = JSON.stringify(data.created_at)
+            }
+            let { url, method } = this.$api.hall_regist_report_list
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.total = res.data.total
+                    this.list = res.data.data
+                }
+            })
         }
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 <style scoped>

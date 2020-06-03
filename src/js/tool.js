@@ -196,7 +196,14 @@ const Tool = {
         for (const key in obj) {
             if (Array.isArray(obj[key])) {
                 if (obj[key].length > 0) {
-                    params[key] = obj[key]
+                    if(obj[key].length===2){
+                        // 数组[0] 或者[1] 有值才赋值
+                        if(obj[key][0]||obj[key][1]){
+                            params[key] = obj[key]
+                        }
+                    }else {
+                        params[key] = obj[key]
+                    }
                 }
             } else if (obj[key] !== '' && obj[key] !== null && obj[key] !== undefined) {
                 params[key] = obj[key]

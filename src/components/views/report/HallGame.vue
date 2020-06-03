@@ -1,32 +1,36 @@
 <template>
     <div class="container">
-        <!-- 厅主注单报表 -->
-        <!-- 注单就是下注单 -->
-        <QuickQuery :date="quick_query" />
+        <!-- 厅主游戏报表 -->
+        <QuickQuery :date="quick_query" @update="qqUpd" />
 
         <div class="filter p10">
             <ul class="left">
                 <li>
                     <span>站点名称</span>
-                    <Input class="w100" v-model="filter.name" />
+                    <Input class="w100" v-model="filter.platform_name" />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <span>时间</span>
+                    <date type="daterange" v-model="filter.project_day" @update="timeUpdate" />
+                </li>
+                <li>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-red" @click="clear">清除</button>
                 </li>
             </ul>
         </div>
-     
+
         <div class="table mt20">
             <Table :headers="headers" :column="list">
+                <!-- ['站点名称','游戏平台','总投注额','总有效下注','总抽水','总输赢','日期'] -->
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a3}}</td>
-                    <td>{{row.a4}}</td>
-                    <td>{{row.a5}}</td>
-                    <td>{{row.a6}}</td>
-                    <td>{{row.a7}}</td>
+                    <td>{{row.platform&&row.platform.cn_name}}</td>
+                    <td>{{row.game_vendor_name}}</td>
+                    <td>{{row.bet_money}}</td>
+                    <td>{{row.effective_bet}}</td>
+                    <td>{{row.our_net_win}}</td>
+                    <td>{{Number(row.win_money)-Number(row.bet_money)}}</td>
+                    <td>{{row.day}}</td>
                 </template>
             </Table>
 
@@ -47,10 +51,19 @@ export default {
         return {
             quick_query: [],
             filter: {
-                name: '',
+                platform_name: '',
+                project_day: ''
             },
             /* table */
-            headers: ['站点名称','游戏平台','总投注额','总有效下注','总抽水','总输赢','日期'],
+            headers: [
+                '站点名称',
+                '游戏平台',
+                '总投注额',
+                '总有效下注',
+                '总抽水',
+                '总输赢',
+                '日期'
+            ],
             list: [
                 {
                     a1: '江湖互娱',
@@ -59,7 +72,7 @@ export default {
                     a4: '100',
                     a5: '0',
                     a6: '-456',
-                    a7: '2019-11-26',
+                    a7: '2019-11-26'
                 },
                 {
                     a1: '江湖互娱',
@@ -68,9 +81,8 @@ export default {
                     a4: '100',
                     a5: '0',
                     a6: '-456',
-                    a7: '2019-11-26',
-                },
-        
+                    a7: '2019-11-26'
+                }
             ],
             total: 0,
             pageNo: 1,
@@ -78,26 +90,55 @@ export default {
         }
     },
     methods: {
-     
+        qqUpd(dates) {
+            //同步时间筛选值
+            this.filter.project_day = dates
+        },
+        timeUpdate() {
+            //同步快捷查询按钮状态
+            this.quick_query = this.filter.project_day
+        },
         clear() {
             this.quick_query = []
             this.filter = {
-                name: ''
+                platform_name: '',
+                project_day: []
             }
         },
         updateNo() {
-            // this.getList()
+            this.getList()
         },
         updateSize() {
             this.pageNo = 1
-            // this.getList()
+            this.getList()
         },
+        getList() {
+            let para = {
+                platform_name: this.filter.platform_name,
+                project_day: this.filter.project_day,
+                pageSize: this.pageSize,
+                page: this.pageNo
+            }
+            let data = window.all.tool.rmEmpty(para)
+            if (data.project_day) {
+                data.project_day = JSON.stringify(data.project_day)
+            }
+            let { url, method } = this.$api.hall_game_report_list
+            this.$http({ method, url, data }).then(res => {
+                console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.total = res.data.total
+                    this.list = res.data.data
+                }
+            })
+        }
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script> 
 <style scoped>
-
 .mh5 {
     margin-left: 5px;
     margin-right: 5px;

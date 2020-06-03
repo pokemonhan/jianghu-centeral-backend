@@ -103,7 +103,7 @@
                                     required
                                     errmsg="请选择子类"
                                     v-model="form.sub_type_id"
-                                    :options="game_child_opt"
+                                    :options="form_game_child_opt"
                                 ></Select>
                             </li>
                             <li>
@@ -181,14 +181,14 @@ export default {
                 vendor_id: '',
                 type_id: ''
             },
-            game_name_opt: [], // 游戏名称
-            vendor_opt: [],
-            // vendor_obj: {},
+            vendor_opt: [], // 游戏厂商
             /** 游戏父类 游戏主类 */
             type_opt: [], // 游戏父类
-            type_obj: {},
-            // game_child_opt: [], // 游戏子类
-            game_sort_obj: {},
+            game_name_opt: [], // 游戏名称
+
+            // form_game_child_opt: [], // 游戏子类
+
+            // game_sort_obj: {},
             headers: [ '编号', '游戏厂商', '游戏名称', '游戏分类', '游戏标识', '游戏状态', '添加人', '添加时间', '最后更新人', '最后更新时间', '操作' ],
             list: [],
             total: 0,
@@ -220,13 +220,8 @@ export default {
         }
     },
     computed: {
-        /**游戏名称 */
-        // game_name_opt() {
-        //     let all = [{label:'全部',value:''}]
-        //     return all.concat(this.getMatchOpt(this.filter.vendor_id, this.vendor_opt))
-        // },
         /**游戏子类 */
-        game_child_opt() {
+        form_game_child_opt() {
             return this.getMatchOpt(this.form.vendor_id, this.vendor_opt)
         }
     },
@@ -277,7 +272,7 @@ export default {
         /** 游戏厂商更新 */
         formVendorUpd(id) {
             this.form.game_id = ''
-            // this.game_child_opt = this.getMatchOpt(id, this.vendor_opt)
+            // this.form_game_child_opt = this.getMatchOpt(id, this.vendor_opt) // 计算属性
             this.form.type_id = ''
             this.type_opt.forEach(item => {
                 if (item.children && item.children.length) {
@@ -287,6 +282,27 @@ export default {
                     }
                 }
             })
+        },
+        /**
+         * 更具value获取 匹配的值children
+         * @param {boolean} isAddAll 是否加上全部 {label:'全部',value:''}
+         */
+        getMatchOpt(val, father_arr = [], isAddAll) {
+            let arr = []
+            if (isAddAll) {
+                arr = [{ label: '全部', value: '' }]
+            }
+            father_arr.forEach(father => {
+                if (father.value === val || !val) {
+                    if (father.children && Array.isArray(father.children)) {
+                        father.children.forEach(child => {
+                            // 设置 游戏子类
+                            arr.push(child)
+                        })
+                    }
+                }
+            })
+            return arr
         },
         /**根据厂商id 找 游戏主类id */
         VendorIdFindType(vendor_id) {
@@ -482,27 +498,7 @@ export default {
         //     })
         //     return array.concat(opt)
         // },
-        /**
-         * 更具value获取 匹配的值children
-         * @param {boolean} isAddAll 是否加上全部 {label:'全部',value:''}
-         */
-        getMatchOpt(val, father_arr = [], isAddAll) {
-            let arr = []
-            if (isAddAll) {
-                arr = [{ label: '全部', value: '' }]
-            }
-            father_arr.forEach(father => {
-                if (father.value === val || !val) {
-                    if (father.children && Array.isArray(father.children)) {
-                        father.children.forEach(child => {
-                            // 设置 游戏子类
-                            arr.push(child)
-                        })
-                    }
-                }
-            })
-            return arr
-        },
+        
         /** 获取下拉框内容 */
         getSelectOpt() {
             tool.getJsonOpt('game_vendors__games').then(res => {
@@ -570,7 +566,7 @@ export default {
                                 })
                             }
                             /** 根据 父级id放置 子类 */
-                            this.game_sort_obj[item.id] = opt
+                            // this.game_sort_obj[item.id] = opt
                         })
                     }
                 }

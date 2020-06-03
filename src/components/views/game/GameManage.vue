@@ -5,16 +5,30 @@
             <ul class="left">
                 <li>
                     <span>游戏分类</span>
-                    <Select input v-model="filter.type_id" :options="type_opt" @update="typeUpd"></Select>
+                    <Select
+                        input
+                        v-model="filter.type_id"
+                        :options="type_opt"
+                        @update="filterTypeUpd"
+                    ></Select>
                 </li>
                 <li>
                     <span>游戏厂商</span>
-                    <Select v-model="filter.vendor_id" :options="vendor_opt" @update="vendorUpd"></Select>
+                    <Select
+                        v-model="filter.vendor_id"
+                        :options="vendor_opt"
+                        @update="filterVendorUpd"
+                    ></Select>
                 </li>
 
                 <li>
                     <span>游戏名称</span>
-                    <Select input v-model="filter.name" :options="name_opt"></Select>
+                    <Select
+                        input
+                        v-model="filter.game_id"
+                        :options="game_name_opt"
+                        @update="filterGameNameUpd"
+                    ></Select>
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -88,6 +102,7 @@
 import JSZip from 'jszip'
 import FileSaver from 'file-saver'
 import GameManageDetail from './GameManageDetail'
+import tool from '../../../js/tool'
 export default {
     name: 'GameManage',
     components: {
@@ -100,12 +115,15 @@ export default {
             filter: {
                 vendor_id: '',
                 type_id: '',
-                name: ''
+                game_id: ''
             },
             vendor_opt: [],
             type_opt: [],
-            name_opt: [],
+            // game_name_opt: [],
+            vendor_opt: [], // 游戏厂商
 
+            type_opt: [], // 游戏父类
+            game_name_opt: [], // 游戏名称
             headers: [
                 '编号',
                 'ICON',
@@ -141,40 +159,92 @@ export default {
         }
     },
     methods: {
-        getSelectOpt() {
-            let { url, method } = this.$api.dev_game_search_condition_get
-            this.$http({ url, method }).then(res => {
-                // console.log('下拉数据 ', res)
-                if (res && res.code === '200') {
-                    this.select = res.data
-                    this.vendor_opt = this.backToSelOpt(this.select.vendors)
-                    this.name_opt = this.backToSelOpt(this.select.games)
-                    this.type_opt = this.backToSelOpt(this.select.types)
+        /**
+         * 更具value获取 匹配的值children
+         * @param {boolean} isAddAll 是否加上全部 {label:'全部',value:''}
+         */
+        getMatchOpt(val, father_arr = [], isAddAll) {
+            let arr = []
+            if (isAddAll) {
+                arr = [{ label: '全部', value: '' }]
+            }
+            father_arr.forEach(father => {
+                if (father.value === val || !val) {
+                    if (father.children && Array.isArray(father.children)) {
+                        father.children.forEach(child => {
+                            // 设置 游戏子类
+                            arr.push(child)
+                        })
+                    }
                 }
-            })
-        },
-        // 后台数组转为 select_opt 数组
-        backToSelOpt(list) {
-            let arr = [{ label: '全部', value: '' }]
-            list.forEach(item => {
-                let opt = { label: item.name, value: item.id }
-                arr.push(opt)
             })
             return arr
         },
-        vendorUpd(val) {
-            // this.filterNameOpt() // TODO:
+        /**根据厂商id 找 游戏主类id */
+        VendorIdFindType(vendor_id) {
+            let type_id
+            this.type_opt.forEach(item => {
+                if (item.children && item.children.length) {
+                    let vendor_obj = item.children[0]
+                    if (vendor_obj.value === vendor_id) {
+                        type_id = item.value
+                    }
+                }
+            })
+            return type_id
+        },
+        /** 游戏分类 update */
+        filterTypeUpd(type_id) {
+            this.$set(this.filter, 'vendor_id', '')
+            this.$set(this.filter, 'game_id', '')
+            let curr_type = this.type_opt.find(item => item.value === type_id)
+            if (curr_type && curr_type.children) {
+                if (curr_type.children.length === 1) {
+                    let vendor = curr_type.children[0] || {}
+                    this.$set(this.filter, 'vendor_id', vendor.value)
+                }
+            }
+            // 更新 游戏名称
+            this.game_name_opt = this.getMatchOpt( this.filter.vendor_id, this.vendor_opt, true )
+        },
+        /** 游戏厂商更新 */
+        filterVendorUpd(vendor_id) {
+            this.$set(this.filter, 'type_id', '')
+            this.$set(this.filter, 'game_id', '')
+            // 更新 游戏分类(filter)
+            this.filter.type_id = this.VendorIdFindType(vendor_id) || ''
+            // 更新 游戏名称
+            this.game_name_opt = this.getMatchOpt(
+                vendor_id,
+                this.vendor_opt,
+                true
+            )
+        },
+        filterGameNameUpd(val) {
+            if (!val) return
+            let vendor_arr = this.vendor_opt.find(item => {
+                let isHad = (item.children || []).find(child => {
+                    return child.value === val
+                })
+                return isHad
+            })
+            this.filter.vendor_id = (vendor_arr || {}).value // 设置游戏厂商
+            this.filter.type_id = this.VendorIdFindType(this.filter.vendor_id)
         },
         downloadAllPic() {
             // var fileName = '打包图片'
-            let fileName = window.all.tool.getChainName('/game/gamemanage') + ' ' + 'p' + this.pageNo
+            let fileName =
+                window.all.tool.getChainName('/game/gamemanage') +
+                ' ' +
+                'p' +
+                this.pageNo
             var zip = new JSZip()
             var imgs = zip.folder(fileName)
             var baseList = []
             // 要下载图片的url
-            var arr = this.list.map(item=>item.icon)
+            var arr = this.list.map(item => item.icon)
             // 下载后图片的文件名，个数应与arr对应
-            var imgNameList = this.list.map(item=>{
+            var imgNameList = this.list.map(item => {
                 return (item.vendor && item.vendor.name) + '-' + item.name
             })
 
@@ -212,67 +282,18 @@ export default {
                 image.src = arr[i]
             }
         },
-        filterNameOpt() {
-            // 根据《游戏厂商》和《游戏分类》筛选合格的游戏名称
-            let vendor_id = this.filter.vendor_id
-            let type_id = this.filter.type_id
-            let nameOpt = this.select.games.filter(item => {
-                // 条件一：等于该厂商或者厂商id为空时 && 条件二：等于该游戏分类或者该分类筛选为空时
-                return (
-                    (item.vendor_id === vendor_id || vendor_id === '') &&
-                    (item.type_id === type_id || type_id === '')
-                )
-            })
-            // console.log('nameOpt: ', nameOpt);
-            this.name_opt = this.backToSelOpt(nameOpt)
-        },
-        typeUpd(val) {
-            this.filterNameOpt()
-        },
-        // edit(row) {
-
-        //     this.form = {
-        //         id: row.id,
-        //         name: row.name,
-        //         merchant_secret: row.merchant_secret,
-        //         private_key: row.private_key,
-        //         public_key: row.public_key,
-        //         merchant_code: row.merchant_code,
-        //         app_id: row.app_id,
-        //         authorization_code: row.authorization_code
-        //     }
-        //     this.curr_row = row
-        //     this.dia_show = 'edit'
-        //     this.dia_title = '编辑'
-        // },
         checkForm() {
             if (this.form.name === '') {
                 return false
             }
             return true
         },
-        // editConf() {
-        //     if(!this.checkForm()) return
-        //     let data = window.all.tool.rmEmpty(this.form)
-        //     let { url, method } = this.$api.game_set
-        //     this.$http({ url, method, data }).then(res => {
-        //         if (res && res.code === '200') {
-        //             this.$toast.success(res.message)
-        //             this.getList()
-        //             this.dia_show = ''
-        //         } else {
-        //             if (res && res.message) {
-        //                 this.$toast.error(res.message)
-        //             } else {
-        //                 this.$toast.error('更新失败')
-        //             }
-        //         }
-        //     })
-        // },
+
         statusSwitch(row) {
             this.curr_row = row
             this.modConf()
         },
+        // 更改状态
         modConf() {
             let data = {
                 id: this.curr_row.id,
@@ -376,7 +397,54 @@ export default {
             this.dia_show = 'detail'
             this.dia_title = '编辑详情'
         },
+        /** 获取下拉框内容 */
+        getSelectOpt() {
+            tool.getJsonOpt('game_vendors__games').then(res => {
+                if (res && Array.isArray(res)) {
+                    this.vendor_opt = [{ label: '全部', value: '' }]
+                    res.forEach(item => {
+                        let children = []
+                        if (item.games_under_vendor) {
+                            children = item.games_under_vendor.map(child => {
+                                return { label: child.name, value: child.id }
+                            })
+                        }
+                        this.vendor_opt.push({
+                            label: item.name,
+                            value: item.id,
+                            children: children
+                        })
+                    })
+                    this.game_name_opt = this.getMatchOpt(
+                        '',
+                        this.vendor_opt,
+                        true
+                    )
+                }
+            })
+            // 游戏分类, 游戏父类 设置
+            tool.getJsonOpt('game_type_vendors').then(res => {
+                if (res && Array.isArray(res)) {
+                    // self.type_opt = []
+                    this.type_opt = [{ label: '全部', value: '' }]
+                    // this.vendor_obj = {}
 
+                    res.forEach(item => {
+                        let children = []
+                        if (item.vendors) {
+                            children = item.vendors.map(child => {
+                                return { label: child.name, value: child.id }
+                            })
+                        }
+                        this.type_opt.push({
+                            label: item.name,
+                            value: item.id,
+                            children: children
+                        })
+                    })
+                }
+            })
+        },
         updateNo() {
             this.getList()
         },
@@ -384,11 +452,12 @@ export default {
             this.pageNo = 1
             this.getList()
         },
+
         getList() {
             let par = {
                 vendor_id: this.filter.vendor_id,
                 type_id: this.filter.type_id,
-                game_id: this.filter.name,
+                game_id: this.filter.game_id,
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
@@ -402,6 +471,9 @@ export default {
                 }
             })
         }
+    },
+    created() {
+        this.getSelectOpt()
     },
     mounted() {
         this.getList()

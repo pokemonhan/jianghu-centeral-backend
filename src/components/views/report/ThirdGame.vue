@@ -12,10 +12,7 @@
                 </li>
                 <li>
                     <span>日期</span>
-                    <!-- <Date v-model="filter.dates[0]" @update="timeUpdate()" />
-                    <span class="mh5">~</span>
-                    <Date v-model="filter.dates[1]" @update="timeUpdate()" /> -->
-                    <Date type="daterange" v-model="filter.dates" />
+                    <Date type="daterange" v-model="filter.dates" @update="timeUpdate" />
                 </li>
                 <li>
                     <button class="btn-blue">查询</button>
@@ -91,11 +88,11 @@ export default {
     },
     methods: {
         qqUpd(dates) {
-            //同步时间筛选值
+            // 同步时间筛选值
             this.filter.dates = dates
         },
         timeUpdate() {
-            //同步快捷查询按钮状态
+            // 同步快捷查询按钮状态
             this.quick_query = this.filter.dates
         },
         clear() {

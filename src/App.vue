@@ -2,15 +2,18 @@
     <div id="app">
         <!-- 顶部 -->
         <Header class="app-header"></Header>
+
         <!-- <div style="border:1px solid red;width:10rem;">10rem</div>
         <div style="border:1px solid red;width:10em;">10em</div>-->
         <div class="app-content">
             <!-- 侧边栏 -->
             <div class="app-aside">
-                <Aside class="adf"></Aside>
+                <Aside></Aside>
             </div>
             <div class="app-main">
                 <TabNav class="tab-nav"></TabNav>
+                <!-- <Breadcrumb></Breadcrumb> -->
+
                 <transition name="fade-transform" mode="out-in">
                     <keep-alive :include="keepAliveInclude" :exclude="keepAliveExclude">
                         <router-view v-if="isRouterAlive" class="router-view" />
@@ -33,13 +36,15 @@ import { mapGetters } from 'vuex'
 import Header from './components/Header.vue'
 import Aside from './components/Aside.vue'
 import TabNav from './components/TabNav.vue'
+import Breadcrumb from './components/commonComponents/Breadcrumb'
 
 export default {
     name: 'App',
     components: {
-        Header: Header,
-        Aside: Aside,
-        TabNav: TabNav
+        Header,
+        Aside,
+        TabNav,
+        Breadcrumb
     },
     provide() {
         return {

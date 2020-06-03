@@ -1,10 +1,41 @@
 <template>
     <div class="cont">
         <!-- 厅主列表 - 站点管理 -->
-
-        <div class="body">
-            <div class="left">
-                <ul style="margin-top:-13px;" class="form">
+        <div class="head">
+            <el-steps :active="active" align-center finish-status="success">
+                <el-step
+                    class="pointer"
+                    title="代理方式"
+                    description="有效日期"
+                    :status="stepStatus(0)"
+                    @click.native="active=0"
+                ></el-step>
+                <el-step
+                    class="pointer"
+                    title="皮肤"
+                    description="更改皮肤"
+                    :status="stepStatus(1)"
+                    @click.native="active=1"
+                ></el-step>
+                <el-step
+                    class="pointer"
+                    title="短信数量"
+                    description="修改短信数量"
+                    :status="stepStatus(2)"
+                    @click.native="active=2"
+                ></el-step>
+                <el-step
+                    class="pointer"
+                    title="权限"
+                    description="权限选项"
+                    :status="stepStatus(3)"
+                    @click.native="active=3"
+                ></el-step>
+            </el-steps>
+        </div>
+        <div class="body mt50">
+            <div class="form-cont">
+                <ul v-if="active===0" class="form">
                     <li>
                         <span>代理方式:</span>
                         <Checkbox label="PC" v-model="agency_method[0]" />
@@ -16,18 +47,12 @@
                     <li>
                         <span>有效日期:</span>
                         <div class="text-center">
-                            <!-- <Date style="width:200px;" type="datetime" v-model="dates[0]" />
-                            <span>~</span>
-                            <Date style="width:200px;" type="datetime" v-model="dates[1]" /> -->
-                            <!-- <date type="datatimerange" v-model="dates" /> -->
                             <date style="width:340px;" type="datetimerange" v-model="dates" />
                             <p v-show="!(dates[0]&&dates[1])" class="red mt5">开始时间和结束都不可为空!</p>
                         </div>
                     </li>
                 </ul>
-            </div>
-            <div class="right">
-                <ul class="skin">
+                <ul v-if="active===1" class="skin">
                     <li>
                         <span class="skin-pc">PC皮肤:</span>
                         <Select v-model="pc_skin_id" :options="pc_skin_opt"></Select>
@@ -41,18 +66,20 @@
                         <Select v-model="app_skin_id" :options="skin_app_opt"></Select>
                     </li>
                 </ul>
-                <ul class="form">
+                <ul v-if="active===2" class="form">
                     <li>
                         <span>修改短信数量:</span>
-                        <Select v-model="type" :options="[{label:'增加',value:1},{label:'减少',value:0}]" ></Select>
-                        <Input class="w280" limit="p-integer" v-model="sms_num" />
-
+                        <Select
+                            v-model="type"
+                            :options="[{label:'增加',value:1},{label:'减少',value:0}]"
+                        ></Select>
+                        <Input :showerr="type===0&&sms_num>last_sms_num" errmsg="数字错误" class="w280" limit="p-integer" v-model="sms_num" />
                         <span class="ml20">剩余短信数量: {{last_sms_num}}</span>
                     </li>
+                </ul>
+                <ul v-if="active===3" class="form">
                     <li>
                         <span>权限选项:</span>
-                        <!-- <div>x</div> -->
-                        <!-- <Input class="w280" v-model="authority" /> -->
                         <AuthorityTree
                             style="width:500px;"
                             :menutree="tree_list"
@@ -60,34 +87,39 @@
                             @update="treeListUpd"
                         />
                     </li>
+
                 </ul>
             </div>
         </div>
         <div class="btns">
             <button class="btn-plain-large" @click="initial">重置</button>
-            <button class="btn-blue-large ml50" @click="save">保存</button>
+            <button v-show="active===3" class="btn-blue-large ml50" @click="save">保存</button>
         </div>
     </div>
 </template>
 
 
 <script>
+import { Steps, Step } from 'element-ui'
 import AuthorityTree from '../../../commonComponents/AuthorityTree'
 export default {
     props: {
         row: {
             type: Object,
-            default: {}
+            default: () => {}
         },
         tree_list: Array
     },
     components: {
-        AuthorityTree: AuthorityTree
+        AuthorityTree: AuthorityTree,
+        [Steps.name]: Steps,
+        [Step.name]: Step
     },
     data() {
         return {
             // show_black_list_conf: true,
-            agency_method: [false,false,false],
+            active: 0,
+            agency_method: [false, false, false],
             dates: [],
             pc_skin_id: 0,
             h5_skin_id: 0,
@@ -122,34 +154,69 @@ export default {
         initial() {
             let row = this.row
             if (row) {
-                let agency_method = (row.agency_method||'').split(',')
+                let agency_method = (row.agency_method || '').split(',')
                 let arr = agency_method || []
                 this.agency_method = []
 
                 arr.forEach((item, index) => {
                     // 使代理方式checkbox 选中
                     this.agency_method[item - 1] = true // 代理方式
-                    
                 })
                 // console.log('this.agency_method: ', this.agency_method);
-                this.dates[0] = row.start_time  // 有效日期
+                this.dates[0] = row.start_time // 有效日期
                 this.dates[1] = row.end_time
                 this.pc_skin_id = row.pc_skin_id // 皮肤
                 this.h5_skin_id = row.h5_skin_id
                 this.app_skin_id = row.app_skin_id
                 this.last_sms_num = row.sms_num // 剩余短信数量
-                this.sms_num = '0'
+                this.sms_num = ''
                 this.role = row.role.slice() // 权限选项
             }
         },
         treeListUpd() {},
-     
+        step0Check() {
+            let had_agent_method = this.agency_method.find(item => item)
+            let had_date = (this.dates[0] && this.dates[1])
+            return had_agent_method && had_date
+        },
+        step1Check() {
+            return true
+        },
+        step2Check() {
+            return true
+        },
+        step3Check() {
+            return this.role.length>0
+        },
         checkForm() {
-            if(!this.agency_method.find(item=>item)){
+            if (!this.agency_method.find(item => item)) {
                 this.$toast.warning('代理方式不可为空!')
                 return false
             }
             return true
+        },
+        /** 展示 步骤条 状态 */
+        stepStatus(stepVal) {
+            // wait / process / finish / error / success
+            if (this.active === stepVal) {
+                return 'process'
+            } else if (this.active > stepVal) {
+                switch (stepVal) {
+                    case 0:
+                        return this.step0Check() ? 'success' : 'error'
+                        break
+                    case 1:
+                        return this.step1Check() ? 'success' : 'error'
+                        break
+                    case 2:
+                        return this.step2Check() ? 'success' : 'error'
+                    case 3:
+                        return this.step3Check() ? 'success' : 'error'
+                        break
+                    default:
+                        break
+                }
+            }
         },
         save() {
             if (!this.checkForm()) return
@@ -178,7 +245,7 @@ export default {
                 h5_skin_id: this.h5_skin_id, // H5皮肤ID
                 app_skin_id: this.app_skin_id, // APP皮肤ID
                 type: this.type,
-                sms_num: this.sms_num||0, // 短信操作数量
+                sms_num: this.sms_num || 0, // 短信操作数量
                 role: JSON.stringify(this.role) // 菜单权限
             }
 
@@ -202,15 +269,19 @@ export default {
 
 <style scoped>
 .cont {
-    min-width: 1100px;
+    min-width: 800px;
+    height: 740px;
     padding-top: 50px;
     padding-bottom: 90px;
 }
-.body {
+
+.form-cont {
     display: flex;
+    justify-content: center;
 }
 .form > li {
     display: flex;
+    align-items: baseline;
     position: relative;
     min-height: 32px;
     margin-top: 20px;

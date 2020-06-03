@@ -172,9 +172,6 @@
                                     />
                                 </div>
                             </td>
-                            <!-- <td>
-                                <button class="btn-blue" @click="remove(row)">移除</button>
-                            </td>-->
                         </tr>
                         <tr v-if="right.list&&right.list.length===0">
                             <td colspan="3">数据为空</td>

@@ -7,6 +7,7 @@ export default {
      * 改  set
      * 查  list
      * 
+     * 
      * 其他 send
      * 状态更改 status_set
     */
@@ -124,12 +125,12 @@ export default {
         url: '/headquarters-api/platform/assign-activities',
         method: 'post',
     },
-    /** 活动管理 - 已分配的活动列表 */
+    /** 活动管理 - 已分配 的活动列表 */
     active_manage_assigned_list: {
         url: '/headquarters-api/platform/assigned-activities',
         method: 'get',
     },
-    /** 活动管理 - 未分配的活动列表 */
+    /** 活动管理 - 未分配 的活动列表 */
     active_manage_unassign_list: {
         url: '/headquarters-api/platform/unassign-activities',
         method: 'get',
@@ -265,10 +266,16 @@ export default {
 
 
     /*=========================== 报表管理 ===========================--*/
-
-
-
-
+    /** 厅 6.1.1 主注单报表 - 列表 */
+    hall_regist_report_list: {
+        url: '/headquarters-api/report/game-project',
+        method: 'post'
+    },
+    hall_game_report_list: {
+        url: '/headquarters-api/report/platform-game',
+        method: 'post'
+    },
+    
     /*=========================== 金流配置 ===========================--*/
 
     /** 厂商管理 - 列表 */
