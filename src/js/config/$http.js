@@ -179,7 +179,7 @@ http.interceptors.response.use(res => {
     } else {
         // 302100 登出后提示内容
         if (res.data.code === '302100') {
-            toastErr(message)
+            window.__vm__.$toast.success(message)
         } else if (res.data.code !== '200') {
             // toastErr(message)
             if (needSetAuthorization(url)) {
