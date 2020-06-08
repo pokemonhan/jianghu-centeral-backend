@@ -4,36 +4,38 @@
             <span>成员列表：</span>
             <button class="btn-blue" @click="addMember">添加成员</button>
         </div>
-        <Table :headers="headers" :column="list">
-            <template v-slot:item="{row}">
-                <td class="px10">{{row.name}}</td>
-                <td class="px10">{{row.email}}</td>
-                <!-- <td
+        <div class="show-table">
+            <Table class="admin-table" :headers="headers" :column="list">
+                <template v-slot:item="{row}">
+                    <td class="px10 min-w-60">{{row.name}}</td>
+                    <td class="px10 min-w-180">{{row.email}}</td>
+                    <!-- <td
                     :class="[row.status?'green':'red']"
-                >{{row.status===1?'启用':row.status===0?'禁用':'出错!!!'}}</td>-->
-                <td class="px5">
-                    <Switchbox v-model="row.status" @update="memberStatusSwitch(row)" />
-                </td>
-                <td class="px5">
-                    <button class="btns-blue" @click="editPwd(row)">修改密码</button>
-                    <!-- <button
+                    >{{row.status===1?'启用':row.status===0?'禁用':'出错!!!'}}</td>-->
+                    <td class="px5 min-w-60">
+                        <Switchbox v-model="row.status" @update="memberStatusSwitch(row)" />
+                    </td>
+                    <td class="px5 min-w100">
+                        <button class="btns-blue" @click="editPwd(row)">修改密码</button>
+                        <!-- <button
                         :class="[row.status?'btns-red':'btns-green']"
                         @click="memberStatusSwitch(row)"
-                    >{{row.status===1?'禁用':row.status===0?'启用':'出错'}}</button>-->
-                </td>
-            </template>
-        </Table>
-        <!-- 
-        <Page
-            v-show="!isSearch"
-            class="table-page"
-            :total="total"
-            :pageNo.sync="pageNo"
-            :pageSize.sync="pageSize"
-            @updateNo="updateNo"
-            @updateSize="updateSize"
-        />-->
-        <Pagefront class="mt20" :page-config="pageConfig" @update="updatePage"></Pagefront>
+                        >{{row.status===1?'禁用':row.status===0?'启用':'出错'}}</button>-->
+                    </td>
+                </template>
+            </Table>
+
+            <!-- <Page
+                v-show="!isSearch"
+                class="table-page"
+                :total="total"x
+                :pageNo.sync="pageNo"
+                :pageSize.sync="pageSize"
+                @updateNo="updateNo"
+                @updateSize="updateSize"
+            /> -->
+        </div>
+        <!-- <Pagefront class="mt20" :page-config="pageConfig" @update="updatePage"></Pagefront> -->
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
             <div class="dia-inner">
                 <div v-if="dia_show==='add_member'">
@@ -386,6 +388,10 @@ export default {
 .mb20 {
     margin-bottom: 20px;
 }
+.show-table .admin-table {
+    min-width: 500px;
+    min-height: 150px;
+}
 .form > li {
     display: flex;
     align-items: center;
@@ -404,6 +410,15 @@ export default {
     display: flex;
     justify-content: center;
     margin-top: 30px;
+}
+.min-w-60 {
+    min-width: 60px;
+}
+.min-w-180 {
+    min-width: 180px;
+}
+.min-w-100 {
+    min-width: 100px;
 }
 .ml20 {
     margin-left: 20px;

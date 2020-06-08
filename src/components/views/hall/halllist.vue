@@ -112,6 +112,7 @@
                             <span>有效日期:</span>
                             <div>
                                 <date
+                                    :disabledDate="['no_before_today']"
                                     style="width:300px;"
                                     type="datetimerange"
                                     v-model="form.dates"

@@ -9,7 +9,7 @@
                 <li>
                     <span>登录日期</span>
 
-                    <Date type="daterange" v-model="filter.createAt" />
+                    <Date type="daterange" :disabledDate="['no_after_tomorrow']" v-model="filter.createAt" />
                 </li>
                 <li>
                     <span>登录ip</span>

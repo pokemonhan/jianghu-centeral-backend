@@ -138,6 +138,7 @@ export default {
     height: 70px;
     width: 100%;
     flex-basis: 70px;
+    box-shadow: 0 2px 10px #a0a0a0;
 }
 .app-content {
     /* flex: 0.8; */
@@ -156,6 +157,7 @@ export default {
     height: calc(100vh - 90px);
     margin-left: 10px;
     /* overflow: scroll; */
+    box-shadow: 0 0 7px #bdbdbd;
 }
 .app-main {
     /* height: 100%; */
@@ -847,7 +849,7 @@ textarea::placeholder {
 /* 重写element ui loading 样式 */
 .el-loading-parent--relative .el-loading-mask {
     position: fixed;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.5);
     margin: 0;
     top: 50%;
     /* right: 20%;

@@ -70,7 +70,7 @@ export default {
         ...mapState(['tab_nav_list', 'aside_scroll_path'])
     },
     methods: {
-        ...mapMutations(['updateTab_nav_list']),
+        ...mapMutations(['updateTab_nav_list','updateAside_scroll_path']),
 
         // 是否是当前路由的父级 ul, 是返回true
         curr_ul(lev1) {
@@ -168,6 +168,21 @@ export default {
                 return template
             })
         },
+        autoScroll(jumpPath){
+            if (!jumpPath) return
+            let containEle = this.$refs.contain
+            let currEle = this.$refs[jumpPath]
+            if(!currEle)return
+            currEle = currEle[0]
+            let parent_top = containEle.offsetTop
+            let curr_top = currEle && currEle.offsetTop
+            // curr_top - parent_top
+            containEle.scrollTo({
+                top: curr_top - parent_top - 50,
+                left: 0,
+                behavior: 'smooth'
+            })
+        },
         getMenuList() {
             if (!window.all.tool.getLocal('Authorization')) {
                 return
@@ -182,37 +197,11 @@ export default {
                         let menu = this.objToArr(res.data)
                         this.menu_list = menu
                         window.all.tool.setLocal('menu', menu)
+                        
                     }
                 })
             }
         },
-        // 获取当前路由的父级或祖先级
-        getFather() {
-            let curr_path = this.$route.path
-            let menu = this.menu_list
-            if (!menu) return
-            // console.log('menu: ', menu);
-            // 获取父子级关系 如 1-1-1
-            let chain_temp = ''
-            let getPreChain = function(arr, pre_fix = '') {
-                arr.forEach((item, index) => {
-                    if (item.children) {
-                        let pre = pre_fix !== '' ? pre_fix + '-' + index : index
-                        getPreChain(item.children, pre)
-                    } else {
-                        if (item.path === curr_path) {
-                            pre_fix =
-                                pre_fix !== '' ? pre_fix + '-' + index : index
-                            chain_temp = pre_fix
-                        }
-                    }
-                })
-            }
-            getPreChain(menu)
-            this.chain = (chain_temp || '').split('-')
-            // console.log('menu: ', menu)
-            // console.log('锁链', this.chain)
-        }
     },
     watch: {
         $route: function(to, from) {
@@ -226,7 +215,6 @@ export default {
              *
              */
             // 当前没有菜单就 localStorage找
-            // this.getFather()
             if (from.path === '/login') {
                 let Authorization = window.all.tool.getLocal('Authorization')
                 if (Authorization) {
@@ -235,17 +223,7 @@ export default {
             }
         },
         aside_scroll_path(jumpPath) {
-            if (!jumpPath) return
-            let containEle = this.$refs.contain
-            let currEle = this.$refs[jumpPath][0]
-            let parent_top = containEle.offsetTop
-            let curr_top = currEle && currEle.offsetTop
-            // curr_top - parent_top
-            containEle.scrollTo({
-                top: curr_top - parent_top - 50,
-                left: 0,
-                behavior: 'smooth'
-            })
+            this.autoScroll(jumpPath)
         }
     },
     mounted() {
@@ -253,8 +231,15 @@ export default {
         if (Authorization) {
             this.getMenuList()
         }
+        if(this.menu_list&&this.menu_list.length>0){
+            if(window.location.pathname){
+                setTimeout(()=>{
+                    this.autoScroll(window.location.pathname)
+                },200)
+            }
+        }
 
-        let self = this
+        // let self = this
         // let setHeight = function() {
         //     let height = document.documentElement.clientHeight // 可视 页面高度
         //     let ele = self.$refs.contain

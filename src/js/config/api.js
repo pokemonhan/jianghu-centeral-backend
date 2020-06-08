@@ -266,11 +266,17 @@ export default {
 
 
     /*=========================== 报表管理 ===========================--*/
-    /** 厅 6.1.1 主注单报表 - 列表 */
+    /** 6.1.1 厅主注单报表 - 列表 */
     hall_regist_report_list: {
         url: '/headquarters-api/report/game-project',
         method: 'post'
     },
+    /**  6.2.1 第三方游戏报表-列表 */
+    third_game_report_list: {
+        url: '/headquarters-api/report/game-vendor',
+        method: 'post'
+    },
+    /** 厅主游戏报表 6.3.1*/
     hall_game_report_list: {
         url: '/headquarters-api/report/platform-game',
         method: 'post'

@@ -8,14 +8,14 @@
             <ul class="left">
                 <li>
                     <span>游戏平台</span>
-                    <Input class="w100" v-model="filter.name" />
+                    <Input class="w100" v-model="filter.game_vendor_sign" />
                 </li>
                 <li>
                     <span>日期</span>
-                    <Date type="daterange" v-model="filter.dates" @update="timeUpdate" />
+                    <Date type="daterange" v-model="filter.report_day" @update="timeUpdate" />
                 </li>
                 <li>
-                    <button class="btn-blue">查询</button>
+                    <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="exportExcel">导出Excel</button>
                 </li>
                 <li>
@@ -23,17 +23,17 @@
                 </li>
             </ul>
         </div>
-     
+
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.a1}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
-                    <td>{{row.a2}}</td>
+                    <td>{{row.game_vendor&&row.game_vendor.name}}</td>
+                    <td>{{row.effective_bet}}</td>
+                    <td>{{row.tax}}</td>
+                    <td>{{row.bet}}</td>
+                    <td>{{row.commission}}/{{row.rebate}}</td>
+                    <td>{{Number(row.win_money) - Number(row.bet)}}</td>
+                    <td>{{row.day}}</td>
                 </template>
             </Table>
 
@@ -54,8 +54,8 @@ export default {
     data() {
         return {
             filter: {
-                name: '',
-                dates: []
+                game_vendor_sign: '',
+                report_day: []
             },
             status_opt: [
                 { label: '全部', value: '' },
@@ -64,23 +64,16 @@ export default {
             ],
             quick_query: [],
             /* table */
-            headers: ['游戏平台','总有效下注','总游戏税收','总投注额','佣金/返利','游戏盈亏','日期'],
-            list: [
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                },
-                {
-                    a1: '64646466',
-                    a2: 'sdfsdfdsf',
-                    a3: '充支好礼',
-                    a4: '1',
-                    a5: '2019-02-02 21:30'
-                }
+            headers: [
+                '游戏平台',
+                '总有效下注',
+                '总游戏税收',
+                '总投注额',
+                '佣金/返利',
+                '游戏盈亏',
+                '日期'
             ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25
@@ -89,24 +82,24 @@ export default {
     methods: {
         qqUpd(dates) {
             // 同步时间筛选值
-            this.filter.dates = dates
+            this.filter.report_day = dates
         },
         timeUpdate() {
             // 同步快捷查询按钮状态
-            this.quick_query = this.filter.dates
+            this.quick_query = this.filter.report_day
         },
         clear() {
             this.quick_query = []
             this.filter = {
-                name: '',
-                dates: []
+                game_vendor_sign: '',
+                report_day: []
             }
         },
         exportExcel() {
             import('../../../js/config/Export2Excel').then(excel => {
                 const tHeader = this.headers
                 const data = this.list.map(item => {
-                    return [item.a1, item.a2, item.a3,item.a4]
+                    return [item.a1, item.a2, item.a3, item.a4]
                 })
 
                 let chainName = window.all.tool.getChainName(this.$route.path)
@@ -120,14 +113,37 @@ export default {
             })
         },
         updateNo() {
-            // this.getList()
+            this.getList()
         },
         updateSize() {
             this.pageNo = 1
-            // this.getList()
+            this.getList()
         },
+        getList() {
+            let para = {
+                // report_day: this.filter.report_day,
+                game_vendor_sign: this.filter.game_vendor_sign,
+                pageSize: this.pageSize,
+                page: this.pageNo
+            }
+            if(this.filter.report_day[0]&&this.filter.report_day[1]){
+                para.report_day = JSON.stringify(this.filter.report_day)
+            }
+            let data = window.all.tool.rmEmpty(para)
+
+            let { url, method } = this.$api.third_game_report_list
+            this.$http({ method, url, data }).then(res => {
+                // console.log('列表👌👌👌👌: ', res)
+                if (res && res.code === '200') {
+                    this.total = res.data.total
+                    this.list = res.data.data
+                }
+            })
+        }
     },
-    mounted() {}
+    mounted() {
+        this.getList()
+    }
 }
 </script>
 
