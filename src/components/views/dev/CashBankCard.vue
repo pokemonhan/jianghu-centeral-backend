@@ -279,12 +279,14 @@ export default {
         getCommandOpt() {
             window.all.tool.getJsonOpt('system_banks_available').then(res => {
                 if (res && Array.isArray(res)) {
-                    this.bank_opt = res.map(item => {
+                    // this.bank_opt = [{label:'全部',value:''}]
+                    let arr = res.map(item => {
                         return {
                             label: `${item.name}(${item.code})`,
                             value: item.name
                         }
                     })
+                    this.bank_opt = [{label:'全部',value:''}].concat(arr)
                 }
             })
         },
