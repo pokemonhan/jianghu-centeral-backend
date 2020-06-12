@@ -55,10 +55,10 @@
                         <td>{{row.platform_name}}</td>
                         <td>{{row.game_vendor}}</td>
                         <td>{{row.game_name}}</td>
-                        <td>{{Number(row.bet_money)}}</td>
-                        <td>{{row.effective_bet}}</td>
+                        <td>{{tofixedTwo(row.bet_money)}}</td>
+                        <td>{{tofixedTwo(row.effective_bet)}}</td>
                         <td>{{row.charged_fees}}</td>
-                        <td>{{Number(row.win_money)-Number(row.bet_money)}}</td>
+                        <td>{{tofixedTwo(Number(row.win_money)-Number(row.bet_money))}}</td>
                         <td>{{lottery_status[row.status]||'---'}}</td>
                         <td>{{row.their_create_time}}</td>
                         <td>{{row.delivery_time||'---'}}</td>
@@ -95,23 +95,39 @@ export default {
                 { label: '已撤销', value: '1' },
                 { label: '未中奖', value: '2' },
                 { label: '已中奖', value: '3' },
-                { label: '已派奖', value: '4' },
+                { label: '已派奖', value: '4' }
             ],
             quick_query: [],
             /* table */
             // 0已投注 1已撤销 2未中奖 3已中奖 4已派奖
-            lottery_status:{
-                '0':'已投注',
-                '1':'已撤销',
-                '2':'未中奖',
-                '3':'已中奖',
-                '4':'已派奖',
+            lottery_status: {
+                '0': '已投注',
+                '1': '已撤销',
+                '2': '未中奖',
+                '3': '已中奖',
+                '4': '已派奖'
             },
-            headers: [ '系统注单', '注单号', '会员账号', '会员ID', '站点名称', '游戏平台', '游戏名称', '投注额', '有效下注', '抽水', '输赢', '派彩状态', '注单时间', '派彩时间', '入库时间' ],
+            headers: [
+                '系统注单',
+                '注单号',
+                '会员账号',
+                '会员ID',
+                '站点名称',
+                '游戏平台',
+                '游戏名称',
+                '投注额',
+                '有效下注',
+                '抽水',
+                '输赢',
+                '派彩状态',
+                '注单时间',
+                '派彩时间',
+                '入库时间'
+            ],
             list: [],
             total: 0,
             pageNo: 1,
-            pageSize: 25,
+            pageSize: 25
         }
     },
     methods: {
@@ -164,6 +180,10 @@ export default {
         //     //同步快捷查询按钮状态
         //     this.quick_query = this.filter.bet_dates
         // },
+        tofixedTwo(num) {
+            if (!num) return 0
+            return Number(num).toFixed(2)
+        },
         updateNo(val) {
             this.getList()
         },
@@ -182,13 +202,13 @@ export default {
                 page: this.pageNo
             }
             let data = window.all.tool.rmEmpty(para)
-            if(data.delivery_time){
+            if (data.delivery_time) {
                 data.delivery_time = JSON.stringify(data.delivery_time)
             }
-            if(data.their_create_time){
+            if (data.their_create_time) {
                 data.their_create_time = JSON.stringify(data.their_create_time)
             }
-            if(data.created_at){
+            if (data.created_at) {
                 data.created_at = JSON.stringify(data.created_at)
             }
             let { url, method } = this.$api.hall_regist_report_list

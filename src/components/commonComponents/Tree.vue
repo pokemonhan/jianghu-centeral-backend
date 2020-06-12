@@ -3,7 +3,10 @@
         <ul class="lev1">
             <li v-for="(lev1, lev1_idx) in list" :key="lev1_idx">
                 <div class="title">
-                    <i :class="['iconfont iconup',lev1.child?'':'hide']" @click="expand(lev1,lev1_idx)"></i>
+                    <i
+                        :class="['iconfont iconup',lev1.child?'':'hide']"
+                        @click="expand(lev1,lev1_idx)"
+                    ></i>
                     <Checkbox
                         class="checkbox-head"
                         :label="lev1.label"
@@ -75,13 +78,13 @@ export default {
         }
     },
     methods: {
-        expand(lev1,index) {
+        expand(lev1, index) {
             // console.log('lev1: ', lev1);
             let ele = this.$refs[index][0]
             // $(ele).slideToggle(200)
             Slide.slideToggle(ele)
         },
-        
+
         checkBoxUpd(bool, idx) {
             let idx_arr = idx.toString().split('-')
             let list = this.list
@@ -132,7 +135,28 @@ export default {
 <style scoped>
 .v-tree {
     user-select: none;
+    position: relative;
 }
+/* .title:before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 26px;
+    bottom: 6px;
+    border-left: 1px dotted #999;
+}
+.title:after {
+    content: '';
+    width: 10px;
+    position: absolute;
+    left: -15px;
+    top: 15px;
+    border-top: 1px dotted #999;
+}
+.iconfont {
+    position: relative;
+    z-index: 10;
+} */
 .lev1 .title {
     cursor: pointer;
 }

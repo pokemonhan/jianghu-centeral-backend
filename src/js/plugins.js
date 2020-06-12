@@ -151,7 +151,7 @@ export default {
                 let lastTime = requestObj[url]
                 let delay = now - lastTime
                 // 同一接口时间大于1500毫秒 就请求
-                if (delay > 300) {
+                if (delay > 100) {
                     requestObj[url] = now
                     return $http(opt)
                 } else {

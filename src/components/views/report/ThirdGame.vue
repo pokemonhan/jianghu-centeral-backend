@@ -28,11 +28,11 @@
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
                     <td>{{row.game_vendor&&row.game_vendor.name}}</td>
-                    <td>{{row.effective_bet}}</td>
-                    <td>{{row.tax}}</td>
-                    <td>{{row.bet}}</td>
-                    <td>{{row.commission}}/{{row.rebate}}</td>
-                    <td>{{Number(row.win_money) - Number(row.bet)}}</td>
+                    <td>{{tofixedTwo(row.effective_bet)}}</td>
+                    <td>{{tofixedTwo(row.tax)}}</td>
+                    <td>{{tofixedTwo(row.bet)}}</td>
+                    <td>{{tofixedTwo(row.commission)}}/{{tofixedTwo(row.rebate)}}</td>
+                    <td>{{tofixedTwo(Number(row.win_money) - Number(row.bet))}}</td>
                     <td>{{row.day}}</td>
                 </template>
             </Table>
@@ -95,6 +95,7 @@ export default {
                 report_day: []
             }
         },
+
         exportExcel() {
             import('../../../js/config/Export2Excel').then(excel => {
                 const tHeader = this.headers
@@ -112,6 +113,10 @@ export default {
                 })
             })
         },
+        tofixedTwo(num) {
+            if (!num) return 0
+            return Number(num).toFixed(2)
+        },
         updateNo() {
             this.getList()
         },
@@ -126,7 +131,7 @@ export default {
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
-            if(this.filter.report_day[0]&&this.filter.report_day[1]){
+            if (this.filter.report_day[0] && this.filter.report_day[1]) {
                 para.report_day = JSON.stringify(this.filter.report_day)
             }
             let data = window.all.tool.rmEmpty(para)

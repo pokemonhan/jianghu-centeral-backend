@@ -26,9 +26,9 @@
                 <template v-slot:item="{row}">
                     <td>{{row.platform&&row.platform.cn_name}}</td>
                     <td>{{row.game_vendor_name}}</td>
-                    <td>{{row.bet_money}}</td>
-                    <td>{{row.effective_bet}}</td>
-                    <td>{{row.our_net_win}}</td>
+                    <td>{{tofixedTwo(row.bet_money)}}</td>
+                    <td>{{tofixedTwo(row.effective_bet)}}</td>
+                    <td>{{tofixedTwo(row.our_net_win)}}</td>
                     <td>{{Number(row.win_money)-Number(row.bet_money)}}</td>
                     <td>{{row.day}}</td>
                 </template>
@@ -64,26 +64,7 @@ export default {
                 '总输赢',
                 '日期'
             ],
-            list: [
-                {
-                    a1: '江湖互娱',
-                    a2: '开元棋牌',
-                    a3: '100',
-                    a4: '100',
-                    a5: '0',
-                    a6: '-456',
-                    a7: '2019-11-26'
-                },
-                {
-                    a1: '江湖互娱',
-                    a2: '开元棋牌',
-                    a3: '100',
-                    a4: '100',
-                    a5: '0',
-                    a6: '-456',
-                    a7: '2019-11-26'
-                }
-            ],
+            list: [],
             total: 0,
             pageNo: 1,
             pageSize: 25
@@ -104,6 +85,10 @@ export default {
                 platform_name: '',
                 project_day: []
             }
+        },
+        tofixedTwo(num){
+            if(!num) return 0
+            return Number(num).toFixed(2)
         },
         updateNo() {
             this.getList()

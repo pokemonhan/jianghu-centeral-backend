@@ -40,30 +40,57 @@
                         <div class="opera-cont">
                             <div class="cont-left">
                                 <div class="cont-title">{{item.title}}</div>
-                                <div class="mt8">
+                                <!-- <div class="mt8">
                                     <span>操作时间:</span>
                                     <span>{{item.created_at}}</span>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="cont-right">
-                                <button class="btn-blue" @click="detail(item)">查看详情</button>
+                                <!-- <button class="btn-blue" @click="detail(item)">查看详情</button> -->
+                                <ul>
+                                    <li class="detail">
+                                        <div class="item-detail">
+                                            <span style="color:#4c8bfd">详情</span>
+                                        </div>
+                                        <div>
+                                            <span>管理员</span>
+                                            <span>: </span>
+                                            <span>{{item.admin_name}}</span>
+                                        </div>
+                                        <div>
+                                            <span>时间</span>
+                                            <span>: </span>
+                                            <span>{{item.created_at}}</span>
+                                        </div>
+                                        <div>
+                                            <span>来源</span>
+                                            <span>: </span>
+                                            <span>{{item.origin}}</span>
+                                        </div>
+                                        <div>
+                                            <span>IP</span>
+                                            <span>: </span>
+                                            <span>{{item.ip}}</span>
+                                        </div>
+                                        <div>
+                                            <span>浏览器</span>
+                                            <span>: </span>
+                                            <img
+                                                class="explorer-img"
+                                                :src="getExplorerSrc(item.user_agent)"
+                                                alt="图片加载失败"
+                                            />
+                                            <span>{{item.user_agent}}</span>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </li>
                 </ul>
             </div>
-            <!-- <div class="mb20">
-                <Page
-                    class="table-page"
-                    :total="total"
-                    :pageNo.sync="pageNo"
-                    :pageSize.sync="pageSize"
-                    @updateNo="updateNo"
-                    @updateSize="updateSize"
-                />
-            </div>-->
         </div>
-        <Dialog :show.sync="dia_show" title="操作详情">
+        <!-- <Dialog :show.sync="dia_show" title="操作详情">
             <div class="dia-inner">
                 <ul>
                     <li>
@@ -94,7 +121,7 @@
                     </li>
                 </ul>
             </div>
-        </Dialog>
+        </Dialog> -->
     </div>
 </template>
 
@@ -335,10 +362,17 @@ export default {
     height: calc(100vh - 170px);
     overflow: autos;
 }
+.v-date-picker >>> .date-box {
+    left: 100px;
+}
+.cont-left {
+    width: 200px;
+    margin-left: 10px;
+}
 
 .opera-list {
     /* margin-left: 100px; */
-    width: 730px;
+    width: 1700px;
     margin: 20px auto 0 auto;
     /* border: 1px solid #000; */
 }
@@ -368,7 +402,7 @@ export default {
     left: 50%;
     bottom: 0;
     width: 2px;
-    height: 45px;
+    height: 180px;
     background: #eee;
 }
 
@@ -376,7 +410,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 500px;
+    width: 1300px;
     /* height: 60px; */
     padding: 10px;
     margin-left: 10px;
@@ -387,24 +421,26 @@ export default {
     font-weight: bold;
     color: #4c8bfd;
 }
+.detail .item-detail {
+    font-weight: bold;
+    /* color: #4c8bfd; */
+}
 .detail div > span:first-child {
     display: inline-block;
     min-width: 5em;
-    margin-top: 20px;
+    margin-top: 5px;
     margin-right: 10px;
-    /* text-align: right; */
     text-align-last: justify; /* ie9*/
-    /* font-weight: bold; */
     font-size: 1.1em;
     color: #444;
 }
+
+.detail img {
+    width: 20px;
+    height: 20px;
+}
 .mt8 {
     margin-top: 8px;
-}
-.bold-blue {
-    /* font-weight: bold; */
-    font-size: 1.3em;
-    color: #4c8bfd;
 }
 .mt30 {
     margin-top: 30px;

@@ -37,7 +37,7 @@
                     </td>
                     <td>{{row.remarks}}</td>
                     <td>{{row.created_at||'---'}}</td>
-                    <td>{{row.updated_at}}</td>
+                    <td>{{row.updated_at||'---'}}</td>
                     <td>
                         <button class="btn-blue" @click="edit(row)">编辑</button>
                         <button class="btn-red" @click="del(row)">删除</button>

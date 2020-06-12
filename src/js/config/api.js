@@ -281,6 +281,11 @@ export default {
         url: '/headquarters-api/report/platform-game',
         method: 'post'
     },
+    /** 厅主充值报表 6.3.1*/
+    platform_topup_list: {
+        url: '/headquarters-api/report/platform-account',
+        method: 'post'
+    },
     
     /*=========================== 金流配置 ===========================--*/
 

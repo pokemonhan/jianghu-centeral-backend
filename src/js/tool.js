@@ -95,13 +95,44 @@ function slideToggle (ele, time = 200) {
     }
 }
 
+// 获取json数据
+function getJsonOpt (key) {
+    return new Promise(resolve => {
+        let all_json_base_url = store.state.picPrefix + 'common/linter.json'
+        // 请求所有下拉路径
+        let all_url = window.all.tool.getSession('allJsonUrl')
+        if (!all_url) {
+            axios.get(all_json_base_url).then(res => {
+                if (res && res.data) {
+                    all_url = res.data
+                    window.all.tool.setSession('allJsonUrl', res.data)
+                    let all_url_obj = all_url[key] || {}
+                    // 请求 命令集opt
+                    if (all_url_obj.path) {
+                        axios.get(all_url_obj.path).then(response => {
+                            resolve(response && response.data)
+                        })
+                    }
+                }
+            })
+        } else {
+            let all_url_obj = all_url[key] || {}
+            // 请求 命令集opt
+            if (all_url_obj.path) {
+                axios.get(all_url_obj.path).then(response => {
+                    resolve(response && response.data)
+                })
+            }
+        }
+
+    })
+}
 
 
 const Tool = {
     //工具汇总
 
     //  本地存储类工具************************************************************************* //
-
     setSession: (key, val) => sessionStorage.setItem(key, JSON.stringify(val)),//保存本地信息
     getSession: key => JSON.parse(sessionStorage.getItem(key)),//获取本地信息
     removeSession: key => sessionStorage.removeItem(key),  // 清除session
@@ -267,36 +298,6 @@ const Tool = {
             return 'Unkonwn';
         }
     },
-    getJsonOpt (key) {
-        return new Promise(resolve => {
-            let all_json_base_url = store.state.picPrefix + 'common/linter.json'
-            // 请求所有下拉路径
-            let all_url = window.all.tool.getSession('allJsonUrl')
-            if (!all_url) {
-                axios.get(all_json_base_url).then(res => {
-                    if (res && res.data) {
-                        all_url = res.data
-                        window.all.tool.setSession('allJsonUrl', res.data)
-                        let all_url_obj = all_url[key] || {}
-                        // 请求 命令集opt
-                        if (all_url_obj.path) {
-                            axios.get(all_url_obj.path).then(response => {
-                                resolve(response && response.data)
-                            })
-                        }
-                    }
-                })
-            } else {
-                let all_url_obj = all_url[key] || {}
-                // 请求 命令集opt
-                if (all_url_obj.path) {
-                    axios.get(all_url_obj.path).then(response => {
-                        resolve(response && response.data)
-                    })
-                }
-            }
-
-        })
-    },
+    getJsonOpt:getJsonOpt,
 };
 export default Tool;

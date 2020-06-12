@@ -18,7 +18,7 @@
             </ul>
             <div>
                 <button class="btn-blue" @click="getList">查询</button>
-                <button class="btn-blue" @click="exportExcel">导出EXcel</button>
+                <button class="btn-blue" @click="exportExcel">导出Excel</button>
             </div>
         </div>
         <div class="table mt20">

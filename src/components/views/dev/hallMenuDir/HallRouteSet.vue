@@ -17,8 +17,8 @@
                     <div class="title">
                         <span class="icons">
                             <i
-                                :class="['iconfont ',lv1.children?'iconfolder-fill':'iconfeeds-fill']"
-                                @click="expand(lv1_idx)"
+                                :class="['iconfont ',lv1.isMenuOpen?'iconwenjian':'iconfolder-fill']"
+                                @click="expand(lv1_idx,lv1)"
                             ></i>
                             <!-- <i
                                 :class="['iconfont iconfolder-fill',lv1.routes?'':'hide']"
@@ -27,7 +27,7 @@
                         </span>
                         <span
                             :class="[(search&&lv1.isMenuOpen)?'search-item':'','title-cont']"
-                            @click="expand(lv1_idx)"
+                            @click="expand(lv1_idx,lv1)"
                         >{{lv1.label}}</span>
                         <span v-if="!lv1.children" class="add-router" @click="add">添加路由</span>
                     </div>
@@ -52,8 +52,8 @@
                             <div class="title">
                                 <span class="icons">
                                     <i
-                                        :class="['iconfont ',lv2.children?'iconfolder-fill':'iconfeeds-fill']"
-                                        @click="expand(lv1_idx+'-'+lv2_idx)"
+                                        :class="['iconfont ',lv2.isMenuOpen?'iconfile':'iconfeeds-fill']"
+                                        @click="expand(lv1_idx+'-'+lv2_idx,lv2)"
                                     ></i>
                                     <!-- <i
                                         :class="['iconfont iconfolder-fill',lv2.routes?'':'hide']"
@@ -63,7 +63,7 @@
 
                                 <span
                                     :class="[(search&&lv2.isMenuOpen)?'search-item':'','title-cont']"
-                                    @click="expand(lv1_idx+'-'+lv2_idx)"
+                                    @click="expand(lv1_idx+'-'+lv2_idx,lv2)"
                                 >{{lv2.label}}</span>
                                 <span v-if="!lv2.children" class="add-router" @click="add(lv2)">添加路由</span>
                             </div>
@@ -97,7 +97,7 @@
                                     <div class="title">
                                         <i
                                             :class="['iconfont',lv1.children?'iconfolder-fill':'iconfeeds-fill']"
-                                            @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx)"
+                                            @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx,lv3)"
                                         ></i>
                                         <!-- <i
                                             :class="['iconfont iconfolder-fill',lv3.routes?'':'hide']"
@@ -105,7 +105,7 @@
                                         ></i>-->
                                         <span
                                             :class="[(search&&lv3.isMenuOpen)?'search-item':'','title-cont']"
-                                            @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx)"
+                                            @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx,lv3)"
                                         >{{lv3.label}}</span>
                                         <span
                                             v-if="!lv3.children"
@@ -148,7 +148,7 @@
                                             <div class="title">
                                                 <i
                                                     :class="['iconfont iconfolder-fill',lv3.children?'':'hide']"
-                                                    @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx+'-'+lv4_idx)"
+                                                    @click="expand(lv1_idx+'-'+lv2_idx+'-'+lv3_idx+'-'+lv4_idx,lv4)"
                                                 ></i>
                                                 <span class="title-cont">{{lv4.label}}</span>
                                                 <span
@@ -353,9 +353,11 @@ export default {
         selectUpdate() {
             this.searchUpd('')
         },
-        expand(index) {
+        expand(index, item) {
             // console.log('index: ', index);
             let ele = this.$refs[index]
+            item.isMenuOpen = !item.isMenuOpen
+
             // $(ele).slideToggle(200)
             // Slide.slideToggle(ele)
             window.all.tool.slideToggle(ele, 300)
@@ -739,6 +741,11 @@ export default {
     color: #88a6df;
 }
 .iconfolder-fill {
+    margin-right: 5px;
+    cursor: pointer;
+    color: #fad002;
+}
+.iconwenjian {
     margin-right: 5px;
     cursor: pointer;
     color: #fad002;
