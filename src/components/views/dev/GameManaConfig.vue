@@ -592,9 +592,7 @@ export default {
         }
     },
     created() {
-        // this.getGameOpt()
         this.getSelectOpt()
-        // this.initOpt()
     },
     mounted() {
         this.getList()

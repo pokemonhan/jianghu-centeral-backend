@@ -11,7 +11,7 @@
                 </li>
                 <li>
                     <span>时间</span>
-                    <date type="daterange" v-model="filter.project_day" @update="timeUpdate" />
+                    <date type="daterange" v-model="filter.report_day" @update="timeUpdate" />
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -52,7 +52,7 @@ export default {
             quick_query: [],
             filter: {
                 platform_name: '',
-                project_day: ''
+                report_day: ''
             },
             /* table */
             headers: [
@@ -73,17 +73,17 @@ export default {
     methods: {
         qqUpd(dates) {
             //同步时间筛选值
-            this.filter.project_day = dates
+            this.filter.report_day = dates
         },
         timeUpdate() {
             //同步快捷查询按钮状态
-            this.quick_query = this.filter.project_day
+            this.quick_query = this.filter.report_day
         },
         clear() {
             this.quick_query = []
             this.filter = {
                 platform_name: '',
-                project_day: []
+                report_day: []
             }
         },
         tofixedTwo(num){
@@ -100,13 +100,13 @@ export default {
         getList() {
             let para = {
                 platform_name: this.filter.platform_name,
-                project_day: this.filter.project_day,
+                report_day: this.filter.report_day,
                 pageSize: this.pageSize,
                 page: this.pageNo
             }
             let data = window.all.tool.rmEmpty(para)
-            if (data.project_day) {
-                data.project_day = JSON.stringify(data.project_day)
+            if (data.report_day) {
+                data.report_day = JSON.stringify(data.report_day)
             }
             let { url, method } = this.$api.hall_game_report_list
             this.$http({ method, url, data }).then(res => {

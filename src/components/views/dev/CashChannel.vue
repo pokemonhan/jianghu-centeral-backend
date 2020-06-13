@@ -8,6 +8,7 @@
                     <span>厂商名称</span>
                     <Select
                         style="width:150px;"
+                        input
                         v-model="filter.vendor_id"
                         :options="vendor_opt"
                         @update="vendorUpd"
@@ -25,7 +26,7 @@
                 </li>
                 <li>
                     <span>通道名称</span>
-                    <Select style="width:150px;" v-model="filter.channel_id" :options="channel_opt"></Select>
+                    <Select style="width:150px;" input v-model="filter.channel_id" :options="channel_opt"></Select>
                 </li>
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
@@ -76,14 +77,22 @@
             <div class="dia-inner">
                 <div class="dia-maintain">
                     <ul class="form">
-                        <li>
+                        <li class="item-center">
                             <span>选择厂商:</span>
-                            <Select class="w250" v-model="form.vendor_id" :options="vendor_opt"></Select>
+                            <Select
+                                class="w250"
+                                v-model="form.vendor_id"
+                                :options="(vendor_opt||[]).filter(item=>item.label!=='全部')"
+                            ></Select>
                             <span v-show="form.vendor_id===''" class="err-tips">请选择厂商</span>
                         </li>
-                        <li>
+                        <li class="item-center">
                             <span>选择分类:</span>
-                            <Select class="w250" v-model="form.type_id" :options="type_opt"></Select>
+                            <Select
+                                class="w250"
+                                v-model="form.type_id"
+                                :options="type_opt.filter(item=>item.label!=='全部')"
+                            ></Select>
                             <span v-show="form.type_id===''" class="err-tips">请选择分类</span>
                         </li>
                         <li>
@@ -98,7 +107,6 @@
                         </li>
                         <li>
                             <span>请求模式:</span>
-
                             <Radio
                                 class="radio-left"
                                 label="直接跳转"
@@ -115,19 +123,18 @@
                                 v-model="form.request_mode"
                             />
                         </li>
-                        <li>
+                        <!-- <li>
                             <span>请求地址:</span>
                             <Input
                                 class="w250"
                                 placeholder="例如:http://baidu.com"
                                 v-model="form.request_url"
                             />
-                            <!-- <span v-show="!form.request_url" class="err-tips">请求地址不可为空</span> -->
                             <span
                                 v-show="!urlRegExp.test(form.request_url)"
                                 class="err-tips"
                             >请检查内容格式!</span>
-                        </li>
+                        </li>-->
                         <li>
                             <span>银行码:</span>
                             <Input class="w250" v-model="form.banks_code" />
@@ -215,7 +222,7 @@ export default {
                 name: '',
                 sign: '',
                 request_mode: '0',
-                request_url: '',
+                // request_url: '',
                 banks_code: '',
                 desc: '',
                 status: '1'
@@ -244,19 +251,31 @@ export default {
             this.$http({ method, url }).then(res => {
                 if (res && res.code === '200') {
                     this.selectOpt = res.data
-                    this.channel_opt = this.toSelectOpt(res.data.channels)
+                    // this.channel_opt = this.toSelectOpt(res.data.channels)
                     this.vendor_opt = this.toSelectOpt(res.data.vendors)
-                    this.type_opt = this.toSelectOpt(res.data.types)
+                    // this.type_opt = this.toSelectOpt(res.data.types)
                 }
+            })
+            window.all.tool.getJsonOpt('system_finance_type').then(res=>{
+                if(res && Array.isArray(res)) {
+                    let arr = [{ label: '全部', value: '' }]
+                    let opt = res.map(item => {
+                        if(item.is_online===1) {
+                            arr.push( { label: item.name, value: item.id })
+                        }
+                    })
+                    this.type_opt = arr
+                }
+            })
+            window.all.tool.getJsonOpt('finance_channel_list').then(res=>{
+                this.channel_opt = this.toSelectOpt(res)
             })
         },
         vendorUpd() {
-            if (this.filter.vendor_id === '') return
-            this.filterChannel()
+            // this.filterChannel()
         },
         typeUpd() {
-            if (this.filter.type_id === '') return
-            this.filterChannel()
+            // this.filterChannel()
         },
         // 根据厂商,分类已选内容,筛选通道名称
         filterChannel() {
@@ -278,7 +297,7 @@ export default {
                 name: '',
                 sign: '',
                 request_mode: '0',
-                request_url: '',
+                // request_url: '',
                 banks_code: '',
                 desc: '',
                 status: '1'
@@ -298,7 +317,7 @@ export default {
                 name: row.name,
                 sign: row.sign,
                 request_mode: String(row.request_mode),
-                request_url: row.request_url,
+                // request_url: row.request_url,
                 banks_code: row.banks_code,
                 desc: row.desc,
                 status: String(row.status)
@@ -329,13 +348,7 @@ export default {
             }
         },
         checkForm() {
-            let requireArr = [
-                'vendor_id',
-                'type_id',
-                'name',
-                'sign',
-                'request_url'
-            ]
+            let requireArr = ['vendor_id', 'type_id', 'name', 'sign']
             for (const key in this.form) {
                 if (this.form[key] === '') {
                     if (requireArr.indexOf(key) !== -1) {
@@ -460,8 +473,10 @@ export default {
             this.getList()
         }
     },
-    mounted() {
+    created() {
         this.getSelectOpt()
+    },
+    mounted() {
         this.getList()
     }
 }
@@ -481,6 +496,9 @@ export default {
     min-width: 4.1em;
     margin-right: 10px;
     text-align: right;
+}
+.form > .item-center {
+    align-items: center;
 }
 .form .w250 {
     width: 250px;

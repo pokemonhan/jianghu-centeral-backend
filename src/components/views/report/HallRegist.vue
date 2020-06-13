@@ -154,14 +154,21 @@ export default {
                 const tHeader = this.headers
                 const data = this.list.map(item => {
                     return [
-                        item.a1,
-                        item.a2,
-                        item.a3,
-                        item.a4,
-                        item.a5,
-                        item.a6,
-                        item.a7,
-                        item.a8
+                        item.serial_number,
+                        item.their_serial_number,
+                        item.mobile,
+                        item.guid,
+                        item.platform_name,
+                        item.game_vendor,
+                        item.game_name,
+                        this.tofixedTwo(item.bet_money),
+                        this.tofixedTwo(item.effective_bet),
+                        item.charged_fees,
+                        this.tofixedTwo(Number(item.win_money)-Number(item.bet_money)),
+                        this.lottery_status[item.status]||'---',
+                        item.their_create_time,
+                        item.delivery_time||'---',
+                        item.created_at
                     ]
                 })
 
