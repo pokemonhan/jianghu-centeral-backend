@@ -112,6 +112,15 @@ export default {
             this.$emit('change', bool, idx, this.list)
         }
     },
+    watch:{
+        // list(menu_list) {
+        //     menu_list.forEach(lev1 => {
+        //         if(lev1.child && Array.isArray(lev1.child)){
+        //             lev1.checked = lev1.child.every(item=>item.checked)
+        //         }
+        //     })
+        // }
+    },
     created() {
         // console.log('list', this.list)
         // this.list.forEach(item=>{
@@ -137,19 +146,29 @@ export default {
     user-select: none;
     position: relative;
 }
-
+/* .title:before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 26px;
+    bottom: 6px;
+    border-left: 1px dotted #999;
+}
+.title:after {
+    content: '';
+    width: 10px;
+    position: absolute;
+    left: -15px;
+    top: 15px;
+    border-top: 1px dotted #999;
+}
 .iconfont {
     position: relative;
     z-index: 10;
-    background: #fff;
-}
-/* .lev1 .title {
+} */
+.lev1 .title {
     cursor: pointer;
-} */
-/* .lev1 {
-    position: relative;
-    border-left: 1px dotted #000;
-} */
+}
 .lev1 > li {
     margin-top: 10px;
 }
@@ -170,19 +189,10 @@ export default {
 }
 .title {
     display: flex;
-    /* border-left: 1px dotted #999; */
 }
 .title .hide {
     opacity: 0;
 }
-/* .lev2 .title::before {
-    content: "";
-    width: 18px;
-    height: 18px;
-    background: url('../../assets/image/tree.png') 0 0 repeat-y;
-    background-position: -56px -18px;
-} */
-
 .checkbox-head {
     font-weight: bold;
     font-size: 16px;

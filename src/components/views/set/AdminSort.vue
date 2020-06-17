@@ -53,35 +53,32 @@
                         />
                         <span v-show="!form.group_name" class="err-tips">组名称不可为空</span>
                     </div>
+                    <!-- 测试 -->
+
                     <div class="edit-authority">
                         <p class="mb10">选择组权限:</p>
-                        <!-- <div class="show-selected" @click="openTree">
-                            <span
-                                class="sel-item"
-                                v-for="(item, index) in authority_list"
-                                :key="index"
-                                @click.stop
-                            >
-                                <span>{{item.label}}</span>
-                                <i class="iconfont iconcuowuguanbi-" @click.stop="tabClose(item)"></i>
-                            </span>
-                        </div>-->
-                        <!-- v-clickoutside="closeTree" -->
-                        <!-- <div
-                            v-show="tree_show"
-                            ref="tree"
-                            class="drop-list"
-                            v-clickoutside="closeTree"
-                        >
-                            <Tree style="width:fit-content" :list.sync="tree_list" @change="treeUpd" />
-                        </div>-->
-                        <AuthorityTree
+                        <!-- <AuthorityTree
                             style="width:500px;"
                             :menutree="tree_list"
                             :disabled="form.id===1"
                             v-model="form.tagList"
                             @update="treeListUpd"
-                        />
+                        />-->
+                        <div class="flex">
+                            <AuthorityLeft
+                                style="width:300px;"
+                                :menutree="tree_list"
+                                :disabled="form.id===1"
+                                v-model="form.tagList"
+                                @update="treeUpd"
+                            />
+                            <Tree
+                                class="check-tree"
+                                :list="tree_list"
+                                :disabled="form.id===1"
+                                @change="treeUpd"
+                            />
+                        </div>
                     </div>
 
                     <div v-if="!(curr_group.id===1 &&right_show!=='add')" class="mt50 t-center">
@@ -126,12 +123,14 @@
 import Tree from '../../commonComponents/Tree'
 import AdminTable from './AdminSortDir/AdminTable'
 import AuthorityTree from '../../commonComponents/AuthorityTree'
+import AuthorityLeft from '../../commonComponents/AuthorityLeft'
 export default {
     name: 'AdminSort',
     components: {
         Tree: Tree,
         AdminTable: AdminTable,
-        AuthorityTree: AuthorityTree
+        AuthorityTree: AuthorityTree,
+        AuthorityLeft
     },
     data() {
         return {
@@ -220,30 +219,30 @@ export default {
                 }
             })
         },
-        treeListUpd(val) {
-            // console.log('tag展示更新', val)
-        },
         // 根据group 展示勾选 tree中此项
         treeSelectShow(group) {
             // 当前权限数组
             let authority_arr = group.detail.map(item => item.menu_id)
-            // console.log('authority_arr: ', authority_arr);
-
             // id 是否在选择项数组中
             let isSelect = function(id) {
                 return authority_arr.indexOf(id) !== -1
             }
 
-            function listSetCheked(arr) {
+            function listSetCheked(arr, lev) {
                 let list = arr.map(item => {
-                    item.checked = isSelect(item.id)
-                    item.child && listSetCheked(item.child)
+                    // 一级菜单
+                    if (lev === 1 && item.child) {
+                        listSetCheked(item.child)
+                        item.checked = item.child.every(i => i.checked)
+                    } else {
+                        item.checked = isSelect(item.id,lev+1)
+                    }
                     return item
                 })
                 return list
             }
 
-            this.tree_list = listSetCheked(this.tree_list)
+            this.tree_list = listSetCheked(this.tree_list, 1)
             // this.getAuthorityList()
             // this.isChildSelAll()
         },
@@ -254,7 +253,7 @@ export default {
             this.form.group_name = ''
             this.form.id = ''
             this.form.tagList = []
-            // this.initTree(this.tree_list)
+            this.tree_list = this.initTree(this.tree_list)
             // this.getAuthorityList()
         },
 
@@ -270,6 +269,7 @@ export default {
             this.admin_id = group.id
 
             this.form.tagList = group.detail.map(item => item.menu_id)
+            this.treeSelectShow(group)
         },
 
         // 删除分组列表 按钮
@@ -310,10 +310,37 @@ export default {
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.tree_list = resToTree(res.data)
+                    if (Object.keys(this.curr_group).length) {
+                        this.treeSelectShow(this.curr_group)
+                    }
                 }
             })
         },
-        treeListUpd(val) {},
+        // treeListUpd(val) {},
+
+        // 同步设置 已选中【权限】数组 （有[x]的tab框子数组） 例如: [1,2,3] :首页内容,厂商管理 ...
+        setTagList() {
+            let tabShowList = []
+            function getCheckedArr(arr) {
+                arr.forEach(item => {
+                    if (!item.child) {
+                        // 没有子项，就是路由,当选中，放入 tabShowList中，方便展示
+                        // 全域没有子项
+                        item.checked && tabShowList.push(item.id)
+                    } else {
+                        item.child && getCheckedArr(item.child)
+                    }
+                })
+                return arr
+            }
+            getCheckedArr(this.tree_list)
+            this.form.tagList = tabShowList
+        },
+        // 树左边 ，树右边更新
+        treeUpd() {
+            // 更新 权限 数组
+            this.setTagList()
+        },
         cancel() {
             let group = Object.assign({}, this.curr_group)
             this.form.group_name = group.group_name
@@ -525,27 +552,6 @@ export default {
     border-radius: 5px;
 }
 
-.sel-item {
-    display: inline-block;
-    margin-left: 10px;
-    margin-top: 10px;
-    padding: 3px 10px;
-
-    font-size: 12px;
-    color: #409eff;
-    border: 1px solid #d9ecff;
-    border-radius: 4px;
-    background-color: #ecf5ff;
-}
-.iconcuowuguanbi- {
-    width: 12px;
-    vertical-align: middle;
-    cursor: pointer;
-    transform: scale(1);
-}
-.iconcuowuguanbi-:hover {
-    color: red;
-}
 /* 选择组 下拉list */
 .drop-list {
     margin-top: 10px;
@@ -553,6 +559,11 @@ export default {
     padding-left: 50px;
     border: 1px solid #d9ecff;
     border-radius: 4px;
+}
+.check-tree {
+    width: 300px;
+    padding-left: 20px;
+    border: 1px solid #d9ecff;
 }
 /* 编辑组 确定取消 */
 .mt50 {
