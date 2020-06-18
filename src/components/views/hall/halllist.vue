@@ -165,15 +165,23 @@
                         </li>
                         <li class="form-authority">
                             <span>权限选择</span>
-                            <!-- // TODO: -->
                             <!-- <Input class="w300" v-model="form.role" /> -->
                             <!-- <AuthorityTree v-model="form.role" style="width:500px;" /> -->
-                            <AuthorityTree
+                            <!-- <AuthorityTree
+                                style="width:500px;"
+                                :menutree="tree_list"
+                                v-model="form.role"
+                                @update="treeListUpd"
+                            /> -->
+                            
+                            <div>
+                                <AuthorityList
                                 style="width:500px;"
                                 :menutree="tree_list"
                                 v-model="form.role"
                                 @update="treeListUpd"
                             />
+                            </div>
                         </li>
                         <li>
                             <span>短信数量</span>
@@ -254,6 +262,7 @@
 </template> 
 <script>
 import AuthorityTree from '../../commonComponents/AuthorityTree'
+import AuthorityList from '../../commonComponents/AuthorityList'
 
 import SiteManage from './HallListDir/SiteManage'
 import Domain from './HallListDir/Domain'
@@ -266,7 +275,8 @@ export default {
         Domain: Domain,
         Gamemanage: Gamemanage,
         ActiveManage: ActiveManage,
-        AuthorityTree: AuthorityTree
+        AuthorityTree: AuthorityTree,
+        AuthorityList: AuthorityList
     },
     data() {
         return {
@@ -682,7 +692,7 @@ export default {
     color: rgb(152, 155, 158);
 }
 .dia-inner {
-    max-height: 80vh;
+    height: 80vh;
     overflow-y: auto;
 }
 .dia-maintain {

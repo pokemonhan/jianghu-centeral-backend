@@ -54,29 +54,18 @@
                         <span v-show="!form.group_name" class="err-tips">组名称不可为空</span>
                     </div>
                     <!-- 测试 -->
-
+                    <div>
+                        {{form.tagList}}
+                    </div>
                     <div class="edit-authority">
                         <p class="mb10">选择组权限:</p>
-                        <!-- <AuthorityTree
-                            style="width:500px;"
-                            :menutree="tree_list"
-                            :disabled="form.id===1"
-                            v-model="form.tagList"
-                            @update="treeListUpd"
-                        />-->
-                        <div class="flex">
-                            <AuthorityLeft
-                                style="width:300px;"
+                        <div class="flex" v-clickoutside="treeClickOut">
+                            <AuthorityList
+                                class="author-left"
                                 :menutree="tree_list"
                                 :disabled="form.id===1"
                                 v-model="form.tagList"
                                 @update="treeUpd"
-                            />
-                            <Tree
-                                class="check-tree"
-                                :list="tree_list"
-                                :disabled="form.id===1"
-                                @change="treeUpd"
                             />
                         </div>
                     </div>
@@ -123,14 +112,14 @@
 import Tree from '../../commonComponents/Tree'
 import AdminTable from './AdminSortDir/AdminTable'
 import AuthorityTree from '../../commonComponents/AuthorityTree'
-import AuthorityLeft from '../../commonComponents/AuthorityLeft'
+import AuthorityList from '../../commonComponents/AuthorityList'
 export default {
     name: 'AdminSort',
     components: {
         Tree: Tree,
         AdminTable: AdminTable,
         AuthorityTree: AuthorityTree,
-        AuthorityLeft
+        AuthorityList
     },
     data() {
         return {
@@ -139,6 +128,7 @@ export default {
                 searchStr: ''
             },
             searchGroup: [],
+            treeShow: false,
             group_list: [], // 展示列表
             form: {
                 group_name: '',
@@ -219,33 +209,43 @@ export default {
                 }
             })
         },
-        // 根据group 展示勾选 tree中此项
-        treeSelectShow(group) {
-            // 当前权限数组
-            let authority_arr = group.detail.map(item => item.menu_id)
-            // id 是否在选择项数组中
-            let isSelect = function(id) {
-                return authority_arr.indexOf(id) !== -1
-            }
-
-            function listSetCheked(arr, lev) {
-                let list = arr.map(item => {
-                    // 一级菜单
-                    if (lev === 1 && item.child) {
-                        listSetCheked(item.child)
-                        item.checked = item.child.every(i => i.checked)
-                    } else {
-                        item.checked = isSelect(item.id,lev+1)
-                    }
-                    return item
-                })
-                return list
-            }
-
-            this.tree_list = listSetCheked(this.tree_list, 1)
-            // this.getAuthorityList()
-            // this.isChildSelAll()
+        treeClickOut() {
+            this.treeShow = false
         },
+        treeLeftClick(e){
+            // e.stopPropagation();
+            // if(!this.treeShow) {
+            //     this.treeShow = true
+            // }
+        },
+        // 根据group 展示勾选 tree中此项
+        // treeSelectShow(group) {
+        //     return
+        //     // 当前权限数组
+        //     let authority_arr = group.detail.map(item => item.menu_id)
+        //     // id 是否在选择项数组中
+        //     let isSelect = function(id) {
+        //         return authority_arr.indexOf(id) !== -1
+        //     }
+
+        //     function listSetCheked(arr, lev) {
+        //         let list = arr.map(item => {
+        //             // 一级菜单
+        //             if (lev === 1 && item.child) {
+        //                 listSetCheked(item.child)
+        //                 item.checked = item.child.every(i => i.checked)
+        //             } else {
+        //                 item.checked = isSelect(item.id,lev+1)
+        //             }
+        //             return item
+        //         })
+        //         return list
+        //     }
+
+        //     this.tree_list = listSetCheked(this.tree_list, 1)
+        //     // this.getAuthorityList()
+        //     // this.isChildSelAll()
+        // },
 
         // 创建按钮
         addsort() {
@@ -269,7 +269,7 @@ export default {
             this.admin_id = group.id
 
             this.form.tagList = group.detail.map(item => item.menu_id)
-            this.treeSelectShow(group)
+            // this.treeSelectShow(group)
         },
 
         // 删除分组列表 按钮
@@ -284,7 +284,7 @@ export default {
             this.right_show = 'edit'
             this.curr_group = group // 存储当前点击的组
             this.form.group_name = group.group_name
-            this.treeSelectShow(group)
+            // this.treeSelectShow(group)
         },
 
         // ,
@@ -311,7 +311,7 @@ export default {
                     this.total = res.data.total
                     this.tree_list = resToTree(res.data)
                     if (Object.keys(this.curr_group).length) {
-                        this.treeSelectShow(this.curr_group)
+                        // this.treeSelectShow(this.curr_group)
                     }
                 }
             })
@@ -339,13 +339,13 @@ export default {
         // 树左边 ，树右边更新
         treeUpd() {
             // 更新 权限 数组
-            this.setTagList()
+            // this.setTagList()
         },
         cancel() {
             let group = Object.assign({}, this.curr_group)
             this.form.group_name = group.group_name
             this.admin_id = group.id
-            this.treeSelectShow(group)
+            // this.treeSelectShow(group)
         },
         // 创建分组 ——确认
         groupAddCfm() {
@@ -458,6 +458,17 @@ export default {
 </script>
 
 <style scoped>
+.tree-slide-leave-active,
+.tree-slide-enter-active {
+    transition: all 0.3s;
+}
+
+.tree-slide-enter,
+.tree-slide-leave-to{
+    opacity: 0;
+    transform: translateX(-30px);
+}
+
 .cont {
     display: flex;
     flex-wrap: wrap;
@@ -560,8 +571,13 @@ export default {
     border: 1px solid #d9ecff;
     border-radius: 4px;
 }
+.edit-authority .author-left {
+    /* width: 275px; */
+    width: 550px;
+    min-height: 800px;
+}
 .check-tree {
-    width: 300px;
+    /* width: 275px; */
     padding-left: 20px;
     border: 1px solid #d9ecff;
 }

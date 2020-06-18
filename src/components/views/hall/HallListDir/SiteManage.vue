@@ -73,21 +73,35 @@
                             v-model="type"
                             :options="[{label:'增加',value:1},{label:'减少',value:0}]"
                         ></Select>
-                        <Input :showerr="type===0&&sms_num>last_sms_num" errmsg="数字错误" class="w280" limit="p-integer" v-model="sms_num" />
+                        <Input
+                            :showerr="type===0&&sms_num>last_sms_num"
+                            errmsg="数字错误"
+                            class="w280"
+                            limit="p-integer"
+                            v-model="sms_num"
+                        />
                         <span class="ml20">剩余短信数量: {{last_sms_num}}</span>
                     </li>
                 </ul>
                 <ul v-if="active===3" class="form">
                     <li>
                         <span>权限选项:</span>
-                        <AuthorityTree
+                        <!-- <AuthorityTree
                             style="width:500px;"
                             :menutree="tree_list"
                             v-model="role"
                             @update="treeListUpd"
-                        />
+                        /> -->
+                      
+                        <div>
+                            <AuthorityList
+                                style="width:500px;"
+                                :menutree="tree_list"
+                                v-model="role"
+                                @update="treeListUpd"
+                            />
+                        </div>
                     </li>
-
                 </ul>
             </div>
         </div>
@@ -102,6 +116,7 @@
 <script>
 import { Steps, Step } from 'element-ui'
 import AuthorityTree from '../../../commonComponents/AuthorityTree'
+import AuthorityList from '../../../commonComponents/AuthorityList'
 export default {
     props: {
         row: {
@@ -112,6 +127,7 @@ export default {
     },
     components: {
         AuthorityTree: AuthorityTree,
+        AuthorityList: AuthorityList,
         [Steps.name]: Steps,
         [Step.name]: Step
     },
@@ -176,7 +192,7 @@ export default {
         treeListUpd() {},
         step0Check() {
             let had_agent_method = this.agency_method.find(item => item)
-            let had_date = (this.dates[0] && this.dates[1])
+            let had_date = this.dates[0] && this.dates[1]
             return had_agent_method && had_date
         },
         step1Check() {
@@ -186,7 +202,7 @@ export default {
             return true
         },
         step3Check() {
-            return this.role.length>0
+            return this.role.length > 0
         },
         checkForm() {
             if (!this.agency_method.find(item => item)) {
