@@ -170,7 +170,7 @@
                                 <span>正式地址</span>
                                 <Input
                                     class="w250"
-                                    :placeholder="test_url_holder"
+                                    placeholder="http://abc.com"
                                     :showerr="!urlReg.test(form.production.third_party_url)"
                                     errmsg="正式地址格式错误"
                                     v-model="form.production.third_party_url"
@@ -395,7 +395,7 @@
                                     <span>测试三方urls</span>
                                     <Input
                                         class="w250"
-                                        :placeholder="test_url_holder"
+                                        placeholder="http://abc.com"
                                         :showerr="testUrlErrShow"
                                         errmsg="三方调用测试urls格式错误"
                                         v-model="form.staging.third_party_url"
@@ -489,7 +489,7 @@
                                         v-model="form.staging.is_official_station"
                                         @update="testSwitchChange"
                                     />
-                                    <span class="ml50 orange">{{form.test_urls}}</span>
+                                    <span class="ml50 orange">{{form.staging.third_party_url}}</span>
                                 </div>
                             </li>
                             <li>
@@ -1046,6 +1046,7 @@ export default {
                 type_id: type.id, // 游戏类型id
                 status: row.status, // 状态
                 production: {
+                    // 正式地址
                     third_party_url: production.third_party_url,
                     des_key: production.des_key,
                     app_id: production.app_id,
@@ -1100,6 +1101,22 @@ export default {
                 },
                 whitelist_ips:(row.white_list || []).join(',') // 白名单
             }
+            // 是否以正式站为准
+            if(production.is_official_station) {
+                let url  = this.form.production.url || {}
+                Object.keys(url).forEach(key=>{
+                    url[key] = (url[key]||'').replace(production.third_party_url,'')
+                })
+            }
+            // 是否以测试站为准
+            if(staging.is_official_station) {
+                let url  = this.form.staging.url || {}
+                Object.keys(url).forEach(key=>{
+                    if(url[key] && typeof url[key] === 'string'){
+                        url[key] = url[key].replace(staging.third_party_url,'')
+                    }
+                })
+            }
             this.curr_row = row
             this.dia_show = 'edit'
             this.dia_status = 'edit'
@@ -1109,16 +1126,9 @@ export default {
             let id = row.id
             let status = value ? 1 : 0
 
-            let data = {
-                id: id,
-                status: status
-            }
+            let data = { id: id, status: status }
             let { url, method } = this.$api.game_vendor_status_set
-            this.$http({
-                method: method,
-                url: url,
-                data: data
-            }).then(res => {
+            this.$http({method,url,data}).then(res => {
                 if (res && res.code === '200') {
                     this.mod_show = false
                     this.$toast.success(res.message)
@@ -1287,7 +1297,7 @@ export default {
                 type_id: this.form.type_id, // 游戏类型id
                 status: this.form.status, // 状态
                 production: {
-                    is_official_station: production.is_official_station,
+                    is_official_station: production.is_official_station ? 1 : 0,
                     third_party_url: production.third_party_url,
                     des_key: production.des_key,
                     app_id: production.app_id, // 终端号
@@ -1313,7 +1323,7 @@ export default {
                     }
                 },
                 staging: {
-                    is_official_station: staging.is_official_station,
+                    is_official_station: staging.is_official_station ? 1 : 0,
                     third_party_url: staging.third_party_url,
                     des_key: staging.des_key,
                     app_id: staging.app_id, // 终端号
