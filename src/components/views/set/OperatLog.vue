@@ -437,6 +437,9 @@ export default {
 .mt30 {
     margin-top: 30px;
 }
+.cont-right {
+    max-width: 850px;
+}
 .dia-inner {
     display: flex;
     justify-content: center;

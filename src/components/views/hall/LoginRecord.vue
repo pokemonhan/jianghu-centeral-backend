@@ -104,6 +104,9 @@ export default {
         },
         updateNo() {
             this.getList()
+            setTimeout(()=>{
+                this.$toast('222')
+            })
         },
         updateSize() {
             this.pageNo = 1
