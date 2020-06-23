@@ -54,9 +54,9 @@
                         <span v-show="!form.group_name" class="err-tips">组名称不可为空</span>
                     </div>
                     <!-- 测试 -->
-                    <div>
+                    <!-- <div>
                         {{form.tagList}}
-                    </div>
+                    </div> -->
                     <div class="edit-authority">
                         <p class="mb10">选择组权限:</p>
                         <div class="flex" v-clickoutside="treeClickOut">
