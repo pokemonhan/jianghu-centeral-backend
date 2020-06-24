@@ -11,7 +11,12 @@
             @mouseover="updateClearState(true)"
             @mouseout="updateClearState(false)"
         >
-            <input v-model="selectedValue" type="hidden" />
+            <input
+                ref="hiddenInput"
+                type="hidden"
+                v-model="selectedValue"
+                
+            />
             <input
                 v-if="isShow"
                 ref="input"
@@ -19,6 +24,9 @@
                 v-model="showInputLabel"
                 :type="input?'text':'hidden'"
                 :title="showInputLabel"
+                @keydown.down.stop.prevent="navigateOptions('next')"
+                @keydown.up.stop.prevent="navigateOptions('prev')"
+                @keydown.enter.prevent="selectOption"
                 @input="handleInput"
                 @change="inputChange"
                 @focus="inputFocus"
@@ -36,9 +44,10 @@
         </div>
         <ul :class="['sections', sectionsDir]" ref="sections">
             <li
-                v-for="item in opt"
+                v-for="(item,index) in opt"
                 :key="item.value"
-                :class="[selectedValue===item.value ? 'active' : '','option']"
+                :ref="'opt-'+index"
+                :class="[selectedValue===item.value ? 'active' : '',hoverIndex===index?'option-hover':'','option']"
                 @click.stop="select(item)"
                 :title="TitleShow(input,item)"
             >{{item.label}}</li>
@@ -58,6 +67,7 @@
         可绑定 v-model
      */
 // import Slide from '../../js/config/slide'
+import tool from '../../js/tool.js'
 export default {
     name: 'Select',
     props: {
@@ -104,7 +114,8 @@ export default {
             // opt: [], // 下拉框内容
             isClear: false,
             sectionsDir: 'bottom-upfold',
-            sectionsHeight: '0px'
+            sectionsHeight: '0px',
+            hoverIndex: -1
         }
     },
     computed: {
@@ -116,7 +127,13 @@ export default {
                 let opt_temp = (this.options || []).filter(item => {
                     // let LowerCase
                     if (item.label) {
-                        return (item.label||'').toLowerCase().indexOf((this.showInputLabel||'').toLowerCase()) !== -1
+                        return (
+                            (item.label || '')
+                                .toLowerCase()
+                                .indexOf(
+                                    (this.showInputLabel || '').toLowerCase()
+                                ) !== -1
+                        )
                     } else {
                         return false
                     }
@@ -155,6 +172,7 @@ export default {
         },
         showOptions(e) {
             if (this.disabled) return
+            this.hoverIndex = -1
             if (this.input) {
                 this.isShow = true
                 // setTimeout(() => {
@@ -164,6 +182,7 @@ export default {
                 })
             } else {
                 this.isShow = !this.isShow
+                this.$refs.hiddenInput.focus()
             }
             let ele = this.$refs.sections
             if (this.isShow) {
@@ -186,6 +205,30 @@ export default {
                 this.slideUp(ele)
             }
         },
+        navigateOptions(direction) {
+            if (!this.isShow) return
+            if (this.options.length === 0) return
+            if (direction === 'next') {
+                this.hoverIndex++
+                if (this.hoverIndex === this.options.length) {
+                    this.hoverIndex = 0
+                }
+            } else if (direction === 'prev') {
+                this.hoverIndex--
+                if (this.hoverIndex < 0) {
+                    this.hoverIndex = this.options.length - 1
+                }
+            }
+            
+            this.$nextTick(() => this.scrollToOption())
+        },
+        scrollToOption() {
+            let container = this.$refs.sections
+            let ref_name = 'opt-'+this.hoverIndex
+            let selected = (this.$refs[ref_name]&&this.$refs[ref_name][0]) || ''
+            if(!container||!selected) return
+            tool.scrollIntoView(container,selected)
+        },
         select(item) {
             this.isShow = false
             let ele = this.$refs.sections
@@ -198,6 +241,13 @@ export default {
 
             // this.showInputLabel = item.label // input 展示的内容
             this.$emit('update', item.value)
+        },
+        selectOption() {
+            if(!this.isShow) return
+            if(this.handleInput===-1) return
+            let curr_option = this.options[this.hoverIndex] || ''
+            if(!curr_option) return
+            this.select(curr_option)
         },
         clear() {
             if (this.disabled) return
@@ -388,6 +438,9 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+.option-hover {
+    background-color: rgb(243, 243, 243);
 }
 .error-message {
     position: absolute;

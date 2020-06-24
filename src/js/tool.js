@@ -227,12 +227,12 @@ const Tool = {
         for (const key in obj) {
             if (Array.isArray(obj[key])) {
                 if (obj[key].length > 0) {
-                    if(obj[key].length===2){
+                    if (obj[key].length === 2) {
                         // 数组[0] 或者[1] 有值才赋值
-                        if(obj[key][0]||obj[key][1]){
+                        if (obj[key][0] || obj[key][1]) {
                             params[key] = obj[key]
                         }
-                    }else {
+                    } else {
                         params[key] = obj[key]
                     }
                 }
@@ -259,7 +259,7 @@ const Tool = {
             return ''
         }
         let menuList = window.all.tool.getLocal('menu')
-        if(!menuList) {
+        if (!menuList) {
             console.log('wait get the menu list')
             return ''
         }
@@ -298,6 +298,31 @@ const Tool = {
             return 'Unkonwn';
         }
     },
-    getJsonOpt:getJsonOpt,
+    getJsonOpt: getJsonOpt,
+    scrollIntoView (container, selected) {
+        // if (Vue.prototype.$isServer) return;
+
+        if (!selected) {
+            container.scrollTop = 0;
+            return;
+        }
+
+        const offsetParents = [];
+        let pointer = selected.offsetParent;
+        while (pointer && container !== pointer && container.contains(pointer)) {
+            offsetParents.push(pointer);
+            pointer = pointer.offsetParent;
+        }
+        const top = selected.offsetTop + offsetParents.reduce((prev, curr) => (prev + curr.offsetTop), 0);
+        const bottom = top + selected.offsetHeight;
+        const viewRectTop = container.scrollTop;
+        const viewRectBottom = viewRectTop + container.clientHeight;
+
+        if (top < viewRectTop) {
+            container.scrollTop = top;
+        } else if (bottom > viewRectBottom) {
+            container.scrollTop = bottom - container.clientHeight;
+        }
+    },
 };
 export default Tool;

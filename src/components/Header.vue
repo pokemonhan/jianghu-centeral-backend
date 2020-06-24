@@ -10,18 +10,16 @@
                 <ul class="right">
                     <li>
                         <span>在线人数</span>
-                        <span>{{'35456'}}</span>
+                        <span>{{head_data.online}}</span>
                     </li>
                     <li style="margin-left:50px;">
                         <span>活跃人数</span>
-                        <span>{{'3646'}}</span>
+                        <span>{{head_data.activity}}</span>
                     </li>
 
                     <!-- 喇叭 -->
                     <li style="width:22px;margin-left:50px;" @click="play_music=!play_music">
-                        <i
-                            :class="['iconfont',play_music?'iconspeaker':'iconmute']"
-                        ></i>
+                        <i :class="['iconfont',play_music?'iconspeaker':'iconmute']"></i>
                     </li>
                     <li class="account" @mouseenter="accoutEnter" @mouseleave="accountLeave">
                         <span>
@@ -107,7 +105,11 @@ export default {
                 new_pwd: '',
                 conf_pwd: ''
             },
-            err_tips: ['', '', '', '']
+            err_tips: ['', '', '', ''],
+            head_data: {
+                online: 0,
+                activity: 0
+            }
         }
     },
 
@@ -256,14 +258,31 @@ export default {
                     }
                 }
             })
+        },
+        getBankData() {
+            let Authorization = window.all.tool.getLocal('Authorization')
+            if (Authorization && this.$route.path !== '/login') {
+                let { url, method } = this.$api.header
+                this.$http({ method, url }).then(res => {
+                    if (res && res.code === '200' && res.data) {
+                        //this.mod_show = false
+                        this.head_data.online = res.data.online
+                        this.head_data.activity = res.data.activity
+                    }
+                })
+            }
         }
     },
     watch: {
-        $route() {
+        $route(to, from) {
             this.user_name = window.all.tool.getLocal('name')
+            if (from.path === '/login') {
+                this.getBankData()
+            }
         }
     },
     mounted() {
+        this.getBankData()
         // this.user_name = window.all.tool.getLocal('name')
         // console.log('this.user_name: ', this.user_name);
     }

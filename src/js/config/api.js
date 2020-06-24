@@ -18,9 +18,14 @@ export default {
         method: 'post',
     },
 
-    /*=========================== 用户 ===========================--*/
+    /*=========================== 首页 ===========================--*/
+    /** 首页 */
     homepage: {
         url: '/headquarters-api/statistics/index',
+        method: 'get'
+    },
+    header: {
+        url: '/headquarters-api/statistics/header',
         method: 'get'
     },
     /*=========================== 用户 ===========================--*/
