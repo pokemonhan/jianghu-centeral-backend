@@ -343,8 +343,11 @@ export default {
         },
         cancel() {
             let group = Object.assign({}, this.curr_group)
-            this.form.group_name = group.group_name
-            this.admin_id = group.id
+            console.log('😅 group: ', group);
+            // this.form.group_name = group.group_name
+            // this.form.tagList = group.detail
+            this.check(group)
+            // this.admin_id = group.id
             // this.treeSelectShow(group)
         },
         // 创建分组 ——确认

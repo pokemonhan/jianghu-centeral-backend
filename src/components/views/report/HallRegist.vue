@@ -37,6 +37,7 @@
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="exportExcel">导出Excel</button>
+                    <!-- <button class="btn-blue" @click="exportAllExcel">导出所有Excel</button> -->
                 </li>
                 <li>
                     <button class="btn-red" @click="Clear">清除</button>
@@ -147,6 +148,46 @@ export default {
                 their_create_time: []
             }
         },
+        exportAllExcel() {
+            let self = this
+            let page_size = 1
+            function getPageList(pageNo) {
+                return new Promise((resolve, reject) => {
+                    let data = {
+                        pageSize: page_size,
+                        page: pageNo
+                    }
+                    let { url, method } = self.$api.hall_regist_report_list
+                    self.$http({ method, url, data }).then(res => {
+                        console.log('列表👌👌👌👌: ', res)
+                        if (res && res.code === '200' && res.data) {
+                            if (res.data) {
+                                resolve(res.data.data || [])
+                            }
+                        }else {
+                            reject([])
+                        }
+                    })
+                })
+            }
+            // getPageList(1)
+            // console.log('🥜 getPageList(1): ', getPageList(1))
+            // 获取每一页，加在一起
+            let list = []
+            let totalPage = this.total / page_size
+            let curr_Page = 1
+            console.log('🥡 totalPage: ', totalPage)
+            async function pushList() {
+                while (curr_Page<=totalPage) {
+                    let curr_page_list = await getPageList(curr_Page)
+                    list.concat(list,curr_page_list)
+                    curr_Page++
+                    // console.log('🍰 curr_page_list: ', curr_page_list);
+                }
+            }
+
+            pushList()
+        },
         exportExcel() {
             // console.log('触发')
             import('../../../js/config/Export2Excel').then(excel => {
@@ -164,10 +205,12 @@ export default {
                         this.tofixedTwo(item.bet_money),
                         this.tofixedTwo(item.effective_bet),
                         item.charged_fees,
-                        this.tofixedTwo(Number(item.win_money)-Number(item.bet_money)),
-                        this.lottery_status[item.status]||'---',
+                        this.tofixedTwo(
+                            Number(item.win_money) - Number(item.bet_money)
+                        ),
+                        this.lottery_status[item.status] || '---',
                         item.their_create_time,
-                        item.delivery_time||'---',
+                        item.delivery_time || '---',
                         item.created_at
                     ]
                 })
@@ -220,7 +263,7 @@ export default {
             }
             let { url, method } = this.$api.hall_regist_report_list
             this.$http({ method, url, data }).then(res => {
-                console.log('列表👌👌👌👌: ', res)
+                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.total = res.data.total
                     this.list = res.data.data

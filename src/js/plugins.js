@@ -150,6 +150,7 @@ export default {
             if (requestObj[url]) {
                 let lastTime = requestObj[url]
                 let delay = now - lastTime
+                // console.log('🍕 delay: ', delay);
                 // 同一接口时间大于1500毫秒 就请求
                 if (delay > 100) {
                     requestObj[url] = now
