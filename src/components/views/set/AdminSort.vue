@@ -16,7 +16,7 @@
             <div class="cont-left">
                 <ul>
                     <li
-                        :class="[searchGroup.indexOf(group.id)>-1?'had-search':'']"
+                        :class="[searchGroup.indexOf(group.id)>-1?'had-search':'',form.id===group.id?'curr-group':'']"
                         v-for="(group,index) in group_list"
                         :key="index"
                     >
@@ -56,7 +56,7 @@
                     <!-- 测试 -->
                     <!-- <div>
                         {{form.tagList}}
-                    </div> -->
+                    </div>-->
                     <div class="edit-authority">
                         <p class="mb10">选择组权限:</p>
                         <div class="flex" v-clickoutside="treeClickOut">
@@ -64,6 +64,7 @@
                                 class="author-left"
                                 :menutree="tree_list"
                                 :disabled="form.id===1"
+                                :rightShow.sync="tree_select_show"
                                 v-model="form.tagList"
                                 @update="treeUpd"
                             />
@@ -135,6 +136,7 @@ export default {
                 tagList: []
             },
             tree_list: [],
+            tree_select_show: false,
             // authority_list: [],
             tree_show: false,
 
@@ -144,6 +146,8 @@ export default {
             // 启用 禁用modal
             mod_show: false,
             curr_group: {},
+            last_group: {},
+            last_group_index: 0,
             mod_status: '',
             mod_title: '',
             mod_cont: ''
@@ -170,6 +174,7 @@ export default {
         initMod() {
             this.mod_show = false
             this.curr_group = {}
+            // this.last_group = {}
             this.mod_status = ''
             this.mod_title = ''
             this.mod_cont = ''
@@ -212,7 +217,7 @@ export default {
         treeClickOut() {
             this.treeShow = false
         },
-        treeLeftClick(e){
+        treeLeftClick(e) {
             // e.stopPropagation();
             // if(!this.treeShow) {
             //     this.treeShow = true
@@ -254,22 +259,25 @@ export default {
             this.form.id = ''
             this.form.tagList = []
             this.tree_list = this.initTree(this.tree_list)
+            this.tree_select_show = true
             // this.getAuthorityList()
         },
 
         // 查看其中一组
         check(group) {
+            if (!group) return
             // console.log('group: ', group);
             this.searchGroup = []
             this.right_show = 'check'
             this.curr_group = Object.assign({}, group)
-
+            this.last_group = Object.assign({}, group)
             this.form.group_name = group.group_name
             this.form.id = group.id
             this.admin_id = group.id
 
-            this.form.tagList = group.detail.map(item => item.menu_id)
+            this.form.tagList = (group.detail || []).map(item => item.menu_id)
             // this.treeSelectShow(group)
+            this.tree_select_show = false
         },
 
         // 删除分组列表 按钮
@@ -283,8 +291,10 @@ export default {
         edit(group) {
             this.right_show = 'edit'
             this.curr_group = group // 存储当前点击的组
+            this.last_group = group // 最后次点击的组
             this.form.group_name = group.group_name
             // this.treeSelectShow(group)
+            this.tree_select_show = true
         },
 
         // ,
@@ -342,13 +352,16 @@ export default {
             // this.setTagList()
         },
         cancel() {
-            let group = Object.assign({}, this.curr_group)
-            console.log('😅 group: ', group);
-            // this.form.group_name = group.group_name
-            // this.form.tagList = group.detail
-            this.check(group)
-            // this.admin_id = group.id
-            // this.treeSelectShow(group)
+            if (this.right_show === 'add') {
+                this.form.group_name = ''
+                this.form.id = ''
+                this.form.tagList = []
+                this.tree_list = this.initTree(this.tree_list)
+          
+            } else {
+                let group = Object.assign({}, this.last_group)
+                this.check(group)
+            }
         },
         // 创建分组 ——确认
         groupAddCfm() {
@@ -428,8 +441,28 @@ export default {
 
             this.$http({ method, url }).then(res => {
                 // console.log('res: ', res)
+                // console.log('进来');
                 if (res && res.code === '200') {
                     this.group_list = res.data
+                    // this.last_group = this.group_list && this.group_list[0]
+                    if (this.right_show === 'add') {
+                        let last = this.group_list[this.group_list.length - 1]
+                        if (last) {
+                            this.check(last)
+                        }
+                    } else if (this.right_show === 'edit'||this.right_show === 'check') {
+                        if (this.admin_id) {
+                            // console.log('🍾 this.admin_id: ', this.admin_id);
+                            let group = this.group_list.find(
+                                item => item.id === this.admin_id
+                            )
+                            if (group) {
+                                this.check(group)
+                            }
+                        }
+                    } else if (this.right_show === 'del') {
+                        this.check(this.group_list[0])
+                    }
                 }
             })
         },
@@ -467,7 +500,7 @@ export default {
 }
 
 .tree-slide-enter,
-.tree-slide-leave-to{
+.tree-slide-leave-to {
     opacity: 0;
     transform: translateX(-30px);
 }
@@ -501,6 +534,11 @@ export default {
 }
 .cont .cont-left .had-search {
     border: 1px solid rgb(195, 250, 240);
+    background: rgb(234, 245, 251);
+    transition: background-color 0.2s;
+}
+.cont .cont-left .curr-group {
+    border: 1px solid rgb(195, 210, 250);
     background: rgb(234, 245, 251);
     transition: background-color 0.2s;
 }

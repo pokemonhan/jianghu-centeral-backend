@@ -1,12 +1,13 @@
 <template>
-    <div class="v-tree" v-clickoutside="clickOutSide">
-        <div class="tree-left" @click.stop="rightShow=true">
+    <div class="v-tree">
+        <div class="tree-left" @click.stop="treeHandle">
             <ul class="lev1">
                 <li v-for="(lev1, lev1_idx) in tree_list" :key="lev1_idx">
                     <div class="title">
                         <span
                             v-show="hadChild(lev1)||lev1.checked"
                             :class="[disabled?'sel-item-disabled':'sel-item']"
+                            @click.stop
                         >
                             <span>{{lev1.label}}</span>
                             <i
@@ -24,7 +25,7 @@
                                 <div
                                     :class="['dot-line',lev2_idx===lev1.child.length-1?'bottom-dot-line':'center-dot-line']"
                                 ></div>
-                                <span :class="[disabled?'sel-item-disabled':'sel-item']">
+                                <span @click.stop :class="[disabled?'sel-item-disabled':'sel-item']">
                                     <span>{{lev2.label}}</span>
                                     <i
                                         class="iconfont iconcuowuguanbi-"
@@ -35,7 +36,7 @@
 
                             <ul class="lev3" :ref="lev2_idx" v-if="lev2.child">
                                 <li v-for="(lev3, lev3_idx) in lev2.child" :key="lev3_idx">
-                                    <span :class="[disabled?'sel-item-disabled':'sel-item']">
+                                    <span @click.stop :class="[disabled?'sel-item-disabled':'sel-item']">
                                         <span>{{lev3.label}}</span>
                                         <i
                                             class="iconfont iconcuowuguanbi-"
@@ -120,6 +121,10 @@ export default {
         menutree: {
             type: Array,
             default: () => []
+        },
+        rightShow: {
+            type: Boolean,
+            default: () => false
         }
     },
     model: {
@@ -133,12 +138,16 @@ export default {
             tree_list: [],
             // tagShowObj: {}, //id为key ,名字为值,方便展示
             // isUpdateTree: true, //是否需要更新tree 避免wathc重复循环更新
-            rightShow: true
+            // rightShow: true
         }
     },
     methods: {
         clickOutSide() {
             this.rightShow = false
+        },
+        treeHandle() {
+            // this.rightShow = !this.rightShow
+            this.$emit('update:rightShow',!this.rightShow)
         },
         expand(lev1, index) {
             let ele = this.$refs[index][0]
