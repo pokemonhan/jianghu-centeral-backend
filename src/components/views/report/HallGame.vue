@@ -24,7 +24,7 @@
             <Table :headers="headers" :column="list">
                 <!-- ['站点名称','游戏平台','总投注额','总有效下注','总抽水','总输赢','日期'] -->
                 <template v-slot:item="{row}">
-                    <td>{{row.platform&&row.platform.cn_name}}</td>
+                    <td>{{row.platform_name}}</td>
                     <td>{{row.game_vendor_name}}</td>
                     <td>{{tofixedTwo(row.bet_money)}}</td>
                     <td>{{tofixedTwo(row.effective_bet)}}</td>

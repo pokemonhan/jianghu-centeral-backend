@@ -33,7 +33,7 @@
                 :pageSize.sync="pageSize"
                 @updateNo="updateNo"
                 @updateSize="updateSize"
-            /> -->
+            />-->
         </div>
         <!-- <Pagefront class="mt20" :page-config="pageConfig" @update="updatePage"></Pagefront> -->
         <Dialog :show="dia_show!==''" :title="dia_title" @close="dia_show=''">
@@ -350,7 +350,6 @@ export default {
 
             let { url, method } = this.$api.admin_user_status_set
             this.$http({ method, url, data }).then(res => {
-                // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     this.$toast.success(res && res.message)
                     // this.mod_show = false
@@ -374,8 +373,10 @@ export default {
     watch: {
         group_id(val) {
             // console.log('val: ', val)
-            this.isSearch = false
-            this.getList()
+            if (val) {
+                this.isSearch = false
+                this.getList()
+            }
         }
     },
     mounted() {

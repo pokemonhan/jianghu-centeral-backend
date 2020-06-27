@@ -10,7 +10,7 @@
             <ul class="left">
                 <li>
                     <span>站点名称</span>
-                    <Input v-model="filter.platform_name" />
+                    <Input style="width:110px;" v-model="filter.platform_name" />
                 </li>
                 <li>
                     <span>派彩时间</span>
@@ -28,7 +28,7 @@
             <ul class="left">
                 <li>
                     <span>派彩状态</span>
-                    <Select v-model="filter.status" :options="status_opt"></Select>
+                    <Select style="width:110px;" v-model="filter.status" :options="status_opt"></Select>
                 </li>
                 <li>
                     <span>注单时间</span>
@@ -37,7 +37,7 @@
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="exportExcel">导出Excel</button>
-                    <!-- <button class="btn-blue" @click="exportAllExcel">导出所有Excel</button> -->
+                    <button class="btn-blue" @click="exportAll">导出所有Excel</button>
                 </li>
                 <li>
                     <button class="btn-red" @click="Clear">清除</button>
@@ -148,52 +148,11 @@ export default {
                 their_create_time: []
             }
         },
-        exportAllExcel() {
+        ExcelOut(data, file_name) {
+            let header = this.headers
             let self = this
-            let page_size = 1
-            function getPageList(pageNo) {
-                return new Promise((resolve, reject) => {
-                    let data = {
-                        pageSize: page_size,
-                        page: pageNo
-                    }
-                    let { url, method } = self.$api.hall_regist_report_list
-                    self.$http({ method, url, data }).then(res => {
-                        console.log('列表👌👌👌👌: ', res)
-                        if (res && res.code === '200' && res.data) {
-                            if (res.data) {
-                                resolve(res.data.data || [])
-                            }
-                        }else {
-                            reject([])
-                        }
-                    })
-                })
-            }
-            // getPageList(1)
-            // console.log('🥜 getPageList(1): ', getPageList(1))
-            // 获取每一页，加在一起
-            let list = []
-            let totalPage = this.total / page_size
-            let curr_Page = 1
-            console.log('🥡 totalPage: ', totalPage)
-            async function pushList() {
-                while (curr_Page<=totalPage) {
-                    let curr_page_list = await getPageList(curr_Page)
-                    list.concat(list,curr_page_list)
-                    curr_Page++
-                    // console.log('🍰 curr_page_list: ', curr_page_list);
-                }
-            }
-
-            pushList()
-        },
-        exportExcel() {
-            // console.log('触发')
-            import('../../../js/config/Export2Excel').then(excel => {
-                // console.log('触发2')
-                const tHeader = this.headers
-                const data = this.list.map(item => {
+            function getdata(data) {
+                return data.map(item => {
                     return [
                         item.serial_number,
                         item.their_serial_number,
@@ -202,29 +161,105 @@ export default {
                         item.platform_name,
                         item.game_vendor,
                         item.game_name,
-                        this.tofixedTwo(item.bet_money),
-                        this.tofixedTwo(item.effective_bet),
+                        self.tofixedTwo(item.bet_money),
+                        self.tofixedTwo(item.effective_bet),
                         item.charged_fees,
-                        this.tofixedTwo(
+                        self.tofixedTwo(
                             Number(item.win_money) - Number(item.bet_money)
                         ),
-                        this.lottery_status[item.status] || '---',
+                        self.lottery_status[item.status] || '---',
                         item.their_create_time,
                         item.delivery_time || '---',
                         item.created_at
                     ]
                 })
-
-                // let chainName = this.getChainName(this.$route.path)
-                let chainName = window.all.tool.getChainName(this.$route.path)
+            }
+            import('../../../js/config/Export2Excel').then(excel => {
                 excel.export_json_to_excel({
-                    header: tHeader, //表头 必填
-                    data, //具体数据 必填
-                    filename: `${chainName} ${this.pageNo}`, //非必填
+                    header: header, //表头 必填
+                    data:getdata(data), //具体数据 必填
+                    filename: file_name, //非必填
                     autoWidth: true, //非必填
                     bookType: 'xlsx' //非必填
                 })
             })
+        },
+        async exportAll() {
+            let self = this
+            let pageSize = 100
+            function getPageList(pageNo) {
+                return new Promise((resolve, reject) => {
+                    let para = {
+                        platform_name: self.filter.platform_name,
+                        status: self.filter.status,
+                        delivery_time: self.filter.delivery_time,
+                        their_create_time: self.filter.their_create_time,
+                        created_at: self.filter.created_at,
+                        pageSize: pageSize,
+                        page: pageNo
+                    }
+                    let data = window.all.tool.rmEmpty(para)
+                    if (data.delivery_time) {
+                        data.delivery_time = JSON.stringify(data.delivery_time)
+                    }
+                    if (data.their_create_time) {
+                        data.their_create_time = JSON.stringify(
+                            data.their_create_time
+                        )
+                    }
+                    if (data.created_at) {
+                        data.created_at = JSON.stringify(data.created_at)
+                    }
+                    let { url, method } = self.$api.hall_regist_report_list
+                    self.$http({ method, url, data }).then(res => {
+                        if (res && res.code === '200') {
+                            if (res.data && res.data.data) {
+                                setTimeout(() => {
+                                    resolve(res.data.data)
+                                }, 150)
+                            }
+                        }
+                    })
+                })
+            }
+            if (!self.total) return
+            let totalPage = Math.ceil(self.total / 100)
+            let list = []
+            for (let i = 1; i <= totalPage; i++) {
+                let currList = await getPageList(i) // 获取i页的内容
+                list = list.concat(currList)
+            }
+
+            let chainName = window.all.tool.getChainName(self.$route.path)
+            let file_name = `${chainName}`
+            self.ExcelOut(list, file_name)
+        },
+        exportExcel() {
+            let header = this.headers
+            // const data = this.list.map(item => {
+            //     return [
+            //         item.serial_number,
+            //         item.their_serial_number,
+            //         item.mobile,
+            //         item.guid,
+            //         item.platform_name,
+            //         item.game_vendor,
+            //         item.game_name,
+            //         this.tofixedTwo(item.bet_money),
+            //         this.tofixedTwo(item.effective_bet),
+            //         item.charged_fees,
+            //         this.tofixedTwo(
+            //             Number(item.win_money) - Number(item.bet_money)
+            //         ),
+            //         this.lottery_status[item.status] || '---',
+            //         item.their_create_time,
+            //         item.delivery_time || '---',
+            //         item.created_at
+            //     ]
+            // })
+            let chainName = window.all.tool.getChainName(this.$route.path)
+            let file_name = `${chainName} ${this.pageNo}`
+            this.ExcelOut(this.list, file_name)
         },
         // timeUpdate() {
         //     //同步快捷查询按钮状态

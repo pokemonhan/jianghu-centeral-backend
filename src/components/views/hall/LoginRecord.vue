@@ -9,7 +9,11 @@
                 <li>
                     <span>登录日期</span>
 
-                    <Date type="daterange" :disabledDate="['no_after_tomorrow']" v-model="filter.createAt" />
+                    <Date
+                        type="daterange"
+                        :disabledDate="['no_after_tomorrow']"
+                        v-model="filter.createAt"
+                    />
                 </li>
                 <li>
                     <span>登录ip</span>
@@ -19,6 +23,7 @@
             <div>
                 <button class="btn-blue" @click="getList">查询</button>
                 <button class="btn-blue" @click="exportExcel">导出Excel</button>
+                <button class="btn-blue" @click="exportAll">导出全部</button>
             </div>
         </div>
         <div class="table mt20">
@@ -61,25 +66,73 @@ export default {
         }
     },
     methods: {
-        exportExcel() {
-            // console.log('触发')
+        ExcelOut(header, data, file_name) {
             import('../../../js/config/Export2Excel').then(excel => {
-                // console.log('触发2')
-                const tHeader = this.headers
-                const data = this.list.map(item => {
-                    return [item.email, item.ip, item.created_at]
-                })
-
-                // let chainName = this.getChainName(this.$route.path)
-                let chainName = window.all.tool.getChainName(this.$route.path)
                 excel.export_json_to_excel({
-                    header: tHeader, //表头 必填
+                    header: header, //表头 必填
                     data, //具体数据 必填
-                    filename: `${chainName} ${this.pageNo}`, //非必填
+                    filename: file_name, //非必填
                     autoWidth: true, //非必填
                     bookType: 'xlsx' //非必填
                 })
             })
+        },
+        exportExcel() {
+            let header = this.headers
+            let data = this.list.map(item => {
+                return [item.email, item.ip, item.created_at]
+            })
+            let chainName = window.all.tool.getChainName(this.$route.path)
+            let file_name = `${chainName} ${this.pageNo}`
+            this.ExcelOut(header, data, file_name)
+        },
+        async exportAll() {
+            let self = this
+            function getPageList(pageNo) {
+                return new Promise((resolve, reject) => {
+                    let createAt = ''
+                    if (self.filter.createAt[0] && self.filter.createAt[1]) {
+                        let start = self.filter.createAt[0] + ' 00:00:00'
+                        let end = self.filter.createAt[1] + ' 00:00:00'
+                        createAt = JSON.stringify([start, end])
+                    }
+                    let para = {
+                        email: self.filter.email,
+                        createAt: createAt,
+                        loginIp: self.filter.loginIp,
+                        pageSize: 100,
+                        page: pageNo
+                    }
+
+                    let params = window.all.tool.rmEmpty(para)
+                    let { url, method } = self.$api.login_record_list
+                    self.$http({ method, url, params }).then(res => {
+                        if (res && res.code === '200'&& res.data) {
+                            // this.total = res.data.total
+                            // this.list = res.data.data
+                            setTimeout(()=>{
+                                resolve(res.data.data)
+                            },200)
+                        }
+                    })
+                })
+            }
+            if(!this.total)return
+            let totalPage = Math.ceil(this.total / 100)
+
+            let list = []
+          
+            for (let i = 1; i <= totalPage; i++) {
+                let currList = await getPageList(i)
+                list = list.concat(currList)
+            }
+            let header = this.headers
+            let data = list.map(item => {
+                return [item.email, item.ip, item.created_at]
+            })
+            let chainName = window.all.tool.getChainName(this.$route.path)
+            let file_name = `${chainName}`
+            this.ExcelOut(header, data, file_name)
         },
         /** 链级 名称，如: 厅主管理-登录记录 */
         getChainName(path) {
@@ -104,9 +157,9 @@ export default {
         },
         updateNo() {
             this.getList()
-            setTimeout(()=>{
-                this.$toast('222')
-            })
+            // setTimeout(()=>{
+            //     this.$toast('222')
+            // })
         },
         updateSize() {
             this.pageNo = 1

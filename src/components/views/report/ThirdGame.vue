@@ -17,6 +17,7 @@
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="exportExcel">导出Excel</button>
+                    <button class="btn-blue" @click="exportAll">导出所有</button>
                 </li>
                 <li>
                     <button class="btn-red" @click="clear">清除</button>
@@ -27,7 +28,7 @@
         <div class="table mt20">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.game_vendor&&row.game_vendor.name}}</td>
+                    <td>{{row.game_vendor_name}}</td>
                     <td>{{tofixedTwo(row.effective_bet)}}</td>
                     <td>{{tofixedTwo(row.tax)}}</td>
                     <td>{{tofixedTwo(row.bet)}}</td>
@@ -95,23 +96,83 @@ export default {
                 report_day: []
             }
         },
-
-        exportExcel() {
-            import('../../../js/config/Export2Excel').then(excel => {
-                const tHeader = this.headers
-                const data = this.list.map(item => {
-                    return [item.a1, item.a2, item.a3, item.a4]
+        ExcelOut(data, file_name) {
+            let header = this.headers
+            let self = this
+            function getdata(data) {
+                return data.map(item => {
+                    return [
+                        item.game_vendor_name,
+                        self.tofixedTwo(item.effective_bet),
+                        self.tofixedTwo(item.tax),
+                        self.tofixedTwo(item.bet),
+                        self.tofixedTwo(item.commission) +
+                            '/' +
+                            self.tofixedTwo(item.rebate),
+                        self.tofixedTwo(
+                            Number(item.win_money) - Number(item.bet)
+                        ),
+                        item.day
+                    ]
                 })
-
-                let chainName = window.all.tool.getChainName(this.$route.path)
+            }
+            import('../../../js/config/Export2Excel').then(excel => {
                 excel.export_json_to_excel({
-                    header: tHeader, //表头 必填
-                    data, //具体数据 必填
-                    filename: `${chainName} ${this.pageNo}`, //非必填
+                    header: header, //表头 必填
+                    data: getdata(data), //具体数据 必填
+                    filename: file_name, //非必填
                     autoWidth: true, //非必填
                     bookType: 'xlsx' //非必填
                 })
             })
+        },
+        exportExcel() {
+            if (!this.list) {
+                this.$toast('内容为空')
+            }
+            let chainName = window.all.tool.getChainName(this.$route.path)
+            let filename = `${chainName} ${this.pageNo}`
+            this.ExcelOut(this.list, filename)
+        },
+        async exportAll() {
+            let self = this
+            let pageSize = 100
+            function getPageList(pageNo) {
+                return new Promise((resolve, reject) => {
+                    let para = {
+                        // report_day: this.filter.report_day,
+                        game_vendor_sign: self.filter.game_vendor_sign,
+                        pageSize: self.pageSize,
+                        page: self.pageNo
+                    }
+                    if (
+                        self.filter.report_day[0] &&
+                        self.filter.report_day[1]
+                    ) {
+                        para.report_day = JSON.stringify(self.filter.report_day)
+                    }
+                    let data = window.all.tool.rmEmpty(para)
+
+                    let { url, method } = self.$api.third_game_report_list
+                    self.$http({ method, url, data }).then(res => {
+                        // console.log('列表👌👌👌👌: ', res)
+                        if (res && res.code === '200'&&res.data) {
+                            resolve(res.data.data)
+                        }
+                    })
+                })
+            }
+            if (!self.total) return
+            let totalPage = Math.ceil(self.total / 100)
+            let list = []
+            for (let i = 1; i <= totalPage; i++) {
+                let currList = await getPageList(i) // 获取i页的内容
+                list = list.concat(currList)
+            }
+
+            let chainName = window.all.tool.getChainName(self.$route.path)
+            let file_name = `${chainName}`
+            self.ExcelOut(list, file_name)
         },
         tofixedTwo(num) {
             if (!num) return 0

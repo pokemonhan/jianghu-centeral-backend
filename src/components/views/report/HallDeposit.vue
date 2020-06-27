@@ -23,7 +23,7 @@
         <div class="table">
             <Table :headers="headers" :column="list">
                 <template v-slot:item="{row}">
-                    <td>{{row.platform&&row.platform.cn_name}}</td>
+                    <td>{{row.platform_name}}</td>
                     <td>{{tofixedTwo(row.recharge_sum)}}</td>
                     <td>{{tofixedTwo(row.withdraw_sum)}}</td>
                     <td>{{tofixedTwo(row.reduced_sum)}}</td>

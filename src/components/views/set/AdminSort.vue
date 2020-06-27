@@ -141,13 +141,13 @@ export default {
             tree_show: false,
 
             // table
-            admin_id: '', // 展示成员table所需要的id
+            admin_id: '', // 展示成员table所需要的【管理组id】
 
             // 启用 禁用modal
             mod_show: false,
             curr_group: {},
-            last_group: {},
-            last_group_index: 0,
+            last_click_group: {},
+            last_click_group_index: 0,
             mod_status: '',
             mod_title: '',
             mod_cont: ''
@@ -174,14 +174,30 @@ export default {
         initMod() {
             this.mod_show = false
             this.curr_group = {}
-            // this.last_group = {}
+            // this.last_click_group = {}
             this.mod_status = ''
             this.mod_title = ''
             this.mod_cont = ''
         },
 
         search() {
-            if (!this.filter.searchStr) return
+            if (!this.filter.searchStr) {
+                this.check(this.last_click_group)
+                // 展示搜索结果中,第一个的名字,权限,id
+                // if (this.searchGroup) {
+                    // 展示搜索结果中,第一个的名字,权限,id
+                    // let firstGroup = this.group_list.find(item => {
+                    //     return item.id === this.searchGroup[0]
+                    // })
+                //     this.form.group_name = this.firstGroup.group_name
+                //     this.form.id = this.firstGroup.id
+                //     this.form.tagList = this.firstGroup.detail.map(
+                //         item => item.menu_id
+                //     )
+                // }
+                return
+            }
+            this.admin_id = ''
             let data = {
                 searchStr: this.filter.searchStr
             }
@@ -270,7 +286,7 @@ export default {
             this.searchGroup = []
             this.right_show = 'check'
             this.curr_group = Object.assign({}, group)
-            this.last_group = Object.assign({}, group)
+            this.last_click_group = Object.assign({}, group)
             this.form.group_name = group.group_name
             this.form.id = group.id
             this.admin_id = group.id
@@ -291,7 +307,7 @@ export default {
         edit(group) {
             this.right_show = 'edit'
             this.curr_group = group // 存储当前点击的组
-            this.last_group = group // 最后次点击的组
+            this.last_click_group = group // 最后次点击的组
             this.form.group_name = group.group_name
             // this.treeSelectShow(group)
             this.tree_select_show = true
@@ -357,9 +373,8 @@ export default {
                 this.form.id = ''
                 this.form.tagList = []
                 this.tree_list = this.initTree(this.tree_list)
-          
             } else {
-                let group = Object.assign({}, this.last_group)
+                let group = Object.assign({}, this.last_click_group)
                 this.check(group)
             }
         },
@@ -444,13 +459,16 @@ export default {
                 // console.log('进来');
                 if (res && res.code === '200') {
                     this.group_list = res.data
-                    // this.last_group = this.group_list && this.group_list[0]
+                    // this.last_click_group = this.group_list && this.group_list[0]
                     if (this.right_show === 'add') {
                         let last = this.group_list[this.group_list.length - 1]
                         if (last) {
                             this.check(last)
                         }
-                    } else if (this.right_show === 'edit'||this.right_show === 'check') {
+                    } else if (
+                        this.right_show === 'edit' ||
+                        this.right_show === 'check'
+                    ) {
                         if (this.admin_id) {
                             // console.log('🍾 this.admin_id: ', this.admin_id);
                             let group = this.group_list.find(
