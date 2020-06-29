@@ -125,6 +125,12 @@ export default {
         setTimeout(() => {
             // self.playMusic()
         }, 400)
+        // 自动变色
+        // setInterval(() => {
+        //     let arr = ['red','yellow','pink','blue','purple','orange']
+        //     let random = Math.floor(Math.random()*arr.length)
+        //     this.$store.commit('updateThemeColor',arr[random])
+        // }, 3000);
     }
 }
 </script>

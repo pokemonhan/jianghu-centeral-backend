@@ -110,16 +110,12 @@
         <Modal :show.sync="mod_show" :title="mod_title" :content="mod_cont" @confirm="modConf"></Modal>
     </div>
 </template> <script>
-import Tree from '../../commonComponents/Tree'
 import AdminTable from './AdminSortDir/AdminTable'
-import AuthorityTree from '../../commonComponents/AuthorityTree'
 import AuthorityList from '../../commonComponents/AuthorityList'
 export default {
     name: 'AdminSort',
     components: {
-        Tree: Tree,
         AdminTable: AdminTable,
-        AuthorityTree: AuthorityTree,
         AuthorityList
     },
     data() {
@@ -203,20 +199,23 @@ export default {
             }
 
             let { url, method } = this.$api.search_admin_list
+            /** 商户api */
+            // let { url, method } = this.$api.admin_group_users_search_list
+
             this.$http({ method, url, data }).then(res => {
                 // console.log('列表👌👌👌👌: ', res)
                 if (res && res.code === '200') {
                     // console.log('res: ', res);
-
+                    // 所在组id 集合
                     this.searchGroup = (res.data || []).map(
                         item => item.group_id
-                    ) // 管理员所在的分组
-
-                    // 展示搜索结果中,第一个的名字,权限,id
+                    )
+                    // 匹配第一个管理组的id
                     let firstGroup = this.group_list.find(item => {
                         return item.id === this.searchGroup[0]
                     })
                     if (firstGroup) {
+                        // this.last_click_group = firstGroup
                         this.form.group_name = firstGroup.group_name
                         this.form.id = firstGroup.id
                         this.form.tagList = firstGroup.detail.map(
@@ -331,6 +330,8 @@ export default {
                 })
             }
             let { url, method } = this.$api.menu_all_list
+            // 商户接口
+            // let { url, method } = this.$api.current_admin_menu
             this.$http({ method, url }).then(res => {
                 // console.log('所有权限树: ', res)
                 if (res && res.code === '200') {
@@ -390,6 +391,8 @@ export default {
             }
 
             let { url, method } = this.$api.admin_class_add
+            // 商户接口
+            // let { url, method } = this.$api.admin_group_add
             let self = this
             this.$http({ method, url, data }).then(res => {
                 if (res && res.code === '200') {
@@ -411,6 +414,8 @@ export default {
                 role: JSON.stringify(this.form.tagList || [])
             }
             let { method, url } = this.$api.admin_class_set
+            // 商户接口
+            // let { method, url } = this.$api.admin_group_set
             this.$http({ method, url, data }).then(res => {
                 // console.log(res)
                 if (res.code === '200') {
@@ -441,6 +446,8 @@ export default {
                 group_name: group.group_name
             }
             let { method, url } = this.$api.admin_class_del
+            // 商户接口
+            // let { method, url } = this.$api.admin_group_del
             this.$http({ method, url, data }).then(res => {
                 if (res.code === '200') {
                     this.$toast.success(res.message)
@@ -453,7 +460,8 @@ export default {
         // 获取群组列表 (左侧的列表)
         getGroupList() {
             let { url, method } = this.$api.admin_class_list
-
+            // 商户接口
+            // let { url, method } = this.$api.admin_group_list
             this.$http({ method, url }).then(res => {
                 // console.log('res: ', res)
                 // console.log('进来');
@@ -487,11 +495,12 @@ export default {
         // 初次进去展示check 页面
         firstView() {
             let { url, method } = this.$api.admin_class_list
-
+            // 商户接口
+            // let { url, method } = this.$api.admin_group_list
             this.$http({ method, url }).then(res => {
                 // console.log('res: ', res)
                 if (res && res.code === '200') {
-                    this.group_list = res.data
+                    this.group_list = res.data // 商户那边api res.data.data
                     this.group_list &&
                         this.$nextTick(() => {
                             let self = this

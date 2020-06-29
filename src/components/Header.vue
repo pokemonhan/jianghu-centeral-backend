@@ -80,7 +80,7 @@
                     </ul>
                     <div class="form-btns">
                         <button class="btn-plain-large" @click="dia_show=false">取消</button>
-                        <button class="btn-blue-large ml50" @click="passwordConf">确认</button>
+                        <button :style="{background:$store.state.themeColor}" class="btn-blue-large ml50" @click="passwordConf">确认</button>
                     </div>
                 </div>
             </div>

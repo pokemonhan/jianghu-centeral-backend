@@ -17,7 +17,7 @@
                 <li>
                     <button class="btn-blue" @click="getList">查询</button>
                     <button class="btn-blue" @click="exportExcel">导出Excel</button>
-                    <button class="btn-blue" @click="exportAll">导出所有</button>
+                    <button class="btn-blue" @click="exportAll">导出所有Excel</button>
                 </li>
                 <li>
                     <button class="btn-red" @click="clear">清除</button>

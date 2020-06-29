@@ -1,7 +1,7 @@
 <template>
     <label :class="['v-checkbox', size, disabled ? 'disabled' : '']">
         <span class="icon">
-            <span :class="[result ? 'active' : '',dot?'dot':'']"></span>
+            <span :style="{borderColor:themeColor,backgroundColor:result?themeColor:''}" :class="[result ? 'active' : '',dot?'dot':'']"></span>
             <input type="checkbox" v-model="result" @change="update" :disabled="disabled" />
         </span>
         <span class="item-label" v-if="label">{{label}}</span>
@@ -44,7 +44,12 @@ export default {
         return {
             result: false,
             trueVal: undefined,
-            falseVal: undefined
+            falseVal: undefined,
+        }
+    },
+    computed:{
+        themeColor() {
+            return this.$store.state.themeColor || ''
         }
     },
     methods: {
@@ -130,7 +135,7 @@ export default {
 /* 圆点 */
 .v-checkbox .icon .dot{
     border-radius: 50%;
-    color: #2d8cf0;
+    color: #4c8bfd;
 }
 .v-checkbox.large .icon,
 .v-checkbox.large .icon span {
@@ -143,9 +148,10 @@ export default {
     height: 12px;
 }
 .v-checkbox .icon span.active {
-    border-color: #2d8cf0;
-    background-color: #2d8cf0;
+    border-color: #4c8bfd;
+    background-color: #4c8bfd;
 }
+
 /* .disabled .icon span.active {
     border-color: #4674a5;
     background-color: #3e71a8;

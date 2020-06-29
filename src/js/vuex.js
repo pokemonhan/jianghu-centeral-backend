@@ -30,6 +30,7 @@ const BASE_PATH = hostObj[HOST].url || HOST
 Vue.use(Vuex);
 
 const state = {
+    themeColor: '',
     isShowLoading: false,
     showMask: false,
     tab_nav_list: [],                                          // 顶部导航菜单 顶部导航菜单 顶部导航菜单
