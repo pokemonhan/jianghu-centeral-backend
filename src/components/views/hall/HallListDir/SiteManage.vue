@@ -91,12 +91,13 @@
                             :menutree="tree_list"
                             v-model="role"
                             @update="treeListUpd"
-                        /> -->
-                      
+                        />-->
+
                         <div>
                             <AuthorityList
                                 style="width:500px;"
                                 :menutree="tree_list"
+                                :rightShow.sync="tree_select_show"
                                 v-model="role"
                                 @update="treeListUpd"
                             />
@@ -162,6 +163,7 @@ export default {
             last_sms_num: '', // 剩余短信数量
             sms_num: '',
             authority: '',
+            tree_select_show: false, // 展示权限树右侧
             // authorityList: []
             role: [] // 权限内容
         }

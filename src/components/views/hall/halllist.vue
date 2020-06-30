@@ -178,6 +178,7 @@
                                 <AuthorityList
                                 style="width:500px;"
                                 :menutree="tree_list"
+                                :rightShow.sync="tree_select_show"
                                 v-model="form.role"
                                 @update="treeListUpd"
                             />
@@ -321,6 +322,7 @@ export default {
                 status: '1'
             },
             tree_list: [],
+            tree_select_show: true, // 权限树右侧 打开状态
             // authorityList: [],
             loading: false,
             website_opt: [

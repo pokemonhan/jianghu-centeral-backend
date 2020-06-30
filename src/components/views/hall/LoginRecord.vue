@@ -100,28 +100,29 @@ export default {
                         email: self.filter.email,
                         createAt: createAt,
                         loginIp: self.filter.loginIp,
-                        pageSize: 100,
+                        pageSize: 25,
                         page: pageNo
                     }
 
                     let params = window.all.tool.rmEmpty(para)
                     let { url, method } = self.$api.login_record_list
                     self.$http({ method, url, params }).then(res => {
-                        if (res && res.code === '200'&& res.data) {
+                        if (res && res.code === '200' && res.data) {
                             // this.total = res.data.total
                             // this.list = res.data.data
-                            setTimeout(()=>{
+                            setTimeout(() => {
                                 resolve(res.data.data)
-                            },200)
+                            }, 200)
                         }
                     })
                 })
             }
-            if(!this.total)return
-            let totalPage = Math.ceil(this.total / 100)
+            if (!this.total) return
+            let totalPage = Math.ceil(this.total / 25)
+            // console.log('🥞 totalPage: ', totalPage);
 
             let list = []
-          
+
             for (let i = 1; i <= totalPage; i++) {
                 let currList = await getPageList(i)
                 list = list.concat(currList)
